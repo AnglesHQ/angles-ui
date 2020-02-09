@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import axios from 'axios';
-import Teams from '../components/Teams';
 import Builds from '../components/Builds';
+import AnglesMenu from '../components/AnglesMenu';
+import BuildBarChart from '../components/charts/BuildBarChart';
+import BuildTimeLineChart from '../components/charts/BuildTimeLineChart';
 import './App.css';
+import '../components/charts/Charts.css'
 
 axios.defaults.baseURL = 'http://127.0.0.1:3000/rest/api/v1.0';
-// axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 class App extends Component {
 
@@ -14,6 +15,7 @@ class App extends Component {
     super(props);
     this.state = {
       teams: [],
+      currentTeam: {name: 'No team selected'},
       builds: [],
     };
   }
@@ -21,8 +23,12 @@ class App extends Component {
  getBuildsForTeam(teamId) {
     axios.get('/build?teamId=' + teamId)
     .then((res) =>
-      this.setState({ builds: res.data })
+      this.setState({ builds: res.data, currentTeam: this.getTeam(teamId)})
     )
+  }
+
+  getTeam(teamId) {
+    return this.state.teams.find(team => team._id === teamId);
   }
 
   componentDidMount() {
@@ -37,16 +43,20 @@ class App extends Component {
 
   render() {
     return (
-      <div>
-        <h1>Teams</h1>
-        <Teams teams={this.state.teams} click={this.getBuildsForTeam.bind(this)}/>
-        <br/>
-        <h1>Builds</h1>
-        <Builds builds={this.state.builds} />
+      <div id="outer-container">
+        <AnglesMenu teams={this.state.teams} click={this.getBuildsForTeam.bind(this)}/>
+        <main id="page-wrap">
+            <h1>Team: {this.state.currentTeam.name}</h1>
+            <div className="graphContainerParent">
+              <BuildBarChart builds={this.state.builds} />
+              <BuildTimeLineChart builds={this.state.builds} />
+            </div>
+            <h1>Builds</h1>
+            <Builds builds={this.state.builds} />
+        </main>
       </div>
     );
   }
-
 }
 
 export default App;
