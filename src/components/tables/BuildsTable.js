@@ -1,31 +1,20 @@
 import React, { Component } from 'react'
-
+import { Link } from 'react-router-dom'
 import Moment from 'react-moment';
-import moment from 'moment'
+import timeUtility from '../../utility/TimeUtilities'
+class BuildsTable extends Component {
 
-class Builds extends Component {
-
-  constructor(props) {
-    super(props);
-    console.log(props);
-    this.state = {
-      teams: [],
-    };
+constructor(props) {
+  super(props);
+  console.log(props);
+  this.state = {
+    teams: [],
+  };
     //this.calculateMetricsForBuilds(props.builds);
-  }
+}
 
   getComponentName(build) {
       return build.team.components.find(component => component._id === build.component);
-  }
-
-  getDuration(build) {
-    if (build.end && build.start) {
-      const start = moment(build.start);
-      const end = moment(build.end);
-      var duration = moment.duration(end.diff(start));
-      return moment.utc(duration.asMilliseconds()).format("HH:mm:ss");
-    }
-    return 'Not started';
   }
 
   render() {
@@ -63,7 +52,7 @@ class Builds extends Component {
                 {build.end}
               </Moment>
             </td>
-            <td>{this.getDuration(build)}</td>
+            <td>{timeUtility.getDuration(build)}</td>
             <td>{build.result.PASS}</td>
             <td>{build.result.FAIL}</td>
             <td>{build.result.ERROR}</td>
@@ -78,4 +67,4 @@ class Builds extends Component {
 
 };
 
-export default Builds
+export default BuildsTable

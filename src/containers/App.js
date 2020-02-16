@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
+import { Route, Switch } from 'react-router-dom'
 import axios from 'axios';
-import Builds from '../components/Builds';
-import AnglesMenu from '../components/AnglesMenu';
-import BuildBarChart from '../components/charts/BuildBarChart';
-import BuildTimeLineChart from '../components/charts/BuildTimeLineChart';
+import AnglesMenu from '../components/menu/AnglesMenu';
+import SummaryPage from '../components/pages/SummaryPage'
+import BuildPage from '../components/pages/BuildPage'
 import './App.css';
 import '../components/charts/Charts.css'
 
@@ -20,8 +20,8 @@ class App extends Component {
     };
   }
 
- getBuildsForTeam(teamId) {
-    axios.get('/build?teamId=' + teamId)
+  getBuildsForTeam(teamId) {
+    return axios.get('/build?teamId=' + teamId)
     .then((res) =>
       this.setState({ builds: res.data, currentTeam: this.getTeam(teamId)})
     )
@@ -35,10 +35,10 @@ class App extends Component {
     axios.get('/team')
     .then(res => res.data)
     .then((data) => {
-      this.setState({ teams: data })
+      this.setState({ teams: data });
       this.getBuildsForTeam(data[0]._id);
     })
-    .catch(console.log)
+    .catch(console.log);
   }
 
   render() {
@@ -46,13 +46,12 @@ class App extends Component {
       <div id="outer-container">
         <AnglesMenu teams={this.state.teams} click={this.getBuildsForTeam.bind(this)}/>
         <main id="page-wrap">
-            <h1>Team: {this.state.currentTeam.name}</h1>
-            <div className="graphContainerParent">
-              <BuildBarChart builds={this.state.builds} />
-              <BuildTimeLineChart builds={this.state.builds} />
-            </div>
-            <h1>Builds</h1>
-            <Builds builds={this.state.builds} />
+          <Switch>
+            <Route exact path="/">
+              <SummaryPage builds={this.state.builds} currentTeam={this.state.currentTeam} />
+            </Route>
+            <Route exact path="/build/:id" render={props => { return <BuildPage {...props} /> }} />
+          </Switch>
         </main>
       </div>
     );
