@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import timeUtility from '../../utility/TimeUtilities'
+import ExecutionTable from './ExecutionTable';
+import './Tables.css';
 import Moment from 'react-moment';
 import moment from 'moment'
 
@@ -16,28 +18,19 @@ class SuiteTable extends Component {
 
   render() {
     return (
-      <table className="table table-hover">
-      <thead className="thead-dark">
+      <table className="suite-table">
+      <thead>
         <tr>
-          <th scope="col" colSpan="100%">{this.props.suite.name}</th>
+          <th scope="col">Suite: {this.props.suite.name}</th>
+          <td>Status: {this.props.suite.status}</td>
+          <td>Duration: { timeUtility.getDuration(this.props.suite) }</td>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <th>#</th>
-          <th>Title</th>
-          <th>Status</th>
-          <th>Duraction</th>
-        </tr>
         { this.props.suite.executions.map((execution, index) => {
-          return <tr key={index}>
-            <th scope="row">{ index+1 }</th>
-            <td>{execution.title}</td>
-            <td>{execution.status}</td>
-            <td>
-              { timeUtility.getDuration(execution) }
-            </td>
-          </tr>
+          return [
+            <ExecutionTable execution={execution} index={index}/>
+          ]
         })
       }
       </tbody>
