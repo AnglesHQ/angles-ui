@@ -51,7 +51,7 @@
 }
 
 .actions-wrapper {
-  padding-left: 1em;
+  padding-left: 5px;
   padding-bottom: 1em;
   background: white;
 }
@@ -70,6 +70,7 @@
   border-top: 0px;
   font-weight: bold;
   background: white;
+  cursor: pointer;
 }
 
 .action-description td {
@@ -79,7 +80,7 @@
 }
 
 .action-steps {
-  padding-left: 2em;
+  padding-left: 5px;
   background: white;
 }
 
@@ -129,10 +130,14 @@
 
 .steps-table tr {
   background: #e8edff;
+  line-height: 31px;
+  font-size: 14px;
+  font-weight: bold;
 }
 
 .steps-table tr td {
   padding-left: 10px;
+  border-top: 1px solid #fff;
 }
 
 .steps-table tr:last-child td:first-child {
@@ -145,4 +150,9 @@
 .steps-table .PASS {
   font-weight: bold;
   color: #98dc79
+}
+
+.screenshot-thumbnail {
+  max-height: 80px;
+  padding: 3px;
 }

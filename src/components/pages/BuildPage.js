@@ -12,7 +12,15 @@ class BuildPage extends Component {
     this.state = {
       //
     };
-    axios.get('/build/' + this.props.match.params.id)
+    this.getBuildDetails(this.props.match.params.id);
+    this.getScreenshotDetails(this.props.match.params.id);
+  }
+
+  componentDidMount() {
+  }
+
+  getBuildDetails(buildId) {
+    axios.get('/build/' + buildId)
     .then(res => res.data)
     .then((data) => {
       this.setState({ currentBuild: data });
@@ -20,10 +28,12 @@ class BuildPage extends Component {
     .catch(console.log);
   }
 
-  componentDidMount() {
-
+  getScreenshotDetails(buildId) {
+    return axios.get('/screenshot/?buildId=' + buildId)
+    .then((res) =>
+      this.setState({ screenshots: res.data })
+    )
   }
-
 
   render() {
     if (!this.state.currentBuild) {
@@ -40,7 +50,7 @@ class BuildPage extends Component {
         <br/>
         <div>
           { this.state.currentBuild.suites.map((suite, index) => {
-              return <SuiteTable key={index} suite={suite} />
+              return <SuiteTable key={index} suite={suite} screenshots={this.state.screenshots} />
           })}
         </div>
       </div>

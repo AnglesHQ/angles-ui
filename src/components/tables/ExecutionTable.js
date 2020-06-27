@@ -1,13 +1,9 @@
 import React, { Component } from 'react'
-import timeUtility from '../../utility/TimeUtilities'
-import Moment from 'react-moment';
-import moment from 'moment'
-
+import ActionComponent from './ActionComponent';
 class ExecutionTable extends Component {
 
   constructor(props) {
     super(props);
-    console.log(props);
     this.state = {
       open: false
     };
@@ -24,8 +20,8 @@ class ExecutionTable extends Component {
       <tr key={"execution_" + this.props.index} className="test-row" onClick={(e)=>this.toggleActions(e)} >
         <td colSpan="100%" className={`${this.props.execution.status}`}>
           { this.state.open ? (
-              <i class="fa fa-caret-down" aria-hidden="true"></i>
-          ) : <i class="fa fa-caret-right" aria-hidden="true"></i> }
+              <i className="fa fa-caret-down" aria-hidden="true"></i>
+          ) : <i className="fa fa-caret-right" aria-hidden="true"></i> }
           <span>Test: {this.props.execution.title}</span>
         </td>
       </tr>,
@@ -35,44 +31,8 @@ class ExecutionTable extends Component {
             <table className="actions-table">
               <tbody>
                 { this.props.execution.actions.map((action, index) => {
-                  return [<tr key={"action_" + index} className="action-description">
-                    <td className={`${action.status}`} colSpan="100%">{action.name}</td>
-                  </tr>,
-                  <tr key={"steps_" + index}>
-                    <td className="action-steps">
-                      <table className="steps-table">
-                        <thead>
-                          <tr>
-                            <th>#</th>
-                            <th>Time</th>
-                            <th>Status</th>
-                            <th width="25%">Step</th>
-                            <th>Expected</th>
-                            <th>Actual</th>
-                            <th width="30%">Info</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          { action.steps.map((step, index) => {
-                            return <tr key={"step_" + index}>
-                              <td>{index+1}</td>
-                              <td>
-                                <Moment format="HH:mm:ss">
-                                  {step.time}
-                                </Moment>
-                              </td>
-                              <td className={`${step.status}`}>{step.status}</td>
-                              <td>{step.name}</td>
-                              <td>{step.expected}</td>
-                              <td>{step.actual}</td>
-                              <td>{step.info}</td>
-                            </tr>
-                            })
-                          }
-                        </tbody>
-                      </table>
-                    </td>
-                  </tr>
+                  return [
+                    <ActionComponent key={"action_" + index} action={action} index={index} screenshots={this.props.screenshots} />
                   ]
                 })
               }

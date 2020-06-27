@@ -2,14 +2,11 @@ import React, { Component } from 'react'
 import timeUtility from '../../utility/TimeUtilities'
 import ExecutionTable from './ExecutionTable';
 import './Tables.css';
-import Moment from 'react-moment';
-import moment from 'moment'
 
 class SuiteTable extends Component {
 
   constructor(props) {
     super(props);
-    console.log(props);
     this.state = {
       suite: [],
     };
@@ -29,7 +26,7 @@ class SuiteTable extends Component {
       <tbody>
         { this.props.suite.executions.map((execution, index) => {
           return [
-            <ExecutionTable execution={execution} index={index}/>
+            <ExecutionTable key={"execution_" + index} execution={execution} index={index} screenshots={this.props.screenshots}/>
           ]
         })
       }
