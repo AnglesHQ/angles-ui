@@ -13,13 +13,8 @@ class StepsTable extends Component {
   getScreenShot(screenshotId) {
     let thumbnail = undefined;
     if (this.state.screenshots !== undefined && screenshotId !== undefined) {
-      // loop through the build screenshots
-      this.state.screenshots.map((screenshot, index) => {
-          if (screenshot._id === screenshotId) {
-            // console.log("Screenshot found : " + screenshot.thumbnail);
-            thumbnail = screenshot.thumbnail;
-          }
-      })
+      let image = this.state.screenshots.filter(screenshot => screenshot._id === screenshotId)[0];
+      return image.thumbnail;
     }
     return thumbnail;
   }

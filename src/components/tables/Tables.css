@@ -14,7 +14,7 @@
    font-weight: bold;
    cursor: pointer;
    line-height: 2em;
-   border-bottom: solid lightgray 1px;
+   border-bottom: solid white 5px;
 }
 
 .suite-table .test-row > td {
