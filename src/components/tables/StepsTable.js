@@ -21,7 +21,7 @@ class StepsTable extends Component {
 
   render () {
     return [
-      <table className="steps-table">
+      <table className="steps-table" key={"steps_table_" + this.props.xindex}>
         <thead>
           <tr>
             <th>#</th>
