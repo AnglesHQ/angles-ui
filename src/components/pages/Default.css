@@ -1,0 +1,14 @@
+.screenshot {
+  max-width: 80%;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.screenshot-thumbnail-history {
+  width: 200px;
+}
+
+
+.image-page-holder {
+  padding: 2em;
+}

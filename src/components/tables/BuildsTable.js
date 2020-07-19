@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import Moment from 'react-moment';
 import timeUtility from '../../utility/TimeUtilities'
+import { withRouter} from 'react-router-dom';
+
 class BuildsTable extends Component {
 
 constructor(props) {
   super(props);
-  console.log(props);
   this.state = {
     teams: [],
   };
@@ -36,20 +37,24 @@ constructor(props) {
       </thead>
       <tbody>
         { this.props.builds.map((build, index) => {
-          return <tr key={build._id}>
+          return <tr key={build._id} onDoubleClick={() => this.props.history.push(`/build/?buildId=${build._id}`)}>
             <th scope="row">{ index+1 }</th>
             <td>{build.name}</td>
             <td>{this.getComponentName(build).name}</td>
             <td>{ build.environment.name }</td>
             <td>
-              <Moment format="DD-MM-YYYY HH:mm:ss">
-                {build.start}
-              </Moment>
+              { build.start ? (
+                <Moment format="DD-MM-YYYY HH:mm:ss">
+                  {build.start}
+                </Moment>
+              ) : "N/A" }
             </td>
             <td>
+            { build.end ? (
               <Moment format="DD-MM-YYYY HH:mm:ss">
                 {build.end}
               </Moment>
+            ) : "N/A" }
             </td>
             <td>{timeUtility.getDuration(build)}</td>
             <td>{build.result.PASS}</td>
@@ -66,4 +71,4 @@ constructor(props) {
 
 };
 
-export default BuildsTable
+export default withRouter(BuildsTable);

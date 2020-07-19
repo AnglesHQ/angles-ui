@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Moment from 'react-moment';
+import { withRouter} from 'react-router-dom';
 
 class StepsTable extends Component {
 
@@ -17,6 +18,11 @@ class StepsTable extends Component {
       return image.thumbnail;
     }
     return thumbnail;
+  }
+
+  navigateToImageDetails(imageId) {
+    let history = this.props.history;
+    history.push(`/image/${imageId}`)
   }
 
   render () {
@@ -44,7 +50,7 @@ class StepsTable extends Component {
               <td>{step.expected}</td>
               <td>{step.actual}</td>
               <td>{step.info}</td>
-              <td>{ step.screenshot ? ( <img className="screenshot-thumbnail" src={"data:image/png;base64, " + this.getScreenShot(step.screenshot)} alt="Thumbnail" /> ) : null }</td>
+              <td onClick={() => this.navigateToImageDetails(step.screenshot)}>{ step.screenshot ? ( <img className="screenshot-thumbnail" src={"data:image/png;base64, " + this.getScreenShot(step.screenshot)} alt="Thumbnail" /> ) : null }</td>
             </tr>
             })
           }
@@ -54,4 +60,4 @@ class StepsTable extends Component {
   }
 };
 
-export default StepsTable
+export default withRouter(StepsTable)

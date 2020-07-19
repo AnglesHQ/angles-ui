@@ -4,16 +4,17 @@ import BuildResultsPieChart from '../charts/BuildResultsPieChart';
 import SuiteTable from '../tables/SuiteTable';
 import BuildSummary from '../tables/BuildSummary';
 import '../charts/Charts.css'
+import queryString from 'query-string';
 
 class BuildPage extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      //
+      query: queryString.parse(this.props.location.search),
     };
-    this.getBuildDetails(this.props.match.params.id);
-    this.getScreenshotDetails(this.props.match.params.id);
+    this.getBuildDetails(this.state.query.buildId);
+    this.getScreenshotDetails(this.state.query.buildId);
   }
 
   componentDidMount() {
