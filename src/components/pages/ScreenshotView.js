@@ -7,15 +7,14 @@ import CardDeck from 'react-bootstrap/CardDeck'
 import Card from 'react-bootstrap/Card'
 import './Default.css'
 
-class ScreenshotPage extends Component {
+class ScreenshotView extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      //
+      buildScreenshots: this.props.buildScreenshots
     };
-    this.getScreenshotDetails(this.props.match.params.id);
-    this.getScreenshot(this.props.match.params.id);
+    this.loadScreenshot(this.props.selectedScreenshotId)
   }
 
   componentDidMount() {
@@ -25,9 +24,9 @@ class ScreenshotPage extends Component {
     return axios.get('/screenshot/' + screenshotId)
     .then((res) => {
       this.setState({ currentScreenshotDetails: res.data })
-      if (this.state.currentScreenshotDetails.view != null) {
+      if (this.state.currentScreenshotDetails != null && this.state.currentScreenshotDetails.view != null) {
         // if there is a view, retrieve the history
-        this.getScreenshotHistoryByView(this.state.currentScreenshotDetails.view);
+        this.getScreenshotHistoryByView(this.state.currentScreenshotDetails.view, 5);
       }
     })
   }
@@ -40,9 +39,11 @@ class ScreenshotPage extends Component {
         offset
       }
     })
-    .then((res) =>
-      this.setState({ currentScreenshotHistory: res.data })
-    )
+    .then((res) => {
+      this.setState({ currentScreenshotHistory: res.data });
+      this.getScreenshotCompare(this.state.currentScreenshotDetails._id, this.state.currentScreenshotHistory[0]._id);
+    })
+
   }
 
   getScreenshot(screenshotId) {
@@ -72,31 +73,61 @@ class ScreenshotPage extends Component {
   }
 
   setTab(key) {
-    if (key === "baseline" && this.state.currentScreenshotHistory != null && this.state.currentBaselineCompare == null) {
+    if (key === "baseline" && this.state.currentScreenshotHistory != null && this.state.currentBaselineCompare == null && this.state.currentScreenshotHistory.length > 1) {
         //TODO: determine baseline images from history (if none grab previous image) etc.
-        this.getScreenshotCompare(this.state.currentScreenshotDetails._id, this.state.currentScreenshotHistory[2]._id);
     }
   }
 
+  loadScreenshot(screenshotId) {
+    this.getScreenshotDetails(screenshotId);
+    this.getScreenshot(screenshotId);
+  }
+
+  isSelectedId(screenshotId) {
+    if (this.state.currentScreenshotDetails && this.state.currentScreenshotDetails._id === screenshotId) {
+      return true;
+    } else {
+      return false;
+    }
+  }
   render() {
     if (!this.state.currentScreenshotDetails) {
       return <div><span>no details</span></div>;
     }
     return (
       <div >
-        <h1>{this.state.currentScreenshotDetails.view}</h1>
         <div>
-          <strong>Date: </strong>
-          <Moment format="DD-MM-YYYY HH:mm:ss">
-            {this.state.currentScreenshotDetails.timestamp}
-          </Moment>
+          <CardDeck>
+            {
+              this.state.buildScreenshots.map((buildScreenshot, index) => {
+                return [
+                  <Card key={index} className={`thumbnail-card ${ this.isSelectedId(buildScreenshot._id) ? "card-active" : ""}`} onClick={(sh) => this.loadScreenshot(buildScreenshot._id)}>
+                    <Card.Img variant="top" src={"data:image/png;base64, " + buildScreenshot.thumbnail} />
+                    <Card.Body>
+                      <Card.Text className={`thumbnail-card-text ${ this.isSelectedId(buildScreenshot._id) ? "card-text-active" : ""}`}>
+                        {buildScreenshot.view}
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
+                ]
+              })
+            }
+          </CardDeck>
         </div>
         <Tabs id="image-tabs" defaultActiveKey="image" onSelect={(k) => this.setTab(k)}>
             <Tab eventKey="image" title="Image">
-              <div className="image-page-holder">{ this.state.currentScreenshot ? ( <img className="screenshot" src={this.state.currentScreenshot} alt="Screenshot" /> ) : null }</div>
+              <div className="image-page-holder">
+              <div>
+              Date:
+              <Moment format="DD-MM-YYYY HH:mm:ss">
+                {this.state.currentScreenshotDetails.timestamp}
+              </Moment>
+              </div>
+              { this.state.currentScreenshot ? ( <img className="screenshot" src={this.state.currentScreenshot} alt="Screenshot" /> ) : null }
+              </div>
             </Tab>
             <Tab eventKey="baseline" title="Baseline">
-              <div className="image-page-holder">{ this.state.currentBaselineCompare ? ( <img className="screenshot" src={this.state.currentBaselineCompare} alt="Compare" /> ) : null }</div>
+              <div className="image-page-holder">{ this.state.currentBaselineCompare ? ( <img className="screenshot" src={this.state.currentBaselineCompare} alt="Compare" /> ) : "No Baseline Available" }</div>
             </Tab>
             <Tab eventKey="history" title="History">
               <div className="image-page-holder">
@@ -104,7 +135,7 @@ class ScreenshotPage extends Component {
                   { this.state.currentScreenshotHistory != null ? (
                     this.state.currentScreenshotHistory.map((screenshot, index) => {
                       return [
-                          <Card key={index}>
+                          <Card key={index} className={`screenshotCard ${ this.isSelectedId(screenshot._id) ? "card-active" : ""}`}>
                             <Card.Img variant="top" src={"data:image/png;base64, " + screenshot.thumbnail} />
                             <Card.Body>
                               <Card.Text>
@@ -132,4 +163,4 @@ class ScreenshotPage extends Component {
   }
 }
 
-export default ScreenshotPage;
+export default ScreenshotView;

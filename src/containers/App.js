@@ -4,7 +4,6 @@ import axios from 'axios';
 import AnglesMenu from '../components/menu/AnglesMenu';
 import SummaryPage from '../components/pages/SummaryPage'
 import BuildPage from '../components/pages/BuildPage'
-import ScreenshotPage from '../components/pages/ScreenshotPage'
 import './App.css';
 import '../components/charts/Charts.css'
 
@@ -52,7 +51,6 @@ class App extends Component {
               <SummaryPage builds={this.state.builds} currentTeam={this.state.currentTeam} />
             </Route>
             <Route exact path="/build/" render={props => { return <BuildPage {...props} /> }} />
-            <Route exact path="/screenshot/:id" render={props => { return <ScreenshotPage {...props} /> }} />
           </Switch>
         </main>
       </div>

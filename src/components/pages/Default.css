@@ -1,7 +1,49 @@
 .screenshot {
   max-width: 80%;
+  /* max-height: 100%; */
   border: 1px solid #ddd;
   border-radius: 4px;
+}
+
+.active-thumbnail {
+  border: 2px solid red;
+}
+
+.thumbnail-card {
+   max-width: 12em;
+   min-width: 12em;
+}
+.card-active {
+    border: 1px solid red;
+}
+
+.thumbnail-card .card-body {
+  padding: 0px;
+}
+
+.thumbnail-card-text {
+  font-size: small;
+  text-align: center;
+  padding: 2px;
+  font-weight: bold;
+}
+
+.card-text-active {
+  background-color: #b5a5a53b;
+}
+
+.card-deck {
+  align-items: center;
+  justify-content: left;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #b5a5a53b;
+}
+
+.screenshotCard {
+  max-width: 22em;
+  min-width: 22em;
+  margin: 1em;
 }
 
 .screenshot-thumbnail-history {
@@ -11,4 +53,28 @@
 
 .image-page-holder {
   padding: 2em;
+}
+
+.screenshot-modal {
+  max-width: 95%;
+}
+
+.modal-content {
+  min-height: 50%;
+}
+
+.nav-tabs {
+  padding-left: 10px;
+  border-bottom: 0px;
+}
+
+.nav-link.active {
+  background: #b5a5a53b !important;
+  border-bottom: 0px;
+}
+
+.tab-content {
+  border: 1px solid #dee2e6;
+  border-radius: 10px;
+  background: #b5a5a53b;
 }

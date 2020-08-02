@@ -1,14 +1,20 @@
 import React, { Component } from 'react'
 import Moment from 'react-moment';
 import { withRouter} from 'react-router-dom';
+import Modal from 'react-bootstrap/Modal';
+import ScreenshotView from '../pages/ScreenshotView'
+import '../pages/Default.css'
 
 class StepsTable extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      screenshots : props.screenshots
+      screenshots : props.screenshots,
+      showModal: false,
+      currentShotId: null
     };
+    this.closeModal = this.closeModal.bind(this);
   }
 
   getScreenShot(screenshotId) {
@@ -23,6 +29,17 @@ class StepsTable extends Component {
   navigateToImageDetails(imageId) {
     let history = this.props.history;
     history.push(`/image/${imageId}`)
+  }
+
+  closeModal() {
+    this.setState({'showModal':false})
+  }
+
+  openModal(imageId) {
+    this.setState({
+        showModal:true,
+        currentShotId: imageId
+      })
   }
 
   render () {
@@ -50,10 +67,18 @@ class StepsTable extends Component {
               <td>{step.expected}</td>
               <td>{step.actual}</td>
               <td>{step.info}</td>
-              <td onClick={() => this.navigateToImageDetails(step.screenshot)}>{ step.screenshot ? ( <img className="screenshot-thumbnail" src={"data:image/png;base64, " + this.getScreenShot(step.screenshot)} alt="Thumbnail" /> ) : null }</td>
+              <td onClick={() => this.openModal(step.screenshot)}>{ step.screenshot ? ( <img className="screenshot-thumbnail" src={"data:image/png;base64, " + this.getScreenShot(step.screenshot)} alt="Thumbnail" /> ) : null }</td>
             </tr>
             })
           }
+          <Modal show={this.state.showModal} onHide={this.closeModal} dialogClassName="screenshot-modal">
+            <Modal.Header closeButton>
+              <Modal.Title>Screenshot Viewer</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <ScreenshotView buildScreenshots={this.state.screenshots} selectedScreenshotId={this.state.currentShotId}/>
+            </Modal.Body>
+          </Modal>
         </tbody>
       </table>
     ]
