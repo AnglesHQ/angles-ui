@@ -32,7 +32,15 @@
   background-color: #b5a5a53b;
 }
 
-.card-deck {
+.card-deck-build-thumbnails {
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #b5a5a53b;
+}
+
+.card-deck-history {
   align-items: center;
   justify-content: left;
   padding-bottom: 10px;
@@ -40,6 +48,13 @@
   border-bottom: 1px solid #b5a5a53b;
 }
 
+.card-deck-history .card-body {
+  padding: 0px;
+}
+
+.card-deck-history .card-footer {
+  padding: 4px;
+}
 .screenshotCard {
   max-width: 22em;
   min-width: 22em;
@@ -53,6 +68,7 @@
 
 .image-page-holder {
   padding: 2em;
+  overflow: scroll;
 }
 
 .screenshot-modal {
@@ -77,4 +93,22 @@
   border: 1px solid #dee2e6;
   border-radius: 10px;
   background: #b5a5a53b;
+}
+
+.table-screenshot-details {
+  font-size: 12px;
+  min-width: 20em;
+  max-width: 25em;
+}
+
+.table-screenshot-details thead {
+  background: lightgray;
+}
+
+.table-screenshot-history-details {
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+.table-screenshot-history-details td {
+  border: 0px;
 }

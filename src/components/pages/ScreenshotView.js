@@ -3,6 +3,7 @@ import Moment from 'react-moment';
 import axios from 'axios';
 import Tabs from 'react-bootstrap/Tabs'
 import Tab from 'react-bootstrap/Tab'
+import Table from 'react-bootstrap/Table'
 import CardDeck from 'react-bootstrap/CardDeck'
 import Card from 'react-bootstrap/Card'
 import './Default.css'
@@ -26,7 +27,7 @@ class ScreenshotView extends Component {
       this.setState({ currentScreenshotDetails: res.data })
       if (this.state.currentScreenshotDetails != null && this.state.currentScreenshotDetails.view != null) {
         // if there is a view, retrieve the history
-        this.getScreenshotHistoryByView(this.state.currentScreenshotDetails.view, 5);
+        this.getScreenshotHistoryByView(this.state.currentScreenshotDetails.view, 10);
       }
     })
   }
@@ -41,7 +42,7 @@ class ScreenshotView extends Component {
     })
     .then((res) => {
       this.setState({ currentScreenshotHistory: res.data });
-      this.getScreenshotCompare(this.state.currentScreenshotDetails._id, this.state.currentScreenshotHistory[0]._id);
+      this.getScreenshotCompare(this.state.currentScreenshotDetails._id, this.state.currentScreenshotHistory[2]._id);
     })
 
   }
@@ -90,6 +91,7 @@ class ScreenshotView extends Component {
       return false;
     }
   }
+
   render() {
     if (!this.state.currentScreenshotDetails) {
       return <div><span>no details</span></div>;
@@ -97,7 +99,7 @@ class ScreenshotView extends Component {
     return (
       <div >
         <div>
-          <CardDeck>
+          <CardDeck className="card-deck-build-thumbnails">
             {
               this.state.buildScreenshots.map((buildScreenshot, index) => {
                 return [
@@ -117,45 +119,102 @@ class ScreenshotView extends Component {
         <Tabs id="image-tabs" defaultActiveKey="image" onSelect={(k) => this.setTab(k)}>
             <Tab eventKey="image" title="Image">
               <div className="image-page-holder">
-              <div>
-              Date:
-              <Moment format="DD-MM-YYYY HH:mm:ss">
-                {this.state.currentScreenshotDetails.timestamp}
-              </Moment>
+              <Table>
+                <tbody>
+                  <tr>
+                    <td>
+                    <div>
+                      <Table className="table-screenshot-details" bordered size="sm">
+                        <thead>
+                          <tr>
+                            <th>Parameter</th>
+                            <th>Value</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td><strong>View</strong></td>
+                            <td>{this.state.currentScreenshotDetails.view}</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Date taken</strong></td>
+                            <td>
+                              <Moment format="DD-MM-YYYY HH:mm:ss">
+                                {this.state.currentScreenshotDetails.timestamp}
+                              </Moment>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td><strong>Resolution</strong></td>
+                            <td>{this.state.currentScreenshotDetails.width} x {this.state.currentScreenshotDetails.height}</td>
+                          </tr>
+                          <tr>
+                            <td><strong>PlatformName</strong></td>
+                            <td>{this.state.currentScreenshotDetails.platform.platformName}</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Browser</strong></td>
+                            <td>{this.state.currentScreenshotDetails.platform.browserName}</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Version</strong></td>
+                            <td>{this.state.currentScreenshotDetails.platform.browserVersion}</td>
+                          </tr>
+                        </tbody>
+                      </Table>
+                    </div>
+                    </td>
+                    <td>
+                      { this.state.currentScreenshot ? ( <img className="screenshot" src={this.state.currentScreenshot} alt="Screenshot" /> ) : null }
+                    </td>
+                  </tr>
+                </tbody>
+              </Table>
               </div>
-              { this.state.currentScreenshot ? ( <img className="screenshot" src={this.state.currentScreenshot} alt="Screenshot" /> ) : null }
-              </div>
-            </Tab>
-            <Tab eventKey="baseline" title="Baseline">
-              <div className="image-page-holder">{ this.state.currentBaselineCompare ? ( <img className="screenshot" src={this.state.currentBaselineCompare} alt="Compare" /> ) : "No Baseline Available" }</div>
             </Tab>
             <Tab eventKey="history" title="History">
               <div className="image-page-holder">
-                <CardDeck>
+                <CardDeck className="card-deck-history">
                   { this.state.currentScreenshotHistory != null ? (
                     this.state.currentScreenshotHistory.map((screenshot, index) => {
                       return [
                           <Card key={index} className={`screenshotCard ${ this.isSelectedId(screenshot._id) ? "card-active" : ""}`}>
                             <Card.Img variant="top" src={"data:image/png;base64, " + screenshot.thumbnail} />
                             <Card.Body>
-                              <Card.Text>
-                                  resolution and device details here.
-                              </Card.Text>
+                              <Card.Footer>
+                              <div>
+                                <Table className="table-screenshot-history-details" bordered size="sm">
+                                  <tbody>
+                                    <tr>
+                                      <td><strong>View: </strong> {screenshot.view}</td>
+                                    </tr>
+                                    <tr>
+                                      <td><strong>Date: </strong>
+                                        <Moment format="DD-MM-YYYY HH:mm:ss">
+                                          {screenshot.timestamp}
+                                        </Moment>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td><strong>Resolution: </strong>{screenshot.width} x {screenshot.height}</td>
+                                    </tr>
+                                    <tr>
+                                      <td><strong>Platform: </strong>{ screenshot.platform ? (screenshot.platform.platformName) : "" } { screenshot.platform && screenshot.platform.browserName ? ( ` (${screenshot.platform.browserName}${ screenshot.platform.browserVersion ? (" " + screenshot.platform.browserVersion) : "" })` ) : "" }</td>
+                                    </tr>
+                                  </tbody>
+                                </Table>
+                              </div>
+                              </Card.Footer>
                             </Card.Body>
-                            <Card.Footer>
-                              <small className="text-muted">
-                                Date:
-                                <Moment format="DD-MM-YYYY HH:mm:ss">
-                                  {screenshot.timestamp}
-                                </Moment>
-                              </small>
-                            </Card.Footer>
                           </Card>
                       ]
                     })
                   ) : "N/A" }
                 </CardDeck>
               </div>
+            </Tab>
+            <Tab eventKey="baseline" title="Compare with Baseline">
+              <div className="image-page-holder">{ this.state.currentBaselineCompare ? ( <img className="screenshot" src={this.state.currentBaselineCompare} alt="Compare" /> ) : "No Baseline Available" }</div>
             </Tab>
         </Tabs>
       </div>
