@@ -85,7 +85,8 @@ Note: Beware of modifying this element as it can break the animations - you shou
   outline: 0;
 }
 
-.bm-item-list a span {
+.bm-item-list a span,
+.bm-item-list li span {
     margin-left: 10px;
     font-weight: 600;
 }

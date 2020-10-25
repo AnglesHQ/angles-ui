@@ -18,7 +18,7 @@ class AnglesMenu extends Component {
   }
 
   closeMenu () {
-      this.setState({menuOpen: false})
+      this.setState({menuOpen: false, teamsMenuOpen: false})
   }
 
   handleStateChange (state) {
@@ -28,14 +28,14 @@ class AnglesMenu extends Component {
   render () {
     return (
       <Menu isOpen={this.state.menuOpen} onStateChange={this.handleStateChange.bind(this)} pageWrapId={ "page-wrap" } outerContainerId={ "outer-container" } className="bm-menu">
-        <a id="teams" onClick={() => this.toggleTeams()} className="bm-item" href="/">
+        <li id="teams" onClick={() => this.toggleTeams()} className="bm-item">
           <i className="fa fa-fw fa-users"></i>
           <span>Teams</span>
-        </a>
+        </li>
         <ol className="bm-list" style={{display:(this.state.teamsMenuOpen? 'block':'none')}}>
           { this.props.teams.map((team, index) => (
-              <li className="bm-list-item" key={team._id}>
-                <a  onClick={ () => {this.props.click(team._id); this.toggleTeams(); this.closeMenu()}} href="/">{team.name}</a>
+              <li className="bm-list-item" key={team._id} onClick={ () => {this.props.click(team._id); this.closeMenu() }}>
+                {team.name}
               </li>
           ))}
         </ol>
