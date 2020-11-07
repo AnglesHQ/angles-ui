@@ -11,15 +11,16 @@ class BuildBarChart extends Component {
 
     constructor(props) {
       super(props);
-      console.log('barchart', props);
+      // console.log('constructor: ', props);
       this.state = {
         //
       };
     }
 
+    // populate the data.
     renderBuildBarChart(barchart, builds) {
       if (barchart !== undefined && barchart.config != null) {
-        console.log('Rendering build chart');
+        // console.log('Rendering chart as its available');
         let graphData = barchart.config.data;
         graphData.labels = [];
         graphData.datasets = [];
@@ -44,7 +45,7 @@ class BuildBarChart extends Component {
     }
 
     componentDidUpdate() {
-      console.log('did update');
+      // console.log('Running componentDidUpdate', this.barchart, this.props);
       // update the chart with links to the build pages.
       let localBuilds = this.props.builds;
       let history = this.props.history;
@@ -76,8 +77,9 @@ class BuildBarChart extends Component {
     }
 
     componentDidMount() {
+
       // initialize the bar chart
-      console.log('did mount');
+      // console.log('Running componentDidMount', this.barchart, this.props);
       const myChartRef = this.chartRef.current.getContext("2d");
       const config = {
           type: "bar",
@@ -89,7 +91,7 @@ class BuildBarChart extends Component {
     }
 
     render() {
-        console.log('Render build chart');
+        // console.log('Running render', this.barchart, this.props);
         this.renderBuildBarChart(this.barchart, this.props.builds);
         return (
           <div className="graphContainer">

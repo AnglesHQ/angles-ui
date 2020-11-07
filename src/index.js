@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router} from 'react-router-dom'
 
 import './index.css';
-import './assets/fonts/font-awesome-4.2.0/css/font-awesome.min.css'
 import './assets/normalize.css'
+import '@fortawesome/fontawesome-free/js/all.js';
 
 import App from './containers/App';
 import * as serviceWorker from './serviceWorker';

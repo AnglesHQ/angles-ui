@@ -4,6 +4,7 @@ import axios from 'axios';
 import AnglesMenu from '../components/menu/AnglesMenu';
 import SummaryPage from '../components/pages/SummaryPage'
 import BuildPage from '../components/pages/BuildPage'
+import MatrixPage from '../components/pages/MatrixPage'
 import './App.css';
 import '../components/charts/Charts.css'
 
@@ -47,10 +48,14 @@ class App extends Component {
         <AnglesMenu teams={this.state.teams} click={this.getBuildsForTeam.bind(this)}/>
         <main id="page-wrap">
           <Switch>
-            <Route exact path="/">
-              <SummaryPage builds={this.state.builds} currentTeam={this.state.currentTeam} />
-            </Route>
+            <Route exact path="/"><SummaryPage builds={this.state.builds} currentTeam={this.state.currentTeam} /></Route>
             <Route exact path="/build/" render={props => { return <BuildPage {...props} /> }} />
+            <Route exact path="/matrix/" render={props => {
+              if (!this.state.currentTeam._id) {
+                return null;
+              }
+              return <MatrixPage {...props} currentTeam={this.state.currentTeam} />
+            }} />
           </Switch>
         </main>
       </div>
