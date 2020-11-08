@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 
 import { push as Menu } from 'react-burger-menu'
 import './AnglesMenu.css';
+import { withRouter} from 'react-router-dom';
 
 class AnglesMenu extends Component {
 
@@ -25,6 +26,12 @@ class AnglesMenu extends Component {
       this.setState({menuOpen: state.isOpen})
   }
 
+  navigateToTeam(teamId) {
+    this.props.changeCurrentTeam(teamId);
+    this.props.history.push(`/?teamId=${teamId}`);
+    this.closeMenu();
+  }
+
   render () {
     return (
       <Menu isOpen={this.state.menuOpen} onStateChange={this.handleStateChange.bind(this)} pageWrapId={ "page-wrap" } outerContainerId={ "outer-container" } className="bm-menu">
@@ -34,7 +41,7 @@ class AnglesMenu extends Component {
         </li>
         <ol className="bm-list" style={{display:(this.state.teamsMenuOpen? 'block':'none')}}>
           { this.props.teams.map((team, index) => (
-              <li className="bm-list-item" key={team._id} onClick={ () => {this.props.changeCurrentTeam(team._id); this.closeMenu() }}>
+              <li className="bm-list-item" key={team._id} onClick={ () => { this.navigateToTeam(team._id) }}>
                 {team.name}
               </li>
           ))}
@@ -52,4 +59,4 @@ class AnglesMenu extends Component {
   }
 }
 
-export default AnglesMenu;
+export default withRouter(AnglesMenu);

@@ -49,7 +49,7 @@ class App extends Component {
               if (!this.state.currentTeam._id) {
                 return null;
               }
-              return <SummaryPage {...props} currentTeam={this.state.currentTeam} />
+              return <SummaryPage {...props} currentTeam={this.state.currentTeam} changeCurrentTeam={this.changeCurrentTeam.bind(this)} />
             }} />
             <Route exact path="/build/" render={props => { return <BuildPage {...props} /> }} />
             <Route exact path="/matrix/" render={props => {

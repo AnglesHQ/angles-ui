@@ -46,7 +46,7 @@ render() {
   // populate suite rows and test rows
   let rows = [];
   Object.keys(this.state.matrixSuites).forEach(suiteName => {
-    rows.push(<tr key={suiteName}><td colSpan="100%">Suite: {suiteName}</td></tr>);
+    rows.push(<tr key={suiteName} className="table-info"><td colSpan="100%"><b>Suite:</b> {suiteName}</td></tr>);
     Object.keys(this.state.matrixSuites[suiteName]).forEach(testName => {
       let testResults = [];
       this.state.headers.forEach(build => {
@@ -71,7 +71,7 @@ render() {
         <th scope="col">Matrix</th>
         {
           this.state.headers.map(build => {
-                return <th key={build._id} scope="col"><Moment format="HH:mm:ss">{build.start}</Moment></th>
+                return <th key={build._id} scope="col"><Moment format="DD-MM-YYYY HH:mm">{build.start}</Moment></th>
           })
         }
       </tr>

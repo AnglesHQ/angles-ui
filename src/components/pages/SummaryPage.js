@@ -7,6 +7,8 @@ import axios from 'axios';
 import Pagination from 'react-bootstrap/Pagination';
 import update from 'immutability-helper';
 import { withRouter} from 'react-router-dom';
+import queryString from 'query-string';
+
 
 class SummaryPage extends Component {
 
@@ -16,21 +18,37 @@ class SummaryPage extends Component {
       builds: undefined,
       selectedBuilds: {},
       buildCount: 0,
+      currentSkip: 0,
+      limit: 10,
+      query: queryString.parse(this.props.location.search),
     };
-    this.getBuildsForTeam(this.props.currentTeam._id);
+    this.getBuildsForTeam(this.state.query.teamId, this.state.currentSkip, this.state.limit);
+    this.props.changeCurrentTeam(this.state.query.teamId);
   }
 
-  getBuildsForTeam(teamId) {
-    return axios.get('/build?teamId=' + teamId)
+  getBuildsForTeam(teamId, skip, limit) {
+    return axios.get(`/build?teamId=${teamId}&skip=${skip}&limit=${limit}`)
     .then((res) =>
-      this.setState({ builds: res.data.builds , buildCount: res.data.count })
+      this.setState({
+        builds: res.data.builds ,
+        buildCount: res.data.count ,
+        currentSkip: skip ,
+      })
     )
+  }
+
+  getNextSetOfBuilds() {
+    this.getBuildsForTeam(this.props.currentTeam._id, (this.state.currentSkip + this.state.limit), this.state.limit);
+  }
+
+  getPreviousSetOfBuilds() {
+    this.getBuildsForTeam(this.props.currentTeam._id, (this.state.currentSkip - this.state.limit), this.state.limit);
   }
 
   componentDidUpdate(prevProps) {
     // if team has changed grab new build details.
     if (prevProps.currentTeam._id !== this.props.currentTeam._id) {
-      this.getBuildsForTeam(this.props.currentTeam._id);
+      this.getBuildsForTeam(this.props.currentTeam._id, this.state.currentSkip, this.state.limit);
     }
   }
 
@@ -76,13 +94,8 @@ class SummaryPage extends Component {
           <span style={{ float: "left" }}><button disabled={ !this.multipleBuildsSelected() } onClick={() => this.navigateToMatrix() } type="button" className="btn btn-outline-primary">Open Matrix</button></span>
           <span style={{ float: "right" }}>
             <Pagination>
-              <Pagination.First />
-              <Pagination.Prev />
-              <Pagination.Item>{1}</Pagination.Item>
-              <Pagination.Ellipsis />
-              <Pagination.Item>{20}</Pagination.Item>
-              <Pagination.Next />
-              <Pagination.Last />
+              <Pagination.Prev onClick={() => this.getPreviousSetOfBuilds() }  />
+              <Pagination.Next onClick={() => this.getNextSetOfBuilds() } />
             </Pagination>
           </span>
         </div>
