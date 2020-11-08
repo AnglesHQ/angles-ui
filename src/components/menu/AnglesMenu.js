@@ -34,7 +34,7 @@ class AnglesMenu extends Component {
         </li>
         <ol className="bm-list" style={{display:(this.state.teamsMenuOpen? 'block':'none')}}>
           { this.props.teams.map((team, index) => (
-              <li className="bm-list-item" key={team._id} onClick={ () => {this.props.click(team._id); this.closeMenu() }}>
+              <li className="bm-list-item" key={team._id} onClick={ () => {this.props.changeCurrentTeam(team._id); this.closeMenu() }}>
                 {team.name}
               </li>
           ))}

@@ -16,28 +16,25 @@ class App extends Component {
     super(props);
     this.state = {
       teams: [],
-      currentTeam: {name: 'No team selected'},
-      builds: [],
+      currentTeam: {name: 'No team selected'}
     };
-  }
-
-  getBuildsForTeam(teamId) {
-    return axios.get('/build?teamId=' + teamId)
-    .then((res) =>
-      this.setState({ builds: res.data, currentTeam: this.getTeam(teamId)})
-    )
   }
 
   getTeam(teamId) {
     return this.state.teams.find(team => team._id === teamId);
   }
 
+  changeCurrentTeam(teamId) {
+      this.setState({currentTeam: this.getTeam(teamId)})
+  }
+
   componentDidMount() {
     axios.get('/team')
     .then(res => res.data)
     .then((data) => {
+      // set retrieve teams in state
       this.setState({ teams: data });
-      this.getBuildsForTeam(data[0]._id);
+      this.changeCurrentTeam(this.state.teams[0]._id);
     })
     .catch(console.log);
   }
@@ -45,10 +42,15 @@ class App extends Component {
   render() {
     return (
       <div id="outer-container">
-        <AnglesMenu teams={this.state.teams} click={this.getBuildsForTeam.bind(this)}/>
+        <AnglesMenu teams={this.state.teams} changeCurrentTeam={this.changeCurrentTeam.bind(this)}/>
         <main id="page-wrap">
           <Switch>
-            <Route exact path="/"><SummaryPage builds={this.state.builds} currentTeam={this.state.currentTeam} /></Route>
+            <Route exact path="/" render={props => {
+              if (!this.state.currentTeam._id) {
+                return null;
+              }
+              return <SummaryPage {...props} currentTeam={this.state.currentTeam} />
+            }} />
             <Route exact path="/build/" render={props => { return <BuildPage {...props} /> }} />
             <Route exact path="/matrix/" render={props => {
               if (!this.state.currentTeam._id) {

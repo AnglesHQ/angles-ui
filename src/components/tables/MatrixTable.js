@@ -51,7 +51,11 @@ render() {
       let testResults = [];
       this.state.headers.forEach(build => {
           let testDetails = this.state.matrixSuites[suiteName][testName][build._id]
-          testResults.push(<td>{testDetails.status}</td>);
+          if (testDetails) {
+            testResults.push(<td>{testDetails.status}</td>);
+          } else {
+            testResults.push(<td>N/A</td>);
+          }
       })
       rows.push(<tr key={testName}>
           <td>{testName}</td>

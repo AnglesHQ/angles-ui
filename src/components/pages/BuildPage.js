@@ -17,9 +17,6 @@ class BuildPage extends Component {
     this.getScreenshotDetails(this.state.query.buildId);
   }
 
-  componentDidMount() {
-  }
-
   getBuildDetails(buildId) {
     axios.get('/build/' + buildId)
     .then(res => res.data)

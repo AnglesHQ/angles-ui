@@ -25,7 +25,7 @@ class MatrixPage extends Component {
     if (!teamId) return []
     return axios.get('/build?teamId=' + teamId + '&buildIds=' + buildIds + '&returnExecutionDetails=true')
     .then((res) =>
-      this.setState({ matrixBuilds: res.data})
+      this.setState({ matrixBuilds: res.data.builds})
     )
   }
 

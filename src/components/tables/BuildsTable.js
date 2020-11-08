@@ -2,48 +2,27 @@ import React, { Component } from 'react'
 import Moment from 'react-moment';
 import timeUtility from '../../utility/TimeUtilities'
 import { withRouter} from 'react-router-dom';
-import update from 'immutability-helper';
 
 class BuildsTable extends Component {
 
 constructor(props) {
   super(props);
   this.state = {
-    teams: [],
-    selectedRows: {},
+    teams: []
   };
-  //this.calculateMetricsForBuilds(props.builds);
 }
 
 isRowSelected(build) {
-  return this.state.selectedRows[build._id];
-}
-
-getSelectedRows() {
-  return Object.keys(this.state.selectedRows)
-    .reduce((object, key) => {
-      this.state.selectedRows[key] === true && (object[key] = this.state.selectedRows[key]);
-      return object;
-    }, {});
+  return this.props.selectedBuilds[build._id];
 }
 
 anyRowsSelected() {
-  let arrayKeys = this.getSelectedRows();
-  return (Object.keys(arrayKeys).length > 0);
-}
-
-printLink() {
-  let rows = this.getSelectedRows();
-  console.log(Object.keys(rows).join(","));
+  let selectedRowsArray = this.props.retrievSelectedBuilds();
+  return (Object.keys(selectedRowsArray).length > 0);
 }
 
 getComponentName(build) {
     return build.team.components.find(component => component._id === build.component);
-}
-
-toggleRow(build, index) {
-  let selectedRows = update(this.state.selectedRows, { [build._id]: {$set: !this.state.selectedRows[build._id]}});
-  this.setState( { selectedRows} );
 }
 
 render() {
@@ -68,7 +47,7 @@ render() {
     </thead>
     <tbody>
       { this.props.builds.map((build, index) => {
-        return <tr key={build._id} onClick={() => this.toggleRow(build, index)} onDoubleClick={() => this.props.history.push(`/build/?buildId=${build._id}`)}>
+        return <tr key={build._id} onClick={() => this.props.toggleSelectedBuild(build)} onDoubleClick={() => this.props.history.push(`/build/?buildId=${build._id}`)}>
           <th scope="row">{ index+1 }</th>
           <td>
             { <div key={this.isRowSelected(build)}><i className={ this.isRowSelected(build) ? ('far fa-check-square'): 'far fa-square' }/></div> }
@@ -100,8 +79,6 @@ render() {
     }
     </tbody>
   </table>
-  <div onClick={() => this.printLink() }>print link</div>
-
   </div>
   )
 }
