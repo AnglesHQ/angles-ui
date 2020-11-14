@@ -29,7 +29,8 @@
 }
 
 .card-text-active {
-  background-color: #b5a5a53b;
+  color: red;
+  font-weight: bold;
 }
 
 .card-deck-build-thumbnails {

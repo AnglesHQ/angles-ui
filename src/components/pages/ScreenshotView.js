@@ -6,6 +6,8 @@ import Tab from 'react-bootstrap/Tab'
 import Table from 'react-bootstrap/Table'
 import CardDeck from 'react-bootstrap/CardDeck'
 import Card from 'react-bootstrap/Card'
+import Carousel from 'react-multi-carousel';
+import 'react-multi-carousel/lib/styles.css';
 import './Default.css'
 
 class ScreenshotView extends Component {
@@ -18,10 +20,7 @@ class ScreenshotView extends Component {
     this.loadScreenshot(this.props.selectedScreenshotId)
   }
 
-  componentDidMount() {
-  }
-
-  getScreenshotDetails(screenshotId) {
+  getScreenshotDetails = (screenshotId) => {
     return axios.get('/screenshot/' + screenshotId)
     .then((res) => {
       this.setState({ currentScreenshotDetails: res.data })
@@ -32,7 +31,7 @@ class ScreenshotView extends Component {
     })
   }
 
-  getScreenshotHistoryByView(view, limit, offset) {
+  getScreenshotHistoryByView = (view, limit, offset) => {
     return axios.get('/screenshot/', {
       params: {
         view,
@@ -47,7 +46,7 @@ class ScreenshotView extends Component {
 
   }
 
-  getScreenshot(screenshotId) {
+  getScreenshot = (screenshotId) => {
     return axios.get('/screenshot/' + screenshotId + "/image", { responseType: 'arraybuffer' })
     .then((res) => {
       const base64 = btoa(
@@ -60,7 +59,7 @@ class ScreenshotView extends Component {
     })
   }
 
-  getScreenshotCompare(screenshotId, baselineId) {
+  getScreenshotCompare = (screenshotId, baselineId) => {
     return axios.get('/screenshot/' + screenshotId + "/compare/" + baselineId + "/image", { responseType: 'arraybuffer' })
     .then((res) => {
       const base64 = btoa(
@@ -73,18 +72,18 @@ class ScreenshotView extends Component {
     })
   }
 
-  setTab(key) {
+  setTab = (key) => {
     if (key === "baseline" && this.state.currentScreenshotHistory != null && this.state.currentBaselineCompare == null && this.state.currentScreenshotHistory.length > 1) {
         //TODO: determine baseline images from history (if none grab previous image) etc.
     }
   }
 
-  loadScreenshot(screenshotId) {
+  loadScreenshot = (screenshotId) => {
     this.getScreenshotDetails(screenshotId);
     this.getScreenshot(screenshotId);
   }
 
-  isSelectedId(screenshotId) {
+  isSelectedId = (screenshotId) => {
     if (this.state.currentScreenshotDetails && this.state.currentScreenshotDetails._id === screenshotId) {
       return true;
     } else {
@@ -93,29 +92,63 @@ class ScreenshotView extends Component {
   }
 
   render() {
+
+    const responsive = {
+      desktopxl: {
+        breakpoint: { max: 2000, min: 1400 },
+        items: 5,
+        slidesToSlide: 2 // optional, default to 1.
+      },
+      desktop: {
+        breakpoint: { max: 1400, min: 1024 },
+        items: 4,
+        slidesToSlide: 2 // optional, default to 1.
+      },
+      tablet: {
+        breakpoint: { max: 1024, min: 464 },
+        items: 3,
+        slidesToSlide: 1 // optional, default to 1.
+      },
+      mobile: {
+        breakpoint: { max: 464, min: 0 },
+        items: 3,
+        slidesToSlide: 1 // optional, default to 1.
+      }
+    };
+
+
     if (!this.state.currentScreenshotDetails) {
       return <div><span>no details</span></div>;
     }
     return (
       <div >
-        <div>
-          <CardDeck className="card-deck-build-thumbnails">
-            {
-              this.state.buildScreenshots.map((buildScreenshot, index) => {
-                return [
-                  <Card key={index} className={`thumbnail-card ${ this.isSelectedId(buildScreenshot._id) ? "card-active" : ""}`} onClick={(sh) => this.loadScreenshot(buildScreenshot._id)}>
-                    <Card.Img variant="top" src={"data:image/png;base64, " + buildScreenshot.thumbnail} />
-                    <Card.Body>
-                      <Card.Text className={`thumbnail-card-text ${ this.isSelectedId(buildScreenshot._id) ? "card-text-active" : ""}`}>
-                        {buildScreenshot.view}
-                      </Card.Text>
-                    </Card.Body>
-                  </Card>
-                ]
-              })
-            }
-          </CardDeck>
-        </div>
+        <Carousel
+          swipeable={false}
+          draggable={false}
+          showDots={true}
+          responsive={responsive}
+          ssr={true} // means to render carousel on server-side.
+          infinite={false}
+          autoPlay={false}
+          autoPlaySpeed={1000}
+          keyBoardControl={true}
+          customTransition="transform 300ms ease-in-out"
+          transitionDuration={500}
+          containerClass="carousel-container"
+          focusOnSelect={true}
+          // removeArrowOnDeviceType={["tablet", "mobile"]}
+          deviceType={this.props.deviceType}
+          dotListClass="custom-dot-list-style"
+          itemClass="carousel-item-padding-30-px"
+        >
+          {
+            this.state.buildScreenshots.map((buildScreenshot, index)  =>
+            <div key={index}>
+              <div className={`${ this.isSelectedId(buildScreenshot._id) ? "card-text-active" : ""}`}>{index + 1} - {buildScreenshot.view}</div>
+              <img  className={`${ this.isSelectedId(buildScreenshot._id) ? "card-active" : ""}`} style={{ height: 250}} alt={buildScreenshot.view} src={"data:image/png;base64, " + buildScreenshot.thumbnail} onClick={(sh) => this.loadScreenshot(buildScreenshot._id)}/>
+            </div>
+          )}
+        </Carousel>
         <Tabs id="image-tabs" defaultActiveKey="image" onSelect={(k) => this.setTab(k)}>
             <Tab eventKey="image" title="Image">
               <div className="image-page-holder">

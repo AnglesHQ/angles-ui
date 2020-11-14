@@ -17,7 +17,7 @@ class StepsTable extends Component {
     this.closeModal = this.closeModal.bind(this);
   }
 
-  getScreenShot(screenshotId) {
+  getScreenShot = (screenshotId) => {
     let thumbnail = undefined;
     if (this.state.screenshots !== undefined && screenshotId !== undefined) {
       let image = this.state.screenshots.filter(screenshot => screenshot._id === screenshotId)[0];
@@ -26,16 +26,16 @@ class StepsTable extends Component {
     return thumbnail;
   }
 
-  navigateToImageDetails(imageId) {
+  navigateToImageDetails = (imageId) => {
     let history = this.props.history;
     history.push(`/image/${imageId}`)
   }
 
-  closeModal() {
+  closeModal = () => {
     this.setState({'showModal':false})
   }
 
-  openModal(imageId) {
+  openModal = (imageId) => {
     this.setState({
         showModal:true,
         currentShotId: imageId

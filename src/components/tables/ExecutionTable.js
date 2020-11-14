@@ -11,7 +11,7 @@ class ExecutionTable extends Component {
       this.toggleActions = this.toggleActions.bind(this);
   }
 
-  toggleActions(e){
+  toggleActions = (e) => {
     this.setState({open: !this.state.open})
   }
 

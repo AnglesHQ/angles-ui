@@ -19,7 +19,7 @@ class SummaryPage extends Component {
       selectedBuilds: {},
       buildCount: 0,
       currentSkip: 0,
-      limit: 10,
+      limit: 15,
       query: queryString.parse(this.props.location.search),
     };
     this.getBuildsForTeam(this.state.query.teamId, this.state.currentSkip, this.state.limit);
@@ -75,6 +75,13 @@ class SummaryPage extends Component {
     this.props.history.push(`/matrix/?buildIds=${Object.keys(selectedBuildIds).join(",")}`)
   }
 
+  previousPaginationDisabled = () => {
+    return (this.state.currentSkip === 0);
+  }
+
+  nextPaginationDisabled = () => {
+    return ((this.state.currentSkip + this.state.limit) > this.state.buildCount);
+  }
 
   render() {
     if (!this.state.builds) {
@@ -89,13 +96,13 @@ class SummaryPage extends Component {
           <BuildTimeLineChart builds={this.state.builds} />
         </div>
         <h1>Builds</h1>
-        <BuildsTable builds={this.state.builds} selectedBuilds={this.state.selectedBuilds} retrievSelectedBuilds={this.retrievSelectedBuilds.bind(this)} toggleSelectedBuild={this.toggleSelectedBuild.bind(this)} />
+        <BuildsTable builds={this.state.builds} currentSkip={this.state.currentSkip} selectedBuilds={this.state.selectedBuilds} retrievSelectedBuilds={this.retrievSelectedBuilds.bind(this)} toggleSelectedBuild={this.toggleSelectedBuild.bind(this)} />
         <div>
           <span style={{ float: "left" }}><button disabled={ !this.multipleBuildsSelected() } onClick={() => this.navigateToMatrix() } type="button" className="btn btn-outline-primary">Open Matrix</button></span>
           <span style={{ float: "right" }}>
             <Pagination>
-              <Pagination.Prev onClick={() => this.getPreviousSetOfBuilds() }  />
-              <Pagination.Next onClick={() => this.getNextSetOfBuilds() } />
+              <Pagination.Prev disabled={this.previousPaginationDisabled() === true ? true : false} onClick={() => this.getPreviousSetOfBuilds() }  />
+              <Pagination.Next disabled={this.nextPaginationDisabled() === true ? true : false} onClick={() => this.getNextSetOfBuilds() } />
             </Pagination>
           </span>
         </div>

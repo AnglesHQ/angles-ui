@@ -11,7 +11,7 @@ class ActionComponent extends Component {
     this.toggleSteps = this.toggleSteps.bind(this);
   }
 
-  toggleSteps(e){
+  toggleSteps = (e) => {
     this.setState({open: !this.state.open});
   }
 

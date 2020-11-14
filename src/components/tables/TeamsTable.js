@@ -8,7 +8,6 @@ class TeamsTable extends Component {
     this.state = {
       //
     };
-      //this.calculateMetricsForBuilds(props.builds);
   }
 
   render() {

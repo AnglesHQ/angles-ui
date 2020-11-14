@@ -12,16 +12,16 @@ constructor(props) {
   };
 }
 
-isRowSelected(build) {
+isRowSelected = (build) => {
   return this.props.selectedBuilds[build._id];
 }
 
-anyRowsSelected() {
+anyRowsSelected = () => {
   let selectedRowsArray = this.props.retrievSelectedBuilds();
   return (Object.keys(selectedRowsArray).length > 0);
 }
 
-getComponentName(build) {
+getComponentName = (build) => {
     return build.team.components.find(component => component._id === build.component);
 }
 
@@ -48,7 +48,7 @@ render() {
     <tbody>
       { this.props.builds.map((build, index) => {
         return <tr key={build._id} onClick={() => this.props.toggleSelectedBuild(build)} onDoubleClick={() => this.props.history.push(`/build/?buildId=${build._id}`)}>
-          <th scope="row">{ index+1 }</th>
+          <th scope="row">{ index+this.props.currentSkip+1 }</th>
           <td>
             { <div key={this.isRowSelected(build)}><i className={ this.isRowSelected(build) ? ('far fa-check-square'): 'far fa-square' }/></div> }
           </td>

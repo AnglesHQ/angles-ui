@@ -27,7 +27,8 @@ class AnglesMenu extends Component {
   }
 
   navigateToTeam(teamId) {
-    this.props.changeCurrentTeam(teamId);
+    // this.props.changeCurrentTeam(teamId);
+    console.log(`changing team to ${teamId}`);
     this.props.history.push(`/?teamId=${teamId}`);
     this.closeMenu();
   }

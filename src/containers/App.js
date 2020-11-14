@@ -5,6 +5,8 @@ import AnglesMenu from '../components/menu/AnglesMenu';
 import SummaryPage from '../components/pages/SummaryPage'
 import BuildPage from '../components/pages/BuildPage'
 import MatrixPage from '../components/pages/MatrixPage'
+import { withRouter} from 'react-router-dom';
+import queryString from 'query-string';
 import './App.css';
 import '../components/charts/Charts.css'
 
@@ -28,13 +30,24 @@ class App extends Component {
       this.setState({currentTeam: this.getTeam(teamId)})
   }
 
+  componentDidUpdate() {
+    let query = queryString.parse(this.props.location.search)
+    if (this.state.teams !== [] && this.state.currentTeam) {
+      if (query.teamId && query.teamId !== this.state.currentTeam._id) {
+        this.changeCurrentTeam(query.teamId);
+      }
+    }
+  }
+
   componentDidMount() {
     axios.get('/team')
     .then(res => res.data)
     .then((data) => {
       // set retrieve teams in state
       this.setState({ teams: data });
-      this.changeCurrentTeam(this.state.teams[0]._id);
+      if (this.state.query.teamId) {
+        this.changeCurrentTeam(this.state.query.teamId);
+      }
     })
     .catch(console.log);
   }
@@ -46,8 +59,8 @@ class App extends Component {
         <main id="page-wrap">
           <Switch>
             <Route exact path="/" render={props => {
-              if (!this.state.currentTeam._id) {
-                return null;
+              if (this.state.currentTeam === undefined || !this.state.currentTeam._id) {
+                return <div>Please select a team</div>;
               }
               return <SummaryPage {...props} currentTeam={this.state.currentTeam} changeCurrentTeam={this.changeCurrentTeam.bind(this)} />
             }} />
@@ -65,4 +78,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withRouter(App);

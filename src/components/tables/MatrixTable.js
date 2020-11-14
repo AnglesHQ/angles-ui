@@ -12,7 +12,7 @@ constructor(props) {
   };
 }
 
-reorganiseSuitsForMatrix() {
+reorganiseSuitsForMatrix = () => {
   let headers = [];
   let matrixSuites = {}
   this.props.matrixBuilds.forEach(build => {
@@ -52,7 +52,7 @@ render() {
       this.state.headers.forEach(build => {
           let testDetails = this.state.matrixSuites[suiteName][testName][build._id]
           if (testDetails) {
-            testResults.push(<td>{testDetails.status}</td>);
+            testResults.push(<td className={`${(testDetails.status === 'PASS') ? "table-success" : ""}`}>{testDetails.status}</td>);
           } else {
             testResults.push(<td>N/A</td>);
           }
