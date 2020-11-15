@@ -9,10 +9,13 @@ import { withRouter} from 'react-router-dom';
 import queryString from 'query-string';
 import './App.css';
 import '../components/charts/Charts.css'
+import Cookies from 'js-cookie';
 
 axios.defaults.baseURL = 'http://127.0.0.1:3000/rest/api/v1.0';
 
 class App extends Component {
+
+  cookies;
 
   constructor(props) {
     super(props);
@@ -27,14 +30,26 @@ class App extends Component {
   }
 
   changeCurrentTeam = (teamId) => {
+    if (teamId !== undefined) {
       this.setState({currentTeam: this.getTeam(teamId)});
+      Cookies.set('teamId', teamId, { expires: 365 });
+    }
   }
 
   componentDidUpdate() {
     let query = queryString.parse(this.props.location.search)
     if (this.state.teams !== [] && this.state.currentTeam) {
-      if (query.teamId && query.teamId !== this.state.currentTeam._id) {
-        this.changeCurrentTeam(query.teamId);
+      // check if there is a query
+      if (query.teamId) {
+        // if query is provided and it's not the current team change team.
+        if (query.teamId !== this.state.currentTeam._id){
+          this.changeCurrentTeam(query.teamId);
+        }
+      } else if (Cookies.get('teamId')) {
+        // if cookie is provided
+        if (Cookies.get('teamId') !== this.state.currentTeam._id) {
+          this.changeCurrentTeam(Cookies.get('teamId'));
+        }
       }
     }
   }

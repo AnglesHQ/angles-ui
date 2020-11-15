@@ -6,9 +6,6 @@ import '../charts/Charts.css'
 import axios from 'axios';
 import Pagination from 'react-bootstrap/Pagination';
 import update from 'immutability-helper';
-import { withRouter} from 'react-router-dom';
-import queryString from 'query-string';
-
 
 class SummaryPage extends Component {
 
@@ -20,10 +17,7 @@ class SummaryPage extends Component {
       buildCount: 0,
       currentSkip: 0,
       limit: 10,
-      query: queryString.parse(this.props.location.search),
     };
-    this.getBuildsForTeam(this.state.query.teamId, this.state.currentSkip, this.state.limit);
-    this.props.changeCurrentTeam(this.state.query.teamId);
   }
 
   getBuildsForTeam = (teamId, skip, limit) => {
@@ -48,7 +42,7 @@ class SummaryPage extends Component {
   componentDidUpdate = (prevProps) => {
     // if team has changed grab new build details.
     if (prevProps.currentTeam._id !== this.props.currentTeam._id) {
-      this.getBuildsForTeam(this.props.currentTeam._id, this.state.currentSkip, this.state.limit);
+      this.getBuildsForTeam(this.props.currentTeam._id, 0, this.state.limit);
     }
   }
 
@@ -85,6 +79,7 @@ class SummaryPage extends Component {
 
   render() {
     if (!this.state.builds) {
+      this.getBuildsForTeam(this.props.currentTeam._id, this.state.currentSkip, this.state.limit);
       // if no builds then don't display
       return <div><h1>Team: {this.props.currentTeam.name}</h1><span>Retrieving builds</span></div>;
     }
@@ -111,4 +106,4 @@ class SummaryPage extends Component {
   }
 }
 
-export default withRouter(SummaryPage);
+export default SummaryPage;
