@@ -19,7 +19,7 @@ class MatrixPage extends Component {
   }
 
 
-  getBuildsForMatrix(teamId, buildIds) {
+  getBuildsForMatrix = (teamId, buildIds) => {
     if (!teamId) return []
     return axios.get('/build?teamId=' + teamId + '&buildIds=' + buildIds + '&returnExecutionDetails=true')
     .then((res) =>

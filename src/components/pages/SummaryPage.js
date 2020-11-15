@@ -26,7 +26,7 @@ class SummaryPage extends Component {
     this.props.changeCurrentTeam(this.state.query.teamId);
   }
 
-  getBuildsForTeam(teamId, skip, limit) {
+  getBuildsForTeam = (teamId, skip, limit) => {
     return axios.get(`/build?teamId=${teamId}&skip=${skip}&limit=${limit}`)
     .then((res) =>
       this.setState({
@@ -37,27 +37,27 @@ class SummaryPage extends Component {
     )
   }
 
-  getNextSetOfBuilds() {
+  getNextSetOfBuilds = () => {
     this.getBuildsForTeam(this.props.currentTeam._id, (this.state.currentSkip + this.state.limit), this.state.limit);
   }
 
-  getPreviousSetOfBuilds() {
+  getPreviousSetOfBuilds = () => {
     this.getBuildsForTeam(this.props.currentTeam._id, (this.state.currentSkip - this.state.limit), this.state.limit);
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate = (prevProps) => {
     // if team has changed grab new build details.
     if (prevProps.currentTeam._id !== this.props.currentTeam._id) {
       this.getBuildsForTeam(this.props.currentTeam._id, this.state.currentSkip, this.state.limit);
     }
   }
 
-  toggleSelectedBuild(build) {
+  toggleSelectedBuild = (build) => {
     let selectedBuilds = update(this.state.selectedBuilds, { [build._id]: {$set: !this.state.selectedBuilds[build._id]}});
     this.setState( { selectedBuilds } );
   }
 
-  retrievSelectedBuilds() {
+  retrievSelectedBuilds = () => {
     return Object.keys(this.state.selectedBuilds)
       .reduce((object, key) => {
         this.state.selectedBuilds[key] === true && (object[key] = this.state.selectedBuilds[key]);
@@ -65,12 +65,12 @@ class SummaryPage extends Component {
       }, {});
   }
 
-  multipleBuildsSelected() {
+  multipleBuildsSelected = () => {
     let selectedRowsArray = this.retrievSelectedBuilds();
     return (Object.keys(selectedRowsArray).length > 1);
   }
 
-  navigateToMatrix() {
+  navigateToMatrix = () => {
     let selectedBuildIds = this.retrievSelectedBuilds();
     this.props.history.push(`/matrix/?buildIds=${Object.keys(selectedBuildIds).join(",")}`)
   }
@@ -95,7 +95,7 @@ class SummaryPage extends Component {
           <BuildBarChart builds={this.state.builds} />
           <BuildTimeLineChart builds={this.state.builds} />
         </div>
-        <h1>Builds</h1>
+        <h1>Builds <span style={{fontSize: 15}}>[Total: {this.state.buildCount}]</span></h1>
         <BuildsTable builds={this.state.builds} currentSkip={this.state.currentSkip} selectedBuilds={this.state.selectedBuilds} retrievSelectedBuilds={this.retrievSelectedBuilds.bind(this)} toggleSelectedBuild={this.toggleSelectedBuild.bind(this)} />
         <div>
           <span style={{ float: "left" }}><button disabled={ !this.multipleBuildsSelected() } onClick={() => this.navigateToMatrix() } type="button" className="btn btn-outline-primary">Open Matrix</button></span>

@@ -22,11 +22,11 @@ class App extends Component {
     };
   }
 
-  getTeam(teamId) {
+  getTeam = (teamId) => {
     return this.state.teams.find(team => team._id === teamId);
   }
 
-  changeCurrentTeam(teamId) {
+  changeCurrentTeam = (teamId) => {
       this.setState({currentTeam: this.getTeam(teamId)});
   }
 

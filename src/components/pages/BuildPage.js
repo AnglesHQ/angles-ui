@@ -17,7 +17,7 @@ class BuildPage extends Component {
     this.getScreenshotDetails(this.state.query.buildId);
   }
 
-  getBuildDetails(buildId) {
+  getBuildDetails = (buildId) => {
     axios.get('/build/' + buildId)
     .then(res => res.data)
     .then((data) => {
@@ -26,7 +26,7 @@ class BuildPage extends Component {
     .catch(console.log);
   }
 
-  getScreenshotDetails(buildId) {
+  getScreenshotDetails = (buildId) => {
     return axios.get('/screenshot/?buildId=' + buildId)
     .then((res) =>
       this.setState({ screenshots: res.data })
