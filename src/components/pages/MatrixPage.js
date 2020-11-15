@@ -15,8 +15,6 @@ class MatrixPage extends Component {
   }
 
   componentDidMount() {
-
-    // teams is not pupulated
     this.getBuildsForMatrix(this.props.currentTeam._id, this.state.query.buildIds);
   }
 

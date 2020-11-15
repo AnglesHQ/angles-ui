@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Moment from 'react-moment';
-import timeUtility from '../../utility/TimeUtilities'
+import { getDuration } from '../../utility/TimeUtilities'
 
 class BuildSummary extends Component {
 
@@ -49,7 +49,7 @@ class BuildSummary extends Component {
             </tr>
             <tr>
               <th scope="row">Duration</th>
-              <td>{timeUtility.getDuration(this.props.build)}</td>
+              <td>{getDuration(this.props.build)}</td>
               <th scope="row">SKIPPED</th>
               <td>{this.props.build.result.SKIPPED}</td>
             </tr>

@@ -19,7 +19,7 @@ class SummaryPage extends Component {
       selectedBuilds: {},
       buildCount: 0,
       currentSkip: 0,
-      limit: 15,
+      limit: 10,
       query: queryString.parse(this.props.location.search),
     };
     this.getBuildsForTeam(this.state.query.teamId, this.state.currentSkip, this.state.limit);

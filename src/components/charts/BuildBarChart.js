@@ -6,7 +6,7 @@ import { withRouter} from 'react-router-dom';
 
 class BuildBarChart extends Component {
 
-    chartRef = React.createRef();
+    buildChartRef = React.createRef();
     barchart;
 
     constructor(props) {
@@ -18,9 +18,8 @@ class BuildBarChart extends Component {
     }
 
     // populate the data.
-    renderBuildBarChart(barchart, builds) {
+    renderBuildBarChart = (barchart, builds) => {
       if (barchart !== undefined && barchart.config != null) {
-        // console.log('Rendering chart as its available');
         let graphData = barchart.config.data;
         graphData.labels = [];
         graphData.datasets = [];
@@ -44,9 +43,8 @@ class BuildBarChart extends Component {
       }
     }
 
-    componentDidUpdate() {
-      // console.log('Running componentDidUpdate', this.barchart, this.props);
-      // update the chart with links to the build pages.
+    // update the chart with links to the build pages.
+    updateBuildChart = () => {
       let localBuilds = this.props.builds;
       let history = this.props.history;
       this.barchart.options = {
@@ -76,28 +74,32 @@ class BuildBarChart extends Component {
       this.barchart.update();
     }
 
+    componentDidUpdate(prevProps) {
+      if (this.barchart === undefined || this.barchart.data.datasets.length === 0 || prevProps.builds !== this.props.builds) {
+        this.renderBuildBarChart(this.barchart, this.props.builds);
+        this.updateBuildChart();
+      }
+    }
+
     componentDidMount() {
 
-      // initialize the bar chart
-      // console.log('Running componentDidMount', this.barchart, this.props);
-      const myChartRef = this.chartRef.current.getContext("2d");
+      const myChartRef = this.buildChartRef.current.getContext("2d");
       const config = {
           type: "bar",
           data: {},
           options: {}
       }
       this.barchart = new Chart(myChartRef, config);
-      this.barchart.update();
+      // to trigger componentDidUpdate
+      this.setState({});
     }
 
     render() {
-        // console.log('Running render', this.barchart, this.props);
-        this.renderBuildBarChart(this.barchart, this.props.builds);
         return (
           <div className="graphContainer">
             <canvas
-                id="myChart"
-                ref={this.chartRef}
+                id="buildMetricsChart"
+                ref={this.buildChartRef}
             />
           </div>
         )

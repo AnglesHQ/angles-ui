@@ -27,7 +27,7 @@ class App extends Component {
   }
 
   changeCurrentTeam(teamId) {
-      this.setState({currentTeam: this.getTeam(teamId)})
+      this.setState({currentTeam: this.getTeam(teamId)});
   }
 
   componentDidUpdate() {
@@ -45,9 +45,6 @@ class App extends Component {
     .then((data) => {
       // set retrieve teams in state
       this.setState({ teams: data });
-      if (this.state.query.teamId) {
-        this.changeCurrentTeam(this.state.query.teamId);
-      }
     })
     .catch(console.log);
   }

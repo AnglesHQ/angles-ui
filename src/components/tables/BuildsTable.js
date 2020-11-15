@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Moment from 'react-moment';
-import timeUtility from '../../utility/TimeUtilities'
+import { getDuration} from '../../utility/TimeUtilities'
 import { withRouter} from 'react-router-dom';
 
 class BuildsTable extends Component {
@@ -69,7 +69,7 @@ render() {
             </Moment>
           ) : "N/A" }
           </td>
-          <td>{timeUtility.getDuration(build)}</td>
+          <td>{getDuration(build)}</td>
           <td>{build.result.PASS}</td>
           <td>{build.result.FAIL}</td>
           <td>{build.result.ERROR}</td>

@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import Chart from "chart.js";
 import './Charts.css'
+import { getBuildDurationInMinutes } from '../../utility/TimeUtilities'
 import moment from 'moment'
 
 class BuildTimeLineChart extends Component {
 
-    chartRef = React.createRef();
+    lineChartRef = React.createRef();
     lineChart;
 
     constructor(props) {
@@ -14,18 +15,10 @@ class BuildTimeLineChart extends Component {
          //
       };
     }
-    getBuildDurationInMinutes(build) {
-      if (build.end && build.start) {
-        const start = moment(build.start);
-        const end = moment(build.end);
-        var duration = moment.duration(end.diff(start));
-        return duration.asMinutes();
-      }
-      return 0;
-    }
 
-    renderBuildLineChart(lineChart, builds) {
+    renderBuildLineChart = (lineChart, builds) => {
       if (lineChart !== undefined && lineChart.config != null) {
+        console.log('Rendering Linechart as its available');
         let graphData = lineChart.config.data;
         graphData.labels = [];
         graphData.datasets = [];
@@ -34,7 +27,7 @@ class BuildTimeLineChart extends Component {
           builds.map((build, index) => {
             graphData.labels.push(moment.utc(moment(build.start)).format("DD-MM-YYYY HH:mm:ss"));
             if (build.result) {
-              graphData.datasets[0].data.push(this.getBuildDurationInMinutes(build));
+              graphData.datasets[0].data.push(getBuildDurationInMinutes(build));
             }
             return graphData;
           });
@@ -43,27 +36,42 @@ class BuildTimeLineChart extends Component {
       }
     }
 
+    updateBuildLineChart = () => {
+      if (this.lineChart.options === {}) {}
+      this.lineChart.options = {
+        title: {
+          display: true,
+          text: 'Execution time across builds minutes'
+        }
+      }
+      this.lineChart.update();
+    }
+
+    componentDidUpdate(prevProps) {
+      if (this.lineChart === undefined || this.lineChart.data.datasets.length === 0 || prevProps.builds !== this.props.builds) {
+        this.renderBuildLineChart(this.lineChart, this.props.builds);
+        this.updateBuildLineChart();
+      }
+    }
+
     componentDidMount() {
-      const myChartRef = this.chartRef.current.getContext("2d");
-      this.lineChart = new Chart(myChartRef, {
+      const buildTimesLineChart = this.lineChartRef.current.getContext("2d");
+      const config = {
           type: "line",
           data: {},
-          options: {
-            title: {
-              display: true,
-              text: 'Execution time across builds minutes'
-            }
-          }
-      });
+          options: {}
+      };
+      this.lineChart = new Chart(buildTimesLineChart, config);
+      // to trigger componentDidUpdate
+      this.setState({});
     }
 
     render() {
-        this.renderBuildLineChart(this.lineChart, this.props.builds);
         return (
           <div className="graphContainer">
             <canvas
-              id="myChart"
-              ref={this.chartRef}
+              id="buildTimesLineChart"
+              ref={this.lineChartRef}
             />
           </div>
         )

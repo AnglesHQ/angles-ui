@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import timeUtility from '../../utility/TimeUtilities'
+import {getDuration} from '../../utility/TimeUtilities'
 import ExecutionTable from './ExecutionTable';
 import './Tables.css';
 
@@ -20,7 +20,7 @@ class SuiteTable extends Component {
         <tr>
           <th scope="col">Suite: {this.props.suite.name}</th>
           <td>Status: {this.props.suite.status}</td>
-          <td>Duration: { timeUtility.getDuration(this.props.suite) }</td>
+          <td>Duration: { getDuration(this.props.suite) }</td>
         </tr>
       </thead>
       <tbody>
