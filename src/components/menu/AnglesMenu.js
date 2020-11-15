@@ -14,19 +14,19 @@ class AnglesMenu extends Component {
     };
   }
 
-  toggleTeams () {
+  toggleTeams = () => {
     this.setState({teamsMenuOpen: !this.state.teamsMenuOpen})
   }
 
-  closeMenu () {
+  closeMenu = () => {
       this.setState({menuOpen: false, teamsMenuOpen: false})
   }
 
-  handleStateChange (state) {
+  handleStateChange = (state) => {
       this.setState({menuOpen: state.isOpen})
   }
 
-  navigateToTeam(teamId) {
+  navigateToTeam = (teamId) => {
     this.props.history.push(`/?teamId=${teamId}`);
     this.closeMenu();
   }

@@ -14,7 +14,7 @@ class BuildBarChart extends Component {
       };
     }
 
-    renderBuildBarChart(piechart, build) {
+    renderBuildBarChart = (piechart, build) => {
       if (piechart !== undefined && piechart.config != null) {
         let graphData = piechart.config.data;
          graphData.datasets = [{

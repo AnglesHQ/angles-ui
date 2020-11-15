@@ -135,7 +135,7 @@ class ScreenshotView extends Component {
           customTransition="transform 300ms ease-in-out"
           transitionDuration={500}
           containerClass="carousel-container"
-          focusOnSelect={true}
+          // focusOnSelect={true}
           // removeArrowOnDeviceType={["tablet", "mobile"]}
           deviceType={this.props.deviceType}
           dotListClass="custom-dot-list-style"
