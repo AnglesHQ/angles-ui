@@ -11,7 +11,7 @@ import './App.css';
 import '../components/charts/Charts.css'
 import Cookies from 'js-cookie';
 
-axios.defaults.baseURL = 'http://127.0.0.1:3000/rest/api/v1.0';
+axios.defaults.baseURL = process.env.REACT_APP_BASE_URL + '/rest/api/v1.0';
 
 class App extends Component {
 
