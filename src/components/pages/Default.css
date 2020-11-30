@@ -60,6 +60,19 @@
   max-width: 22em;
   min-width: 22em;
   margin: 1em;
+
+}
+
+.baseline-overlay {
+  font-weight: bolder;
+  color: red;
+  border: solid 2px red;
+  height: 40px;
+  padding: 5px;
+  background: grey;
+  margin: 5px;
+  text-align: center;
+  float: right;
 }
 
 .screenshot-thumbnail-history {
@@ -69,7 +82,7 @@
 
 .image-page-holder {
   padding: 2em;
-  overflow: scroll;
+  /*overflow: scroll;*/
 }
 
 .screenshot-modal {
@@ -112,4 +125,8 @@
 }
 .table-screenshot-history-details td {
   border: 0px;
+}
+
+.carousel-container {
+  margin-bottom: 2em;
 }
