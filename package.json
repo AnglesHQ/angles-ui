@@ -1,6 +1,6 @@
 {
   "name": "angles-ui",
-  "version": "1.0.0-BETA1",
+  "version": "1.0.0-BETA2",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/AnglesHQ/angles-ui.git"
@@ -36,8 +36,8 @@
     "eslint-plugin-react-hooks": "^1.7.0"
   },
   "scripts": {
-    "start": "REACT_APP_BASE_URL=http://localhost:3000 PORT=3001 react-scripts start",
-    "build": "REACT_APP_BASE_URL=http://localhost:3000 PORT=3001 react-scripts build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

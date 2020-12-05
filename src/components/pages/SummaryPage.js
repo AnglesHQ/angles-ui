@@ -74,7 +74,7 @@ class SummaryPage extends Component {
   }
 
   nextPaginationDisabled = () => {
-    return ((this.state.currentSkip + this.state.limit) > this.state.buildCount);
+    return ((this.state.currentSkip + this.state.limit) >= this.state.buildCount);
   }
 
   render() {
