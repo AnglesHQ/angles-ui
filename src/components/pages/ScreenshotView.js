@@ -9,6 +9,7 @@ import Card from 'react-bootstrap/Card'
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 import './Default.css'
+import { withRouter} from 'react-router-dom';
 
 class ScreenshotView extends Component {
 
@@ -137,6 +138,16 @@ class ScreenshotView extends Component {
     }
   }
 
+  navigateToTagsPage = (tag, e) => {
+    e.preventDefault();
+    this.props.history.push(`/screenshot-finder/?tag=${tag}`);
+  }
+
+  navigateToViewsPage = (view, e) => {
+    e.preventDefault();
+    this.props.history.push(`/screenshot-finder/?view=${view}`);
+  }
+
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevState.currentBaseLineDetails !== this.state.currentBaseLineDetails) {
       //if base line details have changed, load the new image
@@ -229,7 +240,7 @@ class ScreenshotView extends Component {
                         <tbody>
                           <tr>
                             <td><strong>View</strong></td>
-                            <td>{this.state.currentScreenshotDetails.view}</td>
+                            <td>{this.state.currentScreenshotDetails.view} (<a title={`Find all the latest screenshots for view \"${this.state.currentScreenshotDetails.view}\", grouped by platform.`} href="#" onClick={(e) => this.navigateToViewsPage(this.state.currentScreenshotDetails.view, e)}>see other platforms</a>)</td>
                           </tr>
                           <tr>
                             <td><strong>Date taken</strong></td>
@@ -258,6 +269,14 @@ class ScreenshotView extends Component {
                           <tr>
                             <td><strong>Baseline Image</strong></td>
                             <td>{ this.isBaseline(this.state.currentScreenshotDetails._id) ? ("true"): "false" }</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Tags</strong></td>
+                            <td>{
+                                this.state.currentScreenshotDetails.tags.map((tag) => {
+                                  return <a title={`Find all the latest screenshots with tag \"${tag}\", grouped by view.`} href="#" onClick={(e) => this.navigateToTagsPage(tag, e)}>{tag}</a>
+                                })
+                              }</td>
                           </tr>
                         </tbody>
                       </Table>
@@ -329,4 +348,4 @@ class ScreenshotView extends Component {
   }
 }
 
-export default ScreenshotView;
+export default withRouter(ScreenshotView);

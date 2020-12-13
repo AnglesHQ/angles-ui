@@ -45,6 +45,10 @@ class AnglesMenu extends Component {
               </li>
           ))}
         </ol>
+        <a id="screenshot-finder" className="bm-item" href="/screenshot-finder">
+          <i className="fa fa-fw fa-images"></i>
+          <span>Screenshot Finder</span>
+        </a>
         <a id="about" className="bm-item" href="/about">
           <i className="fa fa-fw fa-info"></i>
           <span>About</span>

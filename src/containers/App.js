@@ -5,6 +5,7 @@ import AnglesMenu from '../components/menu/AnglesMenu';
 import SummaryPage from '../components/pages/SummaryPage'
 import BuildPage from '../components/pages/BuildPage'
 import MatrixPage from '../components/pages/MatrixPage'
+import ScreenshotFinderPage from '../components/pages/ScreenshotFinderPage'
 import { withRouter} from 'react-router-dom';
 import queryString from 'query-string';
 import './App.css';
@@ -83,6 +84,7 @@ class App extends Component {
               }
               return <MatrixPage {...props} currentTeam={this.state.currentTeam} />
             }} />
+            <Route exact path="/screenshot-finder/" render={props => { return <ScreenshotFinderPage {...props} /> }} />
           </Switch>
         </main>
       </div>

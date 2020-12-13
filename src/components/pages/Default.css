@@ -127,6 +127,11 @@
   border: 0px;
 }
 
+.screenshot-finder-form-or-div {
+  margin: 30px;
+  font-weight: bold;
+}
+
 .carousel-container {
   margin-bottom: 2em;
 }

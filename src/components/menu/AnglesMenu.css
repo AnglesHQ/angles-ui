@@ -26,7 +26,7 @@
   /* border: 1px solid red; */
   padding-bottom: 10px;
   cursor: pointer;
-  color: #e6e2c5; 
+  color: #e6e2c5;
 
 }
 
@@ -68,7 +68,7 @@ Note: Beware of modifying this element as it can break the animations - you shou
 /* General sidebar styles */
 .bm-menu {
   background: #373a47;
-  padding: 1.5em 1em 0;
+  padding: 1.5em 0.5em 0;
   font-size: 1.15em;
 }
 
