@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import Moment from 'react-moment';
 import axios from 'axios';
-import Tabs from 'react-bootstrap/Tabs'
-import Tab from 'react-bootstrap/Tab'
-import Table from 'react-bootstrap/Table'
-import CardDeck from 'react-bootstrap/CardDeck'
-import Card from 'react-bootstrap/Card'
-import Carousel from 'react-multi-carousel';
+import Tabs from 'react-bootstrap/Tabs';
+import Tab from 'react-bootstrap/Tab';
+import Table from 'react-bootstrap/Table';
+import CardDeck from 'react-bootstrap/CardDeck';
+import Card from 'react-bootstrap/Card';
+import ImageCarousel from '../elements/ImageCarousel';
+import ScreenshotDetailsTable from '../tables/ScreenshotDetailsTable';
 import 'react-multi-carousel/lib/styles.css';
 import './Default.css'
 import { withRouter} from 'react-router-dom';
@@ -120,7 +121,7 @@ class ScreenshotView extends Component {
     return (this.state.currentBaseLineDetails && this.state.currentBaseLineDetails.screenshot && this.state.currentBaseLineDetails.screenshot._id === screenshotId)
   }
 
-  setTab = (key) => {
+  setTab = (key, evt) => {
     if (key === "baseline") {
     }
   }
@@ -138,16 +139,6 @@ class ScreenshotView extends Component {
     }
   }
 
-  navigateToTagsPage = (tag, e) => {
-    e.preventDefault();
-    this.props.history.push(`/screenshot-finder/?tag=${tag}`);
-  }
-
-  navigateToViewsPage = (view, e) => {
-    e.preventDefault();
-    this.props.history.push(`/screenshot-finder/?view=${view}`);
-  }
-
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevState.currentBaseLineDetails !== this.state.currentBaseLineDetails) {
       //if base line details have changed, load the new image
@@ -160,141 +151,40 @@ class ScreenshotView extends Component {
   }
 
   render() {
-
-    const responsive = {
-      desktopxxl: {
-        breakpoint: { max: 5000, min: 2500 },
-        items: 6,
-        slidesToSlide: 2 // optional, default to 1.
-      },
-      desktopxl: {
-        breakpoint: { max: 2500, min: 1400 },
-        items: 5,
-        slidesToSlide: 2 // optional, default to 1.
-      },
-      desktop: {
-        breakpoint: { max: 1400, min: 1024 },
-        items: 4,
-        slidesToSlide: 2 // optional, default to 1.
-      },
-      tablet: {
-        breakpoint: { max: 1024, min: 464 },
-        items: 3,
-        slidesToSlide: 1 // optional, default to 1.
-      },
-      mobile: {
-        breakpoint: { max: 464, min: 0 },
-        items: 3,
-        slidesToSlide: 1 // optional, default to 1.
-      }
-    };
-
-
     if (!this.state.currentScreenshotDetails) {
       return <div><span>no details</span></div>;
     }
     return (
       <div >
-        <Carousel
-          swipeable={false}
-          draggable={false}
-          showDots={true}
-          responsive={responsive}
-          ssr={true} // means to render carousel on server-side.
-          infinite={false}
-          autoPlay={false}
-          autoPlaySpeed={1000}
-          keyBoardControl={true}
-          customTransition="transform 300ms ease-in-out"
-          transitionDuration={500}
-          containerClass="carousel-container"
-          // focusOnSelect={true}
-          // removeArrowOnDeviceType={["tablet", "mobile"]}
-          deviceType={this.props.deviceType}
-          dotListClass="custom-dot-list-style"
-          itemClass="carousel-item-padding-30-px"
-        >
-          {
-            this.state.buildScreenshots.map((buildScreenshot, index)  =>
-            <div key={index}>
-              <div className={`${ this.isSelectedId(buildScreenshot._id) ? "card-text-active" : ""}`}>{index + 1} - {buildScreenshot.view}</div>
-              <img  className={`${ this.isSelectedId(buildScreenshot._id) ? "card-active" : ""}`} style={{ height: 250}} alt={buildScreenshot.view} src={"data:image/png;base64, " + buildScreenshot.thumbnail} onClick={(sh) => this.loadScreenshot(buildScreenshot._id)}/>
-            </div>
-          )}
-        </Carousel>
-        <Tabs id="image-tabs" defaultActiveKey="image" onSelect={(k) => this.setTab(k)}>
+        <ImageCarousel
+          screenshots={this.state.buildScreenshots}
+          selectedScreenshotDetails={this.state.currentScreenshotDetails}
+          loadScreenshot={this.loadScreenshot}
+        />
+        <Tabs id="image-tabs" defaultActiveKey="image" onSelect={(key, evt) => this.setTab(key, evt)} >
             <Tab eventKey="image" title="Image">
               <div className="image-page-holder">
-              <Table>
-                <tbody>
-                  <tr>
-                    <td>
-                    <div>
-                      <Table className="table-screenshot-details" bordered size="sm">
-                        <thead>
-                          <tr>
-                            <th>Parameter</th>
-                            <th>Value</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td><strong>View</strong></td>
-                            <td>{this.state.currentScreenshotDetails.view} (<a title={`Find all the latest screenshots for view \"${this.state.currentScreenshotDetails.view}\", grouped by platform.`} href="#" onClick={(e) => this.navigateToViewsPage(this.state.currentScreenshotDetails.view, e)}>see other platforms</a>)</td>
-                          </tr>
-                          <tr>
-                            <td><strong>Date taken</strong></td>
-                            <td>
-                              <Moment format="DD-MM-YYYY HH:mm:ss">
-                                {this.state.currentScreenshotDetails.timestamp}
-                              </Moment>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td><strong>Resolution</strong></td>
-                            <td>{this.state.currentScreenshotDetails.width} x {this.state.currentScreenshotDetails.height}</td>
-                          </tr>
-                          <tr>
-                            <td><strong>Platform Name</strong></td>
-                            <td>{this.state.currentScreenshotDetails.platform.platformName}</td>
-                          </tr>
-                          <tr>
-                            <td><strong>Browser</strong></td>
-                            <td>{this.state.currentScreenshotDetails.platform.browserName}</td>
-                          </tr>
-                          <tr>
-                            <td><strong>Version</strong></td>
-                            <td>{this.state.currentScreenshotDetails.platform.browserVersion}</td>
-                          </tr>
-                          <tr>
-                            <td><strong>Baseline Image</strong></td>
-                            <td>{ this.isBaseline(this.state.currentScreenshotDetails._id) ? ("true"): "false" }</td>
-                          </tr>
-                          <tr>
-                            <td><strong>Tags</strong></td>
-                            <td>{
-                                this.state.currentScreenshotDetails.tags.map((tag) => {
-                                  return <a title={`Find all the latest screenshots with tag \"${tag}\", grouped by view.`} href="#" onClick={(e) => this.navigateToTagsPage(tag, e)}>{tag}</a>
-                                })
-                              }</td>
-                          </tr>
-                        </tbody>
-                      </Table>
-                    </div>
-                    </td>
-                    <td>
-                      { this.state.currentScreenshot ? ( <img className="screenshot" src={this.state.currentScreenshot} alt="Screenshot" /> ) : null }
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <span style={{ float: "left" }}>
-                        <button onClick={() => this.updateBaseline(this.state.currentScreenshotDetails) } disabled={ this.isBaseline(this.state.currentScreenshotDetails._id) } type="button" className="btn btn-outline-primary">{ !this.isBaseline(this.state.currentScreenshotDetails._id) ? ("Make Baseline Image"): "This is the Baseline Image"}</button>
-                      </span>
-                    </td>
-                  </tr>
-                </tbody>
-              </Table>
+                <Table>
+                  <tbody>
+                    <tr>
+                      <td>
+                      <div>
+                        <ScreenshotDetailsTable currentScreenshotDetails={this.state.currentScreenshotDetails } isBaseline={ this.isBaseline(this.state.currentScreenshotDetails._id)} />
+                      </div>
+                      </td>
+                      <td>
+                        { this.state.currentScreenshot ? ( <img className="screenshot" src={this.state.currentScreenshot} alt="Screenshot" /> ) : null }
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span style={{ float: "left" }}>
+                          <button onClick={() => this.updateBaseline(this.state.currentScreenshotDetails) } disabled={ this.isBaseline(this.state.currentScreenshotDetails._id) } type="button" className="btn btn-outline-primary">{ !this.isBaseline(this.state.currentScreenshotDetails._id) ? ("Make Baseline Image"): "This is the Baseline Image"}</button>
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </Table>
               </div>
             </Tab>
             <Tab eventKey="history" title="History">

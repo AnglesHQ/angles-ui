@@ -1,13 +1,12 @@
 // TODO: add page to find screenshots by tag or by view (and maybe add platform filter).
 import React, { Component } from 'react'
-import Moment from 'react-moment';
 import axios from 'axios';
-import Table from 'react-bootstrap/Table'
-import CardDeck from 'react-bootstrap/CardDeck'
-import Card from 'react-bootstrap/Card'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Col from 'react-bootstrap/Col'
+import Table from 'react-bootstrap/Table';
+import ImageCarousel from '../elements/ImageCarousel';
+import ScreenshotDetailsTable from '../tables/ScreenshotDetailsTable';
 import 'react-multi-carousel/lib/styles.css';
 import './Default.css'
 import queryString from 'query-string';
@@ -18,7 +17,11 @@ class ScreenshotFinderPage extends Component {
     super(props);
     this.state = {
       groupedScreenshots: undefined,
+      filteredScreenshots: undefined,
+      platforms: undefined,
       groupType: undefined,
+      selectedScreenshot: undefined,
+      currentScreenshotDetails: undefined,
       query: queryString.parse(this.props.location.search),
       view: "",
       tag: ""
@@ -28,9 +31,6 @@ class ScreenshotFinderPage extends Component {
     } else if (this.state.query.tag) {
       this.getGroupedScreenshotByTag(this.state.query.tag);
     }
-    // this.handleViewChange = this.handleViewChange.bind(this);
-    // this.handleTagChange = this.handleTagChange.bind(this);
-    // this.submitScreenshotSearch = this.submitScreenshotSearch.bind(this);
   }
 
   getGroupedScreenshotByPlatform = (view) => {
@@ -51,7 +51,15 @@ class ScreenshotFinderPage extends Component {
       }
     })
     .then((res) => {
-      this.setState({ tag, groupType: "tag", groupedScreenshots: res.data });
+      let uniquePlatforms = [];
+      res.data.forEach((screenshot) => {
+          if (!uniquePlatforms.includes(screenshot.platformId)){
+            uniquePlatforms.push(screenshot.platformId);
+          }
+      })
+      uniquePlatforms.sort();
+      let filteredScreenshots = res.data.filter(screenshot => screenshot.platformId === uniquePlatforms[0]);
+      this.setState({ tag, groupType: "tag", groupedScreenshots: res.data, filteredScreenshots: filteredScreenshots, platforms: uniquePlatforms });
     })
   }
 
@@ -68,6 +76,20 @@ class ScreenshotFinderPage extends Component {
     })
   }
 
+  getScreenshotDetails = (screenshotId) => {
+    let filteredScreenshots = this.state.groupedScreenshots.filter(screenshot => screenshot._id === screenshotId);
+    if (filteredScreenshots.length > 0) {
+      this.setState({currentScreenshotDetails: filteredScreenshots[0]});
+    } else {
+      this.setState({currentScreenshotDetails: undefined});
+    }
+  }
+
+  loadScreenshot = (screenshotId) => {
+    this.getScreenshotDetails(screenshotId);
+    this.getScreenshot(screenshotId);
+  }
+
   handleViewChange = (event) => {
     this.setState({view: event.target.value, tag: ""});
   }
@@ -78,6 +100,7 @@ class ScreenshotFinderPage extends Component {
 
   submitScreenshotSearch = (event) => {
     event.preventDefault();
+    this.setState({currentScreenshotDetails: undefined});
     if (this.state.view !== "") {
       this.getGroupedScreenshotByPlatform(this.state.view);
     } else if (this.state.tag !== "") {
@@ -85,13 +108,19 @@ class ScreenshotFinderPage extends Component {
     }
   }
 
+  filterByPlatform = (event) => {
+    let filteredScreenshots = this.state.groupedScreenshots.filter(screenshot => screenshot.platformId === event.target.value);
+    this.setState({ filteredScreenshots: filteredScreenshots, currentScreenshotDetails: undefined });
+  }
+
   render() {
     return (
       <div>
         <h1>Screenshot finder</h1>
+        <div className={`screenshot-form-container`}>
         <Form onSubmit={this.submitScreenshotSearch}>
           <Form.Row>
-            <Form.Group as={Col}>
+            <Form.Group as={Col} className={"tag-form-group"}>
               <Form.Label htmlFor="viewInput"><b>View</b></Form.Label>
               <Form.Control type="text" id="viewInput" value={this.state.view } onChange={this.handleViewChange} />
               <Form.Text id="viewInput" muted>
@@ -104,49 +133,53 @@ class ScreenshotFinderPage extends Component {
               <Form.Control type="text" id="tagInput" value={this.state.tag } onChange={this.handleTagChange} />
             </Form.Group>
           </Form.Row>
-          <Button variant="primary" type="submit">Search Screenshots</Button>
+          <Form.Row>
+            <Form.Group as={Col}>
+                <Button variant="primary" type="submit">Search Screenshots</Button>
+            </Form.Group>
+            <Form.Group as={Col} className={"tag-form-group"}>
+              {
+                 this.state.groupType === "tag" ? (
+                    <div>
+                       <Form.Label htmlFor="platformSelect"><b>Platform</b></Form.Label>
+                       <Form.Control id="platformSelect" as="select" onChange={ this.filterByPlatform }>
+                         {
+                           this.state.platforms.map((platform, index) => {
+                               return <option key={platform}>{platform}</option>
+                           })
+                         }
+                       </Form.Control>
+                     </div>
+                 ) : null
+              }
+            </Form.Group>
+          </Form.Row>
         </Form>
+        </div>
         <br/>
-        <CardDeck className="card-deck-history">
-          { this.state.groupedScreenshots != null ? (
-            this.state.groupedScreenshots.map((screenshot, index) => {
-              return [
-                  <Card key={index} className={`screenshotCard`}>
-                    <Card.Img variant="top" src={"data:image/png;base64, " + screenshot.thumbnail} />
-                    <Card.Body>
-                      <Card.Footer>
-                      <div>
-                        <Table className="table-screenshot-history-details" bordered size="sm">
-                          <tbody>
-                            <tr>
-                              <td><strong>View: </strong> {screenshot.view}</td>
-                            </tr>
-                            <tr>
-                              <td><strong>Date: </strong>
-                                <Moment format="DD-MM-YYYY HH:mm:ss">
-                                  {screenshot.timestamp}
-                                </Moment>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td><strong>Resolution: </strong>{screenshot.width} x {screenshot.height}</td>
-                            </tr>
-                            <tr>
-                              <td><strong>Platform: </strong>{ screenshot.platform ? (screenshot.platform.platformName) : "" } { screenshot.platform && screenshot.platform.browserName ? ( ` (${screenshot.platform.browserName}${ screenshot.platform.browserVersion ? (" " + screenshot.platform.browserVersion) : "" })` ) : "" }</td>
-                            </tr>
-                            <tr>
-                              <td><strong>PlatformId: </strong>{ screenshot.platformId } </td>
-                            </tr>
-                          </tbody>
-                        </Table>
-                      </div>
-                      </Card.Footer>
-                    </Card.Body>
-                  </Card>
-              ]
-            })
-          ) : "No screenshots to display" }
-        </CardDeck>
+        <ImageCarousel
+          screenshots={ this.state.groupType === "tag" ? (this.state.filteredScreenshots) : this.state.groupedScreenshots }
+          selectedScreenshotDetails={this.state.currentScreenshotDetails}
+          loadScreenshot={this.loadScreenshot}
+        />
+        {
+          this.state.currentScreenshotDetails ? (
+            <Table>
+              <tbody>
+                <tr>
+                  <td>
+                  <div>
+                    <ScreenshotDetailsTable currentScreenshotDetails={this.state.currentScreenshotDetails } />
+                  </div>
+                  </td>
+                  <td>
+                    { this.state.currentScreenshot ? ( <img className="screenshot" src={this.state.currentScreenshot} alt="Screenshot" /> ) : null }
+                  </td>
+                </tr>
+              </tbody>
+            </Table>
+          ) : "No image selected."
+        }
       </div>
     );
   }
