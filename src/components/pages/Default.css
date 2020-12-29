@@ -182,3 +182,12 @@
 .tag-form-group {
   max-width: 45%;
 }
+
+#numberOfDays {
+  max-width: 45%;
+}
+
+
+.search-button {
+  margin-top: 20px;
+}

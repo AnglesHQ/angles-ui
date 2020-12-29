@@ -24,30 +24,33 @@ class ScreenshotFinderPage extends Component {
       currentScreenshotDetails: undefined,
       query: queryString.parse(this.props.location.search),
       view: "",
-      tag: ""
+      tag: "",
+      numberOfDays: 14
     };
     if (this.state.query.view) {
-      this.getGroupedScreenshotByPlatform(this.state.query.view);
+      this.getGroupedScreenshotByPlatform(this.state.query.view, this.state.query.numberOfDays ? (this.state.query.numberOfDays) : this.state.numberOfDays);
     } else if (this.state.query.tag) {
-      this.getGroupedScreenshotByTag(this.state.query.tag);
+      this.getGroupedScreenshotByTag(this.state.query.tag, this.state.query.numberOfDays ? (this.state.query.numberOfDays) : this.state.numberOfDays);
     }
   }
 
-  getGroupedScreenshotByPlatform = (view) => {
+  getGroupedScreenshotByPlatform = (view, numberOfDays) => {
     return axios.get('/screenshot/grouped/platform', {
       params: {
-        view
+        view,
+        numberOfDays
       }
     })
     .then((res) => {
-      this.setState({ view, groupType: "view", groupedScreenshots: res.data });
+      this.setState({ view, numberOfDays, groupType: "view", groupedScreenshots: res.data });
     })
   }
 
-  getGroupedScreenshotByTag = (tag) => {
+  getGroupedScreenshotByTag = (tag, numberOfDays) => {
     return axios.get('/screenshot/grouped/tag', {
       params: {
-        tag
+        tag,
+        numberOfDays
       }
     })
     .then((res) => {
@@ -59,7 +62,7 @@ class ScreenshotFinderPage extends Component {
       })
       uniquePlatforms.sort();
       let filteredScreenshots = res.data.filter(screenshot => screenshot.platformId === uniquePlatforms[0]);
-      this.setState({ tag, groupType: "tag", groupedScreenshots: res.data, filteredScreenshots: filteredScreenshots, platforms: uniquePlatforms });
+      this.setState({ tag, numberOfDays, groupType: "tag", groupedScreenshots: res.data, filteredScreenshots: filteredScreenshots, platforms: uniquePlatforms });
     })
   }
 
@@ -98,13 +101,17 @@ class ScreenshotFinderPage extends Component {
     this.setState({tag: event.target.value, view: ""});
   }
 
+  handleNumberOfDaysChange = (event) => {
+    this.setState({numberOfDays: event.target.value});
+  }
+
   submitScreenshotSearch = (event) => {
     event.preventDefault();
     this.setState({currentScreenshotDetails: undefined});
     if (this.state.view !== "") {
-      this.getGroupedScreenshotByPlatform(this.state.view);
+      this.getGroupedScreenshotByPlatform(this.state.view, this.state.numberOfDays);
     } else if (this.state.tag !== "") {
-      this.getGroupedScreenshotByTag(this.state.tag);
+      this.getGroupedScreenshotByTag(this.state.tag, this.state.numberOfDays);
     }
   }
 
@@ -135,9 +142,18 @@ class ScreenshotFinderPage extends Component {
           </Form.Row>
           <Form.Row>
             <Form.Group as={Col}>
-                <Button variant="primary" type="submit">Search Screenshots</Button>
+              <Form.Label htmlFor="numberOfDays"><b>Number of days</b></Form.Label>
+              <Form.Control id="numberOfDays" as="select" value={ this.state.numberOfDays } onChange={this.handleNumberOfDaysChange} >
+                <option key="1" value="1">1 Day</option>
+                <option key="2" value="7">1 Week</option>
+                <option key="3" value="14">2 Weeks</option>
+                <option key="4" value="31">1 Month</option>
+                <option key="5" value="90">3 Months</option>
+                <option key="6" value="180">6 Months</option>
+              </Form.Control>
+              <Button variant="primary" type="submit" className={"search-button"}>Search Screenshots</Button>
             </Form.Group>
-            <Form.Group as={Col} className={"tag-form-group"}>
+            <Form.Group as={Col} className={"tag-form-group tag-form-group-platform"}>
               {
                  this.state.groupType === "tag" ? (
                     <div>
