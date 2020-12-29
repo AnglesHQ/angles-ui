@@ -156,29 +156,35 @@ class ScreenshotFinderPage extends Component {
           </Form.Row>
         </Form>
         </div>
-        <br/>
-        <ImageCarousel
-          screenshots={ this.state.groupType === "tag" ? (this.state.filteredScreenshots) : this.state.groupedScreenshots }
-          selectedScreenshotDetails={this.state.currentScreenshotDetails}
-          loadScreenshot={this.loadScreenshot}
-        />
         {
-          this.state.currentScreenshotDetails ? (
-            <Table>
-              <tbody>
-                <tr>
-                  <td>
-                  <div>
-                    <ScreenshotDetailsTable currentScreenshotDetails={this.state.currentScreenshotDetails } />
-                  </div>
-                  </td>
-                  <td>
-                    { this.state.currentScreenshot ? ( <img className="screenshot" src={this.state.currentScreenshot} alt="Screenshot" /> ) : null }
-                  </td>
-                </tr>
-              </tbody>
-            </Table>
-          ) : "No image selected."
+          this.state.groupedScreenshots ? (
+            <div>
+            <br/>
+            <ImageCarousel
+              screenshots={ this.state.groupType === "tag" ? (this.state.filteredScreenshots) : this.state.groupedScreenshots }
+              selectedScreenshotDetails={this.state.currentScreenshotDetails}
+              loadScreenshot={this.loadScreenshot}
+            />
+            {
+              this.state.currentScreenshotDetails ? (
+                <Table>
+                  <tbody>
+                    <tr>
+                      <td>
+                      <div>
+                        <ScreenshotDetailsTable currentScreenshotDetails={this.state.currentScreenshotDetails } />
+                      </div>
+                      </td>
+                      <td>
+                        { this.state.currentScreenshot ? ( <img className="screenshot" src={this.state.currentScreenshot} alt="Screenshot" /> ) : null }
+                      </td>
+                    </tr>
+                  </tbody>
+                </Table>
+              ) : "Select one of the images to display details."
+            }
+            </div>
+          ) : null
         }
       </div>
     );
