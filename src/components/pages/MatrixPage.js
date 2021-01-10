@@ -34,7 +34,7 @@ class MatrixPage extends Component {
     return (
       <div>
         <h1>Matrix</h1>
-          <MatrixTable matrixBuilds={this.state.matrixBuilds} />
+          <MatrixTable matrixBuilds={this.state.matrixBuilds.reverse()} />
       </div>
     );
   }

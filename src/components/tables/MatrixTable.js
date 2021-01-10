@@ -8,16 +8,39 @@ constructor(props) {
   super(props);
   this.state = {
     headers: [],
-    matrixSuites: {}
+    matrixSuites: {},
+    artifacts: {}
   };
 }
 
 reorganiseSuitsForMatrix = () => {
   let headers = [];
   let matrixSuites = {}
+  let artifacts = {}
+
   this.props.matrixBuilds.forEach(build => {
     // populate the header for each build
     headers.push(build);
+
+    if (build.artifacts && build.artifacts.length > 0) {
+        build.artifacts.forEach(artifact => {
+
+          // set the artifact identifier
+          let artifactIdentifier;
+          if (artifact.groupId) {
+            artifactIdentifier = `${artifact.groupId}.${artifact.artifactId}`;
+          } else {
+            artifactIdentifier = `${artifact.artifactId}`;
+          }
+          if (!artifacts[artifactIdentifier]) {
+            artifacts[artifactIdentifier]={};
+          }
+          artifacts[artifactIdentifier][build._id] = artifact.version;
+        })
+
+    }
+
+
     // go through the invividual states.
     build.suites.forEach(suite => {
 
@@ -34,7 +57,7 @@ reorganiseSuitsForMatrix = () => {
       })
     })
   })
-  this.setState({headers, matrixSuites});
+  this.setState({headers, matrixSuites, artifacts});
 }
 
 componentDidMount() {
@@ -45,6 +68,28 @@ render() {
 
   // populate suite rows and test rows
   let rows = [];
+
+  // artifacts
+  if (this.state.artifacts && Object.keys(this.state.artifacts).length > 0) {
+    rows.push(<tr key={`artifact-header`} className="table-info"><td colSpan="100%"><b>Artifacts</b></td></tr>);
+    Object.keys(this.state.artifacts).forEach(artifactIdentifier => {
+        let versions = [];
+        this.state.headers.forEach(build => {
+            let version = this.state.artifacts[artifactIdentifier][build._id]
+            if (version) {
+              versions.push(<td key={`${artifactIdentifier}.${build._id}`}>{version }</td>);
+            } else {
+              versions.push(<td key={`${artifactIdentifier}.${build._id}`}>N/A</td>);
+            }
+        })
+        rows.push(<tr key={artifactIdentifier}>
+            <td key={`main-${artifactIdentifier}`}><b>{artifactIdentifier}</b></td>
+            {versions}
+        </tr>);
+    })
+    rows.push(<tr key={`artifact-footer`}><td colSpan="100%"></td></tr>);
+  }
+
   Object.keys(this.state.matrixSuites).forEach(suiteName => {
     rows.push(<tr key={suiteName} className="table-info"><td colSpan="100%"><b>Suite:</b> {suiteName}</td></tr>);
     Object.keys(this.state.matrixSuites[suiteName]).forEach(testName => {
@@ -52,13 +97,13 @@ render() {
       this.state.headers.forEach(build => {
           let testDetails = this.state.matrixSuites[suiteName][testName][build._id]
           if (testDetails) {
-            testResults.push(<td className={`${(testDetails.status === 'PASS') ? "table-success" : ""}`}>{testDetails.status}</td>);
+            testResults.push(<td key={`${suiteName}.${testName}${build._id}`} className={`${(testDetails.status === 'PASS') ? "table-success" : ""}`}>{testDetails.status}</td>);
           } else {
-            testResults.push(<td>N/A</td>);
+            testResults.push(<td key={`${suiteName}.${testName}${build._id}`}>N/A</td>);
           }
       })
       rows.push(<tr key={testName}>
-          <td>{testName}</td>
+          <td><b>{testName}</b></td>
           {testResults}
       </tr>);
     })

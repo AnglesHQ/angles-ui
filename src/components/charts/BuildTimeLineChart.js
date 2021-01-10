@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Chart from "chart.js";
 import './Charts.css'
-import { getBuildDurationInMinutes } from '../../utility/TimeUtilities'
+import { getBuildDurationInSeconds } from '../../utility/TimeUtilities'
 import moment from 'moment'
 
 class BuildTimeLineChart extends Component {
@@ -27,7 +27,7 @@ class BuildTimeLineChart extends Component {
           builds.map((build, index) => {
             graphData.labels.push(moment.utc(moment(build.start)).format("DD-MM-YYYY HH:mm:ss"));
             if (build.result) {
-              graphData.datasets[0].data.push(getBuildDurationInMinutes(build));
+              graphData.datasets[0].data.push(getBuildDurationInSeconds(build));
             }
             return graphData;
           });
@@ -41,7 +41,12 @@ class BuildTimeLineChart extends Component {
       this.lineChart.options = {
         title: {
           display: true,
-          text: 'Execution time across builds minutes'
+          text: 'Execution time across builds seconds'
+        },
+        elements: {
+            line: {
+                tension: 0
+            }
         }
       }
       this.lineChart.update();
@@ -59,7 +64,13 @@ class BuildTimeLineChart extends Component {
       const config = {
           type: "line",
           data: {},
-          options: {}
+          options: {
+            elements: {
+                line: {
+                    tension: 0
+                }
+            }
+          }
       };
       this.lineChart = new Chart(buildTimesLineChart, config);
       // to trigger componentDidUpdate

@@ -19,9 +19,9 @@ class ExecutionTable extends Component {
     return [
       <tr key={"execution_" + this.props.index} className="test-row" onClick={(e)=>this.toggleActions(e)} >
         <td colSpan="100%" className={`${this.props.execution.status}`}>
-          { this.state.open ? (
-              <i className="fa fa-caret-down" aria-hidden="true"></i>
-          ) : <i className="fa fa-caret-right" aria-hidden="true"></i> }
+          <span key={ this.state.open }>
+            <i title="Click to display/hide test steps" className={ this.state.open ? ('fa fa-caret-down'): 'fas fa-caret-right' }></i>
+          </span>
           <span>Test: {this.props.execution.title}</span>
         </td>
       </tr>,

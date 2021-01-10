@@ -13,14 +13,23 @@ class SuiteTable extends Component {
       //this.calculateMetricsForBuilds(props.builds);
   }
 
+  sum = (result) => {
+    return Object.keys(result).reduce((sum,key)=>sum+parseFloat(result[key]||0),0);
+  }
+
   render() {
     return (
       <table className="suite-table">
       <thead>
         <tr>
           <th scope="col">Suite: {this.props.suite.name}</th>
-          <td>Status: {this.props.suite.status}</td>
-          <td>Duration: { getDuration(this.props.suite) }</td>
+          <td><span className={"suite-header"}>Status:</span> <span className={`suite-result-${this.props.suite.status}`}>{this.props.suite.status}</span></td>
+          <td><span className={"suite-header"}>Duration:</span> { getDuration(this.props.suite) }</td>
+          <td><span className={"suite-header"}>Total:</span> { this.sum(this.props.suite.result) }</td>
+          <td><span className={"suite-header"}>Pass:</span> { this.props.suite.result.PASS }</td>
+          <td><span className={"suite-header"}>Fail:</span> { this.props.suite.result.FAIL }</td>
+          <td><span className={"suite-header"}>Error:</span> { this.props.suite.result.ERROR }</td>
+          <td><span className={"suite-header"}>Skipped:</span> { this.props.suite.result.SKIPPED }</td>
         </tr>
       </thead>
       <tbody>

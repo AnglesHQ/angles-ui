@@ -3,6 +3,7 @@ import axios from 'axios';
 import BuildResultsPieChart from '../charts/BuildResultsPieChart';
 import SuiteTable from '../tables/SuiteTable';
 import BuildSummary from '../tables/BuildSummary';
+import BuildArtifacts from '../tables/BuildArtifacts';
 import '../charts/Charts.css'
 import queryString from 'query-string';
 
@@ -41,6 +42,7 @@ class BuildPage extends Component {
       <div >
         <h1>Build: {this.state.currentBuild.name}</h1>
         <BuildSummary build={this.state.currentBuild} />
+        <BuildArtifacts build={this.state.currentBuild} />
         <div className="graphContainerParent">
           <BuildResultsPieChart build={this.state.currentBuild} />
           <BuildResultsPieChart build={this.state.currentBuild} />
