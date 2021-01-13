@@ -4,6 +4,7 @@ import axios from 'axios';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import Table from 'react-bootstrap/Table';
+import Alert from 'react-bootstrap/Alert';
 import CardDeck from 'react-bootstrap/CardDeck';
 import Card from 'react-bootstrap/Card';
 import ImageCarousel from '../elements/ImageCarousel';
@@ -29,7 +30,8 @@ class ScreenshotView extends Component {
       if (this.state.currentScreenshotDetails != null && this.state.currentScreenshotDetails.view != null) {
         // if there is a view, retrieve the history
         this.getScreenshotHistoryByView(this.state.currentScreenshotDetails.view, 10);
-        this.getBaseLineDetails(this.state.currentScreenshotDetails);
+        if (this.state.currentScreenshotDetails.platform)
+          this.getBaseLineDetails(this.state.currentScreenshotDetails);
       }
     })
   }
@@ -161,13 +163,19 @@ class ScreenshotView extends Component {
           selectedScreenshotDetails={this.state.currentScreenshotDetails}
           loadScreenshot={this.loadScreenshot}
         />
+        {
+          !this.state.currentScreenshotDetails.platform || !this.state.currentScreenshotDetails.view ?
+          <Alert variant="info">To enable the "History" and "Compare with Baseline" tabs please provide a view and platform details when uploading the screenshots to angles.</Alert> :
+            null
+        }
+
         <Tabs id="image-tabs" defaultActiveKey="image" onSelect={(key, evt) => this.setTab(key, evt)} >
             <Tab eventKey="image" title="Image">
               <div className="image-page-holder">
                 <Table>
                   <tbody>
                     <tr>
-                      <td>
+                      <td className={"screenshot-details-td"}>
                       <div>
                         <ScreenshotDetailsTable currentScreenshotDetails={this.state.currentScreenshotDetails } isBaseline={ this.isBaseline(this.state.currentScreenshotDetails._id)} />
                       </div>
@@ -177,9 +185,14 @@ class ScreenshotView extends Component {
                       </td>
                     </tr>
                     <tr>
-                      <td>
+                      <td colSpan="100%">
                         <span style={{ float: "left" }}>
-                          <button onClick={() => this.updateBaseline(this.state.currentScreenshotDetails) } disabled={ this.isBaseline(this.state.currentScreenshotDetails._id) } type="button" className="btn btn-outline-primary">{ !this.isBaseline(this.state.currentScreenshotDetails._id) ? ("Make Baseline Image"): "This is the Baseline Image"}</button>
+                          {
+                            this.state.currentScreenshotDetails.platform ?
+                              <button onClick={() => this.updateBaseline(this.state.currentScreenshotDetails) } disabled={ this.isBaseline(this.state.currentScreenshotDetails._id) } type="button" className="btn btn-outline-primary">{ !this.isBaseline(this.state.currentScreenshotDetails._id) ? ("Make Baseline Image"): "This is the Baseline Image"}</button> :
+                              null
+                          }
+
                         </span>
                       </td>
                     </tr>
@@ -187,7 +200,7 @@ class ScreenshotView extends Component {
                 </Table>
               </div>
             </Tab>
-            <Tab eventKey="history" title="History">
+            <Tab eventKey="history" disabled={ !this.state.currentScreenshotDetails.platform || !this.state.currentScreenshotDetails.view } title="History">
               <div className="image-page-holder">
                 <CardDeck className="card-deck-history">
                   { this.state.currentScreenshotHistory != null ? (
@@ -229,7 +242,7 @@ class ScreenshotView extends Component {
                 </CardDeck>
               </div>
             </Tab>
-            <Tab eventKey="baseline" title="Compare with Baseline">
+            <Tab eventKey="baseline" title="Compare with Baseline" disabled={ !this.state.currentScreenshotDetails.platform || !this.state.currentScreenshotDetails.view }>
               <div className="image-page-holder">{ this.state.currentBaselineCompare ? ( this.isBaseline(this.state.currentScreenshotDetails._id) ? ("The current image is the baseline"): <img className="screenshot" src={this.state.currentBaselineCompare} alt="Compare" /> ) : "No Baseline selected yet for this view and deviceName or browser combination. To select a baseline, navigate to the image you want as a baseline and click on the \"Make Baseline Image\" button" }</div>
             </Tab>
         </Tabs>

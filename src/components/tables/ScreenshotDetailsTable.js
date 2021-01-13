@@ -33,7 +33,10 @@ class ScreenshotDetailsTable extends Component {
       <tbody>
         <tr>
           <td><strong>View</strong></td>
-          <td>{this.props.currentScreenshotDetails.view} (<a title={`Find all the latest screenshots for view "${this.props.currentScreenshotDetails.view}", grouped by platform.`} href="/" onClick={(e) => this.navigateToViewsPage(this.props.currentScreenshotDetails.view, e)}>see other platforms</a>)</td>
+          <td> { this.props.currentScreenshotDetails.view ? (
+              <span> { this.props.currentScreenshotDetails.view } <a title={`Find all the latest screenshots for view "${this.props.currentScreenshotDetails.view}", grouped by platform.`} href="/" onClick={(e) => this.navigateToViewsPage(this.props.currentScreenshotDetails.view, e)}>see other platforms</a></span>
+            ) : "No view provided"}
+          </td>
         </tr>
         <tr>
           <td><strong>Date taken</strong></td>
@@ -49,15 +52,15 @@ class ScreenshotDetailsTable extends Component {
         </tr>
         <tr>
           <td><strong>Platform Name</strong></td>
-          <td>{this.props.currentScreenshotDetails.platform.platformName}</td>
+          <td>{ this.props.currentScreenshotDetails.platform ? this.props.currentScreenshotDetails.platform.platformName : "No platform provided"}</td>
         </tr>
         <tr>
           <td><strong>Browser</strong></td>
-          <td>{this.props.currentScreenshotDetails.platform.browserName}</td>
+          <td>{this.props.currentScreenshotDetails.platform ? this.props.currentScreenshotDetails.platform.browserName: "No browser provided"}</td>
         </tr>
         <tr>
           <td><strong>Version</strong></td>
-          <td>{this.props.currentScreenshotDetails.platform.browserVersion}</td>
+          <td>{ this.props.currentScreenshotDetails.platform ? this.props.currentScreenshotDetails.platform.browserVersion: "No browser version provided"}</td>
         </tr>
         {
           this.props.isBaseline !== undefined ? (

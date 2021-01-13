@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Carousel from 'react-multi-carousel';
+import Moment from 'react-moment';
 
 class ImageCarousel extends Component {
 
@@ -113,7 +114,7 @@ class ImageCarousel extends Component {
           this.props.screenshots ? (
             this.props.screenshots.map((screenshot, index)  =>
               <div key={index}>
-                <div className={`card-text ${ this.isSelectedId(screenshot._id) ? "card-text-active" : ""}`}>{index + 1} - {screenshot.view}</div>
+                <div className={`card-text ${ this.isSelectedId(screenshot._id) ? "card-text-active" : ""}`}>{index + 1} - { screenshot.view ? screenshot.view : "screenshot-" + (index+1)}</div>
                 <img
                   className={`${ this.isSelectedId(screenshot._id) ? "card-active" : ""}`}
                   style={{ height: 250}} alt={screenshot.view}

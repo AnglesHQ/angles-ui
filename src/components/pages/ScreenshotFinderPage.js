@@ -155,9 +155,9 @@ class ScreenshotFinderPage extends Component {
             </Form.Group>
             <Form.Group as={Col} className={"tag-form-group tag-form-group-platform"}>
               {
-                 this.state.groupType === "tag" ? (
+                 this.state.groupType === "tag" && this.state.platforms && this.state.platforms.length > 0 ? (
                     <div>
-                       <Form.Label htmlFor="platformSelect"><b>Platform</b></Form.Label>
+                       <Form.Label htmlFor="platformSelect"><b>Platform ({this.state.platforms.length})</b></Form.Label>
                        <Form.Control id="platformSelect" as="select" onChange={ this.filterByPlatform }>
                          {
                            this.state.platforms.map((platform, index) => {

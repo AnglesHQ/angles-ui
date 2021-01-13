@@ -141,6 +141,10 @@
   background: #b5a5a53b;
 }
 
+.screenshot-details-td {
+  width: 20em;
+}
+
 .table-screenshot-details {
   font-size: 12px;
   min-width: 20em;
