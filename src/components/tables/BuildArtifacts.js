@@ -32,8 +32,8 @@ class BuildArtifacts extends Component {
         { this.state.expanded ?
           <tbody >
           {
-            this.props.build.artifacts.map(artifact => {
-                return <tr colSpan="100%">
+            this.props.build.artifacts.map((artifact, index) => {
+                return <tr colSpan="100%" key={index}>
                   <th scope="row">{ artifact.groupId ? (`${artifact.groupId}.`): null}{artifact.artifactId}</th>
                   <td>{artifact.version}</td>
                 </tr>

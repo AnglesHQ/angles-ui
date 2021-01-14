@@ -54,6 +54,18 @@ class ScreenshotDetailsTable extends Component {
           <td><strong>Platform Name</strong></td>
           <td>{ this.props.currentScreenshotDetails.platform ? this.props.currentScreenshotDetails.platform.platformName : "No platform provided"}</td>
         </tr>
+        { this.props.currentScreenshotDetails.platform && this.props.currentScreenshotDetails.platform.platformVersion ? (
+          <tr>
+            <td><strong>Platform Version</strong></td>
+            <td>{ this.props.currentScreenshotDetails.platform.platformVersion }</td>
+          </tr> ): null
+        }
+        { this.props.currentScreenshotDetails.platform && this.props.currentScreenshotDetails.platform.deviceName ? (
+          <tr>
+            <td><strong>Device</strong></td>
+            <td>{ this.props.currentScreenshotDetails.platform.deviceName }</td>
+          </tr> ): null
+        }
         <tr>
           <td><strong>Browser</strong></td>
           <td>{this.props.currentScreenshotDetails.platform ? this.props.currentScreenshotDetails.platform.browserName: "No browser provided"}</td>

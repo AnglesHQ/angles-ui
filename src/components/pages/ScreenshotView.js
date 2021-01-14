@@ -29,17 +29,18 @@ class ScreenshotView extends Component {
       this.setState({ currentScreenshotDetails: res.data })
       if (this.state.currentScreenshotDetails != null && this.state.currentScreenshotDetails.view != null) {
         // if there is a view, retrieve the history
-        this.getScreenshotHistoryByView(this.state.currentScreenshotDetails.view, 10);
+        this.getScreenshotHistoryByView(this.state.currentScreenshotDetails.view, this.state.currentScreenshotDetails.platformId, 10);
         if (this.state.currentScreenshotDetails.platform)
           this.getBaseLineDetails(this.state.currentScreenshotDetails);
       }
     })
   }
 
-  getScreenshotHistoryByView = (view, limit, offset) => {
+  getScreenshotHistoryByView = (view, platformId, limit, offset) => {
     return axios.get('/screenshot/', {
       params: {
         view,
+        platformId,
         limit,
         offset
       }
@@ -228,8 +229,15 @@ class ScreenshotView extends Component {
                                       <td><strong>Resolution: </strong>{screenshot.width} x {screenshot.height}</td>
                                     </tr>
                                     <tr>
-                                      <td><strong>Platform: </strong>{ screenshot.platform ? (screenshot.platform.platformName) : "" } { screenshot.platform && screenshot.platform.browserName ? ( ` (${screenshot.platform.browserName}${ screenshot.platform.browserVersion ? (" " + screenshot.platform.browserVersion) : "" })` ) : "" }</td>
+                                      <td><strong>Platform: </strong>{ screenshot.platform ? (screenshot.platform.platformName) : "" } { screenshot.platform && screenshot.platform.platformVersion ? (screenshot.platform.platformVersion) : "" } { screenshot.platform && screenshot.platform.browserName ? ( ` (${screenshot.platform.browserName}${ screenshot.platform.browserVersion ? (" " + screenshot.platform.browserVersion) : "" })` ) : "" }</td>
                                     </tr>
+                                    {
+                                      screenshot.platform && screenshot.platform.deviceName ? (
+                                        <tr>
+                                          <td><strong>Device: </strong>{ screenshot.platform.deviceName }</td>
+                                        </tr>
+                                      ) : null
+                                    }
                                   </tbody>
                                 </Table>
                               </div>
