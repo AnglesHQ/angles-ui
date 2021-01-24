@@ -1,11 +1,15 @@
 {
   "name": "angles-ui",
-  "version": "1.0.0-BETA2",
+  "version": "1.0.0-BETA4",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/AnglesHQ/angles-ui.git"
   },
-  "license": "MIT",
+  "author": "Sergio Neves Barros",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/AnglesHQ/angles-ui/issues"
+  },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.1",
     "@testing-library/jest-dom": "^4.2.4",

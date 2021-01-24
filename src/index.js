@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router} from 'react-router-dom'
 
 import './index.css';
-import './assets/normalize.css'
 import '@fortawesome/fontawesome-free/js/all.js';
 
 import App from './containers/App';

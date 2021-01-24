@@ -1,5 +1,9 @@
 import React, { Component } from 'react'
 import Moment from 'react-moment';
+import Tooltip from 'react-bootstrap/Tooltip'
+import Popover from 'react-bootstrap/Popover'
+import OverlayTrigger from 'react-bootstrap//OverlayTrigger'
+import TestDetailsTable from '../tables/TestDetailsTable';
 import { withRouter} from 'react-router-dom';
 
 class MatrixTable extends Component {
@@ -37,9 +41,7 @@ reorganiseSuitsForMatrix = () => {
           }
           artifacts[artifactIdentifier][build._id] = artifact.version;
         })
-
     }
-
 
     // go through the invividual states.
     build.suites.forEach(suite => {
@@ -69,6 +71,27 @@ render() {
   // populate suite rows and test rows
   let rows = [];
 
+  //start date
+  rows.push(<tr key={`artifact-header-start-date`}>
+            <td><b>Start Date</b></td>
+            {
+              this.state.headers.map((build) => {
+                return <td key={`start_${build._id}`}><Moment format="DD-MM-YYYY HH:mm">{build.start}</Moment></td>
+              })
+            }
+            </tr>);
+
+  // Environment
+  rows.push(<tr key={`artifact-header-environment`}>
+            <td><b>Environment</b></td>
+            {
+              this.state.headers.map((build) => {
+                return <td key={`environment_${build._id}`}>{build.environment.name}</td>
+              })
+            }
+            </tr>);
+  rows.push(<tr key={`artifact-footer-environment`}><td colSpan="100%"></td></tr>);
+
   // artifacts
   if (this.state.artifacts && Object.keys(this.state.artifacts).length > 0) {
     rows.push(<tr key={`artifact-header`} className="table-info"><td colSpan="100%"><b>Artifacts</b></td></tr>);
@@ -97,7 +120,23 @@ render() {
       this.state.headers.forEach(build => {
           let testDetails = this.state.matrixSuites[suiteName][testName][build._id]
           if (testDetails) {
-            testResults.push(<td key={`${suiteName}.${testName}${build._id}`} className={`${(testDetails.status === 'PASS') ? "table-success" : ""}`}>{testDetails.status}</td>);
+            let popover = (
+              <Popover id="popover-basic">
+                <Popover.Title as="h3"><b>Test: </b>{testDetails.title}</Popover.Title>
+                <Popover.Content>
+                    <TestDetailsTable execution={testDetails}/>
+                </Popover.Content>
+              </Popover>
+            );
+            testResults.push(<td key={`${suiteName}.${testName}${build._id}`} className={`${(testDetails.status === 'PASS') ? "table-success" : (testDetails.status === 'FAIL')? "table-danger" : (testDetails.status === 'ERROR')? "table-warning" : null }`}>
+            <OverlayTrigger trigger={['hover', 'focus']} overlay={popover}>
+              <span className="d-inline-block">
+                <div disabled style={{ pointerEvents: 'none' }}>
+                    {testDetails.status}
+                </div>
+              </span>
+            </OverlayTrigger>
+            </td>);
           } else {
             testResults.push(<td key={`${suiteName}.${testName}${build._id}`}>N/A</td>);
           }
@@ -116,7 +155,7 @@ render() {
         <th scope="col">Matrix</th>
         {
           this.state.headers.map(build => {
-                return <th key={build._id} scope="col"><Moment format="DD-MM-YYYY HH:mm">{build.start}</Moment></th>
+              return <th key={build._id} scope="col"><div>{build.name}</div></th>
           })
         }
       </tr>

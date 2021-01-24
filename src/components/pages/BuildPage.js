@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios';
 import BuildResultsPieChart from '../charts/BuildResultsPieChart';
+import BuildFeaturePieChart from '../charts/BuildFeaturePieChart';
 import SuiteTable from '../tables/SuiteTable';
 import BuildSummary from '../tables/BuildSummary';
 import BuildArtifacts from '../tables/BuildArtifacts';
@@ -45,7 +46,7 @@ class BuildPage extends Component {
         <BuildArtifacts build={this.state.currentBuild} />
         <div className="graphContainerParent">
           <BuildResultsPieChart build={this.state.currentBuild} />
-          <BuildResultsPieChart build={this.state.currentBuild} />
+          <BuildFeaturePieChart build={this.state.currentBuild} />
         </div>
         <br/>
         <div>

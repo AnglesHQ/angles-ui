@@ -17,8 +17,8 @@ class ActionComponent extends Component {
 
   render () {
     return [
-      <tr key={"action_" + this.props.index} className="action-description" onClick={(e)=>this.toggleSteps(e)}>
-        <td className={`${this.props.action.status}`} colSpan="100%">{this.props.action.name}</td>
+      <tr key={`action_${this.props.index}_${this.state.open}`} className="action-description" onClick={(e)=>this.toggleSteps(e)}>
+        <td className={`${this.props.action.status}`} colSpan="100%"><i title="Click to display/hide test steps" className={ this.state.open ? ('fa fa-caret-down'): 'fas fa-caret-right' }></i><span>{this.props.action.name}</span></td>
       </tr>,
       <tr key={"steps_tables_" + this.props.index}>
       { this.state.open ? (

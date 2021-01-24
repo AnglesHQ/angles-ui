@@ -51,11 +51,7 @@ class AnglesMenu extends Component {
         </a>
         <a id="about" className="bm-item" href="/about">
           <i className="fa fa-fw fa-info"></i>
-          <span>About</span>
-        </a>
-        <a id="contact" className="bm-item" href="/contact">
-          <i className="fa fa-fw fa-phone"></i>
-          <span>Contact</span>
+          <span>About Angles</span>
         </a>
       </Menu>
     );

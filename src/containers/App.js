@@ -6,6 +6,8 @@ import SummaryPage from '../components/pages/SummaryPage'
 import BuildPage from '../components/pages/BuildPage'
 import MatrixPage from '../components/pages/MatrixPage'
 import ScreenshotFinderPage from '../components/pages/ScreenshotFinderPage'
+import AboutPage from '../components/pages/AboutPage'
+import NotFoundPage from '../components/pages/NotFoundPage'
 import { withRouter} from 'react-router-dom';
 import queryString from 'query-string';
 import './App.css';
@@ -85,6 +87,8 @@ class App extends Component {
               return <MatrixPage {...props} currentTeam={this.state.currentTeam} />
             }} />
             <Route exact path="/screenshot-finder/" render={props => { return <ScreenshotFinderPage {...props} /> }} />
+            <Route exact path="/about/" render={props => { return <AboutPage {...props} /> }} />
+            <Route render={props => { return <NotFoundPage {...props} /> }} />
           </Switch>
         </main>
       </div>

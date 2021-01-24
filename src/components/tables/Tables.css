@@ -109,6 +109,10 @@
   padding-bottom: 5px;
 }
 
+.action-description td > span {
+  padding-left: 15px;
+}
+
 .action-steps {
   padding-left: 5px;
   background: white;
@@ -126,13 +130,13 @@
   /* color: orange; */
 }
 
-
 .steps-table {
     border-collapse:separate;
     border:solid lightgray 1px;
     border-radius:10px;
     -moz-border-radius:6px;
     width: 100%;
+    border-spacing: 0px;
 }
 
 /* .steps-table td, th {
@@ -191,4 +195,9 @@
 .expand-artfifacts-span {
   float: right;
   padding-right: 10px;
+}
+
+
+.table-test-details {
+  border: none;
 }

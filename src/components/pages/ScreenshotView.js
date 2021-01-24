@@ -75,6 +75,10 @@ class ScreenshotView extends Component {
      );
       this.setState({ currentBaselineCompare: "data:;base64," + base64 });
     })
+    .catch((err) => {
+      // failed to retrieve baseline.
+      this.setState({ currentBaselineCompare: "ERROR" });
+    })
   }
 
   getBaseLineDetails = (screenshot) => {
@@ -169,7 +173,6 @@ class ScreenshotView extends Component {
           <Alert variant="info">To enable the "History" and "Compare with Baseline" tabs please provide a view and platform details when uploading the screenshots to angles.</Alert> :
             null
         }
-
         <Tabs id="image-tabs" defaultActiveKey="image" onSelect={(key, evt) => this.setTab(key, evt)} >
             <Tab eventKey="image" title="Image">
               <div className="image-page-holder">
@@ -223,6 +226,9 @@ class ScreenshotView extends Component {
                                         <Moment format="DD-MM-YYYY HH:mm:ss">
                                           {screenshot.timestamp}
                                         </Moment>
+                                        { !this.isSelectedId(screenshot._id) ? (
+                                          <span> (<a title={`Go to test run`} href={`/build?buildId=${screenshot.build}`}>test run</a>)</span>
+                                        ): null }
                                       </td>
                                     </tr>
                                     <tr>
@@ -251,7 +257,19 @@ class ScreenshotView extends Component {
               </div>
             </Tab>
             <Tab eventKey="baseline" title="Compare with Baseline" disabled={ !this.state.currentScreenshotDetails.platform || !this.state.currentScreenshotDetails.view }>
-              <div className="image-page-holder">{ this.state.currentBaselineCompare ? ( this.isBaseline(this.state.currentScreenshotDetails._id) ? ("The current image is the baseline"): <img className="screenshot" src={this.state.currentBaselineCompare} alt="Compare" /> ) : "No Baseline selected yet for this view and deviceName or browser combination. To select a baseline, navigate to the image you want as a baseline and click on the \"Make Baseline Image\" button" }</div>
+              <div className="image-page-holder">
+              { this.state.currentBaseLineDetails ? (
+                  this.isBaseline(this.state.currentScreenshotDetails._id) ?
+                    "The current image is the baseline"
+                  : this.state.currentBaselineCompare ? (
+                    this.state.currentBaselineCompare !== "ERROR" ? (
+                      <img className="screenshot" src={this.state.currentBaselineCompare} alt="Compare" />
+                    ): "Failed to retrieve basedline compare."
+                  ) : "Attempting to load base line compare."
+                )
+              : "No Baseline selected yet for this view and deviceName or browser combination. To select a baseline, navigate to the image you want as a baseline and click on the \"Make Baseline Image\" button"
+              }
+              </div>
             </Tab>
         </Tabs>
       </div>

@@ -21,7 +21,9 @@ class StepsTable extends Component {
     let thumbnail = undefined;
     if (this.state.screenshots !== undefined && screenshotId !== undefined) {
       let image = this.state.screenshots.filter(screenshot => screenshot._id === screenshotId)[0];
-      return image.thumbnail;
+      if (image !== undefined) {
+        return image.thumbnail;
+      }
     }
     return thumbnail;
   }
