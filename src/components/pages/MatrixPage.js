@@ -29,7 +29,9 @@ class MatrixPage extends Component {
 
   render() {
     if (this.state.matrixBuilds.length === 0) {
-      return null;
+      return <div className="alert alert-primary" role="alert">
+        <span><i className="fas fa-spinner fa-pulse fa-2x"></i> Retrieving build details to generate the matrix view.</span>
+      </div>;
     }
     return (
       <div>

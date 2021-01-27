@@ -94,7 +94,7 @@ render() {
 
   // artifacts
   if (this.state.artifacts && Object.keys(this.state.artifacts).length > 0) {
-    rows.push(<tr key={`artifact-header`} className="table-info"><td colSpan="100%"><b>Artifacts</b></td></tr>);
+    rows.push(<tr key={`artifact-header`} className="table-info"><td colSpan="100%"><b>Artifacts [{Object.keys(this.state.artifacts).length}]</b></td></tr>);
     Object.keys(this.state.artifacts).forEach(artifactIdentifier => {
         let versions = [];
         this.state.headers.forEach(build => {

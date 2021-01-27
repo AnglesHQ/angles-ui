@@ -159,7 +159,9 @@ class ScreenshotView extends Component {
 
   render() {
     if (!this.state.currentScreenshotDetails) {
-      return <div><span>no details</span></div>;
+      return <div className="alert alert-primary" role="alert">
+        <span><i className="fas fa-spinner fa-pulse fa-2x"></i> Retrieving screenshot details.</span>
+      </div>
     }
     return (
       <div >

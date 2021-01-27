@@ -25,11 +25,13 @@ class BuildPage extends Component {
     .then((data) => {
       this.setState({ currentBuild: data });
     })
-    .catch(console.log);
+    .catch((err) => {
+        this.setState({ currentBuild: {} })
+    });
   }
 
   getScreenshotDetails = (buildId) => {
-    return axios.get('/screenshot/?buildId=' + buildId)
+    return axios.get(`/screenshot/?buildId=${buildId}&limit=100`)
     .then((res) =>
       this.setState({ screenshots: res.data })
     )
@@ -37,7 +39,16 @@ class BuildPage extends Component {
 
   render() {
     if (!this.state.currentBuild) {
-      return null;
+      return <div className="alert alert-primary" role="alert">
+              <span><i className="fas fa-spinner fa-pulse fa-2x"></i> Retrieving build details.</span>
+          </div>
+    }
+    if (this.state.currentBuild == {}) {
+        return <div>
+            <div className="alert alert-danger" role="alert">
+                <span>Unable to retrieve build details. Please refresh the page and try again.</span>
+            </div>
+        </div>
     }
     return (
       <div >

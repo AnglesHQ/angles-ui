@@ -45,6 +45,10 @@
    background-color: #c61410;
 }
 
+.suite-table .test-row .ERROR {
+   background-color: #ff8000;
+}
+
 .suite-table .test-row span {
    padding-left: 1em;
 }
@@ -73,6 +77,11 @@
 .suite-result-FAIL {
   font-weight: bold;
   color: #c61410;
+}
+
+.suite-result-ERROR {
+    font-weight: bold;
+    color: #ff8000;
 }
 
 .suite-result-SKIPPED {

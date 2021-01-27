@@ -1,4 +1,3 @@
-// TODO: add page to find screenshots by tag or by view (and maybe add platform filter).
 import React, { Component } from 'react'
 import Alert from 'react-bootstrap/Alert'
 import 'react-multi-carousel/lib/styles.css';
