@@ -46,7 +46,7 @@
 }
 
 .suite-table .test-row .ERROR {
-   background-color: #ff8000;
+   background-color: rgba(255, 135, 29, 0.61);
 }
 
 .suite-table .test-row span {
@@ -56,6 +56,13 @@
 .suite-table .test-row i {
    width: 10px;
    padding: 3px;
+}
+
+.suite-table .test-row .device-details {
+    color: #686467;
+    font-size: 14px;
+    font-weight: lighter;
+    padding-left: 30px;
 }
 
 .suite-table > tbody:before {
@@ -193,6 +200,16 @@
 .steps-table .PASS {
   font-weight: bold;
   color: #98dc79
+}
+
+.steps-table .FAIL {
+    font-weight: bold;
+    color: #c61410
+}
+
+.steps-table .ERROR {
+    font-weight: bold;
+    color: #ff8000
 }
 
 .screenshot-thumbnail {

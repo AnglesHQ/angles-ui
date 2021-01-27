@@ -61,6 +61,21 @@ class StepsTable extends Component {
         </thead>
         <tbody>
           { this.props.action.steps.map((step, index) => {
+            if (step.status === "ERROR" || step.status == "INFO") {
+              return <tr key={"steps_" + index}>
+                <td>{index+1}</td>
+                <td><Moment format="HH:mm:ss">{step.time}</Moment></td>
+                <td className={`${step.status}`}>{step.status}</td>
+                <td colSpan={4}>{step.info}</td>
+                {
+                  step.screenshot ? (<td onClick={() => this.openModal(step.screenshot)}>
+                      <img className="screenshot-thumbnail"
+                           src={"data:image/png;base64, " + this.getScreenShot(step.screenshot)}
+                           alt="Thumbnail"/></td>) : <td/>
+                }
+              </tr>
+            }
+
             return <tr key={"steps_" + index}>
               <td>{index+1}</td>
               <td><Moment format="HH:mm:ss">{step.time}</Moment></td>
@@ -69,8 +84,13 @@ class StepsTable extends Component {
               <td>{step.expected}</td>
               <td>{step.actual}</td>
               <td>{step.info}</td>
-              <td onClick={() => this.openModal(step.screenshot)}>{ step.screenshot ? ( <img className="screenshot-thumbnail" src={"data:image/png;base64, " + this.getScreenShot(step.screenshot)} alt="Thumbnail" /> ) : null }</td>
-            </tr>
+              {
+                step.screenshot ? (<td onClick={() => this.openModal(step.screenshot)}>
+                  <img className="screenshot-thumbnail"
+                       src={"data:image/png;base64, " + this.getScreenShot(step.screenshot)}
+                       alt="Thumbnail"/></td>) : <td/>
+              }
+             </tr>
             })
           }
           <Modal show={this.state.showModal} onHide={this.closeModal} dialogClassName="screenshot-modal">

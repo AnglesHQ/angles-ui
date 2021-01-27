@@ -15,6 +15,20 @@ class ExecutionTable extends Component {
     this.setState({open: !this.state.open})
   }
 
+  getPlatformName = (execution) => {
+    let platformsToDisplay = [];
+    if (execution.platforms) {
+      execution.platforms.forEach((platform) => {
+        if (platform.deviceName) {
+          platformsToDisplay.push(`${platform.deviceName} [${platform.platformName}${platform.platformVersion ? platform.platformVersion: null }]`);
+        } else {
+          platformsToDisplay.push(`${platform.browserName}${platform.browserVersion ? ' - ' + platform.browserVersion: null } [${platform.platformName}]`);
+        }
+      })
+    }
+    return platformsToDisplay.join(', ');
+  }
+
   render () {
     return [
       <tr key={"execution_" + this.props.index} className="test-row" onClick={(e)=>this.toggleActions(e)} >
@@ -23,6 +37,7 @@ class ExecutionTable extends Component {
             <i title="Click to display/hide test steps" className={ this.state.open ? ('fa fa-caret-down'): 'fas fa-caret-right' }></i>
           </span>
           <span>Test: {this.props.execution.title}</span>
+          { this.props.execution.platforms && this.props.execution.platforms.length > 0 ? <span class="device-details">{this.getPlatformName(this.props.execution)}</span> : null }
         </td>
       </tr>,
       <tr key={"execution_actions_" + this.props.index} className="actions-row">
