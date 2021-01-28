@@ -17,6 +17,7 @@ class BuildPage extends Component {
     this.state = {
       showModal: false,
       currentShotId: null,
+      screenshots: null,
       query: queryString.parse(this.props.location.search),
     };
     this.getBuildDetails(this.state.query.buildId);
@@ -37,9 +38,9 @@ class BuildPage extends Component {
 
   getScreenshotDetails = (buildId) => {
     return axios.get(`/screenshot/?buildId=${buildId}&limit=100`)
-    .then((res) =>
-      this.setState({ screenshots: res.data })
-    )
+    .then((res) => {
+      this.setState({ screenshots: res.data });
+    })
   }
 
   componentDidMount() {
@@ -60,17 +61,17 @@ class BuildPage extends Component {
   }
 
   render() {
-    if (!this.state.currentBuild) {
+    if (!this.state.currentBuild || !this.state.screenshots ) {
       return <div className="alert alert-primary" role="alert">
-              <span><i className="fas fa-spinner fa-pulse fa-2x"></i> Retrieving build details.</span>
-          </div>
-    }
-    if (this.state.currentBuild == {}) {
-        return <div>
-            <div className="alert alert-danger" role="alert">
-                <span>Unable to retrieve build details. Please refresh the page and try again.</span>
-            </div>
+          <span><i className="fas fa-spinner fa-pulse fa-2x"></i> Retrieving build details.</span>
         </div>
+    }
+    if (this.state.currentBuild === {}) {
+      return <div>
+        <div className="alert alert-danger" role="alert">
+            <span>Unable to retrieve build details. Please refresh the page and try again.</span>
+        </div>
+      </div>
     }
     return (
       <div >

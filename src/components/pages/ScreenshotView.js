@@ -18,7 +18,8 @@ class ScreenshotView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      buildScreenshots: this.props.buildScreenshots
+      buildScreenshots: this.props.buildScreenshots,
+      currentScreenshot: null
     };
     this.loadScreenshot(this.props.selectedScreenshotId)
   }
@@ -61,6 +62,9 @@ class ScreenshotView extends Component {
        ),
      );
       this.setState({ currentScreenshot: "data:;base64," + base64 });
+    }).catch((err) => {
+      // failed to retrieve baseline.
+      this.setState({ currentScreenshot: "ERROR" });
     })
   }
 
@@ -134,6 +138,7 @@ class ScreenshotView extends Component {
   }
 
   loadScreenshot = (screenshotId) => {
+    if (this.state.screenshot ) this.setState({ currentScreenshot: null });
     this.getScreenshotDetails(screenshotId);
     this.getScreenshot(screenshotId);
   }
@@ -158,7 +163,7 @@ class ScreenshotView extends Component {
   }
 
   render() {
-    if (!this.state.currentScreenshotDetails) {
+    if (!this.state.buildScreenshots || !this.state.currentScreenshotDetails) {
       return <div className="alert alert-primary" role="alert">
         <span><i className="fas fa-spinner fa-pulse fa-2x"></i> Retrieving screenshot details.</span>
       </div>
@@ -187,7 +192,17 @@ class ScreenshotView extends Component {
                       </div>
                       </td>
                       <td>
-                        { this.state.currentScreenshot ? ( <img className="screenshot" src={this.state.currentScreenshot} alt="Screenshot" /> ) : null }
+                        {
+                          this.state.currentScreenshot ? (
+                            this.state.currentScreenshot === "ERROR" ? (
+                              <div className="alert alert-danger" role="alert">
+                                  <span>Unable to retrieve image. Please refresh the page and try again.</span>
+                              </div>
+                            ) : <img className="screenshot" src={this.state.currentScreenshot} alt="Screenshot" /> ) :
+                          <div className="alert alert-primary" role="alert">
+                            <span><i className="fas fa-spinner fa-pulse fa-2x"></i> Retrieving screenshot.</span>
+                          </div>
+                        }
                       </td>
                     </tr>
                     <tr>
@@ -214,7 +229,9 @@ class ScreenshotView extends Component {
                       return [
                           <Card key={index} className={`screenshotCard ${ this.isSelectedId(screenshot._id) ? "card-active" : ""}`}>
                             { this.isBaseline(screenshot._id) ? (<div className="card-img-overlay baseline-overlay"><p>baseline</p></div>) : null }
-                            <Card.Img variant="top" src={"data:image/png;base64, " + screenshot.thumbnail} />
+                            { !this.isSelectedId(screenshot._id) ? (
+                              <a title={`Go to screenshot`} href={`/build?buildId=${screenshot.build}&loadScreenshotId=${screenshot._id}`}><Card.Img variant="top" src={"data:image/png;base64, " + screenshot.thumbnail} /></a>
+                            ): <Card.Img variant="top" src={"data:image/png;base64, " + screenshot.thumbnail} /> }
                             <Card.Body>
                               <Card.Footer>
                               <div>
@@ -228,9 +245,6 @@ class ScreenshotView extends Component {
                                         <Moment format="DD-MM-YYYY HH:mm:ss">
                                           {screenshot.timestamp}
                                         </Moment>
-                                        { !this.isSelectedId(screenshot._id) ? (
-                                          <span> (<a title={`Go to screenshot`} href={`/build?buildId=${screenshot.build}&loadScreenshotId=${screenshot._id}`}>navigate to screenshot</a>)</span>
-                                        ): null }
                                       </td>
                                     </tr>
                                     <tr>
