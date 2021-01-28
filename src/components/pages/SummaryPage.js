@@ -16,7 +16,7 @@ class SummaryPage extends Component {
       selectedBuilds: {},
       buildCount: 0,
       currentSkip: 0,
-      limit: 10,
+      limit: 15,
     };
   }
 

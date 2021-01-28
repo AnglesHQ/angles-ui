@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import Moment from 'react-moment';
 import { withRouter} from 'react-router-dom';
-import Modal from 'react-bootstrap/Modal';
-import ScreenshotView from '../pages/ScreenshotView'
 import '../pages/Default.css'
+import queryString from 'query-string';
 
 class StepsTable extends Component {
 
@@ -11,10 +10,8 @@ class StepsTable extends Component {
     super(props);
     this.state = {
       screenshots : props.screenshots,
-      showModal: false,
-      currentShotId: null
+      query: queryString.parse(this.props.location.search),
     };
-    this.closeModal = this.closeModal.bind(this);
   }
 
   getScreenShot = (screenshotId) => {
@@ -33,20 +30,9 @@ class StepsTable extends Component {
     history.push(`/image/${imageId}`)
   }
 
-  closeModal = () => {
-    this.setState({'showModal':false})
-  }
-
-  openModal = (imageId) => {
-    this.setState({
-        showModal:true,
-        currentShotId: imageId
-      })
-  }
-
   render () {
     return [
-      <table className="steps-table" key={"steps_table_" + this.props.xindex}>
+      <table className="steps-table" key={"steps_table_" + this.props.index}>
         <thead>
           <tr>
             <th>#</th>
@@ -68,7 +54,7 @@ class StepsTable extends Component {
                 <td className={`${step.status}`}>{step.status}</td>
                 <td colSpan={4}>{step.info}</td>
                 {
-                  step.screenshot ? (<td onClick={() => this.openModal(step.screenshot)}>
+                  step.screenshot ? (<td onClick={() => this.props.openModal(step.screenshot)}>
                       <img className="screenshot-thumbnail"
                            src={"data:image/png;base64, " + this.getScreenShot(step.screenshot)}
                            alt="Thumbnail"/></td>) : <td/>
@@ -93,14 +79,6 @@ class StepsTable extends Component {
              </tr>
             })
           }
-          <Modal show={this.state.showModal} onHide={this.closeModal} dialogClassName="screenshot-modal">
-            <Modal.Header closeButton>
-              <Modal.Title>Screenshot Viewer</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <ScreenshotView buildScreenshots={this.state.screenshots} selectedScreenshotId={this.state.currentShotId}/>
-            </Modal.Body>
-          </Modal>
         </tbody>
       </table>
     ]

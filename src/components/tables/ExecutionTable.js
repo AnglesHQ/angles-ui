@@ -37,7 +37,7 @@ class ExecutionTable extends Component {
             <i title="Click to display/hide test steps" className={ this.state.open ? ('fa fa-caret-down'): 'fas fa-caret-right' }></i>
           </span>
           <span>Test: {this.props.execution.title}</span>
-          { this.props.execution.platforms && this.props.execution.platforms.length > 0 ? <span class="device-details">{this.getPlatformName(this.props.execution)}</span> : null }
+          { this.props.execution.platforms && this.props.execution.platforms.length > 0 ? <span className="device-details">{this.getPlatformName(this.props.execution)}</span> : null }
         </td>
       </tr>,
       <tr key={"execution_actions_" + this.props.index} className="actions-row">
@@ -47,7 +47,7 @@ class ExecutionTable extends Component {
               <tbody>
                 { this.props.execution.actions.map((action, index) => {
                   return [
-                    <ActionComponent key={"action_" + index} action={action} index={index} screenshots={this.props.screenshots} />
+                    <ActionComponent key={"action_" + index} action={action} index={index} screenshots={this.props.screenshots} openModal={this.props.openModal} />
                   ]
                 })
               }

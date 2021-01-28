@@ -7,16 +7,21 @@ import BuildSummary from '../tables/BuildSummary';
 import BuildArtifacts from '../tables/BuildArtifacts';
 import '../charts/Charts.css'
 import queryString from 'query-string';
+import ScreenshotView from "./ScreenshotView";
+import Modal from 'react-bootstrap/Modal';
 
 class BuildPage extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      showModal: false,
+      currentShotId: null,
       query: queryString.parse(this.props.location.search),
     };
     this.getBuildDetails(this.state.query.buildId);
     this.getScreenshotDetails(this.state.query.buildId);
+    this.closeModal = this.closeModal.bind(this);
   }
 
   getBuildDetails = (buildId) => {
@@ -35,6 +40,23 @@ class BuildPage extends Component {
     .then((res) =>
       this.setState({ screenshots: res.data })
     )
+  }
+
+  componentDidMount() {
+    if (this.state.query.loadScreenshotId) {
+      this.openModal(this.state.query.loadScreenshotId);
+    }
+  }
+
+  closeModal = () => {
+    this.setState({showModal: false})
+  }
+
+  openModal = (imageId) => {
+    this.setState({
+      showModal: true,
+      currentShotId: imageId
+    })
   }
 
   render() {
@@ -62,9 +84,17 @@ class BuildPage extends Component {
         <br/>
         <div>
           { this.state.currentBuild.suites.map((suite, index) => {
-              return <SuiteTable key={index} suite={suite} screenshots={this.state.screenshots} />
+              return <SuiteTable key={index} suite={suite} screenshots={this.state.screenshots} openModal={this.openModal}/>
           })}
         </div>
+        <Modal show={this.state.showModal} onHide={this.closeModal} dialogClassName="screenshot-modal">
+          <Modal.Header closeButton>
+              <Modal.Title>Screenshot Viewer</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+              <ScreenshotView buildScreenshots={this.state.screenshots} selectedScreenshotId={this.state.currentShotId}/>
+          </Modal.Body>
+         </Modal>
       </div>
     );
   }

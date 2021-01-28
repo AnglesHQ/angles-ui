@@ -229,7 +229,7 @@ class ScreenshotView extends Component {
                                           {screenshot.timestamp}
                                         </Moment>
                                         { !this.isSelectedId(screenshot._id) ? (
-                                          <span> (<a title={`Go to test run`} href={`/build?buildId=${screenshot.build}`}>test run</a>)</span>
+                                          <span> (<a title={`Go to screenshot`} href={`/build?buildId=${screenshot.build}&loadScreenshotId=${screenshot._id}`}>navigate to screenshot</a>)</span>
                                         ): null }
                                       </td>
                                     </tr>

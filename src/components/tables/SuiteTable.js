@@ -35,7 +35,7 @@ class SuiteTable extends Component {
       <tbody>
         { this.props.suite.executions.map((execution, index) => {
           return [
-            <ExecutionTable key={"execution_" + index} execution={execution} index={index} screenshots={this.props.screenshots}/>
+            <ExecutionTable key={"execution_" + index} execution={execution} index={index} screenshots={this.props.screenshots} openModal={this.props.openModal}/>
           ]
         })
       }
