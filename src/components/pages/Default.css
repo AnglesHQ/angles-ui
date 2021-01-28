@@ -191,7 +191,11 @@
   max-width: 45%;
 }
 
-
 .search-button {
   margin-top: 20px;
+}
+
+.fa-spinner {
+  margin-right: 10px;
+  font-size: 20px;
 }

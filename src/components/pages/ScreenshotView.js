@@ -21,7 +21,7 @@ class ScreenshotView extends Component {
       buildScreenshots: this.props.buildScreenshots,
       currentScreenshot: null
     };
-    this.loadScreenshot(this.props.selectedScreenshotId)
+    this.loadScreenshot(this.props.selectedScreenshotId);
   }
 
   getScreenshotDetails = (screenshotId) => {
@@ -135,10 +135,12 @@ class ScreenshotView extends Component {
   setTab = (key, evt) => {
     if (key === "baseline") {
     }
+    this.handleSelect(key);
   }
 
   loadScreenshot = (screenshotId) => {
     if (this.state.currentScreenshot ) this.setState({ currentScreenshot: null });
+    if (this.state.currentBaselineCompare) this.setState({ currentBaselineCompare: null });
     this.getScreenshotDetails(screenshotId);
     this.getScreenshot(screenshotId);
   }
@@ -151,6 +153,13 @@ class ScreenshotView extends Component {
     }
   }
 
+  componentDidMount() {
+    if (this.props.selectedTab) {
+        console.log('Tab:' + this.props.selectedTab)
+        this.handleSelect(this.props.selectedTab);
+    }
+  }
+
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevState.currentBaseLineDetails !== this.state.currentBaseLineDetails) {
       //if base line details have changed, load the new image
@@ -160,6 +169,11 @@ class ScreenshotView extends Component {
         this.setState({currentBaselineCompare: undefined});
       }
     }
+  }
+
+  handleSelect(value) {
+    if (["image", "history", "baseline"].includes(value))
+      this.setState({key: value});
   }
 
   render() {
@@ -180,7 +194,7 @@ class ScreenshotView extends Component {
           <Alert variant="info">To enable the "History" and "Compare with Baseline" tabs please provide a view and platform details when uploading the screenshots to angles.</Alert> :
             null
         }
-        <Tabs id="image-tabs" defaultActiveKey="image" onSelect={(key, evt) => this.setTab(key, evt)} >
+        <Tabs id="image-tabs" activeKey={this.state.key} defaultActiveKey="image" onSelect={(key, evt) => this.setTab(key, evt)} >
             <Tab eventKey="image" title="Image">
               <div className="image-page-holder">
                 <Table>
@@ -223,10 +237,10 @@ class ScreenshotView extends Component {
             </Tab>
             <Tab eventKey="history" disabled={ !this.state.currentScreenshotDetails.platform || !this.state.currentScreenshotDetails.view } title="History">
               <div className="image-page-holder">
-                <CardDeck className="card-deck-history">
-                  { this.state.currentScreenshotHistory != null ? (
-                    this.state.currentScreenshotHistory.map((screenshot, index) => {
-                      return [
+                { this.state.currentScreenshotHistory != null ? (
+                  <CardDeck className="card-deck-history">
+                      { this.state.currentScreenshotHistory.map((screenshot, index) => {
+                        return [
                           <Card key={index} className={`screenshotCard ${ this.isSelectedId(screenshot._id) ? "card-active" : ""}`}>
                             { this.isBaseline(screenshot._id) ? (<div className="card-img-overlay baseline-overlay"><p>baseline</p></div>) : null }
                             { !this.isSelectedId(screenshot._id) ? (
@@ -266,10 +280,15 @@ class ScreenshotView extends Component {
                               </Card.Footer>
                             </Card.Body>
                           </Card>
-                      ]
-                    })
-                  ) : "N/A" }
-                </CardDeck>
+                        ]
+                      })
+                    }
+                  </CardDeck>
+                ):
+                  <div className="alert alert-primary" role="alert">
+                    <span><i className="fas fa-spinner fa-pulse fa-2x"></i>Loading history.</span>
+                  </div>
+                }
               </div>
             </Tab>
             <Tab eventKey="baseline" title="Compare with Baseline" disabled={ !this.state.currentScreenshotDetails.platform || !this.state.currentScreenshotDetails.view }>
@@ -280,8 +299,13 @@ class ScreenshotView extends Component {
                   : this.state.currentBaselineCompare ? (
                     this.state.currentBaselineCompare !== "ERROR" ? (
                       <img className="screenshot" src={this.state.currentBaselineCompare} alt="Compare" />
-                    ): "Failed to retrieve basedline compare."
-                  ) : "Attempting to load base line compare."
+                    ): <div className="alert alert-danger" role="alert">
+                        <span>Failed to retrieve basedline compare.</span>
+                       </div>
+                  ) :
+                  <div className="alert alert-primary" role="alert">
+                    <span><i className="fas fa-spinner fa-pulse fa-2x"></i>Loading baseline compare.</span>
+                  </div>
                 )
               : "No Baseline selected yet for this view and deviceName or browser combination. To select a baseline, navigate to the image you want as a baseline and click on the \"Make Baseline Image\" button"
               }

@@ -45,7 +45,11 @@ class BuildPage extends Component {
 
   componentDidMount() {
     if (this.state.query.loadScreenshotId) {
-      this.openModal(this.state.query.loadScreenshotId);
+      if (this.state.query.selectedTab) {
+        this.openModal(this.state.query.loadScreenshotId, this.state.query.selectedTab);
+      } else {
+        this.openModal(this.state.query.loadScreenshotId);
+      }
     }
   }
 
@@ -53,10 +57,11 @@ class BuildPage extends Component {
     this.setState({showModal: false})
   }
 
-  openModal = (imageId) => {
+  openModal = (imageId, tab) => {
     this.setState({
       showModal: true,
-      currentShotId: imageId
+      currentShotId: imageId,
+      selectedTab: tab
     })
   }
 
@@ -93,7 +98,7 @@ class BuildPage extends Component {
               <Modal.Title>Screenshot Viewer</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-              <ScreenshotView buildScreenshots={this.state.screenshots} selectedScreenshotId={this.state.currentShotId}/>
+              <ScreenshotView buildScreenshots={this.state.screenshots} selectedScreenshotId={this.state.currentShotId} selectedTab={this.state.selectedTab}/>
           </Modal.Body>
          </Modal>
       </div>
