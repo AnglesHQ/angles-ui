@@ -138,7 +138,7 @@ class ScreenshotView extends Component {
   }
 
   loadScreenshot = (screenshotId) => {
-    if (this.state.screenshot ) this.setState({ currentScreenshot: null });
+    if (this.state.currentScreenshot ) this.setState({ currentScreenshot: null });
     this.getScreenshotDetails(screenshotId);
     this.getScreenshot(screenshotId);
   }
