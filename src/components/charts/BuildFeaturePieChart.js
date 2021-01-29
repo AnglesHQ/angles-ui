@@ -65,11 +65,10 @@ class BuildFeaturePieChart extends Component {
               }
           }
       });
-
+      this.renderBuildFeaturePieChart(this.piechart, this.props.build);
     }
 
     render() {
-        this.renderBuildFeaturePieChart(this.piechart, this.props.build);
         return (
           <div className="graphContainer">
             <canvas

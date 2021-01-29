@@ -41,11 +41,10 @@ class BuildBarChart extends Component {
               }
           }
       });
-
+      this.renderBuildBarChart(this.piechart, this.props.build);
     }
 
     render() {
-        this.renderBuildBarChart(this.piechart, this.props.build);
         return (
           <div className="graphContainer">
             <canvas
