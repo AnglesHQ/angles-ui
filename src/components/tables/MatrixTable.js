@@ -105,7 +105,9 @@ render() {
               versions.push(<td key={`${artifactIdentifier}.${build._id}`}>N/A</td>);
             }
         })
-        rows.push(<tr key={artifactIdentifier}>
+        let versionArray = Object.values(this.state.artifacts[artifactIdentifier]);
+        let uniquearray = versionArray.filter(function(v,i) { return i===versionArray.lastIndexOf(v); });
+        rows.push(<tr key={artifactIdentifier} className={ uniquearray.length > 1 ? 'matrix-versions-highlight' : '' }>
             <td key={`main-${artifactIdentifier}`}><b>{artifactIdentifier}</b></td>
             {versions}
         </tr>);

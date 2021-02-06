@@ -86,11 +86,11 @@
   width: 200px;
 }
 
-
 .image-page-holder {
   padding: 2em;
   border: 1px solid grey;
   border-radius: 10px;
+  min-height: 300px;
 }
 
 .screenshot-modal {

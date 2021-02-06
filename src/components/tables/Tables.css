@@ -217,13 +217,16 @@
   padding: 3px;
 }
 
-
 .expand-artfifacts-span {
   float: right;
   padding-right: 10px;
 }
 
-
 .table-test-details {
   border: none;
+}
+
+.matrix-versions-highlight {
+  background-color: #D0D0D0;
+  font-style: italic;
 }

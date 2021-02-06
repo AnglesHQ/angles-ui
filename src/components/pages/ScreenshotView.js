@@ -21,18 +21,19 @@ class ScreenshotView extends Component {
       buildScreenshots: this.props.buildScreenshots,
       currentScreenshot: null
     };
-    this.loadScreenshot(this.props.selectedScreenshotId);
   }
 
   getScreenshotDetails = (screenshotId) => {
     return axios.get('/screenshot/' + screenshotId)
     .then((res) => {
       this.setState({ currentScreenshotDetails: res.data })
-      if (this.state.currentScreenshotDetails != null && this.state.currentScreenshotDetails.view != null) {
+      if (this.state.currentScreenshotDetails != null && (this.state.currentScreenshotDetails.view !== null && this.state.currentScreenshotDetails.view !== "")) {
         // if there is a view, retrieve the history
         this.getScreenshotHistoryByView(this.state.currentScreenshotDetails.view, this.state.currentScreenshotDetails.platformId, 10);
         if (this.state.currentScreenshotDetails.platform)
           this.getBaseLineDetails(this.state.currentScreenshotDetails);
+      } else if (this.state.currentScreenshotDetails != null) {
+        this.handleSelect("image");
       }
     })
   }
@@ -139,10 +140,11 @@ class ScreenshotView extends Component {
   }
 
   loadScreenshot = (screenshotId) => {
-    if (this.state.currentScreenshot ) this.setState({ currentScreenshot: null });
-    if (this.state.currentBaselineCompare) this.setState({ currentBaselineCompare: null });
-    this.getScreenshotDetails(screenshotId);
-    this.getScreenshot(screenshotId);
+    if (this.state.currentScreenshotDetails === undefined || this.state.currentScreenshotDetails._id !== screenshotId) {
+      this.setState({ currentScreenshot: undefined, currentScreenshotHistory: undefined, currentBaselineCompare: undefined });
+      this.getScreenshotDetails(screenshotId);
+      this.getScreenshot(screenshotId);
+    }
   }
 
   isSelectedId = (screenshotId) => {
@@ -154,6 +156,7 @@ class ScreenshotView extends Component {
   }
 
   componentDidMount() {
+    this.loadScreenshot(this.props.selectedScreenshotId);
     if (this.props.selectedTab) {
         console.log('Tab:' + this.props.selectedTab)
         this.handleSelect(this.props.selectedTab);
@@ -224,10 +227,10 @@ class ScreenshotView extends Component {
                         <span style={{ float: "left" }}>
                           {
                             this.state.currentScreenshotDetails.platform ?
-                              <button onClick={() => this.updateBaseline(this.state.currentScreenshotDetails) } disabled={ this.isBaseline(this.state.currentScreenshotDetails._id) } type="button" className="btn btn-outline-primary">{ !this.isBaseline(this.state.currentScreenshotDetails._id) ? ("Make Baseline Image"): "This is the Baseline Image"}</button> :
+                              !this.state.currentScreenshotDetails.platform || !this.state.currentScreenshotDetails.view ? (null) :
+                                <button onClick={() => this.updateBaseline(this.state.currentScreenshotDetails) } disabled={ this.isBaseline(this.state.currentScreenshotDetails._id) } type="button" className="btn btn-outline-primary">{ !this.isBaseline(this.state.currentScreenshotDetails._id) ? ("Make Baseline Image"): "This is the Baseline Image"}</button> :
                               null
                           }
-
                         </span>
                       </td>
                     </tr>
