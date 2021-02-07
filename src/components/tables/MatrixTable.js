@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import Moment from 'react-moment';
-import Tooltip from 'react-bootstrap/Tooltip'
 import Popover from 'react-bootstrap/Popover'
 import OverlayTrigger from 'react-bootstrap//OverlayTrigger'
 import TestDetailsTable from '../tables/TestDetailsTable';

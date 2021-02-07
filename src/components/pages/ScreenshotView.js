@@ -19,7 +19,8 @@ class ScreenshotView extends Component {
     super(props);
     this.state = {
       buildScreenshots: this.props.buildScreenshots,
-      currentScreenshot: null
+      currentScreenshot: null,
+      currentBaseline: null,
     };
   }
 
@@ -69,6 +70,22 @@ class ScreenshotView extends Component {
     })
   }
 
+  getBaselineScreenshot = (screenshotId) => {
+    return axios.get('/screenshot/' + screenshotId + "/image", { responseType: 'arraybuffer' })
+    .then((res) => {
+      const base64 = btoa(
+       new Uint8Array(res.data).reduce(
+         (data, byte) => data + String.fromCharCode(byte),
+         '',
+       ),
+     );
+      this.setState({ currentBaseline: "data:;base64," + base64 });
+    }).catch((err) => {
+      // failed to retrieve baseline.
+      this.setState({ currentBaseline: "ERROR" });
+    })
+  }
+
   getScreenshotCompare = (screenshotId, baselineId) => {
     return axios.get('/screenshot/' + screenshotId + "/compare/" + baselineId + "/image", { responseType: 'arraybuffer' })
     .then((res) => {
@@ -95,8 +112,11 @@ class ScreenshotView extends Component {
     }
     axios.get(baselineQuery)
         .then((res) => {
+          let baseline = res.data[0];
           // to handle better in the future
-          this.setState({ currentBaseLineDetails: res.data[0] });
+          this.setState({ currentBaseLineDetails: baseline });
+          if (baseline && baseline.screenshot._id)
+            this.getBaselineScreenshot(baseline.screenshot._id);
         })
   }
 
@@ -141,7 +161,7 @@ class ScreenshotView extends Component {
 
   loadScreenshot = (screenshotId) => {
     if (this.state.currentScreenshotDetails === undefined || this.state.currentScreenshotDetails._id !== screenshotId) {
-      this.setState({ currentScreenshot: undefined, currentScreenshotHistory: undefined, currentBaselineCompare: undefined });
+      this.setState({ currentScreenshot: undefined, currentBaseline: undefined, currentScreenshotHistory: undefined, currentBaselineCompare: undefined });
       this.getScreenshotDetails(screenshotId);
       this.getScreenshot(screenshotId);
     }
@@ -175,7 +195,7 @@ class ScreenshotView extends Component {
   }
 
   handleSelect(value) {
-    if (["image", "history", "baseline"].includes(value))
+    if (["image", "history", "baseline", "sidebyside"].includes(value))
       this.setState({key: value});
   }
 
@@ -294,7 +314,7 @@ class ScreenshotView extends Component {
                 }
               </div>
             </Tab>
-            <Tab eventKey="baseline" title="Compare with Baseline" disabled={ !this.state.currentScreenshotDetails.platform || !this.state.currentScreenshotDetails.view }>
+            <Tab eventKey="baseline" title="Overlay with Baseline" disabled={ !this.state.currentScreenshotDetails.platform || !this.state.currentScreenshotDetails.view }>
               <div className="image-page-holder">
               { this.state.currentBaseLineDetails ? (
                   this.isBaseline(this.state.currentScreenshotDetails._id) ?
@@ -313,6 +333,68 @@ class ScreenshotView extends Component {
               : "No Baseline selected yet for this view and deviceName or browser combination. To select a baseline, navigate to the image you want as a baseline and click on the \"Make Baseline Image\" button"
               }
               </div>
+            </Tab>
+            <Tab eventKey="sidebyside" title="Side by Side with Baseline" disabled={ !this.state.currentScreenshotDetails.platform || !this.state.currentScreenshotDetails.view }>
+            <div className="image-page-holder">
+              <Table>
+                <tbody>
+                <tr>
+                  <td colSpan="100%" className={"sbs-header"}>
+                    Original Image
+                  </td>
+                </tr>
+                  <tr>
+                    <td className={"screenshot-details-td"}>
+                    <div>
+                      <ScreenshotDetailsTable currentScreenshotDetails={this.state.currentScreenshotDetails } isBaseline={ this.isBaseline(this.state.currentScreenshotDetails._id)} />
+                    </div>
+                    </td>
+                    <td>
+                      {
+                        this.state.currentScreenshot ? (
+                          this.state.currentScreenshot === "ERROR" ? (
+                            <div className="alert alert-danger" role="alert">
+                                <span>Unable to retrieve image. Please refresh the page and try again.</span>
+                            </div>
+                          ) : <img className="screenshot" src={this.state.currentScreenshot} alt="Screenshot" /> ) :
+                        <div className="alert alert-primary" role="alert">
+                          <span><i className="fas fa-spinner fa-pulse fa-2x"></i> Retrieving screenshot.</span>
+                        </div>
+                      }
+                    </td>
+                  </tr>
+                  {
+                    this.state.currentBaseLineDetails ? ([
+                      <tr key="title" className={"sbs-header"}>
+                        <td colSpan="100%">
+                          Baseline
+                        </td>
+                      </tr>,
+                      <tr key="baseline-image">
+                        <td className={"screenshot-details-td"}>
+                        <div>
+                          <ScreenshotDetailsTable currentScreenshotDetails={this.state.currentBaseLineDetails.screenshot } isBaseline={ this.isBaseline(this.state.currentScreenshotDetails._id)} />
+                        </div>
+                        </td>
+                        <td>
+                          {
+                            this.state.currentBaseline ? (
+                              this.state.currentBaseline === "ERROR" ? (
+                                <div className="alert alert-danger" role="alert">
+                                    <span>Unable to retrieve baseline image. Please refresh the page and try again.</span>
+                                </div>
+                              ) : <img className="screenshot" src={this.state.currentBaseline} alt="Baseline Screenshot" /> ) :
+                            <div className="alert alert-primary" role="alert">
+                              <span><i className="fas fa-spinner fa-pulse fa-2x"></i> Retrieving baseline screenshot.</span>
+                            </div>
+                          }
+                        </td>
+                      </tr>
+                    ]) : null
+                  }
+                </tbody>
+              </Table>
+            </div>
             </Tab>
         </Tabs>
       </div>

@@ -199,3 +199,9 @@
   margin-right: 10px;
   font-size: 20px;
 }
+
+.sbs-header {
+  background-color: #80808080;
+  font-weight: bold;
+  font-size: 18px;
+}
