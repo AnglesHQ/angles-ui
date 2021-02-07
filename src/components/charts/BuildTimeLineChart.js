@@ -18,7 +18,6 @@ class BuildTimeLineChart extends Component {
 
     renderBuildLineChart = (lineChart, builds) => {
       if (lineChart !== undefined && lineChart.config != null) {
-        console.log('Rendering Linechart as its available');
         let graphData = lineChart.config.data;
         graphData.labels = [];
         graphData.datasets = [];

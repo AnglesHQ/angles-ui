@@ -143,7 +143,7 @@ render() {
             testResults.push(<td key={`${suiteName}.${testName}${build._id}`}>N/A</td>);
           }
       })
-      rows.push(<tr key={testName}>
+      rows.push(<tr key={`${suiteName}.${testName}-row`}>
           <td><b>{testName}</b></td>
           {testResults}
       </tr>);
