@@ -23,7 +23,7 @@ class ActionComponent extends Component {
       <tr key={"steps_tables_" + this.props.index}>
       { this.state.open ? (
         <td className="action-steps" key={Math.random().toString(36).substring(7)}>
-            <StepsTable key={"step_tables_tr_" + this.props.index} index={this.props.index} action={this.props.action} index={this.props.index} screenshots={this.props.screenshots} openModal={this.props.openModal} />
+            <StepsTable key={"step_tables_tr_" + this.props.index} index={this.props.index} action={this.props.action} screenshots={this.props.screenshots} openModal={this.props.openModal} />
         </td>
       ): null }
       </tr>

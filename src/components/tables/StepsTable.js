@@ -47,7 +47,7 @@ class StepsTable extends Component {
         </thead>
         <tbody>
           { this.props.action.steps.map((step, index) => {
-            if (step.status === "ERROR" || step.status == "INFO") {
+            if (step.status === "ERROR" || step.status === "INFO") {
               return <tr key={"steps_" + index}>
                 <td>{index+1}</td>
                 <td><Moment format="HH:mm:ss">{step.time}</Moment></td>

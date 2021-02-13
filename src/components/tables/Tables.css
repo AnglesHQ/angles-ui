@@ -22,9 +22,12 @@
 .suite-table .test-row {
    color: #fff;
    font-weight: bold;
-   cursor: pointer;
    line-height: 1.5em;
    border-bottom: solid white 5px;
+}
+
+.suite-table .test-row .test-name {
+  cursor: pointer;
 }
 
 .suite-table .test-row > td {
@@ -62,7 +65,6 @@
     color: #686467;
     font-size: 14px;
     font-weight: lighter;
-    padding-left: 30px;
 }
 
 .suite-table > tbody:before {
@@ -229,4 +231,18 @@
 .matrix-versions-highlight {
   background-color: #D0D0D0;
   font-style: italic;
+}
+
+.test-history-link {
+  color: #d39e00;
+  padding-left: 10px;
+}
+
+.test-history-link :hover {
+  color: #ffc20b;
+}
+
+.history-link-execution {
+  float: right;
+  padding-right: 3px;
 }

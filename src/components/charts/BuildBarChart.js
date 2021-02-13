@@ -48,8 +48,16 @@ class BuildBarChart extends Component {
       let localBuilds = this.props.builds;
       let history = this.props.history;
       this.barchart.options = {
+        animation: false,
         scales: {
-          xAxes: [{ stacked: true }],
+          xAxes: [
+            {
+              stacked: true,
+              ticks: {
+                  reverse: true,
+              },
+            }
+          ],
           yAxes: [
             {
               scaleLabel: {
@@ -59,10 +67,10 @@ class BuildBarChart extends Component {
               stacked: true,
               ticks: {
                   beginAtZero: true,
-                  stepSize: 1
-              }
+                  stepSize: 1,
+              },
             }
-          ]
+          ],
         },
         'onClick' : function (evt, item) {
              if (item[0]) {

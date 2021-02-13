@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import OverlayTrigger from 'react-bootstrap//OverlayTrigger'
-import Tooltip from 'react-bootstrap//Tooltip'
+import Moment from 'react-moment';
 import ActionComponent from './ActionComponent';
-class ExecutionTable extends Component {
+
+class HistoryExecutionTable extends Component {
 
   constructor(props) {
     super(props);
@@ -33,24 +33,13 @@ class ExecutionTable extends Component {
 
   render () {
     return [
-      <tr key={"execution_" + this.props.index} className="test-row" >
+      <tr key={"execution_" + this.props.index} className="test-row" onClick={(e)=>this.toggleActions(e)} >
         <td colSpan="100%" className={`${this.props.execution.status}`}>
-          <span key={ this.state.open } className="test-name" onClick={(e)=>this.toggleActions(e)}>
+          <span key={ this.state.open }>
             <i title="Click to display/hide test steps" className={ this.state.open ? ('fa fa-caret-down'): 'fas fa-caret-right' }></i>
-            <span>Test: {this.props.execution.title} </span>
           </span>
-          <span>
-            { this.props.execution.platforms && this.props.execution.platforms.length > 0 ? <span className="device-details">{this.getPlatformName(this.props.execution)}</span> : null }
-          </span>
-          <span className="history-link-execution">
-            <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">See execution history for {this.props.execution.title}</Tooltip>}>
-              <span className="d-inline-block">
-                <a className="test-history-link" title={`See execution history for ${this.props.execution.title}`} href={`/history?executionId=${this.props.execution._id}`}>
-                  <span><i className="fa fa-history" aria-hidden="true">history</i></span>
-                </a>
-              </span>
-            </OverlayTrigger>
-          </span>
+          <span><Moment format="DD-MM-YYYY HH:mm">{this.props.execution.start}</Moment></span>
+          { this.props.execution.platforms && this.props.execution.platforms.length > 0 ? <span className="device-details">{this.getPlatformName(this.props.execution)}</span> : null }
         </td>
       </tr>,
       <tr key={"execution_actions_" + this.props.index} className="actions-row">
@@ -60,7 +49,7 @@ class ExecutionTable extends Component {
               <tbody>
                 { this.props.execution.actions.map((action, index) => {
                   return [
-                    <ActionComponent key={"action_" + index} action={action} index={index} screenshots={this.props.screenshots} openModal={this.props.openModal} />
+                    <ActionComponent key={"action_" + index} action={action} screenshots={this.props.screenshots} index={index} openModal={this.props.openModal} />
                   ]
                 })
               }
@@ -73,4 +62,4 @@ class ExecutionTable extends Component {
   }
 };
 
-export default ExecutionTable
+export default HistoryExecutionTable;

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Moment from 'react-moment';
 import Popover from 'react-bootstrap/Popover'
 import OverlayTrigger from 'react-bootstrap//OverlayTrigger'
+import Tooltip from 'react-bootstrap//Tooltip'
 import TestDetailsTable from '../tables/TestDetailsTable';
 import { withRouter} from 'react-router-dom';
 
@@ -118,9 +119,11 @@ render() {
     rows.push(<tr key={suiteName} className="table-info"><td colSpan="100%"><b>Suite:</b> {suiteName}</td></tr>);
     Object.keys(this.state.matrixSuites[suiteName]).forEach(testName => {
       let testResults = [];
+      let firstExecution;
       this.state.headers.forEach(build => {
           let testDetails = this.state.matrixSuites[suiteName][testName][build._id]
           if (testDetails) {
+            if (!firstExecution) firstExecution = testDetails;
             let popover = (
               <Popover id="popover-basic">
                 <Popover.Title as="h3"><b>Test: </b>{testDetails.title}</Popover.Title>
@@ -143,7 +146,15 @@ render() {
           }
       })
       rows.push(<tr key={`${suiteName}.${testName}-row`}>
-          <td><b>{testName}</b></td>
+          <td><b><span>{testName} </span></b>
+            <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">See execution history for {testName}</Tooltip>}>
+              <span className="d-inline-block">
+                <a className="test-history-link" title={`See execution history for ${testName}`} href={`/history?executionId=${firstExecution._id}`}>
+                  <span><i className="fa fa-history" aria-hidden="true">history</i></span>
+                </a>
+              </span>
+            </OverlayTrigger>
+          </td>
           {testResults}
       </tr>);
     })
