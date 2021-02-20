@@ -9,6 +9,8 @@ import '../charts/Charts.css'
 import queryString from 'query-string';
 import ScreenshotView from "./ScreenshotView";
 import Modal from 'react-bootstrap/Modal';
+import { makeGetScreenshotDetails } from '../../utility/requests/ScreenshotRequests'
+
 
 class BuildPage extends Component {
 
@@ -37,7 +39,7 @@ class BuildPage extends Component {
   }
 
   getScreenshotDetails = (buildId) => {
-    return axios.get(`/screenshot/?buildId=${buildId}&limit=100`)
+    return makeGetScreenshotDetails(buildId)
     .then((res) => {
       this.setState({ screenshots: res.data });
     })

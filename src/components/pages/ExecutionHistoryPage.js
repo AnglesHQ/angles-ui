@@ -44,8 +44,10 @@ class SummaryPage extends Component {
   getExecutionHistoryForExecutionId = (executionId, skip, limit) => {
     return axios.get(`/execution/${executionId}/history?&skip=${skip}&limit=${limit}`)
     .then((res) => {
-      this.retrieveScreenshotDetailsForExecutions(res.data);
-      this.setState({ executions: res.data });
+      let count = res.data.count;
+      console.log(`Test case has ${count}`);
+      this.retrieveScreenshotDetailsForExecutions(res.data.executions);
+      this.setState({ executions: res.data.executions });
     })
   }
 

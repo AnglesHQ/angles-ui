@@ -25,6 +25,7 @@ class App extends Component {
     super(props);
     this.state = {
       teams: [],
+      environments: [],
       currentTeam: {name: 'No team selected'}
     };
   }
@@ -58,14 +59,27 @@ class App extends Component {
     }
   }
 
-  componentDidMount() {
+  retrieveTeamDetails = () => {
     axios.get('/team')
     .then(res => res.data)
-    .then((data) => {
-      // set retrieve teams in state
-      this.setState({ teams: data });
+    .then((teams) => {
+      this.setState({ teams });
     })
     .catch(console.log);
+  }
+
+  retrieveEnvironmentDetails = () => {
+    axios.get('/environment')
+    .then(res => res.data)
+    .then((environments) => {
+      this.setState({ environments });
+    })
+    .catch(console.log);
+  }
+
+  componentDidMount() {
+    this.retrieveTeamDetails();
+    this.retrieveEnvironmentDetails();
   }
 
   render() {
@@ -78,7 +92,7 @@ class App extends Component {
               if (this.state.currentTeam === undefined || !this.state.currentTeam._id) {
                 return <div>Please select a team</div>;
               }
-              return <SummaryPage {...props} currentTeam={this.state.currentTeam} changeCurrentTeam={this.changeCurrentTeam.bind(this)} />
+              return <SummaryPage {...props} currentTeam={this.state.currentTeam} changeCurrentTeam={this.changeCurrentTeam.bind(this)} environments={this.state.environments} />
             }} />
             <Route exact path="/build/" render={props => { return <BuildPage {...props} /> }} />
             <Route exact path="/matrix/" render={props => {

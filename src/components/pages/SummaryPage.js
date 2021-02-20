@@ -14,6 +14,8 @@ class SummaryPage extends Component {
     this.state = {
       builds: undefined,
       selectedBuilds: {},
+      filteredEnvironments: [],
+      filteredComponents: [],
       buildCount: 0,
       currentSkip: 0,
       limit: 15,
@@ -21,7 +23,14 @@ class SummaryPage extends Component {
   }
 
   getBuildsForTeam = (teamId, skip, limit) => {
-    return axios.get(`/build?teamId=${teamId}&skip=${skip}&limit=${limit}`)
+    let requestUrl = `/build?teamId=${teamId}&skip=${skip}&limit=${limit}`;
+    if (this.state.filteredEnvironments.length > 0) {
+      requestUrl+=`&environmentIds=${this.state.filteredEnvironments.join(",")}`;
+    }
+    if (this.state.filteredComponents.length > 0) {
+      requestUrl+=`&componentIds=${this.state.filteredComponents.join(",")}`;
+    }
+    return axios.get(requestUrl)
     .then((res) =>
       this.setState({
         builds: res.data.builds ,
@@ -39,16 +48,30 @@ class SummaryPage extends Component {
     this.getBuildsForTeam(this.props.currentTeam._id, (this.state.currentSkip - this.state.limit), this.state.limit);
   }
 
-  componentDidUpdate = (prevProps) => {
+  componentDidUpdate = (prevProps, prevStates) => {
     // if team has changed grab new build details.
     if (prevProps.currentTeam._id !== this.props.currentTeam._id) {
+      this.setState({ filteredEnvironments: [], filteredComponents: [] })
       this.getBuildsForTeam(this.props.currentTeam._id, 0, this.state.limit);
+    } else {
+      // check if the filter values have changed
+      if (prevStates.filteredEnvironments !== this.state.filteredEnvironments || prevStates.filteredComponents !== this.state.filteredComponents) {
+          this.getBuildsForTeam(this.props.currentTeam._id, 0, this.state.limit);
+      }
     }
   }
 
   toggleSelectedBuild = (build) => {
     let selectedBuilds = update(this.state.selectedBuilds, { [build._id]: {$set: !this.state.selectedBuilds[build._id]}});
     this.setState( { selectedBuilds } );
+  }
+
+  setFilteredEnvironments = (filteredEnvironments) => {
+    this.setState({filteredEnvironments});
+  }
+
+  setFilteredComponents = (filteredComponents) => {
+    this.setState({filteredComponents});
   }
 
   retrievSelectedBuilds = () => {
@@ -91,7 +114,17 @@ class SummaryPage extends Component {
           <BuildTimeLineChart builds={this.state.builds} />
         </div>
         <h1>Builds <span style={{fontSize: 15}}>[Total: {this.state.buildCount}]</span></h1>
-        <BuildsTable builds={this.state.builds} currentSkip={this.state.currentSkip} selectedBuilds={this.state.selectedBuilds} retrievSelectedBuilds={this.retrievSelectedBuilds.bind(this)} toggleSelectedBuild={this.toggleSelectedBuild.bind(this)} />
+        <BuildsTable
+          team={this.props.currentTeam}
+          availableEnvironments={this.props.environments}
+          builds={this.state.builds}
+          currentSkip={this.state.currentSkip}
+          selectedBuilds={this.state.selectedBuilds}
+          retrievSelectedBuilds={this.retrievSelectedBuilds.bind(this)}
+          toggleSelectedBuild={this.toggleSelectedBuild.bind(this)}
+          setFilteredEnvironments={this.setFilteredEnvironments.bind(this)}
+          setFilteredComponents={this.setFilteredComponents.bind(this)}
+        />
         <div>
           <span style={{ float: "left" }}><button disabled={ !this.multipleBuildsSelected() } onClick={() => this.navigateToMatrix() } type="button" className="btn btn-outline-primary">Open Matrix</button></span>
           <span style={{ float: "right" }}>

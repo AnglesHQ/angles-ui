@@ -246,3 +246,17 @@
   float: right;
   padding-right: 3px;
 }
+
+.build-table-filter {
+  color: black;
+  width: 250px;
+  font-size: 14px;
+}
+
+.build-table-filter span {
+    display: inline-block;
+    width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
