@@ -50,7 +50,7 @@ class StepsTable extends Component {
             if (step.status === "ERROR" || step.status === "INFO") {
               return <tr key={"steps_" + index}>
                 <td>{index+1}</td>
-                <td><Moment format="HH:mm:ss">{step.time}</Moment></td>
+                <td><Moment format="HH:mm:ss">{step.timestamp}</Moment></td>
                 <td className={`${step.status}`}>{step.status}</td>
                 <td colSpan={4}>{step.info}</td>
                 {
@@ -64,7 +64,7 @@ class StepsTable extends Component {
 
             return <tr key={"steps_" + index}>
               <td>{index+1}</td>
-              <td><Moment format="HH:mm:ss">{step.time}</Moment></td>
+              <td><Moment format="HH:mm:ss">{step.timestamp}</Moment></td>
               <td className={`${step.status}`}>{step.status}</td>
               <td>{step.name}</td>
               <td>{step.expected}</td>
