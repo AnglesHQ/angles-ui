@@ -11,7 +11,9 @@ import ImageCarousel from '../elements/ImageCarousel';
 import ScreenshotDetailsTable from '../tables/ScreenshotDetailsTable';
 import 'react-multi-carousel/lib/styles.css';
 import './Default.css'
-import { withRouter} from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
+import Modal from "react-bootstrap/Modal";
+import RegionSelect from "./RegionsSelect";
 
 class ScreenshotView extends Component {
 
@@ -20,7 +22,8 @@ class ScreenshotView extends Component {
     this.state = {
       buildScreenshots: this.props.buildScreenshots,
       currentScreenshot: null,
-      currentBaseline: null,
+      baseline: null,
+      openModal: false
     };
   }
 
@@ -139,6 +142,15 @@ class ScreenshotView extends Component {
       this.setState({ currentBaseLineDetails: res.data })
     })
   }
+  onEditIgnoreBlocks(crtScreenshot,crtBaselineDetails) {
+    this.setState({
+      openModal: true,
+      modalComponent: 'editIgnoreBlocks',
+      baselineScreenshot:crtScreenshot,
+      baselineDetails: crtBaselineDetails
+    },)
+  }
+
 
   updateBaselineForView(baselineId, screenshotId) {
     return axios.put(`/baseline/${baselineId}`, {
@@ -251,9 +263,24 @@ class ScreenshotView extends Component {
                                 <button onClick={() => this.updateBaseline(this.state.currentScreenshotDetails) } disabled={ this.isBaseline(this.state.currentScreenshotDetails._id) } type="button" className="btn btn-outline-primary">{ !this.isBaseline(this.state.currentScreenshotDetails._id) ? ("Make Baseline Image"): "This is the Baseline Image"}</button> :
                               null
                           }
+                          <button onClick={() => this.onEditIgnoreBlocks(this.state.currentScreenshot, this.state.currentBaseLineDetails)}
+                                  disabled={!this.isBaseline(this.state.currentScreenshotDetails._id)}
+                                  className="btn btn-outline-primary">{this.isBaseline(this.state.currentScreenshotDetails._id)?"Edit" +
+                              " Baseline" +
+                              " Ignore" +
+                              " Blocks":"Can only edit baseline ignore blocks"}</button>
+
                         </span>
                       </td>
                     </tr>
+                    <Modal show={this.state.openModal} onHide={()=>this.setState({openModal:false})} dialogClassName="screenshot-edit-ignore-blocks-modal">
+                      <Modal.Header closeButton>
+                        <Modal.Title>Edit Ignore Blocks</Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body>
+                        <RegionSelect image={this.state.baselineScreenshot} nrOfRegions="10" baseline={this.state.baselineDetails}/>
+                      </Modal.Body>
+                    </Modal>
                   </tbody>
                 </Table>
               </div>
