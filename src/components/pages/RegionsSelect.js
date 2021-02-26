@@ -18,7 +18,7 @@ class RegionsSelect extends Component {
                     {'x':block.left,
                         'y':block.top,
                         'width':(100-block.left)-(100-block.right),
-                        'height':(100-block.top)-(100-block.bottom)
+                        'height':(100-block.bottom)-(100-block.top)
                     }
                 )
             });
