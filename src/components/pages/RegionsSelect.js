@@ -48,9 +48,9 @@ class RegionsSelect extends Component {
 
     onSaveToBaseline(baselineDetails){
         console.log("Saving to Baseline");
-        let payload = JSON.stringify({
+        let payload = {
             screenshotId:baselineDetails.screenshot._id,
-            ignoreBoxes:this.ignoreBlocks });
+            ignoreBoxes:this.ignoreBlocks };
         return axios.put(`/baseline/${baselineDetails._id}/`,payload,{headers:{'Content-Type':'application/json'}})
             .then((res) => {
                 console.log(JSON.parse(res));
