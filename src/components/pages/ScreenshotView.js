@@ -142,10 +142,10 @@ class ScreenshotView extends Component {
       this.setState({ currentBaseLineDetails: res.data })
     })
   }
+  
   onEditIgnoreBlocks(crtScreenshot,crtBaselineDetails) {
     this.setState({
       openModal: true,
-      modalComponent: 'editIgnoreBlocks',
       baselineScreenshot:crtScreenshot,
       baselineDetails: crtBaselineDetails
     },)
@@ -265,17 +265,16 @@ class ScreenshotView extends Component {
                           }
                           <button onClick={() => this.onEditIgnoreBlocks(this.state.currentScreenshot, this.state.currentBaseLineDetails)}
                                   disabled={!this.isBaseline(this.state.currentScreenshotDetails._id)}
-                                  className="btn btn-outline-primary">{this.isBaseline(this.state.currentScreenshotDetails._id)?"Edit" +
-                              " Baseline" +
-                              " Ignore" +
-                              " Blocks":"Can only edit baseline ignore blocks"}</button>
+                                  className="btn btn-outline-primary">{this.isBaseline(this.state.currentScreenshotDetails._id)?
+                              "Edit ignore blocks"
+                              :"Can only edit baseline ignore blocks"}</button>
 
                         </span>
                       </td>
                     </tr>
                     <Modal show={this.state.openModal} onHide={()=>this.setState({openModal:false})} dialogClassName="screenshot-edit-ignore-blocks-modal">
                       <Modal.Header closeButton>
-                        <Modal.Title>Edit Ignore Blocks</Modal.Title>
+                        <Modal.Title>Edit Baseline Ignore Blocks</Modal.Title>
                       </Modal.Header>
                       <Modal.Body>
                         <RegionSelect image={this.state.baselineScreenshot} nrOfRegions="10" baseline={this.state.baselineDetails}/>

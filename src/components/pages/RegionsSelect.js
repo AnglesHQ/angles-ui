@@ -9,24 +9,27 @@ class RegionsSelect extends Component {
         this.baselineDetails = props.baseline;
         this.regionRenderer = this.regionRenderer.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.init = this.init.bind(this);
         //get existing ignore blocks
-        this.existingIgnoreBlokcs = [];
+        this.existingIgnoreBlocks = [];
         if (this.baselineDetails
             && this.baselineDetails.ignoreBoxes
             && this.baselineDetails.ignoreBoxes.length > 0) {
             this.baselineDetails.ignoreBoxes.forEach(block => {
-                this.existingIgnoreBlokcs.push(
-                    {'x':block.left,
-                        'y':block.top,
-                        'width':(100-block.left)-(100-block.right),
-                        'height':(100-block.bottom)-(100-block.top)
+                this.existingIgnoreBlocks.push(
+                    {x:block.left,
+                        y:block.top,
+                        width:100-(block.left+block.right),
+                        height:100-(block.top+block.bottom),
+                        data:{}
                     }
                 );
             });
         }
         this.state = {
-            regions:[]  //< putting this.existingIgnoreBlocks here breaks it
+            regions:this.existingIgnoreBlocks  //< putting this.existingIgnoreBlocks here breaks it
         };
+        this.init(this.existingIgnoreBlocks);
         this.imgSrc = this.props.image;
         this.nrOfRegions = parseInt(this.props.nrOfRegions);
         this.ignoreBlocks = null;
@@ -45,6 +48,9 @@ class RegionsSelect extends Component {
             });
         }
     }
+    init(newRegions){
+        this.setState({regions:newRegions});
+    }
 
     onSaveToBaseline(baselineDetails){
         console.log("Saving to Baseline");
@@ -53,7 +59,7 @@ class RegionsSelect extends Component {
             ignoreBoxes:this.ignoreBlocks };
         return axios.put(`/baseline/${baselineDetails._id}/`,payload,{headers:{'Content-Type':'application/json'}})
             .then((res) => {
-                console.log(JSON.parse(res));
+                console.log(JSON.stringify(res));
                 // this.setState({ screenshots: res.data });
             })
 
@@ -115,7 +121,7 @@ class RegionsSelect extends Component {
                 </div>
                 <p>Ignored Regions <button onMouseUp={(event)=>{this.onSaveToBaseline(this.baselineDetails)}}>Save to Baseline</button>
                     <button onMouseUp={()=>{this.editing = !this.editing; this.setState({})}}>{this.editing?<span>Save</span>:<span>Edit</span>} Ignore Blocks</button>
-                    <div>{this.ignoreBlocks.map(el=><p>{el.left},{el.top},{el.right},{el.bottom}</p>)}</div>
+                    <div>{this.ignoreBlocks.map(el=><p>Left:{el.left},Top:{el.top},Right:{el.right},Bottom:{el.bottom}</p>)}</div>
                 </p>
             </div>
         );
