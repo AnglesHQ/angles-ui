@@ -142,7 +142,7 @@ class ScreenshotView extends Component {
       this.setState({ currentBaseLineDetails: res.data })
     })
   }
-  
+
   onEditIgnoreBlocks(crtScreenshot,crtBaselineDetails) {
     this.setState({
       openModal: true,
@@ -272,7 +272,12 @@ class ScreenshotView extends Component {
                         </span>
                       </td>
                     </tr>
-                    <Modal show={this.state.openModal} onHide={()=>this.setState({openModal:false})} dialogClassName="screenshot-edit-ignore-blocks-modal">
+                    <Modal show={this.state.openModal}
+                           onHide={()=>{
+                             this.setState({openModal:false});
+                             this.getBaseLineDetails(this.state.currentScreenshotDetails);
+                           }}
+                           dialogClassName="screenshot-edit-ignore-blocks-modal">
                       <Modal.Header closeButton>
                         <Modal.Title>Edit Baseline Ignore Blocks</Modal.Title>
                       </Modal.Header>
