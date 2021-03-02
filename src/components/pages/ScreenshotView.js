@@ -89,8 +89,12 @@ class ScreenshotView extends Component {
     })
   }
 
-  getScreenshotCompare = (screenshotId, baselineId) => {
-    return axios.get('/screenshot/' + screenshotId + "/compare/" + baselineId + "/image", { responseType: 'arraybuffer' })
+  forceBaselineCompare(screenshotId) {
+    return this.getBaselineCompare(screenshotId, false);
+  }
+
+  getBaselineCompare = (screenshotId, useCache) => {
+    return axios.get(`/screenshot/${screenshotId}/baseline/compare/image/?useCache=${useCache}`, { responseType: 'arraybuffer' })
     .then((res) => {
       const base64 = btoa(
        new Uint8Array(res.data).reduce(
@@ -199,7 +203,7 @@ class ScreenshotView extends Component {
     if (prevState.currentBaseLineDetails !== this.state.currentBaseLineDetails) {
       //if base line details have changed, load the new image
       if (this.state.currentBaseLineDetails && this.state.currentBaseLineDetails.screenshot) {
-        this.getScreenshotCompare(this.state.currentScreenshotDetails._id, this.state.currentBaseLineDetails.screenshot._id);
+        this.getBaselineCompare(this.state.currentScreenshotDetails._id, true);
       } else {
         this.setState({currentBaselineCompare: undefined});
       }
