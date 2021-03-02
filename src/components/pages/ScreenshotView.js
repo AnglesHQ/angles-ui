@@ -247,7 +247,7 @@ class ScreenshotView extends Component {
                               <div className="alert alert-danger" role="alert">
                                   <span>Unable to retrieve image. Please refresh the page and try again.</span>
                               </div>
-                            ) : <img className="screenshot" src={this.state.currentScreenshot} alt="Screenshot" /> ) :
+                            ) : <RegionSelect image={this.state.currentScreenshot} nrOfRegions="10" baseline={this.state.currentBaseLineDetails} editingEnabled={false}/> ) :
                           <div className="alert alert-primary" role="alert">
                             <span><i className="fas fa-spinner fa-pulse fa-2x"></i> Retrieving screenshot.</span>
                           </div>

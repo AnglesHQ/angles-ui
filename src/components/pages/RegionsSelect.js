@@ -6,6 +6,7 @@ import axios from "axios";
 class RegionsSelect extends Component {
     constructor (props) {
         super(props);
+        this.editingEnabled = props.editingEnabled != undefined ? props.editingEnabled : true;
         this.baselineDetails = props.baseline;
         this.regionRenderer = this.regionRenderer.bind(this);
         this.onChange = this.onChange.bind(this);
@@ -82,9 +83,14 @@ class RegionsSelect extends Component {
     regionRenderer (regionProps) {
         if (!regionProps.isChanging) {
             return (
-                <div style={{ position: 'absolute', right: 0, bottom: '-25px' }}>
-                    <button onMouseUp={(event) => this.changeRegionData(regionProps.index, event)} value="delete">Delete
-                    </button>
+                <div style={{position: 'absolute', right: 0, bottom: '-25px'}}>
+                    {
+                        this.editingEnabled ?
+                            <button onMouseUp={(event) => this.changeRegionData(regionProps.index, event)}
+                                    value="delete">Delete
+                            </button> :
+                            null
+                    }
                 </div>
             );
         }
@@ -114,15 +120,35 @@ class RegionsSelect extends Component {
                         constraint
                         onChange={this.onChange}
                         regionRenderer={this.regionRenderer}
-                        style={{ border: '1px solid black' }}
+                        style={{border: '1px solid black'}}
                     >
-                        <img src={this.imgSrc} alt = 'your baseline' id = 'baseline' width='100%'/>
+                        <img src={this.imgSrc} alt='your baseline' id='baseline' width='100%'/>
                     </RegionSelect>
                 </div>
-                <p>Ignored Regions <button onMouseUp={(event)=>{this.onSaveToBaseline(this.baselineDetails)}}>Save to Baseline</button>
-                    <button onMouseUp={()=>{this.editing = !this.editing; this.setState({})}}>{this.editing?<span>Save</span>:<span>Edit</span>} Ignore Blocks</button>
-                    <div>{this.ignoreBlocks.map(el=><p>Left:{el.left},Top:{el.top},Right:{el.right},Bottom:{el.bottom}</p>)}</div>
-                </p>
+                {this.ignoreBlocks.length > 0 ?
+                    (
+                        <p>Ignored Regions
+                            <div>
+                                {this.ignoreBlocks.map(el => <p>Left:{el.left},Top:{el.top},Right:{el.right},Bottom:{el.bottom}</p>)}
+                            </div>
+                            {this.editingEnabled ?
+                                (<div>
+                                        <button onMouseUp={(event) => {
+                                            this.onSaveToBaseline(this.baselineDetails);
+                                        }}
+                                        > Save to Baseline
+                                        </button>
+                                        <button onMouseUp={() => {
+                                            this.editing = !this.editing;
+                                            this.setState({});
+                                        }}
+                                        >
+                                            {this.editing ? <span>Save</span> : <span>Edit</span>} Ignore Blocks
+                                        </button>
+                                    </div>
+                                ) : null
+                            }
+                        </p>) : null}
             </div>
         );
     }
