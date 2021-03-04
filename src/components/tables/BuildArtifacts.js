@@ -1,20 +1,22 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 
 class BuildArtifacts extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
-      expanded: false
+      expanded: false,
     };
   }
 
   changeExpandedState = () => {
-    this.setState({expanded: !this.state.expanded });
+    const { expanded } = this.state;
+    this.setState({ expanded: !expanded });
   }
 
   render() {
-    if (!this.props.build.artifacts || this.props.build.artifacts.length === 0) {
+    const { expanded } = this.state;
+    const { build } = this.props;
+    if (!build.artifacts || build.artifacts.length === 0) {
       return null;
     }
     return (
@@ -22,30 +24,31 @@ class BuildArtifacts extends Component {
         <thead className="thead-dark">
           <tr>
             <th scope="col" colSpan="90%" onClick={this.changeExpandedState}>
-              <span>Build Artifacts [{this.props.build.artifacts.length}]</span>
-              <span key={ this.state.expanded } className={`expand-artfifacts-span`}>
-                <i title="Click to display/hide artifacts" className={ this.state.expanded ? ('fas fa-caret-down'): 'fas fa-caret-left' }></i>
+              <span>{`Build Artifacts [${build.artifacts.length}]`}</span>
+              <span key={expanded} className="expand-artfifacts-span">
+                <i title="Click to display/hide artifacts" className={expanded ? ('fas fa-caret-down') : 'fas fa-caret-left'} />
               </span>
             </th>
           </tr>
         </thead>
-        { this.state.expanded ?
-          <tbody >
-          {
-            this.props.build.artifacts.map((artifact, index) => {
-                return <tr colSpan="100%" key={index}>
-                  <th scope="row">{ artifact.groupId ? (`${artifact.groupId}.`): null}{artifact.artifactId}</th>
+        { expanded
+          ? (
+            <tbody>
+              {build.artifacts.map((artifact) => (
+                <tr colSpan="100%" key={`${artifact.artifactId}_${artifact.version}`}>
+                  <th scope="row">
+                    { artifact.groupId ? (`${artifact.groupId}.`) : null}
+                    {artifact.artifactId}
+                  </th>
                   <td>{artifact.version}</td>
                 </tr>
-            })
-          }
-          </tbody>
-         : null }
-
+              ))}
+            </tbody>
+          )
+          : null }
       </table>
-    )
-  };
+    );
+  }
+}
 
-};
-
-export default BuildArtifacts
+export default BuildArtifacts;

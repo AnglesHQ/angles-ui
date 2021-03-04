@@ -1,12 +1,12 @@
-import React, { Component } from 'react'
-import Chart from "chart.js";
-import './Charts.css'
-import moment from 'moment'
-import { withRouter} from 'react-router-dom';
+import React, { Component } from 'react';
+import Chart from 'chart.js';
+import './Charts.css';
+import moment from 'moment';
+import { withRouter } from 'react-router-dom';
 
 class BuildBarChart extends Component {
-
     buildChartRef = React.createRef();
+
     barchart;
 
     constructor(props) {
@@ -17,19 +17,40 @@ class BuildBarChart extends Component {
       };
     }
 
+    componentDidMount() {
+      const myChartRef = this.buildChartRef.current.getContext('2d');
+      const config = {
+        type: 'bar',
+        data: {},
+        options: {},
+      };
+      this.barchart = new Chart(myChartRef, config);
+      // to trigger componentDidUpdate
+      this.setState({});
+    }
+
+    componentDidUpdate(prevProps) {
+      const { builds } = this.props;
+      if (this.barchart === undefined || this.barchart.data.datasets.length === 0
+        || prevProps.builds !== builds) {
+        this.renderBuildBarChart(this.barchart, builds);
+        this.updateBuildChart();
+      }
+    }
+
     // populate the data.
     renderBuildBarChart = (barchart, builds) => {
       if (barchart !== undefined && barchart.config != null) {
-        let graphData = barchart.config.data;
+        const graphData = barchart.config.data;
         graphData.labels = [];
         graphData.datasets = [];
-        graphData.datasets.push({ label: 'PASS', data: [], backgroundColor: '#74d600'})
-        graphData.datasets.push({ label: 'FAIL', data: [], backgroundColor: '#ff0000'});
-        graphData.datasets.push({ label: 'ERROR', data: [], backgroundColor: '#ff8000'});
-        graphData.datasets.push({ label: 'SKIPPPED', data: [], backgroundColor: '#ffd500'});
+        graphData.datasets.push({ label: 'PASS', data: [], backgroundColor: '#74d600' });
+        graphData.datasets.push({ label: 'FAIL', data: [], backgroundColor: '#ff0000' });
+        graphData.datasets.push({ label: 'ERROR', data: [], backgroundColor: '#ff8000' });
+        graphData.datasets.push({ label: 'SKIPPPED', data: [], backgroundColor: '#ffd500' });
         if (Array.isArray(builds)) {
-          builds.map((build, index) => {
-            graphData.labels.push(moment.utc(moment(build.start)).format("DD-MM-YYYY HH:mm:ss"));
+          builds.map((build) => {
+            graphData.labels.push(moment.utc(moment(build.start)).format('DD-MM-YYYY HH:mm:ss'));
             if (build.result) {
               graphData.datasets[0].data.push(build.result.PASS);
               graphData.datasets[1].data.push(build.result.FAIL);
@@ -45,8 +66,7 @@ class BuildBarChart extends Component {
 
     // update the chart with links to the build pages.
     updateBuildChart = () => {
-      let localBuilds = this.props.builds;
-      let history = this.props.history;
+      const { history, builds: localBuilds } = this.props;
       this.barchart.options = {
         animation: false,
         scales: {
@@ -54,63 +74,40 @@ class BuildBarChart extends Component {
             {
               stacked: true,
               ticks: {
-                  reverse: true,
+                reverse: true,
               },
-            }
+            },
           ],
           yAxes: [
             {
               scaleLabel: {
                 display: true,
-                labelString: 'Number of test cases'
+                labelString: 'Number of test cases',
               },
               stacked: true,
               ticks: {
-                  beginAtZero: true,
-                  stepSize: 1,
+                beginAtZero: true,
+                stepSize: 1,
               },
-            }
+            },
           ],
         },
-        'onClick' : function (evt, item) {
-             if (item[0]) {
-               let buildId = localBuilds[item[0]._index]._id;
-               history.push(`/build/?buildId=${buildId}`)
-             }
-         }
-      }
+        onClick: (evt, item) => {
+          if (item[0]) {
+            const buildId = localBuilds[item[0]._index]._id;
+            history.push(`/build/?buildId=${buildId}`);
+          }
+        },
+      };
       this.barchart.update();
     }
 
-    componentDidUpdate(prevProps) {
-      if (this.barchart === undefined || this.barchart.data.datasets.length === 0 || prevProps.builds !== this.props.builds) {
-        this.renderBuildBarChart(this.barchart, this.props.builds);
-        this.updateBuildChart();
-      }
-    }
-
-    componentDidMount() {
-
-      const myChartRef = this.buildChartRef.current.getContext("2d");
-      const config = {
-          type: "bar",
-          data: {},
-          options: {}
-      }
-      this.barchart = new Chart(myChartRef, config);
-      // to trigger componentDidUpdate
-      this.setState({});
-    }
-
     render() {
-        return (
-          <div className="graphContainer">
-            <canvas
-                id="buildMetricsChart"
-                ref={this.buildChartRef}
-            />
-          </div>
-        )
+      return (
+        <div className="graphContainer">
+          <canvas id="buildMetricsChart" ref={this.buildChartRef} />
+        </div>
+      );
     }
 }
 

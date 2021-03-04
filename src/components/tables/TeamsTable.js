@@ -1,16 +1,15 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 
 class TeamsTable extends Component {
-
   constructor(props) {
     super(props);
-    console.log(props);
     this.state = {
       //
     };
   }
 
   render() {
+    const { teams, click } = this.props;
     return (
       <table className="table">
         <thead>
@@ -22,8 +21,8 @@ class TeamsTable extends Component {
           </tr>
         </thead>
         <tbody>
-          { this.props.teams.map((team, index) => (
-            <tr key={team._id} onClick={ () => this.props.click(team._id) }>
+          { teams.map((team, index) => (
+            <tr key={team._id} onClick={() => click(team._id)}>
               <th scope="row">{ index }</th>
               <td>{team._id}</td>
               <td>{team.name}</td>
@@ -32,9 +31,8 @@ class TeamsTable extends Component {
           ))}
         </tbody>
       </table>
-    )
-  };
+    );
+  }
+}
 
-};
-
-export default TeamsTable
+export default TeamsTable;

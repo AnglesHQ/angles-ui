@@ -1,24 +1,22 @@
-import React, { Component } from 'react'
-import { Route, Switch } from 'react-router-dom'
+import React, { Component } from 'react';
+import { Route, Switch, withRouter } from 'react-router-dom';
 import axios from 'axios';
-import AnglesMenu from '../components/menu/AnglesMenu';
-import SummaryPage from '../components/pages/SummaryPage'
-import BuildPage from '../components/pages/BuildPage'
-import MatrixPage from '../components/pages/MatrixPage'
-import ScreenshotFinderPage from '../components/pages/ScreenshotFinderPage'
-import ExecutionHistoryPage from '../components/pages/ExecutionHistoryPage'
-import AboutPage from '../components/pages/AboutPage'
-import NotFoundPage from '../components/pages/NotFoundPage'
-import { withRouter} from 'react-router-dom';
 import queryString from 'query-string';
-import './App.css';
-import '../components/charts/Charts.css'
 import Cookies from 'js-cookie';
+import AnglesMenu from '../components/menu/AnglesMenu';
+import SummaryPage from '../components/pages/SummaryPage';
+import BuildPage from '../components/pages/BuildPage';
+import MatrixPage from '../components/pages/MatrixPage';
+import ScreenshotFinderPage from '../components/pages/ScreenshotFinderPage';
+import ExecutionHistoryPage from '../components/pages/ExecutionHistoryPage';
+import AboutPage from '../components/pages/AboutPage';
+import NotFoundPage from '../components/pages/NotFoundPage';
+import './App.css';
+import '../components/charts/Charts.css';
 
-axios.defaults.baseURL = process.env.REACT_APP_ANGLES_API_URL + '/rest/api/v1.0';
+axios.defaults.baseURL = `${process.env.REACT_APP_ANGLES_API_URL}/rest/api/v1.0`;
 
 class App extends Component {
-
   cookies;
 
   constructor(props) {
@@ -26,85 +24,104 @@ class App extends Component {
     this.state = {
       teams: [],
       environments: [],
-      currentTeam: {name: 'No team selected'}
+      currentTeam: { name: 'No team selected' },
     };
   }
 
-  getTeam = (teamId) => {
-    return this.state.teams.find(team => team._id === teamId);
-  }
-
-  changeCurrentTeam = (teamId) => {
-    if (teamId !== undefined) {
-      this.setState({currentTeam: this.getTeam(teamId)});
-      Cookies.set('teamId', teamId, { expires: 365 });
-    }
+  componentDidMount = () => {
+    this.retrieveTeamDetails();
+    this.retrieveEnvironmentDetails();
   }
 
   componentDidUpdate() {
-    let query = queryString.parse(this.props.location.search)
-    if (this.state.teams !== [] && this.state.currentTeam) {
+    const { location } = this.props;
+    const { teams, currentTeam } = this.state;
+    const query = queryString.parse(location.search);
+    if (teams !== [] && currentTeam) {
       // check if there is a query
       if (query.teamId) {
         // if query is provided and it's not the current team change team.
-        if (query.teamId !== this.state.currentTeam._id){
+        if (query.teamId !== currentTeam._id) {
           this.changeCurrentTeam(query.teamId);
         }
       } else if (Cookies.get('teamId')) {
         // if cookie is provided
-        if (Cookies.get('teamId') !== this.state.currentTeam._id) {
+        if (Cookies.get('teamId') !== currentTeam._id) {
           this.changeCurrentTeam(Cookies.get('teamId'));
         }
       }
     }
   }
 
+  getTeam = (teamId) => {
+    const { teams } = this.state;
+    return teams.find((team) => team._id === teamId);
+  }
+
+  changeCurrentTeam = (teamId) => {
+    if (teamId !== undefined) {
+      this.setState({ currentTeam: this.getTeam(teamId) });
+      Cookies.set('teamId', teamId, { expires: 365 });
+    }
+  }
+
   retrieveTeamDetails = () => {
     axios.get('/team')
-    .then(res => res.data)
-    .then((teams) => {
-      this.setState({ teams });
-    })
-    .catch(console.log);
+      .then((res) => res.data)
+      .then((teams) => {
+        this.setState({ teams });
+      });
+    // TODO: handle catch
   }
 
   retrieveEnvironmentDetails = () => {
     axios.get('/environment')
-    .then(res => res.data)
-    .then((environments) => {
-      this.setState({ environments });
-    })
-    .catch(console.log);
-  }
-
-  componentDidMount() {
-    this.retrieveTeamDetails();
-    this.retrieveEnvironmentDetails();
+      .then((res) => res.data)
+      .then((environments) => {
+        this.setState({ environments });
+      });
+    // TODO: hanlde catch.
   }
 
   render() {
+    const { teams, currentTeam, environments } = this.state;
+    const { history } = this.props;
     return (
       <div id="outer-container">
-        <AnglesMenu teams={this.state.teams} changeCurrentTeam={this.changeCurrentTeam.bind(this)}/>
+        <AnglesMenu teams={teams} changeCurrentTeam={this.changeCurrentTeam} />
         <main id="page-wrap">
           <Switch>
-            <Route exact path="/" render={props => {
-              if (this.state.currentTeam === undefined || !this.state.currentTeam._id) {
-                return <div>Please select a team</div>;
-              }
-              return <SummaryPage {...props} currentTeam={this.state.currentTeam} changeCurrentTeam={this.changeCurrentTeam.bind(this)} environments={this.state.environments} />
-            }} />
-            <Route exact path="/build/" render={props => { return <BuildPage {...props} /> }} />
-            <Route exact path="/matrix/" render={props => {
-              if (!this.state.currentTeam._id) {
-                return null;
-              }
-              return <MatrixPage {...props} currentTeam={this.state.currentTeam} />
-            }} />
-            <Route exact path="/screenshot-finder/" render={props => { return <ScreenshotFinderPage {...props} /> }} />
-            <Route exact path="/history/" render={props => { return <ExecutionHistoryPage {...props} /> }} />
-            <Route exact path="/about/" render={props => { return <AboutPage {...props} /> }} />
-            <Route render={props => { return <NotFoundPage {...props} /> }} />
+            <Route
+              exact
+              path="/"
+              render={() => {
+                if (currentTeam === undefined || !currentTeam._id) {
+                  return <div>Please select a team</div>;
+                }
+                return (
+                  <SummaryPage
+                    currentTeam={currentTeam}
+                    environments={environments}
+                    history={history}
+                  />
+                );
+              }}
+            />
+            <Route exact path="/build/" render={() => <BuildPage />} />
+            <Route
+              exact
+              path="/matrix/"
+              render={() => {
+                if (!currentTeam._id) {
+                  return null;
+                }
+                return <MatrixPage currentTeam={currentTeam} />;
+              }}
+            />
+            <Route exact path="/screenshot-finder/" render={() => <ScreenshotFinderPage />} />
+            <Route exact path="/history/" render={() => <ExecutionHistoryPage />} />
+            <Route exact path="/about/" render={() => <AboutPage />} />
+            <Route render={() => <NotFoundPage />} />
           </Switch>
         </main>
       </div>
