@@ -42,7 +42,7 @@ class ExecutionTable extends Component {
     return [
       <tr key={`execution_${index}`} className="test-row">
         <td colSpan="100%" className={`${execution.status}`}>
-          <span key={open} className="test-name" onClick={(e)=>this.toggleActions(e)}>
+          <span key={open} className="test-name" onClick={(e) => this.toggleActions(e)}>
             <i title="Click to display/hide test steps" className={open ? ('fa fa-caret-down') : 'fas fa-caret-right'} />
             <span>{`Test: ${execution.title} `}</span>
           </span>
@@ -66,7 +66,13 @@ class ExecutionTable extends Component {
             <table className="actions-table">
               <tbody>
                 { execution.actions.map((action) => [
-                  <ActionComponent key={`action_${index}`} action={action} index={index} screenshots={screenshots} openModal={openModal} />,
+                  <ActionComponent
+                    key={index}
+                    action={action}
+                    index={index}
+                    screenshots={screenshots}
+                    openModal={openModal}
+                  />,
                 ])}
               </tbody>
             </table>

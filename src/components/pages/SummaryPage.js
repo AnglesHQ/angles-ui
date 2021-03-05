@@ -55,7 +55,7 @@ class SummaryPage extends Component {
     const { currentTeam } = this.props;
     const { limit, filteredEnvironments, filteredComponents } = this.state;
     if (prevProps.currentTeam._id !== currentTeam._id) {
-      this.setState({ filteredEnvironments: [], filteredComponents: [] })
+      this.setState({ filteredEnvironments: [], filteredComponents: [] });
       this.getBuildsForTeam(currentTeam._id, 0, limit);
     } else if (prevStates.filteredEnvironments !== filteredEnvironments
         || prevStates.filteredComponents !== filteredComponents) {
@@ -78,23 +78,23 @@ class SummaryPage extends Component {
     this.setState({ filteredComponents });
   }
 
+  /*
+    Selected builds will contain both ticked and unticked, so we just want the selected ones.
+  */
   retrieveSelectedBuilds = () => {
     const { selectedBuilds } = this.state;
-    return Object.keys(selectedBuilds).reduce((object, key) => {
-      selectedBuilds[key] === true && (object[key] = selectedBuilds[key]);
-      return object;
-    }, {});
+    return Object.keys(selectedBuilds).filter((key) => selectedBuilds[key] === true);
   }
 
   multipleBuildsSelected = () => {
     const selectedRowsArray = this.retrieveSelectedBuilds();
-    return (Object.keys(selectedRowsArray).length > 1);
+    return (selectedRowsArray.length > 1);
   }
 
   navigateToMatrix = () => {
     const { history } = this.props;
     const selectedBuildIds = this.retrieveSelectedBuilds();
-    history.push(`/matrix/?buildIds=${Object.keys(selectedBuildIds).join(',')}`);
+    history.push(`/matrix/?buildIds=${selectedBuildIds.join(',')}`);
   }
 
   previousPaginationDisabled = () => {

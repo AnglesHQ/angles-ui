@@ -12,7 +12,7 @@ class ActionComponent extends Component {
 
   toggleSteps = () => {
     const { open } = this.state;
-    this.setState({ open });
+    this.setState({ open: !open });
   }
 
   render() {

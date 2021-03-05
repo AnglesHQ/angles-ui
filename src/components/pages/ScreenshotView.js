@@ -8,6 +8,7 @@ import Alert from 'react-bootstrap/Alert';
 import CardDeck from 'react-bootstrap/CardDeck';
 import Card from 'react-bootstrap/Card';
 import { withRouter } from 'react-router-dom';
+import { encode as btoa } from 'base-64';
 import ImageCarousel from '../elements/ImageCarousel';
 import ScreenshotDetailsTable from '../tables/ScreenshotDetailsTable';
 import 'react-multi-carousel/lib/styles.css';
@@ -48,7 +49,7 @@ class ScreenshotView extends Component {
     if (['image', 'history', 'baseline', 'sidebyside'].includes(value)) this.setState({ key: value });
   }
 
-  getScreenshotDetails = (screenshotId) => axios.get(`/screenshot/'${screenshotId}`)
+  getScreenshotDetails = (screenshotId) => axios.get(`/screenshot/${screenshotId}`)
     .then((res) => {
       this.setState({ currentScreenshotDetails: res.data });
       const { currentScreenshotDetails } = this.state;
@@ -197,6 +198,116 @@ class ScreenshotView extends Component {
     return false;
   }
 
+  displayScreenshot = (currentScreenshot) => {
+    if (!currentScreenshot) {
+      return (
+        <div className="alert alert-danger" role="alert">
+          <span>
+            Unable to retrieve image. Please refresh the page and try again.
+          </span>
+        </div>
+      );
+    }
+    if (currentScreenshot === 'ERROR') {
+      return (
+        <div className="alert alert-primary" role="alert">
+          <span>
+            <i className="fas fa-spinner fa-pulse fa-2x" />
+            Retrieving screenshot.
+          </span>
+        </div>
+      );
+    }
+    return <img className="screenshot" src={currentScreenshot} alt="Screenshot" />;
+  }
+
+  displayBaselineImage = (currentBaseLineDetails, currentBaselineCompare) => {
+    if (!currentBaseLineDetails) {
+      return 'No Baseline selected yet for this view and deviceName or browser combination. To select a baseline, navigate to the image you want as a baseline and click on the "Make Baseline Image" button';
+    }
+    if (!currentBaselineCompare) {
+      return (
+        <div className="alert alert-primary" role="alert">
+          <span>
+            <i className="fas fa-spinner fa-pulse fa-2x" />
+            Loading baseline compare.
+          </span>
+        </div>
+      );
+    }
+    if (currentBaselineCompare === 'ERROR') {
+      return (
+        <div className="alert alert-danger" role="alert">
+          <span>Failed to retrieve basedline compare.</span>
+        </div>
+      );
+    }
+    return <img className="screenshot" src={currentBaselineCompare} alt="Compare" />;
+  }
+
+  displaySideBySideBaseline = (currentBaseline) => {
+    if (!currentBaseline) {
+      return (
+        <div className="alert alert-primary" role="alert">
+          <span>
+            <i className="fas fa-spinner fa-pulse fa-2x" />
+            <span> Retrieving baseline screenshot.</span>
+          </span>
+        </div>
+      );
+    }
+    if (currentBaseline === 'ERROR') {
+      return (
+        <div className="alert alert-danger" role="alert">
+          <span>
+            Unable to retrieve baseline image.
+            Please refresh the page and try again.
+          </span>
+        </div>
+      );
+    }
+    return <img className="screenshot" src={currentBaseline} alt="Baseline Screenshot" />;
+  }
+
+  displaySideBySideScreenshot = (currentScreenshot) => {
+    if (!currentScreenshot) {
+      return (
+        <div className="alert alert-primary" role="alert">
+          <span>
+            <i className="fas fa-spinner fa-pulse fa-2x" />
+            <span> Retrieving screenshot.</span>
+          </span>
+        </div>
+      );
+    }
+    if (currentScreenshot === 'ERROR') {
+      return (
+        <div className="alert alert-danger" role="alert">
+          <span>
+            Unable to retrieve image. Please refresh the page and try again.
+          </span>
+        </div>
+      );
+    }
+    return <img className="screenshot" src={currentScreenshot} alt="Screenshot" />;
+  }
+
+  returnMakeBaselineButton = (currentScreenshotDetails) => {
+    if (currentScreenshotDetails.platform && currentScreenshotDetails.view) {
+      return (
+        <button
+          onClick={() => this.updateBaseline(currentScreenshotDetails)}
+          disabled={this.isBaseline(currentScreenshotDetails._id)}
+          type="button"
+          className="btn btn-outline-primary"
+        >
+          { !this.isBaseline(currentScreenshotDetails._id) ? ('Make Baseline Image') : 'This is the Baseline Image'}
+        </button>
+      );
+    }
+    return null;
+  }
+
   render() {
     const {
       buildScreenshots,
@@ -246,28 +357,7 @@ class ScreenshotView extends Component {
                     </td>
                     <td>
                       {
-                        () => {
-                          if (!currentScreenshot) {
-                            return (
-                              <div className="alert alert-danger" role="alert">
-                                <span>
-                                  Unable to retrieve image. Please refresh the page and try again.
-                                </span>
-                              </div>
-                            );
-                          }
-                          if (currentScreenshot === 'ERROR') {
-                            return (
-                              <div className="alert alert-primary" role="alert">
-                                <span>
-                                  <i className="fas fa-spinner fa-pulse fa-2x" />
-                                  Retrieving screenshot.
-                                </span>
-                              </div>
-                            );
-                          }
-                          return <img className="screenshot" src={currentScreenshot} alt="Screenshot" />;
-                        }
+                        this.displayScreenshot(currentScreenshot)
                       }
                     </td>
                   </tr>
@@ -275,22 +365,8 @@ class ScreenshotView extends Component {
                     <td colSpan="100%">
                       <span style={{ float: 'left' }}>
                         {
-                        () => {
-                          if (currentScreenshotDetails.platform && currentScreenshotDetails.view) {
-                            return (
-                              <button
-                                onClick={() => this.updateBaseline(currentScreenshotDetails)}
-                                disabled={this.isBaseline(currentScreenshotDetails._id)}
-                                type="button"
-                                className="btn btn-outline-primary"
-                              >
-                                { !this.isBaseline(currentScreenshotDetails._id) ? ('Make Baseline Image') : 'This is the Baseline Image'}
-                              </button>
-                            );
-                          }
-                          return null;
+                          this.returnMakeBaselineButton(currentScreenshotDetails)
                         }
-                      }
                       </span>
                     </td>
                   </tr>
@@ -374,29 +450,7 @@ class ScreenshotView extends Component {
           <Tab eventKey="baseline" title="Overlay with Baseline" disabled={!currentScreenshotDetails.platform || !currentScreenshotDetails.view}>
             <div className="image-page-holder">
               {
-                () => {
-                  if (!currentBaseLineDetails) {
-                    return 'No Baseline selected yet for this view and deviceName or browser combination. To select a baseline, navigate to the image you want as a baseline and click on the "Make Baseline Image" button';
-                  }
-                  if (!currentBaselineCompare) {
-                    return (
-                      <div className="alert alert-primary" role="alert">
-                        <span>
-                          <i className="fas fa-spinner fa-pulse fa-2x" />
-                          Loading baseline compare.
-                        </span>
-                      </div>
-                    );
-                  }
-                  if (currentBaselineCompare === 'ERROR') {
-                    return (
-                      <div className="alert alert-danger" role="alert">
-                        <span>Failed to retrieve basedline compare.</span>
-                      </div>
-                    );
-                  }
-                  return <img className="screenshot" src={currentBaselineCompare} alt="Compare" />;
-                }
+                  this.displayBaselineImage(currentBaseLineDetails, currentBaselineCompare)
               }
             </div>
           </Tab>
@@ -420,28 +474,7 @@ class ScreenshotView extends Component {
                     </td>
                     <td>
                       {
-                      () => {
-                        if (!currentScreenshot) {
-                          return (
-                            <div className="alert alert-primary" role="alert">
-                              <span>
-                                <i className="fas fa-spinner fa-pulse fa-2x" />
-                                <span> Retrieving screenshot.</span>
-                              </span>
-                            </div>
-                          );
-                        }
-                        if (currentScreenshot === 'ERROR') {
-                          return (
-                            <div className="alert alert-danger" role="alert">
-                              <span>
-                                Unable to retrieve image. Please refresh the page and try again.
-                              </span>
-                            </div>
-                          );
-                        }
-                        return <img className="screenshot" src={currentScreenshot} alt="Screenshot" />;
-                      }
+                        this.displaySideBySideScreenshot(currentScreenshot)
                       }
                     </td>
                   </tr>
@@ -463,29 +496,7 @@ class ScreenshotView extends Component {
                         </td>
                         <td>
                           {
-                            () => {
-                              if (!currentBaseline) {
-                                return (
-                                  <div className="alert alert-primary" role="alert">
-                                    <span>
-                                      <i className="fas fa-spinner fa-pulse fa-2x" />
-                                      <span> Retrieving baseline screenshot.</span>
-                                    </span>
-                                  </div>
-                                );
-                              }
-                              if (currentBaseline === 'ERROR') {
-                                return (
-                                  <div className="alert alert-danger" role="alert">
-                                    <span>
-                                      Unable to retrieve baseline image.
-                                      Please refresh the page and try again.
-                                    </span>
-                                  </div>
-                                );
-                              }
-                              return <img className="screenshot" src={currentBaseline} alt="Baseline Screenshot" />;
-                            }
+                            this.displaySideBySideBaseline(currentBaseline)
                           }
                         </td>
                       </tr>,

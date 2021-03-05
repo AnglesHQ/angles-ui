@@ -12,6 +12,7 @@ class TestDetailsTable extends Component {
 
   getFirstTestStepByStatus = (execution, status) => {
     execution.actions.forEach((action) => {
+      /* eslint consistent-return: [0] */
       action.steps.forEach((step) => {
         if (step.status === status) {
           if (step.info) {
@@ -40,8 +41,8 @@ class TestDetailsTable extends Component {
           </tr>
           {
             execution.platforms && execution.platforms.length > 0 ? (
-              execution.platforms.map((platform, index) => (
-                <tr key={`platform_${index}`}>
+              execution.platforms.map((platform) => (
+                <tr key={`platform_${platform.platformName}`}>
                   <td><strong>Platform</strong></td>
                   <td>
                     {

@@ -11,12 +11,12 @@ class ImageCarousel extends Component {
 
   componentDidMount() {
     // start listening for key events
-    this.addEventListener('keydown', this.handleArrowKeys, false);
+    document.addEventListener('keydown', this.handleArrowKeys, false);
   }
 
   componentWillUnmount() {
     // stop listening for key events
-    this.removeEventListener('keydown', this.handleArrowKeys, false);
+    document.removeEventListener('keydown', this.handleArrowKeys, false);
   }
 
   isSelectedId = (screenshotId) => {

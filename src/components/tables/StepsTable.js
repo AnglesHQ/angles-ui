@@ -1,3 +1,4 @@
+/* eslint react/no-array-index-key: [0] */
 import React, { Component } from 'react';
 import Moment from 'react-moment';
 import { withRouter } from 'react-router-dom';
@@ -44,11 +45,11 @@ class StepsTable extends Component {
           </tr>
         </thead>
         <tbody>
-          { action.steps.map((step) => {
+          { action.steps.map((step, stepIndex) => {
             if (step.status === 'ERROR' || step.status === 'INFO') {
               return (
-                <tr key={`steps_${index}`}>
-                  <td>{index + 1}</td>
+                <tr key={`steps_${stepIndex}`}>
+                  <td>{stepIndex + 1}</td>
                   <td><Moment format="HH:mm:ss">{step.timestamp}</Moment></td>
                   <td className={`${step.status}`}>{step.status}</td>
                   <td colSpan={4}>{step.info}</td>
@@ -67,8 +68,8 @@ class StepsTable extends Component {
               );
             }
             return (
-              <tr key={`steps_${index}`}>
-                <td>{index + 1}</td>
+              <tr key={`steps_${stepIndex}`}>
+                <td>{stepIndex + 1}</td>
                 <td><Moment format="HH:mm:ss">{step.timestamp}</Moment></td>
                 <td className={`${step.status}`}>{step.status}</td>
                 <td>{step.name}</td>

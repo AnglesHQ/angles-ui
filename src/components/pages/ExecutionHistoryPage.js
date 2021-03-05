@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import queryString from 'query-string';
+import { withRouter } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
 import ExecutionsResultsPieChart from '../charts/ExecutionsResultsPieChart';
 import ExecutionsTimeLineChart from '../charts/ExecutionsTimeLineChart';
@@ -128,4 +129,4 @@ class SummaryPage extends Component {
   }
 }
 
-export default SummaryPage;
+export default withRouter(SummaryPage);

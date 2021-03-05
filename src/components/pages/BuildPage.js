@@ -10,7 +10,7 @@ import BuildSummary from '../tables/BuildSummary';
 import BuildArtifacts from '../tables/BuildArtifacts';
 import '../charts/Charts.css';
 import ScreenshotView from './ScreenshotView';
-import { makeGetScreenshotDetails } from '../../utility/requests/ScreenshotRequests';
+import makeGetScreenshotDetails from '../../utility/requests/ScreenshotRequests';
 
 class BuildPage extends Component {
   constructor(props) {
