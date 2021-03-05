@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Table from 'react-bootstrap/Table';
 import queryString from 'query-string';
+import { withRouter } from 'react-router-dom';
 import { encode as btoa } from 'base-64';
 import ImageCarousel from '../elements/ImageCarousel';
 import ScreenshotDetailsTable from '../tables/ScreenshotDetailsTable';
@@ -231,4 +232,4 @@ class ScreenshotFinderPage extends Component {
   }
 }
 
-export default ScreenshotFinderPage;
+export default withRouter(ScreenshotFinderPage);
