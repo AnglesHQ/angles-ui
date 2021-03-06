@@ -329,6 +329,7 @@ class ScreenshotView extends Component {
                 currentScreenshot={currentScreenshot}
                 isBaseline={this.isBaseline}
                 makeUpdateBaselineRequest={this.makeUpdateBaselineRequest}
+                getBaselineCompare={this.getBaselineCompare}
               />
             </div>
           </Tab>

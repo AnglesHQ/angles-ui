@@ -5,40 +5,39 @@ import Table from 'react-bootstrap/Table';
 import RegionSelect from 'react-region-select';
 import BaselineCompareDetailsTable from '../tables/BaselineCompareDetailsTable';
 import ScreenshotDetailsTable from '../tables/ScreenshotDetailsTable';
+import '../pages/Default.css';
 
 class BaselineImageView extends Component {
   constructor(props) {
     super(props);
     this.state = {
       editing: false,
-      existingIgnoreBlocks: [],
       regions: [],
       ignoreBlocks: [],
     };
   }
 
-  componentDidMount() {
-    const { currentBaseLineDetails } = this.props;
-    if (currentBaseLineDetails && currentBaseLineDetails.ignoreBoxes
-      && currentBaseLineDetails.ignoreBoxes.length > 0) {
-      const existingIgnoreBlocks = [];
-      currentBaseLineDetails.ignoreBoxes.forEach((block) => {
-        existingIgnoreBlocks.push(
-          {
-            x: block.left,
-            y: block.top,
-            width: 100 - (block.left + block.right),
-            height: 100 - (block.top + block.bottom),
-            data: {},
-          },
-        );
-      });
-      console.log(`Current Ignore Blocks: ${existingIgnoreBlocks}`);
-      this.state({ regions: existingIgnoreBlocks });
-    }
-  }
-
   componentDidUpdate(prevProps, prevState) {
+    const { currentBaseLineDetails } = this.props;
+    if (currentBaseLineDetails !== prevProps.currentBaseLineDetails) {
+      if (currentBaseLineDetails.ignoreBoxes
+        && currentBaseLineDetails.ignoreBoxes.length > 0) {
+        const existingIgnoreBlocks = [];
+        currentBaseLineDetails.ignoreBoxes.forEach((block) => {
+          existingIgnoreBlocks.push(
+            {
+              x: block.left,
+              y: block.top,
+              width: 100 - (block.left + block.right),
+              height: 100 - (block.top + block.bottom),
+              data: {},
+            },
+          );
+        });
+        this.setState({ regions: existingIgnoreBlocks });
+      }
+    }
+
     const { regions } = this.state;
     if (prevState.regions !== regions) {
       const latestIgnoreBlocks = [];
@@ -82,6 +81,14 @@ class BaselineImageView extends Component {
     }
   }
 
+  deleteRegion = (index) => {
+    const { regions } = this.state;
+    const region = regions[index];
+    let regionsArray = [];
+    regionsArray = regions.filter((s) => s !== region);
+    this.onChange(regionsArray);
+  }
+
   regionRenderer = (regionProps) => {
     const { editing } = this.state;
     if (!regionProps.isChanging) {
@@ -90,13 +97,13 @@ class BaselineImageView extends Component {
           {
            editing
              ? (
-               <button
+               <span
+                 className="remove-region-icon"
                  type="button"
-                 onMouseUp={(event) => this.changeRegionData(regionProps.index, event)}
-                 value="delete"
+                 onClick={() => this.deleteRegion(regionProps.index)}
                >
-                 Delete
-               </button>
+                 <i className="far fa-trash-alt" />
+               </span>
              )
              : null
           }
@@ -122,7 +129,7 @@ class BaselineImageView extends Component {
   }
 
   render() {
-    const { regions, ignoreBlocks, editing } = this.state;
+    const { regions, editing } = this.state;
     const {
       currentBaseLineDetails,
       currentScreenshotDetails,
@@ -130,6 +137,7 @@ class BaselineImageView extends Component {
       currentBaselineCompareJson,
       currentScreenshot,
       isBaseline,
+      // getBaselineCompare,
     } = this.props;
 
     const regionStyle = {
@@ -158,7 +166,34 @@ class BaselineImageView extends Component {
                 </div>
               </td>
               <td>
-                <img className="screenshot" src={currentScreenshot} alt="Compare" />
+                <div style={{ display: 'block' }}>
+                  <div style={{ flexGrow: 1, flexShrink: 1, width: '100%' }}>
+                    <RegionSelect
+                      maxRegions={10}
+                      regions={regions}
+                      regionStyle={regionStyle}
+                      constraint
+                      onChange={this.onChange}
+                      regionRenderer={this.regionRenderer}
+                      style={{ border: '1px solid black' }}
+                    >
+                      <img className="screenshot" src={currentScreenshot} id="baseline" alt="Compare" width="100%" />
+                    </RegionSelect>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td colSpan="100%">
+                <span style={{ float: 'left' }}>
+                  <button
+                    type="button"
+                    className="btn btn-outline-primary"
+                    onMouseUp={() => this.toggleEditing()}
+                  >
+                    {`${editing ? 'Save' : 'Edit'} Ignore Blocks`}
+                  </button>
+                </span>
               </td>
             </tr>
           </tbody>
@@ -187,7 +222,7 @@ class BaselineImageView extends Component {
         <tbody>
           <tr>
             <td colSpan="100%" className="sbs-header">
-              Baseline Compare
+              <span>Baseline Compare </span>
             </td>
           </tr>
           <tr>
@@ -214,26 +249,6 @@ class BaselineImageView extends Component {
                   >
                     <img className="screenshot" src={currentBaselineCompare} id="baseline" alt="Compare" width="100%" />
                   </RegionSelect>
-                  {ignoreBlocks.length > 0
-                    ? (
-                      <p>
-                        Ignored Regions
-                        <div>
-                          {ignoreBlocks.map((el) => (
-                            <p>
-                              Left:
-                              {el.left}
-                              ,Top:
-                              {el.top}
-                              ,Right:
-                              {el.right}
-                              ,Bottom:
-                              {el.bottom}
-                            </p>
-                          ))}
-                        </div>
-                      </p>
-                    ) : null}
                 </div>
               </div>
             </td>
