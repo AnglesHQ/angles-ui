@@ -33,20 +33,19 @@ class App extends Component {
     this.retrieveEnvironmentDetails();
   }
 
-  componentDidUpdate() {
-    const { location } = this.props;
+  componentDidUpdate(prevProps, prevState) {
     const { teams, currentTeam } = this.state;
-    const query = queryString.parse(location.search);
-    if (teams !== [] && currentTeam) {
+    if (prevState.teams !== teams || prevState.currenTeam !== currentTeam) {
+      const { location } = this.props;
+      const query = queryString.parse(location.search);
       // check if there is a query
       if (query.teamId) {
-        // if query is provided and it's not the current team change team.
-        if (query.teamId !== currentTeam._id) {
+        if (!currentTeam || query.teamId !== currentTeam._id) {
           this.changeCurrentTeam(query.teamId);
         }
       } else if (Cookies.get('teamId')) {
         // if cookie is provided
-        if (Cookies.get('teamId') !== currentTeam._id) {
+        if (!currentTeam || Cookies.get('teamId') !== currentTeam._id) {
           this.changeCurrentTeam(Cookies.get('teamId'));
         }
       }
