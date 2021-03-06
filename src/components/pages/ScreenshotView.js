@@ -122,14 +122,14 @@ class ScreenshotView extends Component {
       this.setState({ currentBaselineCompare: 'ERROR' });
     })
 
-    getBaselineCompareJson = (screenshotId) => axios.get(`/screenshot/${screenshotId}/baseline/compare`)
-      .then((res) => {
-        this.setState({ currentBaselineCompareJson: res.data });
-      })
-      .catch(() => {
-        // failed to retrieve baseline.
-        this.setState({ currentBaselineCompareJson: {} });
-      })
+  getBaselineCompareJson = (screenshotId) => axios.get(`/screenshot/${screenshotId}/baseline/compare`)
+    .then((res) => {
+      this.setState({ currentBaselineCompareJson: res.data });
+    })
+    .catch(() => {
+      // failed to retrieve baseline.
+      this.setState({ currentBaselineCompareJson: {} });
+    })
 
   getBaseLineDetails = (screenshot) => {
     let baselineQuery = `/baseline/?view=${screenshot.view}&platformName=${screenshot.platform.platformName}`;
@@ -153,7 +153,7 @@ class ScreenshotView extends Component {
     const { currentBaseLineDetails } = this.state;
     if (currentBaseLineDetails) {
       // if there is already a base line we need to update it.
-      this.updateBaselineForView(currentBaseLineDetails._id, screenshot._id);
+      this.makeUpdateBaselineRequest(currentBaseLineDetails._id, screenshot._id);
     } else {
       // create a new baseline
       this.setBaselineForView(screenshot);
@@ -170,12 +170,15 @@ class ScreenshotView extends Component {
 
   forceBaselineCompare = (screenshotId) => this.getBaselineCompare(screenshotId, false);
 
-  updateBaselineForView = (baselineId, screenshotId) => axios.put(`/baseline/${baselineId}`, {
-    screenshotId,
-  })
-    .then((res) => {
-      this.setState({ currentBaseLineDetails: res.data });
-    })
+  makeUpdateBaselineRequest = (baselineId, screenshotId, ignoreBoxes) => {
+    const updateBaselineRequest = {};
+    if (screenshotId) updateBaselineRequest.screenshotId = screenshotId;
+    if (ignoreBoxes) updateBaselineRequest.ignoreBoxes = ignoreBoxes;
+    return axios.put(`/baseline/${baselineId}`, updateBaselineRequest)
+      .then((res) => {
+        this.setState({ currentBaseLineDetails: res.data });
+      });
+  }
 
   isBaseline = (screenshotId) => {
     const { currentBaseLineDetails } = this.state;
@@ -325,6 +328,7 @@ class ScreenshotView extends Component {
                 currentBaselineCompareJson={currentBaselineCompareJson}
                 currentScreenshot={currentScreenshot}
                 isBaseline={this.isBaseline}
+                makeUpdateBaselineRequest={this.makeUpdateBaselineRequest}
               />
             </div>
           </Tab>
