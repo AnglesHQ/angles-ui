@@ -1,5 +1,5 @@
 .screenshot {
-  max-width: 80%;
+  /* max-width: 80%; */
   /* max-height: 100%; */
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -208,4 +208,11 @@
 
 .remove-region-icon {
   cursor: pointer;
+}
+
+.redo-compare-icon {
+  cursor: pointer;
+  padding-left: 5px;
+  width: 2em;
+  color: #007bff;
 }

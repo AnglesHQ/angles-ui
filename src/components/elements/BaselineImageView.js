@@ -137,7 +137,7 @@ class BaselineImageView extends Component {
       currentBaselineCompareJson,
       currentScreenshot,
       isBaseline,
-      // getBaselineCompare,
+      getBaselineCompare,
     } = this.props;
 
     const regionStyle = {
@@ -223,6 +223,12 @@ class BaselineImageView extends Component {
           <tr>
             <td colSpan="100%" className="sbs-header">
               <span>Baseline Compare </span>
+              <span
+                type="button"
+                onClick={() => getBaselineCompare(currentScreenshotDetails._id, false)}
+              >
+                <i className="fas fa-redo redo-compare-icon" title="Redo compare against baseline." />
+              </span>
             </td>
           </tr>
           <tr>
