@@ -2,12 +2,11 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
-import Table from 'react-bootstrap/Table';
 import Alert from 'react-bootstrap/Alert';
 import { withRouter } from 'react-router-dom';
 import { encode as btoa } from 'base-64';
 import ImageCarousel from '../elements/ImageCarousel';
-import ScreenshotDetailsTable from '../tables/ScreenshotDetailsTable';
+import CurrentImageView from '../elements/CurrentImageView';
 import BaselineImageView from '../elements/BaselineImageView';
 import ImageSideBySideView from '../elements/ImageSideBySideView';
 import ScreenshotHistoryView from '../elements/ScreenshotHistoryView';
@@ -204,45 +203,6 @@ class ScreenshotView extends Component {
     }
   }
 
-  displayScreenshot = (currentScreenshot) => {
-    if (!currentScreenshot) {
-      return (
-        <div className="alert alert-danger" role="alert">
-          <span>
-            Unable to retrieve image. Please refresh the page and try again.
-          </span>
-        </div>
-      );
-    }
-    if (currentScreenshot === 'ERROR') {
-      return (
-        <div className="alert alert-primary" role="alert">
-          <span>
-            <i className="fas fa-spinner fa-pulse fa-2x" />
-            Retrieving screenshot.
-          </span>
-        </div>
-      );
-    }
-    return <img className="screenshot" src={currentScreenshot} alt="Screenshot" />;
-  }
-
-  returnMakeBaselineButton = (currentScreenshotDetails) => {
-    if (currentScreenshotDetails.platform && currentScreenshotDetails.view) {
-      return (
-        <button
-          onClick={() => this.updateBaseline(currentScreenshotDetails)}
-          disabled={this.isBaseline(currentScreenshotDetails._id)}
-          type="button"
-          className="btn btn-outline-primary"
-        >
-          { !this.isBaseline(currentScreenshotDetails._id) ? ('Make Baseline Image') : 'This is the Baseline Image'}
-        </button>
-      );
-    }
-    return null;
-  }
-
   render() {
     const {
       buildScreenshots,
@@ -280,34 +240,11 @@ class ScreenshotView extends Component {
         <Tabs id="image-tabs" activeKey={key} defaultActiveKey="image" onSelect={(tabKey, evt) => this.setTab(tabKey, evt)}>
           <Tab eventKey="image" title="Image">
             <div className="image-page-holder">
-              <Table>
-                <tbody>
-                  <tr>
-                    <td className="screenshot-details-td">
-                      <div>
-                        <ScreenshotDetailsTable
-                          currentScreenshotDetails={currentScreenshotDetails}
-                          isBaseline={this.isBaseline(currentScreenshotDetails._id)}
-                        />
-                      </div>
-                    </td>
-                    <td>
-                      {
-                        this.displayScreenshot(currentScreenshot)
-                      }
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colSpan="100%">
-                      <span style={{ float: 'left' }}>
-                        {
-                          this.returnMakeBaselineButton(currentScreenshotDetails)
-                        }
-                      </span>
-                    </td>
-                  </tr>
-                </tbody>
-              </Table>
+              <CurrentImageView
+                currentScreenshot={currentScreenshot}
+                currentScreenshotDetails={currentScreenshotDetails}
+                isBaseline={this.isBaseline}
+              />
             </div>
           </Tab>
           <Tab eventKey="history" disabled={!currentScreenshotDetails.platform || !currentScreenshotDetails.view} title="History">
