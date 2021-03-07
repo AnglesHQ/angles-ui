@@ -20,7 +20,7 @@ class BaselineImageView extends Component {
   componentDidUpdate(prevProps, prevState) {
     const { currentBaseLineDetails } = this.props;
     if (currentBaseLineDetails !== prevProps.currentBaseLineDetails) {
-      if (currentBaseLineDetails.ignoreBoxes
+      if (currentBaseLineDetails && currentBaseLineDetails.ignoreBoxes
         && currentBaseLineDetails.ignoreBoxes.length > 0) {
         const existingIgnoreBlocks = [];
         currentBaseLineDetails.ignoreBoxes.forEach((block) => {
@@ -35,6 +35,8 @@ class BaselineImageView extends Component {
           );
         });
         this.setState({ regions: existingIgnoreBlocks });
+      } else {
+        this.setState({ regions: [] });
       }
     }
 
