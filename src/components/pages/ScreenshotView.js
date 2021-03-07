@@ -243,6 +243,7 @@ class ScreenshotView extends Component {
               <CurrentImageView
                 currentScreenshot={currentScreenshot}
                 currentScreenshotDetails={currentScreenshotDetails}
+                updateBaseline={this.updateBaseline}
                 isBaseline={this.isBaseline}
               />
             </div>

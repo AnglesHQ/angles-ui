@@ -34,11 +34,11 @@ class CurrentImageView extends Component {
   }
 
   returnMakeBaselineButton = (currentScreenshotDetails) => {
-    const { isBaseline } = this.props;
+    const { isBaseline, updateBaseline } = this.props;
     if (currentScreenshotDetails.platform && currentScreenshotDetails.view) {
       return (
         <button
-          onClick={() => this.updateBaseline(currentScreenshotDetails)}
+          onClick={() => updateBaseline(currentScreenshotDetails)}
           disabled={isBaseline(currentScreenshotDetails._id)}
           type="button"
           className="btn btn-outline-primary"
