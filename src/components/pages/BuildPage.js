@@ -1,111 +1,141 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import axios from 'axios';
+import Modal from 'react-bootstrap/Modal';
+import queryString from 'query-string';
+import { withRouter } from 'react-router-dom';
 import BuildResultsPieChart from '../charts/BuildResultsPieChart';
 import BuildFeaturePieChart from '../charts/BuildFeaturePieChart';
 import SuiteTable from '../tables/SuiteTable';
 import BuildSummary from '../tables/BuildSummary';
 import BuildArtifacts from '../tables/BuildArtifacts';
-import '../charts/Charts.css'
-import queryString from 'query-string';
-import ScreenshotView from "./ScreenshotView";
-import Modal from 'react-bootstrap/Modal';
-import { makeGetScreenshotDetails } from '../../utility/requests/ScreenshotRequests'
-
+import '../charts/Charts.css';
+import ScreenshotView from './ScreenshotView';
+import makeGetScreenshotDetails from '../../utility/requests/ScreenshotRequests';
 
 class BuildPage extends Component {
-
   constructor(props) {
     super(props);
+    const { location } = this.props;
     this.state = {
       showModal: false,
       currentShotId: null,
       screenshots: null,
-      query: queryString.parse(this.props.location.search),
+      query: queryString.parse(location.search),
     };
-    this.getBuildDetails(this.state.query.buildId);
-    this.getScreenshotDetails(this.state.query.buildId);
+    const { query } = this.state;
+    this.getBuildDetails(query.buildId);
+    this.getScreenshotDetails(query.buildId);
     this.closeModal = this.closeModal.bind(this);
   }
 
-  getBuildDetails = (buildId) => {
-    axios.get('/build/' + buildId)
-    .then(res => res.data)
-    .then((data) => {
-      this.setState({ currentBuild: data });
-    })
-    .catch((err) => {
-        this.setState({ currentBuild: {} })
-    });
-  }
-
-  getScreenshotDetails = (buildId) => {
-    return makeGetScreenshotDetails(buildId)
-    .then((res) => {
-      this.setState({ screenshots: res.data });
-    })
-  }
-
   componentDidMount() {
-    if (this.state.query.loadScreenshotId) {
-      if (this.state.query.selectedTab) {
-        this.openModal(this.state.query.loadScreenshotId, this.state.query.selectedTab);
+    const { query } = this.state;
+    if (query.loadScreenshotId) {
+      if (query.selectedTab) {
+        this.openModal(query.loadScreenshotId, query.selectedTab);
       } else {
-        this.openModal(this.state.query.loadScreenshotId);
+        this.openModal(query.loadScreenshotId);
       }
     }
   }
 
+  getBuildDetails = (buildId) => {
+    axios.get(`/build/${buildId}`)
+      .then((res) => res.data)
+      .then((data) => {
+        this.setState({ currentBuild: data });
+      })
+      .catch(() => {
+        this.setState({ currentBuild: {} });
+      });
+  }
+
+  getScreenshotDetails = (buildId) => {
+    makeGetScreenshotDetails(buildId)
+      .then((res) => {
+        this.setState({ screenshots: res.data });
+      });
+  }
+
   closeModal = () => {
-    this.setState({showModal: false})
+    this.setState({ showModal: false });
   }
 
   openModal = (imageId, tab) => {
     this.setState({
       showModal: true,
       currentShotId: imageId,
-      selectedTab: tab
-    })
+      selectedTab: tab,
+    });
   }
 
   render() {
-    if (!this.state.currentBuild || !this.state.screenshots ) {
-      return <div className="alert alert-primary" role="alert">
-          <span><i className="fas fa-spinner fa-pulse fa-2x"></i> Retrieving build details.</span>
+    const {
+      currentBuild,
+      screenshots,
+      showModal,
+      currentShotId,
+      selectedTab,
+    } = this.state;
+    if (!currentBuild || !screenshots) {
+      return (
+        <div className="alert alert-primary" role="alert">
+          <span>
+            <i className="fas fa-spinner fa-pulse fa-2x" />
+            <span> Retrieving build details.</span>
+          </span>
         </div>
+      );
     }
-    if (this.state.currentBuild === {}) {
-      return <div>
-        <div className="alert alert-danger" role="alert">
+    if (currentBuild === {}) {
+      return (
+        <div>
+          <div className="alert alert-danger" role="alert">
             <span>Unable to retrieve build details. Please refresh the page and try again.</span>
+          </div>
         </div>
-      </div>
+      );
     }
     return (
-      <div >
-        <h1>Build: {this.state.currentBuild.name}</h1>
-        <BuildSummary build={this.state.currentBuild} />
-        <BuildArtifacts build={this.state.currentBuild} />
+      <div>
+        <h1>
+          <span>Build: </span>
+          <span>{currentBuild.name}</span>
+        </h1>
+        <BuildSummary build={currentBuild} />
+        <BuildArtifacts build={currentBuild} />
         <div className="graphContainerParent">
-          <BuildResultsPieChart build={this.state.currentBuild} />
-          <BuildFeaturePieChart build={this.state.currentBuild} />
+          <BuildResultsPieChart build={currentBuild} />
+          <BuildFeaturePieChart build={currentBuild} />
         </div>
-        <br/>
+        <br />
         <div>
-          { this.state.currentBuild.suites.map((suite, index) => {
-              return <SuiteTable key={index} suite={suite} screenshots={this.state.screenshots} openModal={this.openModal}/>
-          })}
+          {
+            currentBuild.suites.map((suite) => (
+              <SuiteTable
+                key={`${suite.name}`}
+                suite={suite}
+                screenshots={screenshots}
+                openModal={this.openModal}
+              />
+            ))
+          }
         </div>
-        <Modal show={this.state.showModal} onHide={this.closeModal} dialogClassName="screenshot-modal">
+        <Modal show={showModal} onHide={this.closeModal} dialogClassName="screenshot-modal">
           <Modal.Header closeButton>
-              <Modal.Title>Screenshot Viewer</Modal.Title>
+            <Modal.Title>Screenshot Viewer</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-              <ScreenshotView buildScreenshots={this.state.screenshots} selectedScreenshotId={this.state.currentShotId} selectedTab={this.state.selectedTab}/>
+            <ScreenshotView
+              buildScreenshots={screenshots}
+              selectedScreenshotId={currentShotId}
+              selectedTab={selectedTab}
+            />
           </Modal.Body>
-         </Modal>
+        </Modal>
       </div>
     );
   }
 }
 
-export default BuildPage;
+export default withRouter(BuildPage);

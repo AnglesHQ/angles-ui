@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router} from 'react-router-dom'
+import { BrowserRouter as Router } from 'react-router-dom';
 
 import './index.css';
+// eslint-disable-next-line import/extensions
 import '@fortawesome/fontawesome-free/js/all.js';
 
 import App from './containers/App';
@@ -11,8 +12,9 @@ import * as serviceWorker from './serviceWorker';
 ReactDOM.render(
   <Router>
     <App />
-  </Router>
-  , document.getElementById('root'));
+  </Router>,
+  document.getElementById('root'),
+);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

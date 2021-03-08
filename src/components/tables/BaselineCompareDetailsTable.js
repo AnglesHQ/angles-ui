@@ -4,7 +4,7 @@ import Table from 'react-bootstrap/Table';
 import { withRouter } from 'react-router-dom';
 import '../pages/Default.css';
 
-class ScreenshotDetailsTable extends Component {
+class BaselineCompareDetailsTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -24,7 +24,11 @@ class ScreenshotDetailsTable extends Component {
   }
 
   render() {
-    const { currentScreenshotDetails, isBaseline } = this.props;
+    const {
+      currentScreenshotDetails,
+      currentBaseLineDetails,
+      currentBaselineCompareJson,
+    } = this.props;
     return (
       <Table className="table-screenshot-details" bordered size="sm">
         <thead>
@@ -46,13 +50,29 @@ class ScreenshotDetailsTable extends Component {
             </td>
           </tr>
           <tr>
-            <td><strong>Date taken</strong></td>
+            <td><strong>Date</strong></td>
             <td>
               <Moment format="DD-MM-YYYY HH:mm:ss">
                 {currentScreenshotDetails.timestamp}
               </Moment>
             </td>
           </tr>
+          <tr>
+            <td><strong>Baseline Date</strong></td>
+            <td>
+              <Moment format="DD-MM-YYYY HH:mm:ss">
+                {currentBaseLineDetails.screenshot.timestamp}
+              </Moment>
+            </td>
+          </tr>
+          {
+            currentBaselineCompareJson ? (
+              <tr>
+                <td><strong>Mismatch</strong></td>
+                <td>{`${currentBaselineCompareJson.misMatchPercentage}% (analysis time: ${currentBaselineCompareJson.analysisTime}ms)`}</td>
+              </tr>
+            ) : null
+          }
           <tr>
             <td><strong>Resolution</strong></td>
             <td>{`${currentScreenshotDetails.width} x ${currentScreenshotDetails.height}`}</td>
@@ -83,14 +103,6 @@ class ScreenshotDetailsTable extends Component {
             <td><strong>Version</strong></td>
             <td>{ currentScreenshotDetails.platform ? currentScreenshotDetails.platform.browserVersion : 'No browser version provided'}</td>
           </tr>
-          {
-            isBaseline !== undefined ? (
-              <tr>
-                <td><strong>Baseline Image</strong></td>
-                <td>{ isBaseline ? ('true') : 'false' }</td>
-              </tr>
-            ) : null
-          }
           <tr>
             <td><strong>Tags</strong></td>
             <td>
@@ -105,4 +117,4 @@ class ScreenshotDetailsTable extends Component {
   }
 }
 
-export default withRouter(ScreenshotDetailsTable);
+export default withRouter(BaselineCompareDetailsTable);

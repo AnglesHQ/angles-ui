@@ -1,175 +1,194 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import Moment from 'react-moment';
-import { getDuration} from '../../utility/TimeUtilities'
-import { withRouter} from 'react-router-dom';
-import MultiSelect from "react-multi-select-component";
+import { withRouter } from 'react-router-dom';
+import MultiSelect from 'react-multi-select-component';
+import { getDuration } from '../../utility/TimeUtilities';
 
 class BuildsTable extends Component {
-
-constructor(props) {
-  super(props);
-  this.state = {
-    teams: [],
-    environments: [],
-    components: [],
-    selectedEnvironments: [],
-    selectedComponents: [],
-  };
-}
-
-resetEnvironmentsForTableFilter = (availableEnvironments) => {
-  let uniqueEnvironments = {};
-  availableEnvironments.forEach((environment) => {
-    uniqueEnvironments[environment._id]=environment.name;
-  })
-  let environments = [];
-  for (const [key, value] of Object.entries(uniqueEnvironments)) {
-    environments.push({ label: value, value: key });
-  }
-  environments.sort((a, b) => (a.label > b.label) ? 1 : -1);
-  this.setState({environments, selectedEnvironments: []});
-}
-
-resetComponentsForTableFilter = (team) => {
-  let uniqueComponents = {};
-  team.components.forEach((component) => {
-    uniqueComponents[component._id]=component.name;
-  });
-  let components = [];
-  for (const [key, value] of Object.entries(uniqueComponents)) {
-    components.push({ label: value, value: key });
-  }
-  components.sort((a, b) => (a.label > b.label) ? 1 : -1);
-  this.setState({components, selectedComponents: []});
-}
-
-componentDidMount = () => {
-  this.resetEnvironmentsForTableFilter(this.props.availableEnvironments);
-  this.resetComponentsForTableFilter(this.props.team);
-}
-
-componentDidUpdate = (prevProps) => {
-  // update environments
-  if (prevProps.availableEnvironments !== this.props.availableEnvironments) {
-    this.resetEnvironmentsForTableFilter(this.props.availableEnvironments);
-  }
-  // update components when a new team is selected.
-  if (prevProps.team !== this.props.team) {
-    this.resetComponentsForTableFilter(this.props.team);
-  }
-}
-
-isRowSelected = (build) => {
-  return this.props.selectedBuilds[build._id];
-}
-
-anyRowsSelected = () => {
-  let selectedRowsArray = this.props.retrievSelectedBuilds();
-  return (Object.keys(selectedRowsArray).length > 0);
-}
-
-getComponentName = (build) => {
-    return build.team.components.find(component => component._id === build.component);
-}
-
-setSelectedEnvironments = (selectedEnvironments) => {
-  this.setState({ selectedEnvironments });
-  this.props.setFilteredEnvironments(selectedEnvironments.map(environment => environment.value));
-}
-
-setSelectedComponents = (selectedComponents) => {
-  this.setState({ selectedComponents });
-  this.props.setFilteredComponents(selectedComponents.map(component => component.value));
-}
-
-render() {
-
-  const componentOverrideStrings = {
-    "selectSomeItems": "Components...",
-    "allItemsAreSelected": "All components",
+  constructor(props) {
+    super(props);
+    this.state = {
+      environments: [],
+      components: [],
+      selectedEnvironments: [],
+      selectedComponents: [],
+    };
   }
 
-  const environmentOverrideStrings = {
-    "selectSomeItems": "Environments...",
-    "allItemsAreSelected": "All environments",
+  componentDidMount = () => {
+    const { team, availableEnvironments } = this.props;
+    this.resetEnvironmentsForTableFilter(availableEnvironments);
+    this.resetComponentsForTableFilter(team);
   }
 
-  return (
-    <div>
+  componentDidUpdate = (prevProps) => {
+    // update environments
+    const { team, availableEnvironments } = this.props;
+    if (prevProps.availableEnvironments !== availableEnvironments) {
+      this.resetEnvironmentsForTableFilter(availableEnvironments);
+    }
+    // update components when a new team is selected.
+    if (prevProps.team !== team) {
+      this.resetComponentsForTableFilter(team);
+    }
+  }
+
+  resetEnvironmentsForTableFilter = (availableEnvironments) => {
+    const uniqueEnvironments = {};
+    availableEnvironments.forEach((environment) => {
+      uniqueEnvironments[environment._id] = environment.name;
+    });
+    const environments = [];
+    Object.keys(uniqueEnvironments).forEach((key) => {
+      environments.push({ label: uniqueEnvironments[key], value: key });
+    });
+    environments.sort((a, b) => ((a.label > b.label) ? 1 : -1));
+    this.setState({ environments, selectedEnvironments: [] });
+  }
+
+  resetComponentsForTableFilter = (team) => {
+    const uniqueComponents = {};
+    team.components.forEach((component) => {
+      uniqueComponents[component._id] = component.name;
+    });
+    const components = [];
+    Object.keys(uniqueComponents).forEach((key) => {
+      components.push({ label: uniqueComponents[key], value: key });
+    });
+    components.sort((a, b) => ((a.label > b.label) ? 1 : -1));
+    this.setState({ components, selectedComponents: [] });
+  }
+
+  isRowSelected = (build) => {
+    const { selectedBuilds } = this.props;
+    return selectedBuilds[build._id];
+  }
+
+  anyRowsSelected = () => {
+    const { retrieveSelectedBuilds } = this.props;
+    const selectedRowsArray = retrieveSelectedBuilds();
+    return (Object.keys(selectedRowsArray).length > 0);
+  }
+
+  getComponentName = (build) => build.team.components
+    .find((component) => component._id === build.component);
+
+  setSelectedEnvironments = (selectedEnvironments) => {
+    const { setFilteredEnvironments } = this.props;
+    this.setState({ selectedEnvironments });
+    setFilteredEnvironments(selectedEnvironments.map((environment) => environment.value));
+  }
+
+  setSelectedComponents = (selectedComponents) => {
+    const { setFilteredComponents } = this.props;
+    this.setState({ selectedComponents });
+    setFilteredComponents(selectedComponents.map((component) => component.value));
+  }
+
+  render() {
+    const componentOverrideStrings = {
+      selectSomeItems: 'Components...',
+      allItemsAreSelected: 'All components',
+    };
+
+    const environmentOverrideStrings = {
+      selectSomeItems: 'Environments...',
+      allItemsAreSelected: 'All environments',
+    };
+
+    const {
+      components,
+      selectedComponents,
+      environments,
+      selectedEnvironments,
+    } = this.state;
+    const {
+      history,
+      builds,
+      toggleSelectedBuild,
+      currentSkip,
+    } = this.props;
+
+    return (
       <div>
-      </div>
         <table className="table table-hover summary-table">
-        <thead className="thead-dark">
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">{ <div key={this.anyRowsSelected()}><i className={ this.anyRowsSelected() ? ('fas fa-check-square'): 'fas fa-square' }/></div> }</th>
-            <th scope="col">Name</th>
-            <th scope="col">
-              <MultiSelect className={"build-table-filter"}
-                options={this.state.components}
-                value={this.state.selectedComponents}
-                onChange={this.setSelectedComponents}
-                overrideStrings={componentOverrideStrings}
-                hasSelectAll={false}
-              />
-            </th>
-            <th scope="col">
-              <MultiSelect className={"build-table-filter"}
-                options={this.state.environments}
-                value={this.state.selectedEnvironments}
-                onChange={this.setSelectedEnvironments}
-                labelledBy={"Environment"}
-                overrideStrings={environmentOverrideStrings}
-                hasSelectAll={false}
-              />
-            </th>
-            <th scope="col">Started</th>
-            <th scope="col">Finished</th>
-            <th scope="col">Execution Time</th>
-            <th scope="col">Pass</th>
-            <th scope="col">Fail</th>
-            <th scope="col">Error</th>
-            <th scope="col">Skipped</th>
-          </tr>
-        </thead>
-        <tbody>
-          { this.props.builds.map((build, index) => {
-            return <tr key={build._id} onClick={() => this.props.toggleSelectedBuild(build)} onDoubleClick={() => this.props.history.push(`/build/?buildId=${build._id}`)}>
-              <th scope="row">{ index+this.props.currentSkip+1 }</th>
-              <td>
-                { <div key={this.isRowSelected(build)}><i className={ this.isRowSelected(build) ? ('far fa-check-square'): 'far fa-square' }/></div> }
-              </td>
-              <td>{build.name}</td>
-              <td>{ this.getComponentName(build).name }</td>
-              <td>{ build.environment.name }</td>
-              <td>
-                { build.start ? (
-                  <Moment format="DD-MM-YYYY HH:mm:ss">
-                    {build.start}
-                  </Moment>
-                ) : "N/A" }
-              </td>
-              <td>
-              { build.end ? (
-                <Moment format="DD-MM-YYYY HH:mm:ss">
-                  {build.end}
-                </Moment>
-              ) : "N/A" }
-              </td>
-              <td>{getDuration(build)}</td>
-              <td>{build.result.PASS}</td>
-              <td>{build.result.FAIL}</td>
-              <td>{build.result.ERROR}</td>
-              <td>{build.result.SKIPPED}</td>
+          <thead className="thead-dark">
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">
+                <div key={this.anyRowsSelected()}>
+                  <i className={this.anyRowsSelected() ? ('fas fa-check-square') : 'fas fa-square'} />
+                </div>
+              </th>
+              <th scope="col">Name</th>
+              <th scope="col">
+                <MultiSelect
+                  className="build-table-filter"
+                  options={components}
+                  value={selectedComponents}
+                  onChange={this.setSelectedComponents}
+                  overrideStrings={componentOverrideStrings}
+                  hasSelectAll={false}
+                />
+              </th>
+              <th scope="col">
+                <MultiSelect
+                  className="build-table-filter"
+                  options={environments}
+                  value={selectedEnvironments}
+                  onChange={this.setSelectedEnvironments}
+                  labelledBy="Environment"
+                  overrideStrings={environmentOverrideStrings}
+                  hasSelectAll={false}
+                />
+              </th>
+              <th scope="col">Started</th>
+              <th scope="col">Finished</th>
+              <th scope="col">Execution Time</th>
+              <th scope="col">Pass</th>
+              <th scope="col">Fail</th>
+              <th scope="col">Error</th>
+              <th scope="col">Skipped</th>
             </tr>
-          })
-        }
-        </tbody>
-      </table>
-    </div>
-  )
+          </thead>
+          <tbody>
+            { builds.map((build, index) => (
+              <tr key={build._id} onClick={() => toggleSelectedBuild(build)} onDoubleClick={() => history.push(`/build/?buildId=${build._id}`)}>
+                <th scope="row">{ index + currentSkip + 1 }</th>
+                <td>
+                  <div key={this.isRowSelected(build)}>
+                    <i className={this.isRowSelected(build) ? ('far fa-check-square') : 'far fa-square'} />
+                  </div>
+                </td>
+                <td>{build.name}</td>
+                <td>{ this.getComponentName(build).name }</td>
+                <td>{ build.environment.name }</td>
+                <td>
+                  { build.start ? (
+                    <Moment format="DD-MM-YYYY HH:mm:ss">
+                      {build.start}
+                    </Moment>
+                  ) : 'N/A' }
+                </td>
+                <td>
+                  { build.end ? (
+                    <Moment format="DD-MM-YYYY HH:mm:ss">
+                      {build.end}
+                    </Moment>
+                  ) : 'N/A' }
+                </td>
+                <td>{getDuration(build)}</td>
+                <td>{build.result.PASS}</td>
+                <td>{build.result.FAIL}</td>
+                <td>{build.result.ERROR}</td>
+                <td>{build.result.SKIPPED}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
 }
-
-};
 
 export default withRouter(BuildsTable);

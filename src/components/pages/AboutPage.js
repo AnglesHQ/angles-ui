@@ -1,9 +1,8 @@
-import React, { Component } from 'react'
+import { React, Component } from 'react';
 import 'react-multi-carousel/lib/styles.css';
-import './Default.css'
+import './Default.css';
 
 class AboutPage extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -16,15 +15,22 @@ class AboutPage extends Component {
       <div>
         <h1>About Angles</h1>
         <div>
-          Angles is an open-source framework to store results for automated test runs from various frameworks.
+          Angles is an open-source framework to store results for
+          automated test runs from various frameworks.
         </div>
-        <br/>
+        <br />
         <div>
-          By providing a clearly defined <a href="https://editor.swagger.io/?url=https://raw.githubusercontent.com/AnglesHQ/angles/master/swagger/swagger.json" rel="noreferrer" target="_blank">API</a> any framework can be adapted to store it's test result in Angles, using one of the clients provided (or by using the API directly)
+          <span>By providing a clearly defined </span>
+          <a href="https://editor.swagger.io/?url=https://raw.githubusercontent.com/AnglesHQ/angles/master/swagger/swagger.json" rel="noreferrer" target="_blank">API</a>
+          <span>
+            any framework can be adapted to store it&apos;s test result in Angles,
+            using one of the clients provided (or by using the API directly)
+          </span>
         </div>
-        <br/>
+        <br />
         <div>
-          For more information about Angles go to our Github project: <br/>
+          For more information about Angles go to our Github project:
+          <br />
           <a href="https://github.com/AnglesHQ/angles" rel="noreferrer" target="_blank">https://github.com/AnglesHQ/angles</a>
         </div>
       </div>

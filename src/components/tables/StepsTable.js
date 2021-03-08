@@ -1,38 +1,37 @@
-import React, { Component } from 'react'
+/* eslint react/no-array-index-key: [0] */
+import React, { Component } from 'react';
 import Moment from 'react-moment';
-import { withRouter} from 'react-router-dom';
-import '../pages/Default.css'
-import queryString from 'query-string';
+import { withRouter } from 'react-router-dom';
+import '../pages/Default.css';
 
 class StepsTable extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
-      screenshots : props.screenshots,
-      query: queryString.parse(this.props.location.search),
+      screenshots: props.screenshots,
     };
   }
 
   getScreenShot = (screenshotId) => {
-    let thumbnail = undefined;
-    if (this.state.screenshots !== undefined && screenshotId !== undefined) {
-      let image = this.state.screenshots.filter(screenshot => screenshot._id === screenshotId)[0];
+    const { screenshots } = this.state;
+    if (screenshots !== undefined && screenshotId !== undefined) {
+      const image = screenshots.filter((screenshot) => screenshot._id === screenshotId)[0];
       if (image !== undefined) {
         return image.thumbnail;
       }
     }
-    return thumbnail;
+    return undefined;
   }
 
   navigateToImageDetails = (imageId) => {
-    let history = this.props.history;
-    history.push(`/image/${imageId}`)
+    const { history } = this.props;
+    history.push(`/image/${imageId}`);
   }
 
-  render () {
+  render() {
+    const { index, action, openModal } = this.props;
     return [
-      <table className="steps-table" key={"steps_table_" + this.props.index}>
+      <table className="steps-table" key={`steps_table_${index}`}>
         <thead>
           <tr>
             <th>#</th>
@@ -46,43 +45,55 @@ class StepsTable extends Component {
           </tr>
         </thead>
         <tbody>
-          { this.props.action.steps.map((step, index) => {
-            if (step.status === "ERROR" || step.status === "INFO") {
-              return <tr key={"steps_" + index}>
-                <td>{index+1}</td>
+          { action.steps.map((step, stepIndex) => {
+            if (step.status === 'ERROR' || step.status === 'INFO') {
+              return (
+                <tr key={`steps_${stepIndex}`}>
+                  <td>{stepIndex + 1}</td>
+                  <td><Moment format="HH:mm:ss">{step.timestamp}</Moment></td>
+                  <td className={`${step.status}`}>{step.status}</td>
+                  <td colSpan={4}>{step.info}</td>
+                  {
+                    step.screenshot ? (
+                      <td onClick={() => openModal(step.screenshot)}>
+                        <img
+                          className="screenshot-thumbnail"
+                          src={`data:image/png;base64, ${this.getScreenShot(step.screenshot)}`}
+                          alt="Thumbnail"
+                        />
+                      </td>
+                    ) : <td />
+                  }
+                </tr>
+              );
+            }
+            return (
+              <tr key={`steps_${stepIndex}`}>
+                <td>{stepIndex + 1}</td>
                 <td><Moment format="HH:mm:ss">{step.timestamp}</Moment></td>
                 <td className={`${step.status}`}>{step.status}</td>
-                <td colSpan={4}>{step.info}</td>
+                <td>{step.name}</td>
+                <td>{step.expected}</td>
+                <td>{step.actual}</td>
+                <td>{step.info}</td>
                 {
-                  step.screenshot ? (<td onClick={() => this.props.openModal(step.screenshot)}>
-                      <img className="screenshot-thumbnail"
-                           src={"data:image/png;base64, " + this.getScreenShot(step.screenshot)}
-                           alt="Thumbnail"/></td>) : <td/>
+                  step.screenshot ? (
+                    <td onClick={() => this.openModal(step.screenshot)}>
+                      <img
+                        className="screenshot-thumbnail"
+                        src={`data:image/png;base64, ${this.getScreenShot(step.screenshot)}`}
+                        alt="Thumbnail"
+                      />
+                    </td>
+                  ) : <td />
                 }
               </tr>
-            }
-
-            return <tr key={"steps_" + index}>
-              <td>{index+1}</td>
-              <td><Moment format="HH:mm:ss">{step.timestamp}</Moment></td>
-              <td className={`${step.status}`}>{step.status}</td>
-              <td>{step.name}</td>
-              <td>{step.expected}</td>
-              <td>{step.actual}</td>
-              <td>{step.info}</td>
-              {
-                step.screenshot ? (<td onClick={() => this.openModal(step.screenshot)}>
-                  <img className="screenshot-thumbnail"
-                       src={"data:image/png;base64, " + this.getScreenShot(step.screenshot)}
-                       alt="Thumbnail"/></td>) : <td/>
-              }
-             </tr>
-            })
-          }
+            );
+          })}
         </tbody>
-      </table>
-    ]
+      </table>,
+    ];
   }
-};
+}
 
-export default withRouter(StepsTable)
+export default withRouter(StepsTable);
