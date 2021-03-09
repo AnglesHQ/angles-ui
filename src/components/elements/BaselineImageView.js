@@ -21,17 +21,17 @@ class BaselineImageView extends Component {
     const { currentBaseLineDetails } = this.props;
     if (currentBaseLineDetails !== prevProps.currentBaseLineDetails) {
       if (currentBaseLineDetails && currentBaseLineDetails.ignoreBoxes
-          && currentBaseLineDetails.ignoreBoxes.length > 0) {
+        && currentBaseLineDetails.ignoreBoxes.length > 0) {
         const existingIgnoreBlocks = [];
         currentBaseLineDetails.ignoreBoxes.forEach((block) => {
           existingIgnoreBlocks.push(
-              {
-                x: block.left,
-                y: block.top,
-                width: 100 - (block.left + block.right),
-                height: 100 - (block.top + block.bottom),
-                data: {},
-              },
+            {
+              x: block.left,
+              y: block.top,
+              width: 100 - (block.left + block.right),
+              height: 100 - (block.top + block.bottom),
+              data: {},
+            },
           );
         });
         this.setState({ regions: existingIgnoreBlocks });
@@ -66,7 +66,7 @@ class BaselineImageView extends Component {
       });
       this.setState({ regions: newRegions });
     }
-  }
+  };
 
   changeRegionData = (index, event) => {
     const { regions } = this.state;
@@ -81,7 +81,7 @@ class BaselineImageView extends Component {
       default:
         break;
     }
-  }
+  };
 
   deleteRegion = (index) => {
     const { regions } = this.state;
@@ -89,31 +89,35 @@ class BaselineImageView extends Component {
     let regionsArray = [];
     regionsArray = regions.filter((s) => s !== region);
     this.onChange(regionsArray);
-  }
+  };
 
   regionRenderer = (regionProps) => {
     const { editing } = this.state;
     if (!regionProps.isChanging) {
       return (
-          <div style={{ position: 'absolute', right: 0, bottom: '-25px' }}>
-            {
-              editing
-                  ? (
-                      <span
-                          className="remove-region-icon"
-                          type="button"
-                          onClick={() => this.deleteRegion(regionProps.index)}
-                      >
-                        <i className="far fa-trash-alt" />
+        <div style={{
+          position: 'absolute',
+          right: 0,
+          bottom: '-25px'
+        }}>
+          {
+            editing
+              ? (
+                <span
+                  className="remove-region-icon"
+                  type="button"
+                  onClick={() => this.deleteRegion(regionProps.index)}
+                >
+                        <i className="far fa-trash-alt"/>
                       </span>
-                  )
-                  : null
-            }
-          </div>
+              )
+              : null
+          }
+        </div>
       );
     }
     return null;
-  }
+  };
 
   toggleEditing = () => {
     const { editing } = this.state;
@@ -121,10 +125,10 @@ class BaselineImageView extends Component {
       const { currentBaseLineDetails, makeUpdateBaselineRequest } = this.props;
       const { ignoreBlocks } = this.state;
       makeUpdateBaselineRequest(currentBaseLineDetails._id,
-          currentBaseLineDetails.screenshot._id, ignoreBlocks);
+        currentBaseLineDetails.screenshot._id, ignoreBlocks);
     }
     this.setState({ editing: !editing });
-  }
+  };
 
   init(newRegions) {
     this.setState({ regions: newRegions });
@@ -151,131 +155,142 @@ class BaselineImageView extends Component {
     }
     if (currentBaseLineDetails.screenshot._id === currentScreenshotDetails._id) {
       return (
-          <Table>
-            <tbody>
-              <tr>
-                <td colSpan="100%" className="sbs-header">
-                  Current Image (and Baseline)
-                </td>
-              </tr>
-              <tr>
-                <td className="screenshot-details-td">
-                  <div>
-                    <ScreenshotDetailsTable
-                        currentScreenshotDetails={currentScreenshotDetails}
-                        isBaseline={isBaseline(currentScreenshotDetails._id)}
-                    />
-                  </div>
-                </td>
-                <td>
-                  <div style={{ display: 'block' }}>
-                    <div style={{ flexGrow: 1, flexShrink: 1, width: '100%' }}>
-                      <RegionSelect
-                          maxRegions={10}
-                          regions={regions}
-                          regionStyle={regionStyle}
-                          constraint
-                          onChange={this.onChange}
-                          regionRenderer={this.regionRenderer}
-                          style={{ border: '1px solid black' }}
-                      >
-                        <img className="screenshot" src={currentScreenshot} id="baseline" alt="Compare" width="100%" />
-                      </RegionSelect>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td colSpan="100%">
+        <Table>
+          <tbody>
+          <tr>
+            <td colSpan="100%" className="sbs-header">
+              Current Image (and Baseline)
+            </td>
+          </tr>
+          <tr>
+            <td className="screenshot-details-td">
+              <div>
+                <ScreenshotDetailsTable
+                  currentScreenshotDetails={currentScreenshotDetails}
+                  isBaseline={isBaseline(currentScreenshotDetails._id)}
+                />
+              </div>
+            </td>
+            <td>
+              <div style={{ display: 'block' }}>
+                <div style={{
+                  flexGrow: 1,
+                  flexShrink: 1,
+                  width: '100%'
+                }}>
+                  <RegionSelect
+                    maxRegions={10}
+                    regions={regions}
+                    regionStyle={regionStyle}
+                    constraint
+                    onChange={this.onChange}
+                    regionRenderer={this.regionRenderer}
+                    style={{ border: '1px solid black' }}
+                  >
+                    <img className="screenshot" src={currentScreenshot} id="baseline" alt="Compare"
+                         width="100%"/>
+                  </RegionSelect>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td colSpan="100%">
                   <span style={{ float: 'left' }}>
                     <button
-                        type="button"
-                        className="btn btn-outline-primary"
-                        onMouseUp={() => this.toggleEditing()}
+                      type="button"
+                      className="btn btn-outline-primary"
+                      onMouseUp={() => this.toggleEditing()}
                     >
                       {`${editing ? 'Save' : 'Edit'} Ignore Blocks`}
                     </button>
                   </span>
-                </td>
-              </tr>
-            </tbody>
-          </Table>
+            </td>
+          </tr>
+          </tbody>
+        </Table>
       );
     }
     if (!currentBaselineCompare) {
       return (
-          <div className="alert alert-primary" role="alert">
+        <div className="alert alert-primary" role="alert">
             <span>
-              <i className="fas fa-spinner fa-pulse fa-2x" />
+              <i className="fas fa-spinner fa-pulse fa-2x"/>
               Loading baseline compare.
             </span>
-          </div>
+        </div>
       );
     }
     if (currentBaselineCompare === 'ERROR') {
       return (
-          <div className="alert alert-danger" role="alert">
-            <span>Failed to retrieve basedline compare.</span>
-          </div>
+        <div className="alert alert-danger" role="alert">
+          <span>Failed to retrieve basedline compare.</span>
+        </div>
       );
     }
     return (
-        <Table>
-          <tbody>
-            <tr>
-              <td colSpan="100%" className="sbs-header">
-                <span>Baseline Compare </span>
-                <span
-                    type="button"
-                    onClick={() => getBaselineCompare(currentScreenshotDetails._id, false)}
-                >
-                  <i className="fas fa-redo redo-compare-icon" title="Redo compare against baseline." />
+      <Table>
+        <tbody>
+        <tr>
+          <td colSpan="100%" className="sbs-header">
+            <span>Baseline Compare </span>
+            <span
+              type="button"
+              onClick={() => getBaselineCompare(currentScreenshotDetails._id, false)}
+            >
+                  <i className="fas fa-redo redo-compare-icon"
+                     title="Redo compare against baseline."/>
                 </span>
-              </td>
-            </tr>
-            <tr>
-              <td className="screenshot-details-td">
-                <div>
-                  <BaselineCompareDetailsTable
-                      currentScreenshotDetails={currentScreenshotDetails}
-                      currentBaseLineDetails={currentBaseLineDetails}
-                      currentBaselineCompareJson={currentBaselineCompareJson}
-                  />
-                </div>
-              </td>
-              <td>
-                <div style={{ display: 'block' }}>
-                  <div style={{ flexGrow: 1, flexShrink: 1, width: '100%' }}>
-                    <RegionSelect
-                        maxRegions={10}
-                        regions={regions}
-                        regionStyle={regionStyle}
-                        constraint
-                        onChange={this.onChange}
-                        regionRenderer={this.regionRenderer}
-                        style={{ border: '1px solid black' }}
-                    >
-                      <img className="screenshot" src={currentBaselineCompare} id="baseline" alt="Compare" width="100%" />
-                    </RegionSelect>
-                  </div>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td colSpan="100%">
+          </td>
+        </tr>
+        <tr>
+          <td className="screenshot-details-td">
+            <div>
+              <BaselineCompareDetailsTable
+                currentScreenshotDetails={currentScreenshotDetails}
+                currentBaseLineDetails={currentBaseLineDetails}
+                currentBaselineCompareJson={currentBaselineCompareJson}
+              />
+            </div>
+          </td>
+          <td>
+            <div style={{ display: 'block' }}>
+              <div style={{
+                flexGrow: 1,
+                flexShrink: 1,
+                width: '100%'
+              }}>
+                <RegionSelect
+                  maxRegions={10}
+                  regions={regions}
+                  regionStyle={regionStyle}
+                  constraint
+                  onChange={this.onChange}
+                  regionRenderer={this.regionRenderer}
+                  style={{ border: '1px solid black' }}
+                >
+                  <img className="screenshot" src={currentBaselineCompare} id="baseline"
+                       alt="Compare" width="100%"/>
+                </RegionSelect>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td colSpan="100%">
                 <span style={{ float: 'left' }}>
                   <button
-                      type="button"
-                      className="btn btn-outline-primary"
-                      onMouseUp={() => this.toggleEditing()}
+                    type="button"
+                    className="btn btn-outline-primary"
+                    onMouseUp={() => this.toggleEditing()}
                   >
                     {`${editing ? 'Save' : 'Edit'} Ignore Blocks`}
                   </button>
                 </span>
-              </td>
-            </tr>
-          </tbody>
-        </Table>
+          </td>
+        </tr>
+        </tbody>
+      </Table>
     );
   }
 }

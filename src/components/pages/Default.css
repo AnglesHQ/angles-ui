@@ -1,218 +1,221 @@
 .screenshot {
-  max-width: 100%;
-  /* max-height: 100%; */
-  border: 1px solid #ddd;
-  border-radius: 4px;
+    max-width: 100%;
+    /* max-height: 100%; */
+    border: 1px solid #ddd;
+    border-radius: 4px;
 }
 
 .active-thumbnail {
-  border: 2px solid red;
+    border: 2px solid red;
 }
 
 .thumbnail-card {
-  max-width: 12em;
-  min-width: 12em;
+    max-width: 12em;
+    min-width: 12em;
 }
+
 .card-active {
-  border: 1px solid red;
+    border: 1px solid red;
 }
 
 .thumbnail-card .card-body {
-  padding: 0px;
+    padding: 0px;
 }
 
 .thumbnail-card-text {
-  font-size: small;
-  text-align: center;
-  padding: 2px;
-  font-weight: bold;
+    font-size: small;
+    text-align: center;
+    padding: 2px;
+    font-weight: bold;
 }
 
 .card-text {
-  font-weight: bold;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 250px;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 250px;
 }
 
 .card-text-active {
-  color: red;
+    color: red;
 }
 
 .card-deck-build-thumbnails {
-  align-items: center;
-  justify-content: center;
-  padding-bottom: 10px;
-  margin-bottom: 10px;
-  border-bottom: 1px solid #b5a5a53b;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #b5a5a53b;
 }
 
 .card-deck-history {
-  align-items: center;
-  justify-content: left;
-  padding-bottom: 10px;
-  margin-bottom: 10px;
-  border-bottom: 1px solid #b5a5a53b;
+    align-items: center;
+    justify-content: left;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #b5a5a53b;
 }
 
 .card-deck-history .card-body {
-  padding: 0px;
+    padding: 0px;
 }
 
 .card-deck-history .card-footer {
-  padding: 4px;
+    padding: 4px;
 }
+
 .screenshotCard {
-  max-width: 22em;
-  min-width: 22em;
-  margin: 1em;
+    max-width: 22em;
+    min-width: 22em;
+    margin: 1em;
 
 }
 
 .baseline-overlay {
-  font-weight: bolder;
-  color: red;
-  border: solid 2px red;
-  height: 40px;
-  padding: 5px;
-  background: grey;
-  margin: 5px;
-  text-align: center;
-  float: right;
+    font-weight: bolder;
+    color: red;
+    border: solid 2px red;
+    height: 40px;
+    padding: 5px;
+    background: grey;
+    margin: 5px;
+    text-align: center;
+    float: right;
 }
 
 .screenshot-thumbnail-history {
-  width: 200px;
+    width: 200px;
 }
 
 .image-page-holder {
-  padding: 2em;
-  border: 1px solid grey;
-  border-radius: 10px;
-  min-height: 300px;
+    padding: 2em;
+    border: 1px solid grey;
+    border-radius: 10px;
+    min-height: 300px;
 }
 
 .screenshot-modal {
-  max-width: 95%;
+    max-width: 95%;
 }
 
 .modal-content {
-  min-height: 200px;
+    min-height: 200px;
 }
 
 .nav-tabs {
-  padding-left: 10px;
-  border-bottom: 0px;
+    padding-left: 10px;
+    border-bottom: 0px;
 }
 
 .nav-link {
-  border-bottom: 0px;
-  border-left: 1px solid #545b627a !important;
-  border-right: 1px solid #545b627a !important;
-  border-top: 1px solid #545b627a !important;
-  position: relative;
-  top: 1px;
-  color: black;
+    border-bottom: 0px;
+    border-left: 1px solid #545b627a !important;
+    border-right: 1px solid #545b627a !important;
+    border-top: 1px solid #545b627a !important;
+    position: relative;
+    top: 1px;
+    color: black;
 }
 
 .nav-link:hover {
-  border-bottom: 0px;
-  color: black;
+    border-bottom: 0px;
+    color: black;
 }
 
 .nav-link.active {
-  border-bottom: 0px;
-  border-left: 1px solid grey !important;
-  border-right: 1px solid grey !important;
-  border-top: 1px solid grey !important;
-  background: #edeaea !important;
-  font-weight: bold;
-  z-index: 9;
+    border-bottom: 0px;
+    border-left: 1px solid grey !important;
+    border-right: 1px solid grey !important;
+    border-top: 1px solid grey !important;
+    background: #edeaea !important;
+    font-weight: bold;
+    z-index: 9;
 }
 
 .nav-link:focus {
-  outline: none;
+    outline: none;
 }
 
 .tab-content {
-  border: 1px solid #dee2e6;
-  border-radius: 10px;
-  background: #b5a5a53b;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    background: #b5a5a53b;
 }
 
 .screenshot-details-td {
-  width: 20em;
+    width: 20em;
 }
 
 .table-screenshot-details {
-  font-size: 12px;
-  min-width: 20em;
-  max-width: 25em;
+    font-size: 12px;
+    min-width: 20em;
+    max-width: 25em;
 }
 
 .table-screenshot-details thead {
-  background: lightgray;
+    background: lightgray;
 }
 
 .table-screenshot-history-details {
-  font-size: 12px;
-  margin-bottom: 3px;
+    font-size: 12px;
+    margin-bottom: 3px;
 }
+
 .table-screenshot-history-details td {
-  border: 0px;
+    border: 0px;
 }
 
 .screenshot-finder-form-or-div {
-  margin: 30px;
-  font-weight: bold;
+    margin: 30px;
+    font-weight: bold;
 }
 
 .carousel-container {
-  background: #b5a5a53b;
-  padding: 1em;
-  margin-bottom: 1em;
-  border-radius: 10px;
-  border: 1px solid grey;
+    background: #b5a5a53b;
+    padding: 1em;
+    margin-bottom: 1em;
+    border-radius: 10px;
+    border: 1px solid grey;
 }
 
 .screenshot-form-container {
-  padding: 15px;
-  border-radius: 10px;
-  background: #b5a5a53b;
-  border: 1px solid grey;
+    padding: 15px;
+    border-radius: 10px;
+    background: #b5a5a53b;
+    border: 1px solid grey;
 }
 
 .tag-form-group {
-  max-width: 45%;
+    max-width: 45%;
 }
 
 #numberOfDays {
-  max-width: 45%;
+    max-width: 45%;
 }
 
 .search-button {
-  margin-top: 20px;
+    margin-top: 20px;
 }
 
 .fa-spinner {
-  margin-right: 10px;
-  font-size: 20px;
+    margin-right: 10px;
+    font-size: 20px;
 }
 
 .sbs-header {
-  background-color: #80808080;
-  font-weight: bold;
-  font-size: 18px;
+    background-color: #80808080;
+    font-weight: bold;
+    font-size: 18px;
 }
 
 .remove-region-icon {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .redo-compare-icon {
-  cursor: pointer;
-  padding-left: 5px;
-  width: 2em;
-  color: #007bff;
+    cursor: pointer;
+    padding-left: 5px;
+    width: 2em;
+    color: #007bff;
 }
