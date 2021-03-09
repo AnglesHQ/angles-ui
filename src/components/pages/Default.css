@@ -1,5 +1,5 @@
 .screenshot {
-  max-width: 80%;
+  max-width: 100%;
   /* max-height: 100%; */
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -10,11 +10,11 @@
 }
 
 .thumbnail-card {
-   max-width: 12em;
-   min-width: 12em;
+  max-width: 12em;
+  min-width: 12em;
 }
 .card-active {
-    border: 1px solid red;
+  border: 1px solid red;
 }
 
 .thumbnail-card .card-body {
@@ -204,4 +204,15 @@
   background-color: #80808080;
   font-weight: bold;
   font-size: 18px;
+}
+
+.remove-region-icon {
+  cursor: pointer;
+}
+
+.redo-compare-icon {
+  cursor: pointer;
+  padding-left: 5px;
+  width: 2em;
+  color: #007bff;
 }
