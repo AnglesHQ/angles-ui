@@ -2,12 +2,11 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
-import Table from 'react-bootstrap/Table';
 import Alert from 'react-bootstrap/Alert';
 import { withRouter } from 'react-router-dom';
 import { encode as btoa } from 'base-64';
 import ImageCarousel from '../elements/ImageCarousel';
-import ScreenshotDetailsTable from '../tables/ScreenshotDetailsTable';
+import CurrentImageView from '../elements/CurrentImageView';
 import BaselineImageView from '../elements/BaselineImageView';
 import ImageSideBySideView from '../elements/ImageSideBySideView';
 import ScreenshotHistoryView from '../elements/ScreenshotHistoryView';
@@ -122,14 +121,14 @@ class ScreenshotView extends Component {
       this.setState({ currentBaselineCompare: 'ERROR' });
     })
 
-    getBaselineCompareJson = (screenshotId) => axios.get(`/screenshot/${screenshotId}/baseline/compare`)
-      .then((res) => {
-        this.setState({ currentBaselineCompareJson: res.data });
-      })
-      .catch(() => {
-        // failed to retrieve baseline.
-        this.setState({ currentBaselineCompareJson: {} });
-      })
+  getBaselineCompareJson = (screenshotId) => axios.get(`/screenshot/${screenshotId}/baseline/compare`)
+    .then((res) => {
+      this.setState({ currentBaselineCompareJson: res.data });
+    })
+    .catch(() => {
+      // failed to retrieve baseline.
+      this.setState({ currentBaselineCompareJson: {} });
+    })
 
   getBaseLineDetails = (screenshot) => {
     let baselineQuery = `/baseline/?view=${screenshot.view}&platformName=${screenshot.platform.platformName}`;
@@ -153,7 +152,7 @@ class ScreenshotView extends Component {
     const { currentBaseLineDetails } = this.state;
     if (currentBaseLineDetails) {
       // if there is already a base line we need to update it.
-      this.updateBaselineForView(currentBaseLineDetails._id, screenshot._id);
+      this.makeUpdateBaselineRequest(currentBaseLineDetails._id, screenshot._id);
     } else {
       // create a new baseline
       this.setBaselineForView(screenshot);
@@ -170,12 +169,15 @@ class ScreenshotView extends Component {
 
   forceBaselineCompare = (screenshotId) => this.getBaselineCompare(screenshotId, false);
 
-  updateBaselineForView = (baselineId, screenshotId) => axios.put(`/baseline/${baselineId}`, {
-    screenshotId,
-  })
-    .then((res) => {
-      this.setState({ currentBaseLineDetails: res.data });
-    })
+  makeUpdateBaselineRequest = (baselineId, screenshotId, ignoreBoxes) => {
+    const updateBaselineRequest = {};
+    if (screenshotId) updateBaselineRequest.screenshotId = screenshotId;
+    if (ignoreBoxes) updateBaselineRequest.ignoreBoxes = ignoreBoxes;
+    return axios.put(`/baseline/${baselineId}`, updateBaselineRequest)
+      .then((res) => {
+        this.setState({ currentBaseLineDetails: res.data });
+      });
+  }
 
   isBaseline = (screenshotId) => {
     const { currentBaseLineDetails } = this.state;
@@ -199,45 +201,6 @@ class ScreenshotView extends Component {
       this.getScreenshotDetails(screenshotId);
       this.getScreenshot(screenshotId);
     }
-  }
-
-  displayScreenshot = (currentScreenshot) => {
-    if (!currentScreenshot) {
-      return (
-        <div className="alert alert-danger" role="alert">
-          <span>
-            Unable to retrieve image. Please refresh the page and try again.
-          </span>
-        </div>
-      );
-    }
-    if (currentScreenshot === 'ERROR') {
-      return (
-        <div className="alert alert-primary" role="alert">
-          <span>
-            <i className="fas fa-spinner fa-pulse fa-2x" />
-            Retrieving screenshot.
-          </span>
-        </div>
-      );
-    }
-    return <img className="screenshot" src={currentScreenshot} alt="Screenshot" />;
-  }
-
-  returnMakeBaselineButton = (currentScreenshotDetails) => {
-    if (currentScreenshotDetails.platform && currentScreenshotDetails.view) {
-      return (
-        <button
-          onClick={() => this.updateBaseline(currentScreenshotDetails)}
-          disabled={this.isBaseline(currentScreenshotDetails._id)}
-          type="button"
-          className="btn btn-outline-primary"
-        >
-          { !this.isBaseline(currentScreenshotDetails._id) ? ('Make Baseline Image') : 'This is the Baseline Image'}
-        </button>
-      );
-    }
-    return null;
   }
 
   render() {
@@ -277,34 +240,12 @@ class ScreenshotView extends Component {
         <Tabs id="image-tabs" activeKey={key} defaultActiveKey="image" onSelect={(tabKey, evt) => this.setTab(tabKey, evt)}>
           <Tab eventKey="image" title="Image">
             <div className="image-page-holder">
-              <Table>
-                <tbody>
-                  <tr>
-                    <td className="screenshot-details-td">
-                      <div>
-                        <ScreenshotDetailsTable
-                          currentScreenshotDetails={currentScreenshotDetails}
-                          isBaseline={this.isBaseline(currentScreenshotDetails._id)}
-                        />
-                      </div>
-                    </td>
-                    <td>
-                      {
-                        this.displayScreenshot(currentScreenshot)
-                      }
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colSpan="100%">
-                      <span style={{ float: 'left' }}>
-                        {
-                          this.returnMakeBaselineButton(currentScreenshotDetails)
-                        }
-                      </span>
-                    </td>
-                  </tr>
-                </tbody>
-              </Table>
+              <CurrentImageView
+                currentScreenshot={currentScreenshot}
+                currentScreenshotDetails={currentScreenshotDetails}
+                updateBaseline={this.updateBaseline}
+                isBaseline={this.isBaseline}
+              />
             </div>
           </Tab>
           <Tab eventKey="history" disabled={!currentScreenshotDetails.platform || !currentScreenshotDetails.view} title="History">
@@ -325,6 +266,8 @@ class ScreenshotView extends Component {
                 currentBaselineCompareJson={currentBaselineCompareJson}
                 currentScreenshot={currentScreenshot}
                 isBaseline={this.isBaseline}
+                makeUpdateBaselineRequest={this.makeUpdateBaselineRequest}
+                getBaselineCompare={this.getBaselineCompare}
               />
             </div>
           </Tab>
