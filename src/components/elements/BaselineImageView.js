@@ -22,19 +22,7 @@ class BaselineImageView extends Component {
     if (currentBaseLineDetails !== prevProps.currentBaseLineDetails) {
       if (currentBaseLineDetails && currentBaseLineDetails.ignoreBoxes
         && currentBaseLineDetails.ignoreBoxes.length > 0) {
-        const existingIgnoreBlocks = [];
-        currentBaseLineDetails.ignoreBoxes.forEach((block) => {
-          existingIgnoreBlocks.push(
-            {
-              x: block.left,
-              y: block.top,
-              width: 100 - (block.left + block.right),
-              height: 100 - (block.top + block.bottom),
-              data: {},
-            },
-          );
-        });
-        this.setState({ regions: existingIgnoreBlocks, editing: false });
+        this.resetIgnoreBlocks();
       } else {
         this.setState({ regions: [], editing: false });
       }
@@ -125,6 +113,23 @@ class BaselineImageView extends Component {
     this.setState({ editing: !editing });
   }
 
+  resetIgnoreBlocks = () => {
+    const { currentBaseLineDetails } = this.props;
+    const existingIgnoreBlocks = [];
+    currentBaseLineDetails.ignoreBoxes.forEach((block) => {
+      existingIgnoreBlocks.push(
+        {
+          x: block.left,
+          y: block.top,
+          width: 100 - (block.left + block.right),
+          height: 100 - (block.top + block.bottom),
+          data: {},
+        },
+      );
+    });
+    this.setState({ regions: existingIgnoreBlocks, editing: false });
+  }
+
   init(newRegions) {
     this.setState({ regions: newRegions });
   }
@@ -194,6 +199,17 @@ class BaselineImageView extends Component {
                   >
                     {`${editing ? 'Save' : 'Edit'} Ignore Blocks`}
                   </button>
+                  {
+                    editing ? (
+                      <button
+                        type="button"
+                        className="btn btn-outline-primary second-button"
+                        onMouseUp={() => this.resetIgnoreBlocks()}
+                      >
+                        Cancel Changes
+                      </button>
+                    ) : null
+                  }
                 </span>
               </td>
             </tr>
@@ -270,6 +286,17 @@ class BaselineImageView extends Component {
                 >
                   {`${editing ? 'Save' : 'Edit'} Ignore Blocks`}
                 </button>
+                {
+                  editing ? (
+                    <button
+                      type="button"
+                      className="btn btn-outline-primary second-button"
+                      onMouseUp={() => this.resetIgnoreBlocks()}
+                    >
+                      Cancel Changes
+                    </button>
+                  ) : null
+                }
               </span>
             </td>
           </tr>
