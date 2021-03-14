@@ -57,7 +57,7 @@ class AnglesMenu extends Component {
           <span>About Angles</span>
         </a>
 
-        <img src="./assets/angles-logo.png" className="angles-logo-menu" alt="Angles" />
+        <img src="/assets/angles-logo.png" className="angles-logo-menu" alt="Angles" />
       </Menu>
     );
   }
