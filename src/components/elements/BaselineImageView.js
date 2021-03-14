@@ -34,9 +34,9 @@ class BaselineImageView extends Component {
             },
           );
         });
-        this.setState({ regions: existingIgnoreBlocks });
+        this.setState({ regions: existingIgnoreBlocks, editing: false });
       } else {
-        this.setState({ regions: [] });
+        this.setState({ regions: [], editing: false });
       }
     }
 
@@ -120,8 +120,7 @@ class BaselineImageView extends Component {
     if (editing) {
       const { currentBaseLineDetails, makeUpdateBaselineRequest } = this.props;
       const { ignoreBlocks } = this.state;
-      makeUpdateBaselineRequest(currentBaseLineDetails._id,
-        currentBaseLineDetails.screenshot._id, ignoreBlocks);
+      makeUpdateBaselineRequest(currentBaseLineDetails._id, undefined, ignoreBlocks);
     }
     this.setState({ editing: !editing });
   }

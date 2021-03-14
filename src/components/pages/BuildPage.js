@@ -9,6 +9,7 @@ import SuiteTable from '../tables/SuiteTable';
 import BuildSummary from '../tables/BuildSummary';
 import BuildArtifacts from '../tables/BuildArtifacts';
 import '../charts/Charts.css';
+import './Default.css';
 import ScreenshotView from './ScreenshotView';
 import makeGetScreenshotDetails from '../../utility/requests/ScreenshotRequests';
 
@@ -99,10 +100,9 @@ class BuildPage extends Component {
     return (
       <div>
         <h1>
-          <span>Build: </span>
-          <span>{currentBuild.name}</span>
+          <span>{ `Build: ${currentBuild.name}`}</span>
         </h1>
-        <BuildSummary build={currentBuild} />
+        <BuildSummary build={currentBuild} screenshots={screenshots} openModal={this.openModal} />
         <BuildArtifacts build={currentBuild} />
         <div className="graphContainerParent">
           <BuildResultsPieChart build={currentBuild} />

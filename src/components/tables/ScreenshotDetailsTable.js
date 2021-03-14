@@ -91,14 +91,16 @@ class ScreenshotDetailsTable extends Component {
               </tr>
             ) : null
           }
-          <tr>
-            <td><strong>Tags</strong></td>
-            <td>
-              {
-                currentScreenshotDetails.tags.map((tag) => <a key={tag} title={`Find all the latest screenshots with tag "${tag}", grouped by view.`} href="/" onClick={(e) => this.navigateToTagsPage(tag, e)}>{tag}</a>)
-              }
-            </td>
-          </tr>
+          { currentScreenshotDetails.tags ? (
+            <tr>
+              <td><strong>Tags</strong></td>
+              <td>
+                {
+                  currentScreenshotDetails.tags.map((tag) => <a key={tag} title={`Find all the latest screenshots with tag "${tag}", grouped by view.`} href="/" onClick={(e) => this.navigateToTagsPage(tag, e)}>{tag}</a>)
+                }
+              </td>
+            </tr>
+          ) : null}
         </tbody>
       </Table>
     );

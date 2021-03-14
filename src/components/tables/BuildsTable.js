@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import Moment from 'react-moment';
+import OverlayTrigger from 'react-bootstrap//OverlayTrigger';
+import Tooltip from 'react-bootstrap//Tooltip';
 import { withRouter } from 'react-router-dom';
 import MultiSelect from 'react-multi-select-component';
 import { getDuration } from '../../utility/TimeUtilities';
@@ -120,6 +122,11 @@ class BuildsTable extends Component {
                   <i className={this.anyRowsSelected() ? ('fas fa-check-square') : 'fas fa-square'} />
                 </div>
               </th>
+              <th scope="col">
+                <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">By setting the &quot;keep&quot; flag the build will not be removed by the nightly clean-up.</Tooltip>}>
+                  <div><i className="fas fa-lock" /></div>
+                </OverlayTrigger>
+              </th>
               <th scope="col">Name</th>
               <th scope="col">
                 <MultiSelect
@@ -159,6 +166,13 @@ class BuildsTable extends Component {
                   <div key={this.isRowSelected(build)}>
                     <i className={this.isRowSelected(build) ? ('far fa-check-square') : 'far fa-square'} />
                   </div>
+                </td>
+                <td>
+                  {
+                    build.keep ? (
+                      <div><i className="fas fa-lock" /></div>
+                    ) : null
+                  }
                 </td>
                 <td>{build.name}</td>
                 <td>{ this.getComponentName(build).name }</td>

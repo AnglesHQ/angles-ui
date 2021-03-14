@@ -23,6 +23,7 @@ class ScreenshotHistoryView extends Component {
   render() {
     const {
       currentScreenshotHistory,
+      currentBaseLineDetails,
       isBaseline,
     } = this.props;
 
@@ -37,9 +38,25 @@ class ScreenshotHistoryView extends Component {
       );
     }
 
+    const doesArrayContainImage = (screenshotArray, screenshotToLookFor) => {
+      const filterScreenshot = screenshotArray
+        .filter((screenshot) => screenshot._id === screenshotToLookFor._id);
+      if (filterScreenshot.length > 0) {
+        return true;
+      }
+      return false;
+    };
+
+    // ensure that the baseline is added if not in the history.
+    const screenshotArray = currentScreenshotHistory.map((screenshot) => ({ ...screenshot }));
+    if (currentBaseLineDetails && !doesArrayContainImage(screenshotArray,
+      currentBaseLineDetails.screenshot)) {
+      screenshotArray.push(currentBaseLineDetails.screenshot);
+    }
+
     return (
       <CardDeck className="card-deck-history">
-        {currentScreenshotHistory.map((screenshot) => [
+        {screenshotArray.map((screenshot) => [
           <Card key={screenshot._id} className={`screenshotCard ${this.isSelectedId(screenshot._id) ? 'card-active' : ''}`}>
             { isBaseline(screenshot._id) ? (<div className="card-img-overlay baseline-overlay"><p>baseline</p></div>) : null }
             { !this.isSelectedId(screenshot._id) ? (

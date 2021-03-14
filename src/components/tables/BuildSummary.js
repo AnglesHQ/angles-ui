@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import Moment from 'react-moment';
+import OverlayTrigger from 'react-bootstrap//OverlayTrigger';
+import Tooltip from 'react-bootstrap//Tooltip';
 import { getDuration } from '../../utility/TimeUtilities';
 
 class BuildSummary extends Component {
@@ -11,7 +13,7 @@ class BuildSummary extends Component {
   }
 
   render() {
-    const { build } = this.props;
+    const { build, screenshots, openModal } = this.props;
     return (
       <table className="table">
         <thead className="thead-dark">
@@ -23,7 +25,7 @@ class BuildSummary extends Component {
           <tr>
             <th scope="row">Name</th>
             <td>{build.name}</td>
-            <th scope="row">PASS</th>
+            <th scope="row">Pass</th>
             <td>{build.result.PASS}</td>
           </tr>
           <tr>
@@ -33,7 +35,7 @@ class BuildSummary extends Component {
                 {build.start}
               </Moment>
             </td>
-            <th scope="row">FAIL</th>
+            <th scope="row">Fail</th>
             <td>{build.result.FAIL}</td>
           </tr>
           <tr>
@@ -43,14 +45,48 @@ class BuildSummary extends Component {
                 {build.end}
               </Moment>
             </td>
-            <th scope="row">ERROR</th>
+            <th scope="row">Error</th>
             <td>{build.result.ERROR}</td>
           </tr>
           <tr>
             <th scope="row">Duration</th>
             <td>{getDuration(build)}</td>
-            <th scope="row">SKIPPED</th>
+            <th scope="row">Skipped</th>
             <td>{build.result.SKIPPED}</td>
+          </tr>
+          <tr>
+            <th scope="row">
+              <span>Keep flag set </span>
+              <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">By setting the &quot;keep&quot; flag the build will not be removed by the nightly clean-up.</Tooltip>}>
+                <span>
+                  <i className="far fa-question-circle" />
+                </span>
+              </OverlayTrigger>
+            </th>
+            <td>{ build.keep ? 'true' : 'false'}</td>
+            <th scope="row">Screenshots</th>
+            <td>
+              {
+                screenshots && screenshots.length > 0 ? (
+                  <div>
+                    <span>
+                      {`${screenshots.length} (`}
+                      <a
+                        href="/"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          return openModal(screenshots[0]._id, false);
+                        }}
+                      >
+                        see screenshots
+                      </a>
+                      )
+                    </span>
+                  </div>
+                )
+                  : 0
+              }
+            </td>
           </tr>
         </tbody>
       </table>

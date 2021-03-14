@@ -78,7 +78,7 @@ class StepsTable extends Component {
                 <td>{step.info}</td>
                 {
                   step.screenshot ? (
-                    <td onClick={() => this.openModal(step.screenshot)}>
+                    <td onClick={() => openModal(step.screenshot)}>
                       <img
                         className="screenshot-thumbnail"
                         src={`data:image/png;base64, ${this.getScreenShot(step.screenshot)}`}

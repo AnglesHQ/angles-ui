@@ -56,6 +56,8 @@ class AnglesMenu extends Component {
           <i className="fa fa-fw fa-info" />
           <span>About Angles</span>
         </a>
+
+        <img src="./assets/angles-logo.png" className="angles-logo-menu" alt="Angles" />
       </Menu>
     );
   }

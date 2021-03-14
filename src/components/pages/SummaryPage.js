@@ -91,10 +91,46 @@ class SummaryPage extends Component {
     return (selectedRowsArray.length > 1);
   }
 
+  anyBuildsSelected = () => {
+    const selectedRowsArray = this.retrieveSelectedBuilds();
+    return (selectedRowsArray.length > 0);
+  }
+
   navigateToMatrix = () => {
     const { history } = this.props;
     const selectedBuildIds = this.retrieveSelectedBuilds();
     history.push(`/matrix/?buildIds=${selectedBuildIds.join(',')}`);
+  }
+
+  updateBuildWithKeep = (buildId, keep) => {
+    const requestUrl = `/build/${buildId}/keep`;
+    return axios.put(requestUrl, {
+      keep,
+    });
+  }
+
+  toggleBuildsToKeep = () => {
+    const { builds } = this.state;
+    const selectedBuildIds = this.retrieveSelectedBuilds();
+
+    const keepPromises = [];
+    builds.forEach((build) => {
+      if (selectedBuildIds.includes(build._id)) {
+        const currentKeep = build.keep || false;
+        /* eslint no-param-reassign: ["error", { "props": true, "ignorePropertyModificationsFor":
+        ["build"] }] */
+        build.keep = !currentKeep;
+        keepPromises.push(this.updateBuildWithKeep(build._id, !currentKeep));
+      }
+    });
+    Promise.all(keepPromises)
+      .then(() => {
+        this.setState({ builds, selectedBuilds: {} });
+      });
+  }
+
+  clearSelection = () => {
+    this.setState({ selectedBuilds: {} });
   }
 
   previousPaginationDisabled = () => {
@@ -154,6 +190,8 @@ class SummaryPage extends Component {
         <div>
           <span style={{ float: 'left' }}>
             <button disabled={!this.multipleBuildsSelected()} onClick={() => this.navigateToMatrix()} type="button" className="btn btn-outline-primary">Open Matrix</button>
+            <button disabled={!this.anyBuildsSelected()} onClick={() => this.toggleBuildsToKeep()} type="button" className="btn btn-outline-primary second-button">Toggle Keep</button>
+            <button disabled={!this.anyBuildsSelected()} onClick={() => this.clearSelection()} type="button" className="btn btn-outline-primary second-button">Clear Selection</button>
           </span>
           <span style={{ float: 'right' }}>
             <Pagination>

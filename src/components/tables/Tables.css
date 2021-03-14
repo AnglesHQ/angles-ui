@@ -260,3 +260,14 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.popover{
+  max-width: 100%; /* Max Width of the popover (depending on the container!) */
+}
+
+.test-details-error {
+  display: inline-block;
+  max-width: 500px;
+  max-height: 500px;
+  overflow: scroll;
+}

@@ -11,17 +11,19 @@ class TestDetailsTable extends Component {
   }
 
   getFirstTestStepByStatus = (execution, status) => {
-    execution.actions.forEach((action) => {
-      /* eslint consistent-return: [0] */
-      action.steps.forEach((step) => {
-        if (step.status === status) {
-          if (step.info) {
-            return step.info;
-          }
-          return step.name;
+    /* eslint consistent-return: [0] */
+    const failingActions = execution.actions.filter((action) => action.status === status);
+    if (failingActions.length > 0) {
+      const failingSteps = failingActions[0].steps.filter((step) => step.status === status);
+      if (failingSteps.length > 0) {
+        const step = failingSteps[0];
+        if (step.info !== '') {
+          return step.info;
         }
-      });
-    });
+        return step.name;
+      }
+    }
+    return '';
   }
 
   render() {
@@ -60,11 +62,13 @@ class TestDetailsTable extends Component {
            execution.status === 'ERROR' || execution.status === 'FAIL' ? (
              <tr>
                <td><strong>Failing Step</strong></td>
-               <td>
-                 {
-                    this.getFirstTestStepByStatus(execution, execution.status)
-                }
-               </td>
+               <div className="test-details-error">
+                 <td>
+                   {
+                      this.getFirstTestStepByStatus(execution, execution.status)
+                   }
+                 </td>
+               </div>
              </tr>
            ) : null
          }

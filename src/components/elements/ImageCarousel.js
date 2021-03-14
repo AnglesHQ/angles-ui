@@ -30,11 +30,11 @@ class ImageCarousel extends Component {
 
   handleArrowKeys = (event) => {
     const { selectedScreenshotDetails } = this.props;
-    if (event.keyCode === 37) {
+    if (event.keyCode === 37 && selectedScreenshotDetails) {
       // left - previous
       this.getPreviousImage(selectedScreenshotDetails._id);
     }
-    if (event.keyCode === 39) {
+    if (event.keyCode === 39 && selectedScreenshotDetails) {
       // right - next
       this.getNextImage(selectedScreenshotDetails._id);
     }
@@ -63,7 +63,9 @@ class ImageCarousel extends Component {
   loadScreenshotKeyDown = (event) => {
     const { screenshots, loadScreenshot } = this.props;
     if (!Number.isNaN(event.key) && event.key > 0 && event.key < 10) {
-      loadScreenshot(screenshots[event.key]._id);
+      if (event.key <= screenshots.length) {
+        loadScreenshot(screenshots[event.key - 1]._id);
+      }
     }
   }
 
