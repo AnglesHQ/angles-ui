@@ -271,3 +271,14 @@
   max-height: 500px;
   overflow: scroll;
 }
+
+.matrix-info-icon {
+  color: #d39e00;
+  padding-left: 10px;
+  font-size: 1.2em;
+  cursor: pointer;
+}
+
+.matrix-info-icon :hover {
+  color: #ffc20b;
+}

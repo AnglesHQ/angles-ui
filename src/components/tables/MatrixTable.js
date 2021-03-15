@@ -164,13 +164,16 @@ class MatrixTable extends Component {
             }
             testResults.push(
               <td key={`${suiteName}.${testName}${build._id}`} className={testClass}>
-                <OverlayTrigger trigger={['hover', 'focus']} overlay={popover}>
-                  <span className="d-inline-block">
-                    <div disabled style={{ pointerEvents: 'none' }}>
-                      {testDetails.status}
-                    </div>
-                  </span>
-                </OverlayTrigger>
+                <span className="d-inline-block">
+                  <div>
+                    {testDetails.status}
+                    <OverlayTrigger trigger="click" rootClose overlay={popover}>
+                      <span className="matrix-info-icon">
+                        <i className="fas fa-info-circle" />
+                      </span>
+                    </OverlayTrigger>
+                  </div>
+                </span>
               </td>,
             );
           } else {
