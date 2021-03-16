@@ -23,7 +23,7 @@ class AboutPage extends Component {
           <span>By providing a clearly defined </span>
           <a href="https://editor.swagger.io/?url=https://raw.githubusercontent.com/AnglesHQ/angles/master/swagger/swagger.json" rel="noreferrer" target="_blank">API</a>
           <span>
-            any framework can be adapted to store it&apos;s test result in Angles,
+            &nbsp;any framework can be adapted to store its test result in Angles,
             using one of the clients provided (or by using the API directly)
           </span>
         </div>
