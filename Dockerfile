@@ -19,7 +19,6 @@ EXPOSE 3001/tcp
 COPY package.json ./
 COPY package-lock.json ./
 RUN npm install --silent
-RUN npm install react-scripts@^4.0.0 -g --silent
 
 # add app
 COPY . ./
