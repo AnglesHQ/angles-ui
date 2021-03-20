@@ -22,10 +22,20 @@ class ExecutionsTimeLineChart extends Component {
         type: 'line',
         data: {},
         options: {
+          animation: false,
           elements: {
             line: {
               tension: 0,
             },
+          },
+          scales: {
+            xAxes: [
+              {
+                ticks: {
+                  reverse: true,
+                },
+              },
+            ],
           },
         },
       };

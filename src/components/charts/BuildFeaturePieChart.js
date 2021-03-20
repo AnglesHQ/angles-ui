@@ -21,6 +21,7 @@ class BuildFeaturePieChart extends Component {
         type: 'pie',
         data: {},
         options: {
+          animation: false,
           responsive: true,
           title: {
             display: true,

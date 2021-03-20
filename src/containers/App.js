@@ -68,6 +68,11 @@ class App extends Component {
     axios.get('/team')
       .then((res) => res.data)
       .then((teams) => {
+        teams.sort((a, b) => {
+          if (a.name < b.name) { return -1; }
+          if (a.name > b.name) { return 1; }
+          return 0;
+        });
         this.setState({ teams });
       });
     // TODO: handle catch
@@ -77,6 +82,11 @@ class App extends Component {
     axios.get('/environment')
       .then((res) => res.data)
       .then((environments) => {
+        environments.sort((a, b) => {
+          if (a.name < b.name) { return -1; }
+          if (a.name > b.name) { return 1; }
+          return 0;
+        });
         this.setState({ environments });
       });
     // TODO: hanlde catch.
