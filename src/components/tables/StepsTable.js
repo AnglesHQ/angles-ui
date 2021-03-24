@@ -46,7 +46,7 @@ class StepsTable extends Component {
         </thead>
         <tbody>
           { action.steps.map((step, stepIndex) => {
-            if (step.status === 'ERROR' || step.status === 'INFO') {
+            if (step.status === 'ERROR' || step.status === 'INFO' || step.status === 'DEBUG') {
               return (
                 <tr key={`steps_${stepIndex}`}>
                   <td>{stepIndex + 1}</td>
