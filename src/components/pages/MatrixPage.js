@@ -20,7 +20,7 @@ class MatrixPage extends Component {
   componentDidMount() {
     const { currentTeam } = this.props;
     const { query } = this.state;
-    this.getBuildsForMatrix(currentTeam._id, query.buildIds);
+    this.getBuildsForMatrix(currentTeam._id, query.buildIds.split(','));
   }
 
   getBuildsForMatrix = (teamId, buildIds) => {
