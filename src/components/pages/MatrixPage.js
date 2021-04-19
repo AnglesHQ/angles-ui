@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import queryString from 'query-string';
 import { withRouter } from 'react-router-dom';
 import axios from 'axios';
+import { BuildRequests } from 'angles-javascript-client';
 import MatrixTable from '../tables/MatrixTable';
 import '../charts/Charts.css';
 
@@ -13,6 +14,7 @@ class MatrixPage extends Component {
       matrixBuilds: [],
       query: queryString.parse(location.search),
     };
+    this.buildRequests = new BuildRequests(axios);
   }
 
   componentDidMount() {
@@ -23,8 +25,8 @@ class MatrixPage extends Component {
 
   getBuildsForMatrix = (teamId, buildIds) => {
     if (!teamId) return [];
-    return axios.get(`/build?teamId=${teamId}&buildIds=${buildIds}&returnExecutionDetails=true`)
-      .then((res) => this.setState({ matrixBuilds: res.data.builds }));
+    return this.buildRequests.getBuilds(teamId, buildIds, true)
+      .then((response) => this.setState({ matrixBuilds: response.builds }));
   }
 
   render() {

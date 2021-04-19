@@ -5,6 +5,7 @@ import Tab from 'react-bootstrap/Tab';
 import Alert from 'react-bootstrap/Alert';
 import { withRouter } from 'react-router-dom';
 import { encode as btoa } from 'base-64';
+import { BaselineRequests, ScreenshotRequests } from 'angles-javascript-client';
 import ImageCarousel from '../elements/ImageCarousel';
 import CurrentImageView from '../elements/CurrentImageView';
 import BaselineImageView from '../elements/BaselineImageView';
@@ -23,6 +24,8 @@ class ScreenshotView extends Component {
       currentBaseline: null,
       currentBaselineCompareJson: null,
     };
+    this.screenshotRequests = new ScreenshotRequests(axios);
+    this.baselineRequests = new BaselineRequests(axios);
   }
 
   componentDidMount() {
@@ -50,10 +53,9 @@ class ScreenshotView extends Component {
     if (['image', 'history', 'baseline', 'sidebyside'].includes(value)) this.setState({ key: value });
   }
 
-  getScreenshotDetails = (screenshotId) => axios.get(`/screenshot/${screenshotId}`)
-    .then((res) => {
-      this.setState({ currentScreenshotDetails: res.data });
-      const { currentScreenshotDetails } = this.state;
+  getScreenshotDetails = (screenshotId) => this.screenshotRequests.getScreenshot(screenshotId)
+    .then((currentScreenshotDetails) => {
+      this.setState({ currentScreenshotDetails });
       if (currentScreenshotDetails != null && (currentScreenshotDetails.view !== null && currentScreenshotDetails.view !== '')) {
         // if there is a view, retrieve the history
         this.getScreenshotHistoryByView(currentScreenshotDetails.view,
@@ -66,19 +68,13 @@ class ScreenshotView extends Component {
       }
     })
 
-  getScreenshotHistoryByView = (view, platformId, limit, offset) => axios.get('/screenshot/', {
-    params: {
-      view,
-      platformId,
-      limit,
-      offset,
-    },
-  })
-    .then((res) => {
-      this.setState({ currentScreenshotHistory: res.data });
+  getScreenshotHistoryByView = (view, platformId, limit, offset) => this.screenshotRequests
+    .getScreenshotHistoryByView(view, platformId, limit, offset)
+    .then((currentScreenshotHistory) => {
+      this.setState({ currentScreenshotHistory });
     })
 
-  getScreenshot = (screenshotId) => axios.get(`/screenshot/${screenshotId}/image`, { responseType: 'arraybuffer' })
+  getScreenshot = (screenshotId) => this.screenshotRequests.getScreenshotImage(screenshotId)
     .then((res) => {
       const base64 = btoa(
         new Uint8Array(res.data).reduce(
@@ -92,7 +88,7 @@ class ScreenshotView extends Component {
       this.setState({ currentScreenshot: 'ERROR' });
     })
 
-  getBaselineScreenshot = (screenshotId) => axios.get(`/screenshot/${screenshotId}/image`, { responseType: 'arraybuffer' })
+  getBaselineScreenshot = (screenshotId) => this.screenshotRequests.getScreenshotImage(screenshotId)
     .then((res) => {
       const base64 = btoa(
         new Uint8Array(res.data).reduce(
@@ -106,7 +102,8 @@ class ScreenshotView extends Component {
       this.setState({ currentBaseline: 'ERROR' });
     })
 
-  getBaselineCompare = (screenshotId, useCache) => axios.get(`/screenshot/${screenshotId}/baseline/compare/image/?useCache=${useCache}`, { responseType: 'arraybuffer' })
+  getBaselineCompare = (screenshotId, useCache) => this.screenshotRequests
+    .getBaselineCompare(screenshotId, useCache)
     .then((res) => {
       const base64 = btoa(
         new Uint8Array(res.data).reduce(
@@ -121,9 +118,10 @@ class ScreenshotView extends Component {
       this.setState({ currentBaselineCompare: 'ERROR' });
     })
 
-  getBaselineCompareJson = (screenshotId) => axios.get(`/screenshot/${screenshotId}/baseline/compare`)
-    .then((res) => {
-      this.setState({ currentBaselineCompareJson: res.data });
+  getBaselineCompareJson = (screenshotId) => this.screenshotRequests
+    .getBaselineCompare(screenshotId)
+    .then((currentBaselineCompareJson) => {
+      this.setState({ currentBaselineCompareJson });
     })
     .catch(() => {
       // failed to retrieve baseline.
@@ -131,15 +129,10 @@ class ScreenshotView extends Component {
     })
 
   getBaseLineDetails = (screenshot) => {
-    let baselineQuery = `/baseline/?view=${screenshot.view}&platformName=${screenshot.platform.platformName}`;
-    if (screenshot.platform.deviceName) {
-      baselineQuery = `${baselineQuery}&deviceName=${screenshot.platform.deviceName}`;
-    } else {
-      baselineQuery = `${baselineQuery}&browserName=${screenshot.platform.browserName}&screenHeight=${screenshot.height}&screenWidth=${screenshot.width}`;
-    }
-    axios.get(baselineQuery)
-      .then((res) => {
-        const baseline = res.data[0];
+    this.baselineRequests.getBaselineForScreenshot(screenshot)
+      .then((baselines) => {
+        // there should only be one
+        const baseline = baselines[0];
         // to handle better in the future
         this.setState({ currentBaseLineDetails: baseline });
         if (baseline && baseline.screenshot._id) {
@@ -159,23 +152,17 @@ class ScreenshotView extends Component {
     }
   }
 
-  setBaselineForView = (screenshot) => axios.post('/baseline/', {
-    view: screenshot.view,
-    screenshotId: screenshot._id,
-  })
-    .then((res) => {
-      this.setState({ currentBaseLineDetails: res.data });
+  setBaselineForView = (screenshot) => this.baselineRequests.setBaseline(screenshot)
+    .then((currentBaseLineDetails) => {
+      this.setState({ currentBaseLineDetails });
     })
 
   forceBaselineCompare = (screenshotId) => this.getBaselineCompare(screenshotId, false);
 
   makeUpdateBaselineRequest = (baselineId, screenshotId, ignoreBoxes) => {
-    const updateBaselineRequest = {};
-    if (screenshotId) updateBaselineRequest.screenshotId = screenshotId;
-    if (ignoreBoxes) updateBaselineRequest.ignoreBoxes = ignoreBoxes;
-    return axios.put(`/baseline/${baselineId}`, updateBaselineRequest)
-      .then((res) => {
-        this.setState({ currentBaseLineDetails: res.data });
+    this.baselineRequests.updateBaseline(baselineId, screenshotId, ignoreBoxes)
+      .then((currentBaseLineDetails) => {
+        this.setState({ currentBaseLineDetails });
       });
   }
 

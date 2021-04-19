@@ -3,6 +3,7 @@ import axios from 'axios';
 import queryString from 'query-string';
 import { withRouter } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
+import { ExecutionRequests, ScreenshotRequests } from 'angles-javascript-client';
 import ExecutionsResultsPieChart from '../charts/ExecutionsResultsPieChart';
 import ExecutionsTimeLineChart from '../charts/ExecutionsTimeLineChart';
 import HistoryExecutionTable from '../tables/HistoryExecutionTable';
@@ -21,6 +22,8 @@ class SummaryPage extends Component {
       query: queryString.parse(location.search),
     };
     const { query, currentSkip, limit } = this.state;
+    this.screenshotRequests = new ScreenshotRequests(axios);
+    this.executionRequests = new ExecutionRequests(axios);
     this.getExecutionHistoryForExecutionId(query.executionId, currentSkip, limit);
   }
 
@@ -33,17 +36,18 @@ class SummaryPage extends Component {
         });
       });
     });
-    this.getScreenshotDetails(screenshotIdArray.join(','));
+    this.getScreenshotDetails(screenshotIdArray);
   }
 
-  getScreenshotDetails = (screenshotIds) => axios.get(`/screenshot/?screenshotIds=${screenshotIds}&limit=100`)
-    .then((res) => {
-      this.setState({ screenshots: res.data });
+  getScreenshotDetails = (screenshotIds) => this.screenshotRequests.getScreenshots(screenshotIds)
+    .then((screenshots) => {
+      this.setState({ screenshots });
     })
 
-  getExecutionHistoryForExecutionId = (executionId, skip, limit) => axios.get(`/execution/${executionId}/history?&skip=${skip}&limit=${limit}`)
-    .then((res) => {
-      const { executions } = res.data;
+  getExecutionHistoryForExecutionId = (executionId, skip, limit) => this.executionRequests
+    .getExecutionHistory(executionId, skip, limit)
+    .then((response) => {
+      const { executions } = response;
       this.retrieveScreenshotDetailsForExecutions(executions);
       this.setState({ executions });
     })

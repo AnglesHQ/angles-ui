@@ -3,6 +3,7 @@ import { Route, Switch, withRouter } from 'react-router-dom';
 import axios from 'axios';
 import queryString from 'query-string';
 import Cookies from 'js-cookie';
+import { EnvironmentRequests, TeamRequests } from 'angles-javascript-client';
 import AnglesMenu from '../components/menu/AnglesMenu';
 import SummaryPage from '../components/pages/SummaryPage';
 import BuildPage from '../components/pages/BuildPage';
@@ -26,6 +27,8 @@ class App extends Component {
       environments: [],
       currentTeam: { name: 'No team selected' },
     };
+    this.teamRequests = new TeamRequests(axios);
+    this.environmentRequests = new EnvironmentRequests(axios);
   }
 
   componentDidMount = () => {
@@ -65,8 +68,7 @@ class App extends Component {
   }
 
   retrieveTeamDetails = () => {
-    axios.get('/team')
-      .then((res) => res.data)
+    this.teamRequests.getTeams()
       .then((teams) => {
         teams.sort((a, b) => {
           if (a.name < b.name) { return -1; }
@@ -79,8 +81,7 @@ class App extends Component {
   }
 
   retrieveEnvironmentDetails = () => {
-    axios.get('/environment')
-      .then((res) => res.data)
+    this.environmentRequests.getEnvironments()
       .then((environments) => {
         environments.sort((a, b) => {
           if (a.name < b.name) { return -1; }

@@ -7,6 +7,7 @@ import Table from 'react-bootstrap/Table';
 import queryString from 'query-string';
 import { withRouter } from 'react-router-dom';
 import { encode as btoa } from 'base-64';
+import { ScreenshotRequests } from 'angles-javascript-client';
 import ImageCarousel from '../elements/ImageCarousel';
 import ScreenshotDetailsTable from '../tables/ScreenshotDetailsTable';
 import 'react-multi-carousel/lib/styles.css';
@@ -29,6 +30,7 @@ class ScreenshotFinderPage extends Component {
       numberOfDays: 14,
     };
     const { query, numberOfDays } = this.state;
+    this.screenshotRequests = new ScreenshotRequests(axios);
     if (query.view) {
       this.getGroupedScreenshotByPlatform(query.view,
         query.numberOfDays ? (query.numberOfDays) : numberOfDays);
@@ -38,42 +40,40 @@ class ScreenshotFinderPage extends Component {
     }
   }
 
-  getGroupedScreenshotByPlatform = (view, numberOfDays) => axios.get('/screenshot/grouped/platform', {
-    params: { view, numberOfDays },
-  })
-    .then((res) => {
+  getGroupedScreenshotByPlatform = (view, numberOfDays) => this.screenshotRequests
+    .getScreenshotsGroupedByPlatform(view, numberOfDays)
+    .then((groupedScreenshots) => {
       this.setState({
         view,
         numberOfDays,
         groupType: 'view',
-        groupedScreenshots: res.data,
+        groupedScreenshots,
       });
     })
 
-  getGroupedScreenshotByTag = (tag, numberOfDays) => axios.get('/screenshot/grouped/tag', {
-    params: { tag, numberOfDays },
-  })
-    .then((res) => {
+  getGroupedScreenshotByTag = (tag, numberOfDays) => this.screenshotRequests
+    .getScreenshotsGroupedByTag(tag, numberOfDays)
+    .then((groupedScreenshots) => {
       const uniquePlatforms = [];
-      res.data.forEach((screenshot) => {
+      groupedScreenshots.forEach((screenshot) => {
         if (!uniquePlatforms.includes(screenshot.platformId)) {
           uniquePlatforms.push(screenshot.platformId);
         }
       });
       uniquePlatforms.sort();
-      const filteredScreenshots = res
-        .data.filter((screenshot) => screenshot.platformId === uniquePlatforms[0]);
+      const filteredScreenshots = groupedScreenshots
+        .filter((screenshot) => screenshot.platformId === uniquePlatforms[0]);
       this.setState({
         tag,
         numberOfDays,
         groupType: 'tag',
-        groupedScreenshots: res.data,
+        groupedScreenshots,
         filteredScreenshots,
         platforms: uniquePlatforms,
       });
     })
 
-  getScreenshot = (screenshotId) => axios.get(`/screenshot/${screenshotId}/image`, { responseType: 'arraybuffer' })
+  getScreenshot = (screenshotId) => this.screenshotRequests.getScreenshotImage(screenshotId)
     .then((res) => {
       const base64 = btoa(
         new Uint8Array(res.data).reduce(

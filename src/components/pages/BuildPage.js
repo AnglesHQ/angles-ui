@@ -3,6 +3,7 @@ import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
 import queryString from 'query-string';
 import { withRouter } from 'react-router-dom';
+import { BuildRequests, ScreenshotRequests } from 'angles-javascript-client';
 import BuildResultsPieChart from '../charts/BuildResultsPieChart';
 import BuildFeaturePieChart from '../charts/BuildFeaturePieChart';
 import SuiteTable from '../tables/SuiteTable';
@@ -11,7 +12,6 @@ import BuildArtifacts from '../tables/BuildArtifacts';
 import '../charts/Charts.css';
 import './Default.css';
 import ScreenshotView from './ScreenshotView';
-import makeGetScreenshotDetails from '../../utility/requests/ScreenshotRequests';
 
 class BuildPage extends Component {
   constructor(props) {
@@ -24,6 +24,8 @@ class BuildPage extends Component {
       query: queryString.parse(location.search),
     };
     const { query } = this.state;
+    this.buildRequests = new BuildRequests(axios);
+    this.screenshotRequests = new ScreenshotRequests(axios);
     this.getBuildDetails(query.buildId);
     this.getScreenshotDetails(query.buildId);
     this.closeModal = this.closeModal.bind(this);
@@ -41,10 +43,9 @@ class BuildPage extends Component {
   }
 
   getBuildDetails = (buildId) => {
-    axios.get(`/build/${buildId}`)
-      .then((res) => res.data)
-      .then((data) => {
-        this.setState({ currentBuild: data });
+    this.buildRequests.getBuild(buildId)
+      .then((currentBuild) => {
+        this.setState({ currentBuild });
       })
       .catch(() => {
         this.setState({ currentBuild: {} });
@@ -52,9 +53,9 @@ class BuildPage extends Component {
   }
 
   getScreenshotDetails = (buildId) => {
-    makeGetScreenshotDetails(buildId)
-      .then((res) => {
-        this.setState({ screenshots: res.data });
+    this.screenshotRequests.getScreenshotsForBuild(buildId)
+      .then((screenshots) => {
+        this.setState({ screenshots });
       });
   }
 

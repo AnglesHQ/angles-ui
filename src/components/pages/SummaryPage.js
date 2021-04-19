@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { BuildRequests } from 'angles-javascript-client';
 import Pagination from 'react-bootstrap/Pagination';
 import update from 'immutability-helper';
 import BuildsTable from '../tables/BuildsTable';
@@ -19,21 +20,16 @@ class SummaryPage extends Component {
       currentSkip: 0,
       limit: 15,
     };
+    this.buildRequests = new BuildRequests(axios);
   }
 
   getBuildsForTeam = (teamId, skip, limit) => {
     const { filteredEnvironments, filteredComponents } = this.state;
-    let requestUrl = `/build?teamId=${teamId}&skip=${skip}&limit=${limit}`;
-    if (filteredEnvironments.length > 0) {
-      requestUrl += `&environmentIds=${filteredEnvironments.join(',')}`;
-    }
-    if (filteredComponents.length > 0) {
-      requestUrl += `&componentIds=${filteredComponents.join(',')}`;
-    }
-    return axios.get(requestUrl)
-      .then((res) => this.setState({
-        builds: res.data.builds,
-        buildCount: res.data.count,
+    this.buildRequests.getBuildsWithFilters(teamId, filteredEnvironments,
+      filteredComponents, skip, limit)
+      .then(({ builds, count: buildCount }) => this.setState({
+        builds,
+        buildCount,
         currentSkip: skip,
       }));
   }
@@ -102,12 +98,7 @@ class SummaryPage extends Component {
     history.push(`/matrix/?buildIds=${selectedBuildIds.join(',')}`);
   }
 
-  updateBuildWithKeep = (buildId, keep) => {
-    const requestUrl = `/build/${buildId}/keep`;
-    return axios.put(requestUrl, {
-      keep,
-    });
-  }
+  updateBuildWithKeep = (buildId, keep) => this.buildRequests.setKeep(buildId, keep)
 
   toggleBuildsToKeep = () => {
     const { builds } = this.state;
