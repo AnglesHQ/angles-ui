@@ -74,9 +74,9 @@ class ScreenshotFinderPage extends Component {
     })
 
   getScreenshot = (screenshotId) => this.screenshotRequests.getScreenshotImage(screenshotId)
-    .then((res) => {
+    .then((screenshot) => {
       const base64 = btoa(
-        new Uint8Array(res.data).reduce(
+        new Uint8Array(screenshot).reduce(
           (data, byte) => data + String.fromCharCode(byte),
           '',
         ),

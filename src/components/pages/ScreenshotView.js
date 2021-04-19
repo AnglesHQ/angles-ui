@@ -75,9 +75,9 @@ class ScreenshotView extends Component {
     })
 
   getScreenshot = (screenshotId) => this.screenshotRequests.getScreenshotImage(screenshotId)
-    .then((res) => {
+    .then((screenshot) => {
       const base64 = btoa(
-        new Uint8Array(res.data).reduce(
+        new Uint8Array(screenshot).reduce(
           (data, byte) => data + String.fromCharCode(byte),
           '',
         ),
@@ -89,9 +89,9 @@ class ScreenshotView extends Component {
     })
 
   getBaselineScreenshot = (screenshotId) => this.screenshotRequests.getScreenshotImage(screenshotId)
-    .then((res) => {
+    .then((screenshot) => {
       const base64 = btoa(
-        new Uint8Array(res.data).reduce(
+        new Uint8Array(screenshot).reduce(
           (data, byte) => data + String.fromCharCode(byte),
           '',
         ),
@@ -103,10 +103,10 @@ class ScreenshotView extends Component {
     })
 
   getBaselineCompare = (screenshotId, useCache) => this.screenshotRequests
-    .getBaselineCompare(screenshotId, useCache)
-    .then((res) => {
+    .getBaselineCompareImage(screenshotId, useCache)
+    .then((screenshot) => {
       const base64 = btoa(
-        new Uint8Array(res.data).reduce(
+        new Uint8Array(screenshot).reduce(
           (data, byte) => data + String.fromCharCode(byte),
           '',
         ),
