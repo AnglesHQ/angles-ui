@@ -217,6 +217,7 @@
 .screenshot-thumbnail {
   max-height: 80px;
   padding: 3px;
+  cursor: pointer;
 }
 
 .expand-artfifacts-span {
