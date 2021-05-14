@@ -31,8 +31,7 @@ class StepsTable extends Component {
 
   convertTextToLinks = (content) => {
     const reg = /(http:\/\/|https:\/\/)((\w|=|\?|\.|\/|&|-)+)/g;
-    const textHtml = content.replace(reg, "<a href='$1$2' target='_blank'>$1$2</a>");
-    return textHtml;
+    return content.replace(reg, "<a href='$1$2' target='_blank'>$1$2</a>");
   }
 
   render() {
@@ -41,10 +40,10 @@ class StepsTable extends Component {
       <table className="steps-table" key={`steps_table_${index}`}>
         <thead>
           <tr>
-            <th>#</th>
-            <th width="15%">Time</th>
-            <th width="15%">Status</th>
-            <th width="15%">Step</th>
+            <th width="3%">#</th>
+            <th width="8%">Time</th>
+            <th width="7%">Status</th>
+            <th width="20%">Step</th>
             <th width="15%">Expected</th>
             <th width="15%">Actual</th>
             <th width="25%">Info</th>
