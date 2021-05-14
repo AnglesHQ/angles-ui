@@ -7,14 +7,7 @@ class ExecutionTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: false,
     };
-    this.toggleActions = this.toggleActions.bind(this);
-  }
-
-  toggleActions = () => {
-    const { open } = this.state;
-    this.setState({ open: !open });
   }
 
   getPlatformName = (execution) => {
@@ -37,13 +30,15 @@ class ExecutionTable extends Component {
       execution,
       screenshots,
       openModal,
+      executionState,
+      toggleExecution,
+      toggleAction,
     } = this.props;
-    const { open } = this.state;
     return [
       <tr key={`execution_${index}`} className="test-row">
         <td colSpan="100%" className={`${execution.status}`}>
-          <span key={open} className="test-name" onClick={(e) => this.toggleActions(e)}>
-            <i title="Click to display/hide test steps" className={open ? ('fa fa-caret-down') : 'fas fa-caret-right'} />
+          <span key={executionState.isOpen} className="test-name" onClick={() => toggleExecution(execution._id)}>
+            <i title="Click to display/hide test steps" className={executionState.isOpen ? ('fa fa-caret-down') : 'fas fa-caret-right'} />
             <span>{`Test: ${execution.title} `}</span>
           </span>
           <span>
@@ -61,17 +56,20 @@ class ExecutionTable extends Component {
         </td>
       </tr>,
       <tr key={`execution_actions_${index}`} className="actions-row">
-        { open ? (
+        { executionState.isOpen ? (
           <td colSpan="100%" className="actions-wrapper">
             <table className="actions-table">
               <tbody>
-                { execution.actions.map((action) => [
+                { execution.actions.map((action, actionIndex) => [
                   <ActionComponent
                     key={index}
                     action={action}
                     index={index}
                     screenshots={screenshots}
                     openModal={openModal}
+                    toggleAction={toggleAction}
+                    actionIndex={actionIndex}
+                    isOpen={executionState.actions[actionIndex]}
                   />,
                 ])}
               </tbody>
