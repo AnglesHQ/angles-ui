@@ -10,12 +10,12 @@ class BuildBarChart extends Component {
     constructor(props) {
       super(props);
       this.state = {
-        //
+        currentStatesFilters: [],
       };
     }
 
     componentDidMount() {
-      const { build } = this.props;
+      const { build, filterBuilds } = this.props;
       const myChartRef = this.chartRef.current.getContext('2d');
       this.piechart = new Chart(myChartRef, {
         type: 'pie',
@@ -25,7 +25,40 @@ class BuildBarChart extends Component {
           responsive: true,
           title: {
             display: true,
-            text: 'Build Results',
+            text: 'Build Results (click to filter)',
+          },
+          onClick: (evt) => {
+            this.piechart.active.forEach((ele) => {
+              // eslint-disable-next-line no-param-reassign
+              ele.custom = ele.custom || {};
+              if (ele.custom.backgroundColor === undefined) {
+                // eslint-disable-next-line no-underscore-dangle
+                const color = ele._model.backgroundColor.replace(')', ', 0.5)');
+                // eslint-disable-next-line no-param-reassign
+                ele.custom.backgroundColor = color;
+              } else {
+                // eslint-disable-next-line no-param-reassign
+                delete ele.custom.backgroundColor;
+              }
+            });
+            this.piechart.update(true);
+            // filter based on selected index.
+            const activePoints = this.piechart.getElementsAtEvent(evt);
+            if (activePoints.length > 0) {
+              const { currentStatesFilters } = this.state;
+              const selectedIndex = activePoints[0]._index;
+              const state = this.piechart.data.labels[selectedIndex];
+              if (currentStatesFilters.includes(state)) {
+                const index = currentStatesFilters.indexOf(state);
+                if (index > -1) {
+                  currentStatesFilters.splice(index, 1);
+                }
+              } else {
+                currentStatesFilters.push(state);
+              }
+              this.setState({ currentStatesFilters });
+              filterBuilds(currentStatesFilters);
+            }
           },
         },
       });

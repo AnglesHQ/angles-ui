@@ -22,6 +22,9 @@ class BuildPage extends Component {
       currentShotId: null,
       screenshots: null,
       query: queryString.parse(location.search),
+      currentBuild: null,
+      filterStates: [],
+      filteredSuites: null,
     };
     const { query } = this.state;
     this.buildRequests = new BuildRequests(axios);
@@ -45,7 +48,7 @@ class BuildPage extends Component {
   getBuildDetails = (buildId) => {
     this.buildRequests.getBuild(buildId)
       .then((currentBuild) => {
-        this.setState({ currentBuild });
+        this.setState({ currentBuild, filteredSuites: currentBuild.suites });
       })
       .catch(() => {
         this.setState({ currentBuild: {} });
@@ -71,6 +74,19 @@ class BuildPage extends Component {
     });
   }
 
+  filterBuilds = (filterStates) => {
+    const filteredSuites = [];
+    const { currentBuild } = this.state;
+    currentBuild.suites.forEach((suite) => {
+      const newSuite = { ...suite };
+      newSuite.executions = suite.executions
+        .filter((execution) => filterStates.length === 0
+          || filterStates.includes(execution.status));
+      filteredSuites.push(newSuite);
+    });
+    this.setState({ filteredSuites, filterStates });
+  }
+
   render() {
     const {
       currentBuild,
@@ -78,6 +94,9 @@ class BuildPage extends Component {
       showModal,
       currentShotId,
       selectedTab,
+      filteredSuites,
+      // eslint-disable-next-line no-unused-vars
+      filterStates,
     } = this.state;
     if (!currentBuild || !screenshots) {
       return (
@@ -106,19 +125,21 @@ class BuildPage extends Component {
         <BuildSummary build={currentBuild} screenshots={screenshots} openModal={this.openModal} />
         <BuildArtifacts build={currentBuild} />
         <div className="graphContainerParent">
-          <BuildResultsPieChart build={currentBuild} />
+          <BuildResultsPieChart build={currentBuild} filterBuilds={this.filterBuilds} />
           <BuildFeaturePieChart build={currentBuild} />
         </div>
         <br />
         <div>
           {
-            currentBuild.suites.map((suite) => (
-              <SuiteTable
-                key={`${suite.name}`}
-                suite={suite}
-                screenshots={screenshots}
-                openModal={this.openModal}
-              />
+            filteredSuites.map((suite) => (
+              suite.executions.length > 0 ? (
+                <SuiteTable
+                  key={`${suite.name}`}
+                  suite={suite}
+                  screenshots={screenshots}
+                  openModal={this.openModal}
+                />
+              ) : null
             ))
           }
         </div>
