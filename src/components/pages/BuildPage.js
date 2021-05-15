@@ -95,6 +95,7 @@ class BuildPage extends Component {
       currentShotId,
       selectedTab,
       filteredSuites,
+      // eslint-disable-next-line no-unused-vars
       filterStates,
     } = this.state;
     if (!currentBuild || !screenshots) {
@@ -119,7 +120,7 @@ class BuildPage extends Component {
     return (
       <div>
         <h1>
-          <span>{ `Build: ${currentBuild.name} ${filterStates}`}</span>
+          <span>{ `Build: ${currentBuild.name}`}</span>
         </h1>
         <BuildSummary build={currentBuild} screenshots={screenshots} openModal={this.openModal} />
         <BuildArtifacts build={currentBuild} />
