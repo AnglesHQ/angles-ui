@@ -25,15 +25,18 @@ class ExecutionTable extends Component {
   }
 
   render() {
+    let { executionState } = this.props;
     const {
       index,
       execution,
       screenshots,
       openModal,
-      executionState,
       toggleExecution,
       toggleAction,
     } = this.props;
+    if (!executionState) {
+      executionState = { isOpen: false };
+    }
     return [
       <tr key={`execution_${index}`} className="test-row">
         <td colSpan="100%" className={`${execution.status}`}>
