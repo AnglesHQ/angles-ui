@@ -6,9 +6,9 @@ import Modal from 'react-bootstrap/Modal';
 import { ExecutionRequests, ScreenshotRequests } from 'angles-javascript-client';
 import ExecutionsResultsPieChart from '../charts/ExecutionsResultsPieChart';
 import ExecutionsTimeLineChart from '../charts/ExecutionsTimeLineChart';
-import HistoryExecutionTable from '../tables/HistoryExecutionTable';
 import ScreenshotView from './ScreenshotView';
 import '../charts/Charts.css';
+import SuiteTable from '../tables/SuiteTable';
 
 class SummaryPage extends Component {
   constructor(props) {
@@ -64,6 +64,14 @@ class SummaryPage extends Component {
     });
   }
 
+  calculateSuiteResults = (suite) => {
+    suite.executions.forEach((execution) => {
+      // eslint-disable-next-line no-param-reassign
+      suite.result[execution.status] += 1;
+    });
+    return suite;
+  }
+
   render() {
     const {
       executions,
@@ -82,6 +90,18 @@ class SummaryPage extends Component {
         </div>
       );
     }
+    // create suite object.
+    const suite = this.calculateSuiteResults({
+      executions,
+      result: {
+        PASS: 0,
+        FAIL: 0,
+        ERROR: 0,
+        SKIPPED: 0,
+      },
+      name: executions[0].suite,
+      status: 'N/A',
+    });
     return (
       <div>
         <h1>
@@ -96,26 +116,12 @@ class SummaryPage extends Component {
           <ExecutionsResultsPieChart executions={executions} />
           <ExecutionsTimeLineChart executions={executions} />
         </div>
-        <table className="suite-table">
-          <thead>
-            <tr>
-              <th scope="col" colSpan="100%">
-                <span>{`Suite: ${executions[0].suite} - Test: ${executions[0].title}`}</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            { executions.map((execution, index) => [
-              <HistoryExecutionTable
-                key={execution._id}
-                screenshots={screenshots}
-                openModal={this.openModal}
-                execution={execution}
-                index={index}
-              />,
-            ])}
-          </tbody>
-        </table>
+        <SuiteTable
+          key={`${suite.name}`}
+          suite={suite}
+          screenshots={screenshots}
+          openModal={this.openModal}
+        />
         <Modal show={showModal} onHide={this.closeModal} dialogClassName="screenshot-modal">
           <Modal.Header closeButton>
             <Modal.Title>Screenshot Viewer</Modal.Title>
