@@ -31,7 +31,10 @@ class StepsTable extends Component {
 
   convertTextToLinks = (content) => {
     const reg = /(http:\/\/|https:\/\/)((\w|=|\?|\.|\/|&|-)+)/g;
-    return content.replace(reg, "<a href='$1$2' target='_blank'>$1$2</a>");
+    if (content) {
+      return content.replace(reg, "<a href='$1$2' target='_blank'>$1$2</a>");
+    }
+    return '';
   }
 
   render() {
