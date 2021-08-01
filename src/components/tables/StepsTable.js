@@ -107,6 +107,14 @@ class StepsTable extends Component {
               </tr>
             );
           })}
+          {
+            action.steps.length === 0 ? (
+              <tr key="no-steps">
+                <td />
+                <td colSpan={7}>No steps provided</td>
+              </tr>
+            ) : null
+          }
         </tbody>
       </table>,
     ];
