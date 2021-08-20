@@ -14,6 +14,7 @@ import AboutPage from '../components/pages/AboutPage';
 import NotFoundPage from '../components/pages/NotFoundPage';
 import './App.css';
 import '../components/charts/Charts.css';
+import MetricsPage from '../components/pages/MetricsPage';
 
 axios.defaults.baseURL = `${process.env.REACT_APP_ANGLES_API_URL}/rest/api/v1.0`;
 
@@ -131,6 +132,22 @@ class App extends Component {
             <Route exact path="/screenshot-finder/" render={() => <ScreenshotFinderPage />} />
             <Route exact path="/history/" render={() => <ExecutionHistoryPage />} />
             <Route exact path="/about/" render={() => <AboutPage />} />
+            <Route
+              exact
+              path="/metrics/"
+              render={() => {
+                if (currentTeam === undefined || !currentTeam._id) {
+                  return <div>Please select a team</div>;
+                }
+                return (
+                  <MetricsPage
+                    currentTeam={currentTeam}
+                    teams={teams}
+                    changeCurrentTeam={this.changeCurrentTeam}
+                  />
+                );
+              }}
+            />
             <Route render={() => <NotFoundPage />} />
           </Switch>
         </main>
