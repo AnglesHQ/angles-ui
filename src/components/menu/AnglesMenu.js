@@ -48,6 +48,10 @@ class AnglesMenu extends Component {
             </li>
           ))}
         </ol>
+        <a id="metrics-page" className="bm-item" href="/metrics">
+          <i className="fa fa-fw fa-chart-bar" />
+          <span>Metrics</span>
+        </a>
         <a id="screenshot-finder" className="bm-item" href="/screenshot-finder">
           <i className="fa fa-fw fa-images" />
           <span>Screenshot Finder</span>
