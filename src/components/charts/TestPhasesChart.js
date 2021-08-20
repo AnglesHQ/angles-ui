@@ -112,7 +112,7 @@ class TestPhasesChart extends Component {
             {
               scaleLabel: {
                 display: true,
-                labelString: 'Number of test cases (per phase)',
+                labelString: 'Number of test executions (per phase)',
               },
               stacked: false,
               ticks: {
