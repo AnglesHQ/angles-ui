@@ -63,9 +63,13 @@ class SummaryPage extends Component {
   }
 
   getMetrics = (teamId, componentId, fromDate, toDate, groupingId) => {
+    this.setState({ metrics: undefined });
     this.metricRequests.getPhaseMetrics(teamId, componentId, fromDate, toDate, groupingId)
       .then((metrics) => {
         this.setState({ metrics });
+      })
+      .catch(() => {
+        this.setState({ metrics: {} });
       });
   }
 
@@ -97,6 +101,26 @@ class SummaryPage extends Component {
       selectedComponent,
     } = this.state;
     const { currentTeam, teams } = this.props;
+
+    if (!metrics) {
+      return (
+        <div className="alert alert-primary" role="alert">
+          <span>
+            <i className="fas fa-spinner fa-pulse fa-2x" />
+            <span> Retrieving metrics.</span>
+          </span>
+        </div>
+      );
+    }
+    if (metrics === {}) {
+      return (
+        <div>
+          <div className="alert alert-danger" role="alert">
+            <span> Unable to retrieve metrics. Please refresh the page and try again.</span>
+          </div>
+        </div>
+      );
+    }
     return (
       <div>
         <h1>{`Metrics for team ${currentTeam.name}`}</h1>

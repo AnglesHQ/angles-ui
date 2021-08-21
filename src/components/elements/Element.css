@@ -7,6 +7,8 @@
 
 .date-picker-surround {
     display: flex;
+    max-height: 3em;
+    align-items: center;
 }
 
 .team-span {
@@ -30,9 +32,12 @@
     float: left;
     padding-left: 10px;
     padding-right: 10px;
+    max-height: 40px;
+    height: 40px;
 }
 
 .DayPicker_transitionContainer {
     padding-bottom: 37px;
     box-sizing: content-box;
+    width: 100%;
 }
