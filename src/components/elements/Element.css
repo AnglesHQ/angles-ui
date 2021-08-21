@@ -1,27 +1,13 @@
-/*.customDatePickerWidth,*/
-/*.customDatePickerWidth > div.react-datepicker-wrapper,*/
-/*.customDatePickerWidth > div > div.react-datepicker__input-container*/
-/*.customDatePickerWidth > div > div.react-datepicker__input-container input {*/
-/*    width: 100%;*/
-/*}*/
 
-.date-picker-surround {
-    display: flex;
-    max-height: 3em;
-    align-items: center;
+.metrics-form-group {
+    max-width: 17%;
+    line-height: 20px;
 }
 
-.team-span {
-    padding-right: 10px;
-    line-height: 3em;
-    font-weight: bold;
-}
-
-.metrics-span {
-    padding-left: 30px;
-    padding-right: 10px;
-    line-height: 3em;
-    font-weight: bold;
+.metrics-form-group-period {
+    width: 300px;
+    max-width: 300px;
+    line-height: 20px;
 }
 
 .metrics-date-picker{
@@ -32,8 +18,8 @@
     float: left;
     padding-left: 10px;
     padding-right: 10px;
-    max-height: 40px;
-    height: 40px;
+    max-height: 48px;
+    height: 48px;
 }
 
 .DayPicker_transitionContainer {

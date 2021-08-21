@@ -4,11 +4,13 @@ import moment from 'moment';
 import queryString from 'query-string';
 import { withRouter } from 'react-router-dom';
 import { MetricRequests } from 'angles-javascript-client';
+import Form from 'react-bootstrap/Form';
+import Col from 'react-bootstrap/Col';
 import MetricsResultChart from '../charts/MetricsResultChart';
 import TestPhasesChart from '../charts/TestPhasesChart';
 import DatePicker from '../elements/DatePicker';
 
-class SummaryPage extends Component {
+class MetricsPage extends Component {
   constructor(props) {
     super(props);
     const { location } = this.props;
@@ -63,10 +65,13 @@ class SummaryPage extends Component {
   }
 
   getMetrics = (teamId, componentId, fromDate, toDate, groupingId) => {
-    this.setState({ metrics: undefined });
+    const { metrics } = this.state;
+    if (metrics && metrics !== {}) {
+      this.setState({ metrics: undefined });
+    }
     this.metricRequests.getPhaseMetrics(teamId, componentId, fromDate, toDate, groupingId)
-      .then((metrics) => {
-        this.setState({ metrics });
+      .then((returnedMetrics) => {
+        this.setState({ metrics: returnedMetrics });
       })
       .catch(() => {
         this.setState({ metrics: {} });
@@ -123,40 +128,56 @@ class SummaryPage extends Component {
     }
     return (
       <div>
-        <h1>{`Metrics for team ${currentTeam.name}`}</h1>
-        <div className="date-picker-surround">
-          <span className="team-span">Team</span>
-          <select value={selectedTeam} onChange={this.handleTeamChange} className="metrics-grouping-period-select">
-            {
-              teams.map((team) => <option value={team._id}>{team.name}</option>)
-            }
-          </select>
-          <span className="metrics-span">Component</span>
-          <select value={selectedComponent} onChange={this.handleComponentChange} className="metrics-grouping-period-select">
-            <option value="any">Any</option>
-            {
-              currentTeam.components.map((component) => (
-                <option value={component._id}>
-                  {component.name}
-                </option>
-              ))
-            }
-          </select>
-          <span className="metrics-span">Period</span>
-          <DatePicker
-            className="metrics-date-picker"
-            startDate={startDate}
-            endDate={endDate}
-            handleDatesChange={this.handleDatesChange}
-          />
-          <span className="metrics-span">Grouping: </span>
-          <select value={groupingPeriod} onChange={this.handleGroupingChange} className="metrics-grouping-period-select">
-            <option value="day">Day</option>
-            <option value="week">Week</option>
-            <option value="fortnight">Fortnight</option>
-            <option value="month">Month</option>
-            <option value="year">Year</option>
-          </select>
+        <h1>Metrics</h1>
+        <div className="screenshot-form-container">
+          <Form>
+            <Form.Row>
+              <Form.Group as={Col} className="metrics-form-group">
+                <Form.Label htmlFor="teamSelect"><b>Team</b></Form.Label>
+                <Form.Control id="teamSelect" as="select" value={selectedTeam} onChange={this.handleTeamChange} className="metrics-grouping-period-select">
+                  {
+                    teams.map((team) => (
+                      <option key={team._id} value={team._id}>
+                        {team.name}
+                      </option>
+                    ))
+                  }
+                </Form.Control>
+              </Form.Group>
+              <Form.Group as={Col} className="metrics-form-group">
+                <Form.Label htmlFor="componentSelect"><b>Component</b></Form.Label>
+                <Form.Control id="componentSelect" as="select" value={selectedComponent} onChange={this.handleComponentChange} className="metrics-grouping-period-select">
+                  <option value="any">Any</option>
+                  {
+                    currentTeam.components.map((component) => (
+                      <option key={component._id} value={component._id}>
+                        {component.name}
+                      </option>
+                    ))
+                  }
+                </Form.Control>
+              </Form.Group>
+              <Form.Group as={Col} className="metrics-form-group-period">
+                <Form.Label htmlFor="periodSelect"><b>Period</b></Form.Label>
+                <DatePicker
+                  className="metrics-date-picker"
+                  startDate={startDate}
+                  endDate={endDate}
+                  handleDatesChange={this.handleDatesChange}
+                />
+              </Form.Group>
+              <Form.Group as={Col} className="metrics-form-group">
+                <Form.Label htmlFor="groupingSelect"><b>Grouping</b></Form.Label>
+                <Form.Control id="groupingSelect" as="select" value={groupingPeriod} onChange={this.handleGroupingChange} className="metrics-grouping-period-select">
+                  <option value="day">Day</option>
+                  <option value="week">Week</option>
+                  <option value="fortnight">Fortnight</option>
+                  <option value="month">Month</option>
+                  <option value="year">Year</option>
+                </Form.Control>
+              </Form.Group>
+            </Form.Row>
+          </Form>
         </div>
         {
           metrics ? (
@@ -171,4 +192,4 @@ class SummaryPage extends Component {
   }
 }
 
-export default withRouter(SummaryPage);
+export default withRouter(MetricsPage);
