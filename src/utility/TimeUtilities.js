@@ -1,17 +1,21 @@
 import moment from 'moment';
 
+export const getDurationAsString = (duration) => {
+  if (duration.asSeconds() < 120) {
+    return `${Math.floor(duration.asSeconds())} seconds`;
+  }
+  if (duration.asSeconds() >= 120 && duration.asMinutes() < 120) {
+    return `${Math.floor(duration.asMinutes())} minutes`;
+  }
+  return `${Math.floor(duration.asHours())} hours`;
+};
+
 export const getDuration = (build) => {
   if (build.end && build.start) {
     const start = moment(build.start);
     const end = moment(build.end);
     const duration = moment.duration(end.diff(start));
-    if (duration.asSeconds() < 120) {
-      return `${Math.floor(duration.asSeconds())} seconds`;
-    }
-    if (duration.asSeconds() >= 120 && duration.asMinutes() < 120) {
-      return `${Math.floor(duration.asMinutes())} minutes`;
-    }
-    return `${duration.asHours()} hours`;
+    return getDurationAsString(duration);
   }
   return 'Not started';
 };

@@ -9,6 +9,8 @@ import Col from 'react-bootstrap/Col';
 import MetricsResultChart from '../charts/MetricsResultChart';
 import TestPhasesChart from '../charts/TestPhasesChart';
 import DatePicker from '../elements/DatePicker';
+import ExecutionMetricsSummary from '../tables/ExecutionMetricsSummary';
+import './Default.css';
 
 class MetricsPage extends Component {
   constructor(props) {
@@ -109,17 +111,21 @@ class MetricsPage extends Component {
 
     if (!metrics) {
       return (
-        <div className="alert alert-primary" role="alert">
-          <span>
-            <i className="fas fa-spinner fa-pulse fa-2x" />
-            <span> Retrieving metrics.</span>
-          </span>
+        <div>
+          <h1>Metrics</h1>
+          <div className="alert alert-primary" role="alert">
+            <span>
+              <i className="fas fa-spinner fa-pulse fa-2x" />
+              <span> Retrieving metrics.</span>
+            </span>
+          </div>
         </div>
       );
     }
     if (metrics === {}) {
       return (
         <div>
+          <h1>Metrics</h1>
           <div className="alert alert-danger" role="alert">
             <span> Unable to retrieve metrics. Please refresh the page and try again.</span>
           </div>
@@ -129,7 +135,7 @@ class MetricsPage extends Component {
     return (
       <div>
         <h1>Metrics</h1>
-        <div className="screenshot-form-container">
+        <div className="metrics-form-container">
           <Form>
             <Form.Row>
               <Form.Group as={Col} className="metrics-form-group">
@@ -180,10 +186,15 @@ class MetricsPage extends Component {
           </Form>
         </div>
         {
-          metrics ? (
-            <div className="graphContainerParent">
-              <MetricsResultChart metrics={metrics} />
-              <TestPhasesChart metrics={metrics} />
+          metrics && metrics !== {} ? (
+            <div>
+              <div className="execution-metrics-table-container">
+                <ExecutionMetricsSummary metrics={metrics} />
+              </div>
+              <div className="graphContainerParent">
+                <MetricsResultChart metrics={metrics} />
+                <TestPhasesChart metrics={metrics} />
+              </div>
             </div>
           ) : null
         }

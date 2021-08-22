@@ -183,6 +183,18 @@
   border: 1px solid grey;
 }
 
+.metrics-form-container {
+  padding: 15px;
+  border-radius: 10px;
+  background: #b5a5a53b;
+  border: 1px solid grey;
+  marging-bottom: 30px;
+}
+
+.execution-metrics-table-container {
+  padding-top: 30px;
+}
+
 .tag-form-group {
   max-width: 45%;
 }
