@@ -122,7 +122,7 @@ class MetricsPage extends Component {
         </div>
       );
     }
-    if (metrics === {}) {
+    if (Object.keys(metrics).length === 0) {
       return (
         <div>
           <h1>Metrics</h1>
