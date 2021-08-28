@@ -1,16 +1,28 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { BuildRequests } from 'angles-javascript-client';
+import moment from 'moment';
 import Pagination from 'react-bootstrap/Pagination';
 import update from 'immutability-helper';
+import Col from 'react-bootstrap/Col';
+import Form from 'react-bootstrap/Form';
+import queryString from 'query-string';
+import { withRouter } from 'react-router-dom';
 import BuildsTable from '../tables/BuildsTable';
 import BuildBarChart from '../charts/BuildBarChart';
 import BuildTimeLineChart from '../charts/BuildTimeLineChart';
 import '../charts/Charts.css';
+import DatePicker from '../elements/DatePicker';
 
 class SummaryPage extends Component {
   constructor(props) {
     super(props);
+    const { location } = this.props;
+    const query = queryString.parse(location.search);
+    const {
+      startDate,
+      endDate,
+    } = query;
     this.state = {
       builds: undefined,
       selectedBuilds: {},
@@ -19,14 +31,21 @@ class SummaryPage extends Component {
       buildCount: 0,
       currentSkip: 0,
       limit: 15,
+      startDate: startDate ? moment(startDate) : moment().subtract(90, 'days'),
+      endDate: endDate ? moment(endDate) : moment(),
     };
     this.buildRequests = new BuildRequests(axios);
   }
 
   getBuildsForTeam = (teamId, skip, limit) => {
-    const { filteredEnvironments, filteredComponents } = this.state;
-    this.buildRequests.getBuildsWithFilters(teamId, filteredEnvironments,
-      filteredComponents, skip, limit)
+    const {
+      filteredEnvironments,
+      filteredComponents,
+      startDate,
+      endDate,
+    } = this.state;
+    this.buildRequests.getBuildsWithDateFilters(teamId, filteredEnvironments,
+      filteredComponents, skip, limit, startDate, endDate)
       .then(({ builds, count: buildCount }) => this.setState({
         builds,
         buildCount,
@@ -49,13 +68,21 @@ class SummaryPage extends Component {
   componentDidUpdate = (prevProps, prevStates) => {
     // if team has changed grab new build details.
     const { currentTeam } = this.props;
-    const { limit, filteredEnvironments, filteredComponents } = this.state;
+    const {
+      limit,
+      filteredEnvironments,
+      filteredComponents,
+      startDate,
+      endDate,
+    } = this.state;
     if (prevProps.currentTeam._id !== currentTeam._id) {
       this.setState({ filteredEnvironments: [], filteredComponents: [] });
-      this.getBuildsForTeam(currentTeam._id, 0, limit);
+      this.getBuildsForTeam(currentTeam._id, 0, limit, startDate, endDate);
     } else if (prevStates.filteredEnvironments !== filteredEnvironments
-        || prevStates.filteredComponents !== filteredComponents) {
-      this.getBuildsForTeam(currentTeam._id, 0, limit);
+        || prevStates.filteredComponents !== filteredComponents
+        || prevStates.startDate !== startDate
+        || prevStates.endDate !== endDate) {
+      this.getBuildsForTeam(currentTeam._id, 0, limit, startDate, endDate);
     }
   }
 
@@ -134,6 +161,15 @@ class SummaryPage extends Component {
     return ((currentSkip + limit) >= buildCount);
   }
 
+  handleTeamChange = (event) => {
+    const { changeCurrentTeam } = this.props;
+    changeCurrentTeam(event.target.value);
+  }
+
+  handleDatesChange = ({ startDate, endDate }) => {
+    this.setState({ startDate, endDate });
+  };
+
   render() {
     const {
       builds,
@@ -141,10 +177,13 @@ class SummaryPage extends Component {
       selectedBuilds,
       currentSkip,
       limit,
+      startDate,
+      endDate,
     } = this.state;
     const {
       currentTeam,
       environments,
+      teams,
     } = this.props;
     if (!builds) {
       this.getBuildsForTeam(currentTeam._id, currentSkip, limit);
@@ -158,7 +197,34 @@ class SummaryPage extends Component {
     }
     return (
       <div>
-        <h1>{`Team: ${currentTeam.name}`}</h1>
+        <h1>Builds</h1>
+        <div className="metrics-form-container">
+          <Form>
+            <Form.Row>
+              <Form.Group as={Col} className="metrics-form-group">
+                <Form.Label htmlFor="teamId"><b>Team</b></Form.Label>
+                <Form.Control id="teamId" as="select" value={currentTeam._id} onChange={this.handleTeamChange} className="metrics-grouping-period-select">
+                  {
+                    teams.map((team) => (
+                      <option key={team._id} value={team._id}>
+                        {team.name}
+                      </option>
+                    ))
+                  }
+                </Form.Control>
+              </Form.Group>
+              <Form.Group as={Col} className="metrics-form-group-period">
+                <Form.Label htmlFor="periodSelect"><b>Period</b></Form.Label>
+                <DatePicker
+                  className="metrics-date-picker"
+                  startDate={startDate}
+                  endDate={endDate}
+                  handleDatesChange={this.handleDatesChange}
+                />
+              </Form.Group>
+            </Form.Row>
+          </Form>
+        </div>
         <div className="graphContainerParent">
           <BuildBarChart builds={builds} />
           <BuildTimeLineChart builds={builds} />
@@ -202,4 +268,4 @@ class SummaryPage extends Component {
   }
 }
 
-export default SummaryPage;
+export default withRouter(SummaryPage);

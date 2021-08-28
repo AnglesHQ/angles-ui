@@ -9,47 +9,23 @@ class AnglesMenu extends Component {
     super(props);
     this.state = {
       menuOpen: false,
-      teamsMenuOpen: false,
     };
-  }
-
-  toggleTeams = () => {
-    const { teamsMenuOpen } = this.state;
-    this.setState({ teamsMenuOpen: !teamsMenuOpen });
-  }
-
-  closeMenu = () => {
-    this.setState({ menuOpen: false, teamsMenuOpen: false });
   }
 
   handleStateChange = (state) => {
     this.setState({ menuOpen: state.isOpen });
   }
 
-  navigateToTeam = (teamId) => {
-    const { history } = this.props;
-    history.push(`/?teamId=${teamId}`);
-    this.closeMenu();
-  }
-
   render() {
-    const { menuOpen, teamsMenuOpen } = this.state;
-    const { teams } = this.props;
+    const { menuOpen } = this.state;
     return (
       <Menu isOpen={menuOpen} onStateChange={this.handleStateChange} pageWrapId="page-wrap" outerContainerId="outer-container" className="bm-menu">
-        <li role="button" id="teams" onClick={() => this.toggleTeams()} className="bm-item">
-          <i className="fa fa-fw fa-users" />
-          <span>Teams</span>
-        </li>
-        <ol className="bm-list" style={{ display: (teamsMenuOpen ? 'block' : 'none') }}>
-          { teams.map((team) => (
-            <li role="button" className="bm-list-item" key={team._id} onClick={() => { this.navigateToTeam(team._id); }}>
-              {team.name}
-            </li>
-          ))}
-        </ol>
-        <a id="metrics-page" className="bm-item" href="/metrics">
+        <a id="builds-page" className="bm-item" href="/">
           <i className="fa fa-fw fa-chart-bar" />
+          <span>Builds</span>
+        </a>
+        <a id="metrics-page" className="bm-item" href="/metrics">
+          <i className="fa fa-fw fa-chart-pie" />
           <span>Metrics</span>
         </a>
         <a id="screenshot-finder" className="bm-item" href="/screenshot-finder">

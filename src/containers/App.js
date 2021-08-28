@@ -114,6 +114,8 @@ class App extends Component {
                     currentTeam={currentTeam}
                     environments={environments}
                     history={history}
+                    changeCurrentTeam={this.changeCurrentTeam}
+                    teams={teams}
                   />
                 );
               }}
