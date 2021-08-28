@@ -20,10 +20,11 @@ class DatePicker extends Component {
     return (
       <div className="customDatePickerWidth">
         <DateRangePicker
+          displayFormat="DD/MM/YYYY"
           startDate={startDate}
-          startDateId="date-range-start-date"
+          startDateId="startDate"
           endDate={endDate}
-          endDateId="date-range-end-date"
+          endDateId="endDate"
           onDatesChange={handleDatesChange}
           numberOfMonths={2}
           initialVisibleMonth={() => moment().subtract(1, 'months')}
@@ -32,7 +33,7 @@ class DatePicker extends Component {
           onFocusChange={(focusedInput) => this.setState({ focusedInput })}
           isOutsideRange={(day) => {
             let dayIsBlocked = false;
-            if (moment().diff(day) <= 0) {
+            if (moment().set({ hours: 23, minutes: 59, seconds: 59 }).diff(day) <= 0) {
               dayIsBlocked = true;
             }
             return dayIsBlocked;

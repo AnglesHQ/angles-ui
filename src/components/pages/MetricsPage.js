@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom';
 import { MetricRequests } from 'angles-javascript-client';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
 import MetricsResultChart from '../charts/MetricsResultChart';
 import TestPhasesChart from '../charts/TestPhasesChart';
 import DatePicker from '../elements/DatePicker';
@@ -16,54 +17,25 @@ class MetricsPage extends Component {
   constructor(props) {
     super(props);
     const { location } = this.props;
-    this.state = {
-      startDate: moment().subtract(30, 'days'),
-      endDate: moment(),
-      groupingPeriod: 'week',
-      selectedTeam: props.currentTeam._id,
-      selectedComponent: 'any',
-      // eslint-disable-next-line react/no-unused-state
-      query: queryString.parse(location.search),
-    };
-    this.metricRequests = new MetricRequests(axios);
+    const query = queryString.parse(location.search);
     const {
+      component,
+      grouping,
       startDate,
       endDate,
-      groupingPeriod,
-    } = this.state;
-    this.getMetrics(props.currentTeam._id, undefined, startDate, endDate, groupingPeriod);
+    } = query;
+    this.state = {
+      startDate: startDate ? moment(startDate) : moment().subtract(30, 'days'),
+      endDate: endDate ? moment(endDate) : moment(),
+      groupingPeriod: grouping || 'week',
+      selectedTeam: props.currentTeam._id,
+      selectedComponent: component || 'any',
+    };
+    this.metricRequests = new MetricRequests(axios);
   }
 
   componentDidMount() {
-    /**
-     * 1. We need per period, pass/fail rate ( + number of builds)
-     * 2. Per phase in a period.
-     *  - number of executions and builds (per day)?
-     *  - pass/failure rate (per day)?
-     *  - length of time
-     *  - compare against other periods?
-     */
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const {
-      endDate,
-      startDate,
-      groupingPeriod,
-      selectedComponent,
-    } = this.state;
-    const { currentTeam } = this.props;
-    if (endDate && startDate && (endDate !== prevState.endDate
-        || startDate !== prevState.startDate
-        || groupingPeriod !== prevState.groupingPeriod
-        || currentTeam !== prevProps.currentTeam
-        || selectedComponent !== prevState.selectedComponent)) {
-      if (selectedComponent === 'any') {
-        this.getMetrics(currentTeam._id, undefined, startDate, endDate, groupingPeriod);
-      } else {
-        this.getMetrics(currentTeam._id, selectedComponent, startDate, endDate, groupingPeriod);
-      }
-    }
+    this.retrieveMetrics();
   }
 
   getMetrics = (teamId, componentId, fromDate, toDate, groupingId) => {
@@ -98,6 +70,53 @@ class MetricsPage extends Component {
     this.setState({ selectedComponent: event.target.value });
   }
 
+  retrieveMetrics = () => {
+    const {
+      endDate,
+      startDate,
+      groupingPeriod,
+      selectedComponent,
+      selectedTeam,
+    } = this.state;
+    if (endDate && startDate) {
+      if (selectedComponent === 'any') {
+        this.getMetrics(selectedTeam, undefined, startDate, endDate, groupingPeriod);
+      } else {
+        this.getMetrics(selectedTeam, selectedComponent, startDate, endDate, groupingPeriod);
+      }
+    }
+  }
+
+  onSubmit = () => {
+    const { history } = this.props;
+    const {
+      endDate,
+      startDate,
+      groupingPeriod,
+      selectedComponent,
+      selectedTeam,
+    } = this.state;
+    const params = {
+      teamId: selectedTeam,
+      component: selectedComponent,
+      grouping: groupingPeriod,
+      startDate: startDate.format('YYYY-MM-DD'),
+      endDate: endDate.format('YYYY-MM-DD'),
+    };
+    // setting the url so people can copy it.
+    history.push({
+      pathname: '/metrics',
+      search: `?${new URLSearchParams(params).toString()}`,
+    });
+    this.retrieveMetrics();
+  }
+
+  getComponents = (teamId) => {
+    const { teams } = this.props;
+    const selectedTeam = teams.find((team) => team._id === teamId);
+    return selectedTeam.components;
+  }
+
   render() {
     const {
       metrics,
@@ -107,31 +126,8 @@ class MetricsPage extends Component {
       selectedTeam,
       selectedComponent,
     } = this.state;
-    const { currentTeam, teams } = this.props;
+    const { teams } = this.props;
 
-    if (!metrics) {
-      return (
-        <div>
-          <h1>Metrics</h1>
-          <div className="alert alert-primary" role="alert">
-            <span>
-              <i className="fas fa-spinner fa-pulse fa-2x" />
-              <span> Retrieving metrics.</span>
-            </span>
-          </div>
-        </div>
-      );
-    }
-    if (Object.keys(metrics).length === 0) {
-      return (
-        <div>
-          <h1>Metrics</h1>
-          <div className="alert alert-danger" role="alert">
-            <span> Unable to retrieve metrics. Please refresh the page and try again.</span>
-          </div>
-        </div>
-      );
-    }
     return (
       <div>
         <h1>Metrics</h1>
@@ -139,8 +135,8 @@ class MetricsPage extends Component {
           <Form>
             <Form.Row>
               <Form.Group as={Col} className="metrics-form-group">
-                <Form.Label htmlFor="teamSelect"><b>Team</b></Form.Label>
-                <Form.Control id="teamSelect" as="select" value={selectedTeam} onChange={this.handleTeamChange} className="metrics-grouping-period-select">
+                <Form.Label htmlFor="teamId"><b>Team</b></Form.Label>
+                <Form.Control id="teamId" as="select" value={selectedTeam} onChange={this.handleTeamChange} className="metrics-grouping-period-select">
                   {
                     teams.map((team) => (
                       <option key={team._id} value={team._id}>
@@ -151,11 +147,11 @@ class MetricsPage extends Component {
                 </Form.Control>
               </Form.Group>
               <Form.Group as={Col} className="metrics-form-group">
-                <Form.Label htmlFor="componentSelect"><b>Component</b></Form.Label>
-                <Form.Control id="componentSelect" as="select" value={selectedComponent} onChange={this.handleComponentChange} className="metrics-grouping-period-select">
+                <Form.Label htmlFor="component"><b>Component</b></Form.Label>
+                <Form.Control id="component" as="select" value={selectedComponent} onChange={this.handleComponentChange} className="metrics-grouping-period-select">
                   <option value="any">Any</option>
                   {
-                    currentTeam.components.map((component) => (
+                    this.getComponents(selectedTeam).map((component) => (
                       <option key={component._id} value={component._id}>
                         {component.name}
                       </option>
@@ -173,8 +169,8 @@ class MetricsPage extends Component {
                 />
               </Form.Group>
               <Form.Group as={Col} className="metrics-form-group">
-                <Form.Label htmlFor="groupingSelect"><b>Grouping</b></Form.Label>
-                <Form.Control id="groupingSelect" as="select" value={groupingPeriod} onChange={this.handleGroupingChange} className="metrics-grouping-period-select">
+                <Form.Label htmlFor="grouping"><b>Grouping</b></Form.Label>
+                <Form.Control id="grouping" as="select" value={groupingPeriod} onChange={this.handleGroupingChange} className="metrics-grouping-period-select">
                   <option value="day">Day</option>
                   <option value="week">Week</option>
                   <option value="fortnight">Fortnight</option>
@@ -182,22 +178,36 @@ class MetricsPage extends Component {
                   <option value="year">Year</option>
                 </Form.Control>
               </Form.Group>
+              <Form.Group as={Col} className="metrics-form-group">
+                <Button variant="primary" type="button" className="metrics-button" onClick={() => { this.onSubmit(); }}>Retrieve Metrics</Button>
+              </Form.Group>
             </Form.Row>
           </Form>
         </div>
-        {
-          metrics && metrics !== {} ? (
-            <div>
-              <div className="execution-metrics-table-container">
-                <ExecutionMetricsSummary metrics={metrics} />
-              </div>
-              <div className="graphContainerParent">
-                <MetricsResultChart metrics={metrics} />
-                <TestPhasesChart metrics={metrics} />
-              </div>
-            </div>
-          ) : null
-        }
+        <div className="metrics-surround">
+          <div style={{ display: !metrics ? 'block' : 'none' }} className="alert alert-primary" role="alert">
+            <span>
+              <i className="fas fa-spinner fa-pulse fa-2x" />
+              <span> Retrieving metrics.</span>
+            </span>
+          </div>
+          <div style={{ display: (metrics && Object.keys(metrics).length === 0) ? 'block' : 'none' }} className="alert alert-danger" role="alert">
+            <span>Unable to retrieve metrics. Please refresh the page and try again.</span>
+          </div>
+          {
+           metrics && Object.keys(metrics).length > 0 ? (
+             <div style={{ display: (metrics && Object.keys(metrics).length > 0) ? 'block' : 'none' }}>
+               <div>
+                 <ExecutionMetricsSummary metrics={metrics} />
+               </div>
+               <div className="graphContainerParent">
+                 <MetricsResultChart metrics={metrics} />
+                 <TestPhasesChart metrics={metrics} />
+               </div>
+             </div>
+           ) : null
+          }
+        </div>
       </div>
     );
   }

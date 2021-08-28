@@ -43,8 +43,8 @@ class ExecutionMetricsSummary extends Component {
   render() {
     const { metrics } = this.props;
     const periodRows = [];
-
-    metrics.periods.forEach((period, index) => {
+    const periods = [...metrics.periods];
+    periods.reverse().forEach((period, index) => {
       const popover = (
         <Popover id="popover-basic">
           <Popover.Title as="h3">
@@ -83,7 +83,7 @@ class ExecutionMetricsSummary extends Component {
             <th scope="col">Period</th>
             <th scope="col">
               <span>Number of Tests </span>
-              <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">This is a count of all unique test cases (by phase, suite and test name). Hover over the individual icons to see the list of tests.</Tooltip>}>
+              <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">This is a count of all unique test cases (by phase, suite and test name). Click on the individual icons to see the list of tests.</Tooltip>}>
                 <span>
                   <i className="fas fa-info-circle" />
                 </span>
@@ -92,7 +92,14 @@ class ExecutionMetricsSummary extends Component {
             <th scope="col">Builds</th>
             <th scope="col">Executions</th>
             <th scope="col">Pass Rate</th>
-            <th scope="col">Total Duration</th>
+            <th scope="col">
+              <span>Total Duration </span>
+              <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">This is the total amount of time of all the tests combined (if tests were run in parallel, this will differ from the total build time)</Tooltip>}>
+                <span>
+                  <i className="fas fa-info-circle" />
+                </span>
+              </OverlayTrigger>
+            </th>
           </tr>
         </thead>
         <tbody>

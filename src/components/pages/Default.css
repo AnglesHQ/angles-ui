@@ -191,10 +191,6 @@
   marging-bottom: 30px;
 }
 
-.execution-metrics-table-container {
-  padding-top: 30px;
-}
-
 .tag-form-group {
   max-width: 45%;
 }
@@ -205,6 +201,11 @@
 
 .search-button {
   margin-top: 20px;
+}
+
+.metrics-button {
+  margin-top: 32px;
+  margin-left: 10px;
 }
 
 .fa-spinner {
@@ -247,4 +248,8 @@
   margin-bottom: 2em;
   padding-left: 1em;
   cursor: default;
+}
+
+.metrics-surround {
+  padding-top: 30px;
 }
