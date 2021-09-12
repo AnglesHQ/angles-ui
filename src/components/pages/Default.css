@@ -193,6 +193,10 @@
   marging-bottom: 30px;
 }
 
+.metrics-data-container {
+  padding-top: 30px;
+}
+
 .tag-form-group {
   max-width: 45%;
 }
@@ -253,5 +257,11 @@
 }
 
 .metrics-surround {
-  padding-top: 30px;
+  padding: 30px;
+  border: solid 1px black;
+  border-radius: 10px;
+}
+
+.metrics-table-div {
+  padding-bottom: 30px;
 }

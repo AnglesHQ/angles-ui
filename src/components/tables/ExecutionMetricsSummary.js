@@ -76,38 +76,40 @@ class ExecutionMetricsSummary extends Component {
     });
 
     return (
-      <table className="table">
-        <thead className="thead-dark">
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Period</th>
-            <th scope="col">
-              <span>Number of Tests </span>
-              <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">This is a count of all unique test cases (by phase, suite and test name). Click on the individual icons to see the list of tests.</Tooltip>}>
-                <span>
-                  <i className="fas fa-info-circle" />
-                </span>
-              </OverlayTrigger>
-            </th>
-            <th scope="col">Builds</th>
-            <th scope="col">Executions</th>
-            <th scope="col">Pass Rate</th>
-            <th scope="col">
-              <span>Total Duration </span>
-              <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">This is the total amount of time of all the tests combined (if tests were run in parallel, this will differ from the total build time)</Tooltip>}>
-                <span>
-                  <i className="fas fa-info-circle" />
-                </span>
-              </OverlayTrigger>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {
-            periodRows
-          }
-        </tbody>
-      </table>
+      <div className="metrics-table-wrapper">
+        <table className="table">
+          <thead className="thead-dark metrics-table-head">
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Period</th>
+              <th scope="col">
+                <span>Number of Tests </span>
+                <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">This is a count of all unique test cases (by phase, suite and test name). Click on the individual icons to see the list of tests.</Tooltip>}>
+                  <span>
+                    <i className="fas fa-info-circle" />
+                  </span>
+                </OverlayTrigger>
+              </th>
+              <th scope="col">Builds</th>
+              <th scope="col">Executions</th>
+              <th scope="col">Pass Rate</th>
+              <th scope="col">
+                <span>Total Duration </span>
+                <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">This is the total amount of time of all the tests combined (if tests were run in parallel, this will differ from the total build time)</Tooltip>}>
+                  <span>
+                    <i className="fas fa-info-circle" />
+                  </span>
+                </OverlayTrigger>
+              </th>
+            </tr>
+          </thead>
+          <tbody className="metrics-table-body">
+            {
+              periodRows
+            }
+          </tbody>
+        </table>
+      </div>
     );
   }
 }
