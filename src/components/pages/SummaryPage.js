@@ -75,7 +75,7 @@ class SummaryPage extends Component {
       startDate,
       endDate,
     } = this.state;
-    if (prevProps.currentTeam._id !== currentTeam._id) {
+    if (prevProps.currentTeam && currentTeam && prevProps.currentTeam._id !== currentTeam._id) {
       this.setState({ filteredEnvironments: [], filteredComponents: [] });
       this.getBuildsForTeam(currentTeam._id, 0, limit, startDate, endDate);
     } else if (prevStates.filteredEnvironments !== filteredEnvironments
@@ -185,13 +185,19 @@ class SummaryPage extends Component {
       environments,
       teams,
     } = this.props;
+
+    if (!currentTeam || !currentTeam._id) {
+      return null;
+    }
     if (!builds) {
       this.getBuildsForTeam(currentTeam._id, currentSkip, limit);
       // if no builds then don't display
       return (
-        <div>
-          <h1>{`Team: ${currentTeam.name}`}</h1>
-          <span>Retrieving builds</span>
+        <div className="alert alert-primary" role="alert">
+          <span>
+            <i className="fas fa-spinner fa-pulse fa-2x" />
+            <span>{` Retrieving builds for ${currentTeam.name}`}</span>
+          </span>
         </div>
       );
     }

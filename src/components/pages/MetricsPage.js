@@ -7,6 +7,8 @@ import { MetricRequests } from 'angles-javascript-client';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
+import Tabs from 'react-bootstrap/Tabs';
+import Tab from 'react-bootstrap/Tab';
 import MetricsResultChart from '../charts/MetricsResultChart';
 import TestPhasesChart from '../charts/TestPhasesChart';
 import DatePicker from '../elements/DatePicker';
@@ -38,20 +40,6 @@ class MetricsPage extends Component {
     this.retrieveMetrics();
   }
 
-  getMetrics = (teamId, componentId, fromDate, toDate, groupingId) => {
-    const { metrics } = this.state;
-    if (metrics && metrics !== {}) {
-      this.setState({ metrics: undefined });
-    }
-    this.metricRequests.getPhaseMetrics(teamId, componentId, fromDate, toDate, groupingId)
-      .then((returnedMetrics) => {
-        this.setState({ metrics: returnedMetrics });
-      })
-      .catch(() => {
-        this.setState({ metrics: {} });
-      });
-  }
-
   handleDatesChange = ({ startDate, endDate }) => {
     this.setState({ startDate, endDate });
   };
@@ -70,21 +58,12 @@ class MetricsPage extends Component {
     this.setState({ selectedComponent: event.target.value });
   }
 
-  retrieveMetrics = () => {
-    const {
-      endDate,
-      startDate,
-      groupingPeriod,
-      selectedComponent,
-      selectedTeam,
-    } = this.state;
-    if (endDate && startDate) {
-      if (selectedComponent === 'any') {
-        this.getMetrics(selectedTeam, undefined, startDate, endDate, groupingPeriod);
-      } else {
-        this.getMetrics(selectedTeam, selectedComponent, startDate, endDate, groupingPeriod);
-      }
-    }
+  handleSelect(value) {
+    if (['execution', 'platform'].includes(value)) this.setState({ key: value });
+  }
+
+  setTab = (key) => {
+    this.handleSelect(key);
   }
 
   onSubmit = () => {
@@ -117,6 +96,37 @@ class MetricsPage extends Component {
     return selectedTeam.components;
   }
 
+  getMetrics = (teamId, componentId, fromDate, toDate, groupingId) => {
+    const { metrics } = this.state;
+    if (metrics && metrics !== {}) {
+      this.setState({ metrics: undefined });
+    }
+    this.metricRequests.getPhaseMetrics(teamId, componentId, fromDate, toDate, groupingId)
+      .then((returnedMetrics) => {
+        this.setState({ metrics: returnedMetrics });
+      })
+      .catch(() => {
+        this.setState({ metrics: {} });
+      });
+  }
+
+  retrieveMetrics = () => {
+    const {
+      endDate,
+      startDate,
+      groupingPeriod,
+      selectedComponent,
+      selectedTeam,
+    } = this.state;
+    if (endDate && startDate) {
+      if (selectedComponent === 'any') {
+        this.getMetrics(selectedTeam, undefined, startDate, endDate, groupingPeriod);
+      } else {
+        this.getMetrics(selectedTeam, selectedComponent, startDate, endDate, groupingPeriod);
+      }
+    }
+  }
+
   render() {
     const {
       metrics,
@@ -125,6 +135,7 @@ class MetricsPage extends Component {
       groupingPeriod,
       selectedTeam,
       selectedComponent,
+      key,
     } = this.state;
     const { teams } = this.props;
 
@@ -184,29 +195,40 @@ class MetricsPage extends Component {
             </Form.Row>
           </Form>
         </div>
-        <div className="metrics-surround">
-          <div style={{ display: !metrics ? 'block' : 'none' }} className="alert alert-primary" role="alert">
-            <span>
-              <i className="fas fa-spinner fa-pulse fa-2x" />
-              <span> Retrieving metrics.</span>
-            </span>
-          </div>
-          <div style={{ display: (metrics && Object.keys(metrics).length === 0) ? 'block' : 'none' }} className="alert alert-danger" role="alert">
-            <span>Unable to retrieve metrics. Please refresh the page and try again.</span>
-          </div>
-          {
-           metrics && Object.keys(metrics).length > 0 ? (
-             <div style={{ display: (metrics && Object.keys(metrics).length > 0) ? 'block' : 'none' }}>
-               <div>
-                 <ExecutionMetricsSummary metrics={metrics} />
-               </div>
-               <div className="graphContainerParent">
-                 <MetricsResultChart metrics={metrics} />
-                 <TestPhasesChart metrics={metrics} />
-               </div>
-             </div>
-           ) : null
-          }
+        <div className="metrics-data-container">
+          <Tabs id="execution-metrics-tabs" activeKey={key} defaultActiveKey="execution" onSelect={(tabKey, evt) => this.setTab(tabKey, evt)}>
+            <Tab eventKey="execution" title="Execution Metrics">
+              <div className="metrics-surround">
+                <div style={{ display: !metrics ? 'block' : 'none' }} className="alert alert-primary" role="alert">
+                  <span>
+                    <i className="fas fa-spinner fa-pulse fa-2x" />
+                    <span> Retrieving metrics.</span>
+                  </span>
+                </div>
+                <div style={{ display: (metrics && Object.keys(metrics).length === 0) ? 'block' : 'none' }} className="alert alert-danger" role="alert">
+                  <span>Unable to retrieve metrics. Please refresh the page and try again.</span>
+                </div>
+                {
+                  metrics && Object.keys(metrics).length > 0 ? (
+                    <div style={{ display: (metrics && Object.keys(metrics).length > 0) ? 'block' : 'none' }}>
+                      <div className="metrics-table-div">
+                        <ExecutionMetricsSummary metrics={metrics} />
+                      </div>
+                      <div className="graphContainerParent">
+                        <MetricsResultChart metrics={metrics} />
+                        <TestPhasesChart metrics={metrics} />
+                      </div>
+                    </div>
+                  ) : null
+                }
+              </div>
+            </Tab>
+            <Tab eventKey="platform" title="Platform Metrics">
+              <div className="metrics-surround">
+                <span>More to come soon (watch this space).</span>
+              </div>
+            </Tab>
+          </Tabs>
         </div>
       </div>
     );

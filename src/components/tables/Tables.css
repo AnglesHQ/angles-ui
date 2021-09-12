@@ -307,3 +307,14 @@ pre {
     white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
     word-wrap: break-word;
 }
+
+.metrics-table-wrapper {
+    overflow-y: scroll;
+    max-height: 350px;
+    border: solid 1px black;
+}
+
+.metrics-test-table-wrapper {
+    overflow-y: scroll;
+    max-height: 500px;
+}

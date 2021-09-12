@@ -128,6 +128,7 @@ class BuildsTable extends Component {
                 </OverlayTrigger>
               </th>
               <th scope="col">Name</th>
+              <th scope="col">Phase</th>
               <th scope="col">
                 <MultiSelect
                   className="build-table-filter"
@@ -175,6 +176,13 @@ class BuildsTable extends Component {
                   }
                 </td>
                 <td>{build.name}</td>
+                <td>
+                  {
+                    build.phase ? (
+                      build.phase.name
+                    ) : 'none'
+                  }
+                </td>
                 <td>{ this.getComponentName(build).name }</td>
                 <td>{ build.environment.name }</td>
                 <td>

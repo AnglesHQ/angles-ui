@@ -32,17 +32,19 @@ class MetricsTestsTable extends Component {
     }
 
     return (
-      <Table className="table-test-details" size="sm">
-        <thead className="thead-dark">
-          <tr>
-            <th scope="col">Phase</th>
-            <th scope="col">Test</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tableRows}
-        </tbody>
-      </Table>
+      <div className="metrics-test-table-wrapper">
+        <Table className="table-test-details" size="sm">
+          <thead className="thead-dark">
+            <tr>
+              <th scope="col">Phase</th>
+              <th scope="col">Test</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tableRows}
+          </tbody>
+        </Table>
+      </div>
     );
   }
 }

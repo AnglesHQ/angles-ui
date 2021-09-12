@@ -52,6 +52,9 @@ class App extends Component {
         if (!currentTeam || Cookies.get('teamId') !== currentTeam._id) {
           this.changeCurrentTeam(Cookies.get('teamId'));
         }
+      } else if (teams.length > 0) {
+        // set team to be the first team
+        this.changeCurrentTeam(teams[0]._id);
       }
     }
   }
@@ -106,8 +109,15 @@ class App extends Component {
               exact
               path="/"
               render={() => {
-                if (currentTeam === undefined || !currentTeam._id) {
-                  return <div>Please select a team</div>;
+                if (teams.length === 0) {
+                  return (
+                    <div className="alert alert-primary" role="alert">
+                      <span>
+                        <i className="fas fa-spinner fa-pulse fa-2x" />
+                        <span>Retrieving teams</span>
+                      </span>
+                    </div>
+                  );
                 }
                 return (
                   <SummaryPage
