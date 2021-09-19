@@ -29,9 +29,9 @@ class AboutPage extends Component {
         </div>
         <br />
         <div>
-          For more information about Angles go to our Github project:
+          For more information about Angles go to page:
           <br />
-          <a href="https://github.com/AnglesHQ/angles" rel="noreferrer" target="_blank">https://github.com/AnglesHQ/angles</a>
+          <a href="https://angleshq.github.io/" rel="noreferrer" target="_blank">https://angleshq.github.io/</a>
         </div>
       </div>
     );

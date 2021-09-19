@@ -3,33 +3,31 @@ import axios from 'axios';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
-import Table from 'react-bootstrap/Table';
 import queryString from 'query-string';
 import { withRouter } from 'react-router-dom';
-import { encode as btoa } from 'base-64';
 import { ScreenshotRequests } from 'angles-javascript-client';
-import ImageCarousel from '../elements/ImageCarousel';
-import ScreenshotDetailsTable from '../tables/ScreenshotDetailsTable';
 import 'react-multi-carousel/lib/styles.css';
 import './Default.css';
+import ScreenshotView from './ScreenshotView';
 
 class ScreenshotFinderPage extends Component {
   constructor(props) {
     super(props);
     const { location } = this.props;
+    const query = queryString.parse(location.search);
     this.state = {
       groupedScreenshots: undefined,
       filteredScreenshots: undefined,
       platforms: undefined,
       groupType: undefined,
       // selectedScreenshot: undefined,
-      currentScreenshotDetails: undefined,
-      query: queryString.parse(location.search),
+      // currentScreenshotDetails: undefined,
+      selectedTab: query.selectedTabe || 'image',
       view: '',
       tag: '',
       numberOfDays: 14,
     };
-    const { query, numberOfDays } = this.state;
+    const { numberOfDays } = this.state;
     this.screenshotRequests = new ScreenshotRequests(axios);
     if (query.view) {
       this.getGroupedScreenshotByPlatform(query.view,
@@ -48,6 +46,7 @@ class ScreenshotFinderPage extends Component {
         numberOfDays,
         groupType: 'view',
         groupedScreenshots,
+        filteredScreenshots: groupedScreenshots,
       });
     })
 
@@ -73,33 +72,6 @@ class ScreenshotFinderPage extends Component {
       });
     })
 
-  getScreenshot = (screenshotId) => this.screenshotRequests.getScreenshotImage(screenshotId)
-    .then((screenshot) => {
-      const base64 = btoa(
-        new Uint8Array(screenshot).reduce(
-          (data, byte) => data + String.fromCharCode(byte),
-          '',
-        ),
-      );
-      this.setState({ currentScreenshot: `data:;base64,${base64}` });
-    })
-
-  getScreenshotDetails = (screenshotId) => {
-    const { groupedScreenshots } = this.state;
-    const filteredScreenshots = groupedScreenshots
-      .filter((screenshot) => screenshot._id === screenshotId);
-    if (filteredScreenshots.length > 0) {
-      this.setState({ currentScreenshotDetails: filteredScreenshots[0] });
-    } else {
-      this.setState({ currentScreenshotDetails: undefined });
-    }
-  }
-
-  loadScreenshot = (screenshotId) => {
-    this.getScreenshotDetails(screenshotId);
-    this.getScreenshot(screenshotId);
-  }
-
   handleViewChange = (event) => {
     this.setState({ view: event.target.value, tag: '' });
   }
@@ -115,7 +87,7 @@ class ScreenshotFinderPage extends Component {
   submitScreenshotSearch = (event) => {
     const { view, tag, numberOfDays } = this.state;
     event.preventDefault();
-    this.setState({ currentScreenshotDetails: undefined });
+    this.setState({ filteredScreenshots: undefined });
     if (view !== '') {
       this.getGroupedScreenshotByPlatform(view, numberOfDays);
     } else if (tag !== '') {
@@ -127,7 +99,7 @@ class ScreenshotFinderPage extends Component {
     const { groupedScreenshots } = this.state;
     const filteredScreenshots = groupedScreenshots
       .filter((screenshot) => screenshot.platformId === event.target.value);
-    this.setState({ filteredScreenshots, currentScreenshotDetails: undefined });
+    this.setState({ filteredScreenshots });
   }
 
   render() {
@@ -137,10 +109,8 @@ class ScreenshotFinderPage extends Component {
       numberOfDays,
       groupType,
       platforms,
-      groupedScreenshots,
       filteredScreenshots,
-      currentScreenshotDetails,
-      currentScreenshot,
+      selectedTab,
     } = this.state;
     return (
       <div>
@@ -191,42 +161,23 @@ class ScreenshotFinderPage extends Component {
             </Form.Row>
           </Form>
         </div>
-        {
-          groupedScreenshots ? (
-            <div>
-              <br />
-              <ImageCarousel
-                screenshots={groupType === 'tag' ? (filteredScreenshots) : groupedScreenshots}
-                selectedScreenshotDetails={currentScreenshotDetails}
-                loadScreenshot={this.loadScreenshot}
+        <div className="screenshot-viewer-surround">
+          {
+            filteredScreenshots && filteredScreenshots.length > 0 ? (
+              <ScreenshotView
+                buildScreenshots={filteredScreenshots}
+                selectedScreenshotId={filteredScreenshots[0]._id}
+                selectedTab={selectedTab}
               />
-              {
-                currentScreenshotDetails ? (
-                  <Table>
-                    <tbody>
-                      <tr>
-                        <td>
-                          <div>
-                            <ScreenshotDetailsTable
-                              currentScreenshotDetails={currentScreenshotDetails}
-                            />
-                          </div>
-                        </td>
-                        <td>
-                          {
-                            currentScreenshot ? (
-                              <img className="screenshot" src={currentScreenshot} alt="Screenshot" />
-                            ) : null
-                          }
-                        </td>
-                      </tr>
-                    </tbody>
-                  </Table>
-                ) : 'Select one of the images to display details.'
-              }
-            </div>
-          ) : null
-        }
+            ) : (
+              <div className="alert alert-primary" role="alert">
+                <span>
+                  <span> No images to display.</span>
+                </span>
+              </div>
+            )
+          }
+        </div>
       </div>
     );
   }

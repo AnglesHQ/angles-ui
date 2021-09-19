@@ -183,6 +183,10 @@
   border: 1px solid grey;
 }
 
+.screenshot-viewer-surround {
+  padding-top: 20px;
+}
+
 .metrics-form-container {
   padding-left: 15px;
   padding-right: 15px;
