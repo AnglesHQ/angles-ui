@@ -105,7 +105,6 @@ class BuildsTable extends Component {
       selectedEnvironments,
     } = this.state;
     const {
-      history,
       builds,
       toggleSelectedBuild,
       currentSkip,
@@ -126,6 +125,12 @@ class BuildsTable extends Component {
                 <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">By setting the &quot;keep&quot; flag the build will not be removed by the nightly clean-up.</Tooltip>}>
                   <div><i className="fas fa-lock" /></div>
                 </OverlayTrigger>
+              </th>
+              <th scope="col">
+                <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">Click on the links below to go to the individual build reports.</Tooltip>}>
+                  <div><i className="fas fa-link" /></div>
+                </OverlayTrigger>
+
               </th>
               <th scope="col">Name</th>
               <th scope="col">Phase</th>
@@ -161,9 +166,9 @@ class BuildsTable extends Component {
           </thead>
           <tbody>
             { builds.map((build, index) => (
-              <tr key={build._id} onClick={() => toggleSelectedBuild(build)} onDoubleClick={() => history.push(`/build/?buildId=${build._id}`)}>
+              <tr key={build._id}>
                 <th scope="row">{ index + currentSkip + 1 }</th>
-                <td>
+                <td onClick={() => toggleSelectedBuild(build)}>
                   <div key={this.isRowSelected(build)}>
                     <i className={this.isRowSelected(build) ? ('far fa-check-square') : 'far fa-square'} />
                   </div>
@@ -174,6 +179,13 @@ class BuildsTable extends Component {
                       <div><i className="fas fa-lock" /></div>
                     ) : null
                   }
+                </td>
+                <td>
+                  <div className="report-link">
+                    <a href={`/build/?buildId=${build._id}`} target="_self">
+                      <i className="fas fa-link" />
+                    </a>
+                  </div>
                 </td>
                 <td>{build.name}</td>
                 <td>

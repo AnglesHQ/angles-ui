@@ -11,9 +11,12 @@ import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import MetricsResultChart from '../charts/MetricsResultChart';
 import TestPhasesChart from '../charts/TestPhasesChart';
+import PlatformDistributionChart from '../charts/PlatformDistributionChart';
 import DatePicker from '../elements/DatePicker';
 import ExecutionMetricsSummary from '../tables/ExecutionMetricsSummary';
+import PlatformDistributionPieChart from '../charts/PlatformDistributionPieChart';
 import './Default.css';
+import PlatformMetricsSummary from '../tables/PlatformMetricsSummary';
 
 class MetricsPage extends Component {
   constructor(props) {
@@ -225,7 +228,28 @@ class MetricsPage extends Component {
             </Tab>
             <Tab eventKey="platform" title="Platform Metrics">
               <div className="metrics-surround">
-                <span>More to come soon (watch this space).</span>
+                <div style={{ display: !metrics ? 'block' : 'none' }} className="alert alert-primary" role="alert">
+                  <span>
+                    <i className="fas fa-spinner fa-pulse fa-2x" />
+                    <span> Retrieving metrics.</span>
+                  </span>
+                </div>
+                <div style={{ display: (metrics && Object.keys(metrics).length === 0) ? 'block' : 'none' }} className="alert alert-danger" role="alert">
+                  <span>Unable to retrieve metrics. Please refresh the page and try again.</span>
+                </div>
+                {
+                  metrics && Object.keys(metrics).length > 0 ? (
+                    <div style={{ display: (metrics && Object.keys(metrics).length > 0) ? 'block' : 'none' }}>
+                      <div className="metrics-table-div">
+                        <PlatformMetricsSummary metrics={metrics} />
+                      </div>
+                      <div className="graphContainerParent">
+                        <PlatformDistributionPieChart metrics={metrics} />
+                        <PlatformDistributionChart metrics={metrics} />
+                      </div>
+                    </div>
+                  ) : null
+                }
               </div>
             </Tab>
           </Tabs>

@@ -4,7 +4,7 @@ import './Charts.css';
 import { withRouter } from 'react-router-dom';
 import { getPeriodLabel, getRandomColor } from '../../utility/ChartUtilities';
 
-class TestPhasesChart extends Component {
+class PlatformDistributionChart extends Component {
     testPhasesChartRef = React.createRef();
 
     barchart;
@@ -44,16 +44,29 @@ class TestPhasesChart extends Component {
         graphData.labels = [];
         graphData.datasets = [];
         if (Array.isArray(metrics.periods)) {
-          const uniquePhases = new Set();
+          const platformNames = new Set();
+          const platformMetrics = {};
           metrics.periods.forEach((period) => {
+            platformMetrics[period.groupId] = {};
             period.phases.forEach((phase) => {
-              uniquePhases.add(phase.name);
+              phase.executions.forEach((execution) => {
+                if (execution.platforms && execution.platforms.length > 0) {
+                  execution.platforms.forEach((platform) => {
+                    // add platform to set to ensure we have a unique platform names
+                    platformNames.add(platform.platformName);
+                    if (!platformMetrics[period.groupId][platform.platformName]) {
+                      platformMetrics[period.groupId][platform.platformName] = 0;
+                    }
+                    platformMetrics[period.groupId][platform.platformName] += 1;
+                  });
+                }
+              });
             });
           });
-          const phaseArray = Array.from(uniquePhases);
-          phaseArray.forEach((phaseName) => {
+          const platformArray = Array.from(platformNames);
+          platformArray.forEach((platformName) => {
             graphData.datasets.push({
-              label: phaseName,
+              label: platformName,
               data: [],
               backgroundColor: getRandomColor(),
             });
@@ -61,13 +74,12 @@ class TestPhasesChart extends Component {
           metrics.periods.map((period) => {
             graphData.labels.push(getPeriodLabel(period, metrics.groupingPeriod));
             // unique test cases per phase.
-            phaseArray.forEach((phaseName) => {
-              const currentPhase = period.phases.find((phase) => phase.name === phaseName);
-              if (currentPhase) {
-                graphData.datasets[phaseArray.indexOf(phaseName)]
-                  .data.push(currentPhase.result.TOTAL);
+            platformArray.forEach((platformName) => {
+              if (platformMetrics[period.groupId][platformName]) {
+                graphData.datasets[platformArray.indexOf(platformName)]
+                  .data.push(platformMetrics[period.groupId][platformName]);
               } else {
-                graphData.datasets[phaseArray.indexOf(phaseName)].data.push(0);
+                graphData.datasets[platformArray.indexOf(platformName)].data.push(0);
               }
             });
             return graphData;
@@ -85,7 +97,7 @@ class TestPhasesChart extends Component {
         scales: {
           xAxes: [
             {
-              stacked: false,
+              stacked: true,
               ticks: {
                 reverse: false,
               },
@@ -118,4 +130,4 @@ class TestPhasesChart extends Component {
     }
 }
 
-export default withRouter(TestPhasesChart);
+export default withRouter(PlatformDistributionChart);

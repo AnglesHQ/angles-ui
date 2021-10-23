@@ -318,3 +318,7 @@ pre {
     overflow-y: scroll;
     max-height: 500px;
 }
+
+.report-link {
+    color: #d39e00;
+}

@@ -27,6 +27,8 @@ class App extends Component {
       teams: [],
       environments: [],
       currentTeam: { name: 'No team selected' },
+      retrievingTeams: false,
+      teamsError: undefined,
     };
     this.teamRequests = new TeamRequests(axios);
     this.environmentRequests = new EnvironmentRequests(axios);
@@ -72,6 +74,7 @@ class App extends Component {
   }
 
   retrieveTeamDetails = () => {
+    this.setState({ retrievingTeams: true });
     this.teamRequests.getTeams()
       .then((teams) => {
         teams.sort((a, b) => {
@@ -79,9 +82,11 @@ class App extends Component {
           if (a.name > b.name) { return 1; }
           return 0;
         });
-        this.setState({ teams });
+        this.setState({ teams, retrievingTeams: false });
+      })
+      .catch((teamsError) => {
+        this.setState({ teamsError, retrievingTeams: false });
       });
-    // TODO: handle catch
   }
 
   retrieveEnvironmentDetails = () => {
@@ -94,11 +99,17 @@ class App extends Component {
         });
         this.setState({ environments });
       });
-    // TODO: hanlde catch.
+    // TODO: handle catch.
   }
 
   render() {
-    const { teams, currentTeam, environments } = this.state;
+    const {
+      teams,
+      retrievingTeams,
+      currentTeam,
+      environments,
+      teamsError,
+    } = this.state;
     const { history } = this.props;
     return (
       <div id="outer-container">
@@ -109,9 +120,21 @@ class App extends Component {
               exact
               path="/"
               render={() => {
-                if (teams.length === 0) {
+                if (teamsError) {
                   return (
-                    <div className="alert alert-primary" role="alert">
+                    <div key="retrieving-teams-error" className="alert alert-danger" role="alert">
+                      <span>
+                        <i className="fas fa-exclamation" />
+                        <span className="teams-error-message">
+                          {`Something went wrong [${teamsError}]`}
+                        </span>
+                      </span>
+                    </div>
+                  );
+                }
+                if (retrievingTeams) {
+                  return (
+                    <div key="retrieving-teams" className="alert alert-primary" role="alert">
                       <span>
                         <i className="fas fa-spinner fa-pulse fa-2x" />
                         <span>Retrieving teams</span>

@@ -18,6 +18,7 @@ class ScreenshotFinderPage extends Component {
     this.state = {
       groupedScreenshots: undefined,
       filteredScreenshots: undefined,
+      retrievingScreenshots: false,
       platforms: undefined,
       groupType: undefined,
       // selectedScreenshot: undefined,
@@ -38,39 +39,52 @@ class ScreenshotFinderPage extends Component {
     }
   }
 
-  getGroupedScreenshotByPlatform = (view, numberOfDays) => this.screenshotRequests
-    .getScreenshotsGroupedByPlatform(view, numberOfDays)
-    .then((groupedScreenshots) => {
-      this.setState({
-        view,
-        numberOfDays,
-        groupType: 'view',
-        groupedScreenshots,
-        filteredScreenshots: groupedScreenshots,
+  getGroupedScreenshotByPlatform = (view, numberOfDays) => {
+    this.setState({ retrievingScreenshots: true, filteredScreenshots: undefined });
+    this.screenshotRequests
+      .getScreenshotsGroupedByPlatform(view, numberOfDays)
+      .then((groupedScreenshots) => {
+        this.setState({
+          view,
+          numberOfDays,
+          groupType: 'view',
+          groupedScreenshots,
+          filteredScreenshots: groupedScreenshots,
+          retrievingScreenshots: false,
+        });
+      })
+      .catch(() => {
+        this.setState({ retrievingScreenshots: false });
       });
-    })
+  }
 
-  getGroupedScreenshotByTag = (tag, numberOfDays) => this.screenshotRequests
-    .getScreenshotsGroupedByTag(tag, numberOfDays)
-    .then((groupedScreenshots) => {
-      const uniquePlatforms = [];
-      groupedScreenshots.forEach((screenshot) => {
-        if (!uniquePlatforms.includes(screenshot.platformId)) {
-          uniquePlatforms.push(screenshot.platformId);
-        }
+  getGroupedScreenshotByTag = (tag, numberOfDays) => {
+    this.setState({ retrievingScreenshots: true, filteredScreenshots: undefined });
+    this.screenshotRequests.getScreenshotsGroupedByTag(tag, numberOfDays)
+      .then((groupedScreenshots) => {
+        const uniquePlatforms = [];
+        groupedScreenshots.forEach((screenshot) => {
+          if (!uniquePlatforms.includes(screenshot.platformId)) {
+            uniquePlatforms.push(screenshot.platformId);
+          }
+        });
+        uniquePlatforms.sort();
+        const filteredScreenshots = groupedScreenshots
+          .filter((screenshot) => screenshot.platformId === uniquePlatforms[0]);
+        this.setState({
+          tag,
+          numberOfDays,
+          groupType: 'tag',
+          groupedScreenshots,
+          filteredScreenshots,
+          retrievingScreenshots: false,
+          platforms: uniquePlatforms,
+        });
+      })
+      .catch(() => {
+        this.setState({ retrievingScreenshots: false });
       });
-      uniquePlatforms.sort();
-      const filteredScreenshots = groupedScreenshots
-        .filter((screenshot) => screenshot.platformId === uniquePlatforms[0]);
-      this.setState({
-        tag,
-        numberOfDays,
-        groupType: 'tag',
-        groupedScreenshots,
-        filteredScreenshots,
-        platforms: uniquePlatforms,
-      });
-    })
+  }
 
   handleViewChange = (event) => {
     this.setState({ view: event.target.value, tag: '' });
@@ -110,6 +124,7 @@ class ScreenshotFinderPage extends Component {
       groupType,
       platforms,
       filteredScreenshots,
+      retrievingScreenshots,
       selectedTab,
     } = this.state;
     return (
@@ -142,7 +157,7 @@ class ScreenshotFinderPage extends Component {
                   <option key="5" value="90">3 Months</option>
                   <option key="6" value="180">6 Months</option>
                 </Form.Control>
-                <Button variant="primary" type="submit" className="search-button">Search Screenshots</Button>
+                <Button disabled={view === '' && tag === ''} variant="primary" type="submit" className="search-button">Search Screenshots</Button>
               </Form.Group>
               <Form.Group as={Col} className="tag-form-group tag-form-group-platform">
                 {
@@ -163,19 +178,29 @@ class ScreenshotFinderPage extends Component {
         </div>
         <div className="screenshot-viewer-surround">
           {
-            filteredScreenshots && filteredScreenshots.length > 0 ? (
-              <ScreenshotView
-                buildScreenshots={filteredScreenshots}
-                selectedScreenshotId={filteredScreenshots[0]._id}
-                selectedTab={selectedTab}
-              />
-            ) : (
+            retrievingScreenshots ? (
               <div className="alert alert-primary" role="alert">
                 <span>
-                  <span> No images to display.</span>
+                  <span> Retrieving images.</span>
                 </span>
               </div>
-            )
+            ) : null
+          }
+          {
+            retrievingScreenshots === false && filteredScreenshots
+              && filteredScreenshots.length > 0 ? (
+                <ScreenshotView
+                  buildScreenshots={filteredScreenshots}
+                  selectedScreenshotId={filteredScreenshots[0]._id}
+                  selectedTab={selectedTab}
+                />
+              ) : (
+                <div className="alert alert-primary" role="alert">
+                  <span>
+                    <span>No images to display.</span>
+                  </span>
+                </div>
+              )
           }
         </div>
       </div>

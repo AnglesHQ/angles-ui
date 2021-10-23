@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import Chart from 'chart.js';
 import './Charts.css';
-import moment from 'moment';
 import { withRouter } from 'react-router-dom';
+import { getPeriodLabel } from '../../utility/ChartUtilities';
 
 class TestPhasesChart extends Component {
     resultMetricsChartRef = React.createRef();
@@ -49,15 +49,7 @@ class TestPhasesChart extends Component {
         graphData.datasets.push({ label: 'SKIPPPED', data: [], backgroundColor: '#ffd500' });
         if (Array.isArray(metrics.periods)) {
           metrics.periods.map((period) => {
-            if (metrics.groupingPeriod === 'month') {
-              graphData.labels.push(`${moment.utc(moment(period.start)).format('MMMM (YYYY)')}`);
-            } else if (metrics.groupingPeriod === 'year') {
-              graphData.labels.push(`${moment.utc(moment(period.start)).format('YYYY')}`);
-            } else if (metrics.groupingPeriod === 'day' || metrics.groupingPeriod === 1) {
-              graphData.labels.push(`${moment.utc(moment(period.start)).format('DD-MM-YYYY')}`);
-            } else {
-              graphData.labels.push(`${moment.utc(moment(period.start)).format('DD-MM-YYYY')} - ${moment.utc(moment(period.end)).format('DD-MM-YYYY')}`);
-            }
+            graphData.labels.push(getPeriodLabel(period, metrics.groupingPeriod));
             if (period.result) {
               graphData.datasets[0].data.push(period.result.PASS);
               graphData.datasets[1].data.push(period.result.FAIL);
