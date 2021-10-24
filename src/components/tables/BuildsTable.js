@@ -4,7 +4,9 @@ import OverlayTrigger from 'react-bootstrap//OverlayTrigger';
 import Tooltip from 'react-bootstrap//Tooltip';
 import { withRouter } from 'react-router-dom';
 import MultiSelect from 'react-multi-select-component';
+import Popover from 'react-bootstrap/Popover';
 import { getDuration } from '../../utility/TimeUtilities';
+import ArtifactsDetailsTable from './ArtifactsDetailsTable';
 
 class BuildsTable extends Component {
   constructor(props) {
@@ -110,6 +112,85 @@ class BuildsTable extends Component {
       currentSkip,
     } = this.props;
 
+    const buildRows = [];
+    let count = 0;
+    builds.forEach((build) => {
+      count += 1;
+      const popover = (
+        <Popover id="popover-basic">
+          <Popover.Title as="h3">
+            <b>Artifacts</b>
+          </Popover.Title>
+          <Popover.Content>
+            <ArtifactsDetailsTable artifacts={build.artifacts} />
+          </Popover.Content>
+        </Popover>
+      );
+      buildRows.push(
+        <tr key={build._id}>
+          <th scope="row">{currentSkip + count}</th>
+          <td onClick={() => toggleSelectedBuild(build)}>
+            <div key={this.isRowSelected(build)}>
+              <i className={this.isRowSelected(build) ? ('far fa-check-square') : 'far fa-square'} />
+            </div>
+          </td>
+          <td>
+            {
+              build.keep ? (
+                <div><i className="fas fa-lock" /></div>
+              ) : null
+            }
+          </td>
+          <td>
+            <div className="report-link">
+              <a href={`/build/?buildId=${build._id}`} target="_self">
+                <i className="fas fa-external-link-alt" />
+              </a>
+            </div>
+          </td>
+          <td>
+            <div>
+              <OverlayTrigger trigger="click" rootClose placement="right" overlay={popover}>
+                <span className="matrix-info-icon fa-stack fa-5x has-badge" data-count={build.artifacts.length}>
+                  <i className="fa fa-circle fa-stack-2x" />
+                  <i className="fas fa-clipboard-list fa-stack-1x fa-inverse" />
+                </span>
+              </OverlayTrigger>
+            </div>
+          </td>
+          <td>{build.name}</td>
+          <td>
+            {
+              build.phase ? (
+                build.phase.name
+              ) : 'none'
+            }
+          </td>
+          <td>{this.getComponentName(build).name}</td>
+          <td>{build.environment.name}</td>
+          <td>
+            {build.start ? (
+              <Moment format="DD-MM-YYYY HH:mm:ss">
+                {build.start}
+              </Moment>
+            ) : 'N/A'}
+          </td>
+          <td>
+            {build.end ? (
+              <Moment format="DD-MM-YYYY HH:mm:ss">
+                {build.end}
+              </Moment>
+            ) : 'N/A'}
+          </td>
+          <td>{getDuration(build)}</td>
+          <td>{build.result.PASS}</td>
+          <td>{build.result.FAIL}</td>
+          <td>{build.result.ERROR}</td>
+          <td>{build.result.SKIPPED}</td>
+        </tr>,
+      );
+    });
+
     return (
       <div>
         <table className="table table-hover summary-table">
@@ -128,9 +209,13 @@ class BuildsTable extends Component {
               </th>
               <th scope="col">
                 <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">Click on the links below to go to the individual build reports.</Tooltip>}>
-                  <div><i className="fas fa-link" /></div>
+                  <div><i className="fas fa-external-link-alt" /></div>
                 </OverlayTrigger>
-
+              </th>
+              <th scope="col">
+                <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">Click on the clipboard icons below to see the build artifacts.</Tooltip>}>
+                  <div><i className="fas fa-clipboard-list" /></div>
+                </OverlayTrigger>
               </th>
               <th scope="col">Name</th>
               <th scope="col">Phase</th>
@@ -165,59 +250,7 @@ class BuildsTable extends Component {
             </tr>
           </thead>
           <tbody>
-            { builds.map((build, index) => (
-              <tr key={build._id}>
-                <th scope="row">{ index + currentSkip + 1 }</th>
-                <td onClick={() => toggleSelectedBuild(build)}>
-                  <div key={this.isRowSelected(build)}>
-                    <i className={this.isRowSelected(build) ? ('far fa-check-square') : 'far fa-square'} />
-                  </div>
-                </td>
-                <td>
-                  {
-                    build.keep ? (
-                      <div><i className="fas fa-lock" /></div>
-                    ) : null
-                  }
-                </td>
-                <td>
-                  <div className="report-link">
-                    <a href={`/build/?buildId=${build._id}`} target="_self">
-                      <i className="fas fa-link" />
-                    </a>
-                  </div>
-                </td>
-                <td>{build.name}</td>
-                <td>
-                  {
-                    build.phase ? (
-                      build.phase.name
-                    ) : 'none'
-                  }
-                </td>
-                <td>{ this.getComponentName(build).name }</td>
-                <td>{ build.environment.name }</td>
-                <td>
-                  { build.start ? (
-                    <Moment format="DD-MM-YYYY HH:mm:ss">
-                      {build.start}
-                    </Moment>
-                  ) : 'N/A' }
-                </td>
-                <td>
-                  { build.end ? (
-                    <Moment format="DD-MM-YYYY HH:mm:ss">
-                      {build.end}
-                    </Moment>
-                  ) : 'N/A' }
-                </td>
-                <td>{getDuration(build)}</td>
-                <td>{build.result.PASS}</td>
-                <td>{build.result.FAIL}</td>
-                <td>{build.result.ERROR}</td>
-                <td>{build.result.SKIPPED}</td>
-              </tr>
-            ))}
+            {buildRows}
           </tbody>
         </table>
       </div>

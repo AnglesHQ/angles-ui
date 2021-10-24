@@ -37,7 +37,12 @@ class ScreenshotView extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    const { buildScreenshots } = this.props;
     const { currentBaseLineDetails, currentScreenshotDetails } = this.state;
+    if (prevProps.buildScreenshots !== buildScreenshots) {
+      this.setState({ buildScreenshots });
+      this.loadScreenshot(buildScreenshots[0]._id);
+    }
     if (prevState.currentBaseLineDetails !== currentBaseLineDetails) {
       // if base line details have changed, load the new image
       if (currentBaseLineDetails && currentBaseLineDetails.screenshot) {

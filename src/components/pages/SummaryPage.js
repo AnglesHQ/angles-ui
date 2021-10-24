@@ -37,13 +37,63 @@ class SummaryPage extends Component {
     this.buildRequests = new BuildRequests(axios);
   }
 
-  getBuildsForTeam = (teamId, skip, limit) => {
+  componentDidMount() {
+    console.log('component did mount');
+    const { currentTeam } = this.props;
+    const {
+      limit,
+      startDate,
+      endDate,
+    } = this.state;
+    if (currentTeam && currentTeam._id) {
+      this.getBuildsForTeam(currentTeam._id, 0, limit, startDate, endDate);
+    }
+  }
+
+  componentDidUpdate = (prevProps, prevStates) => {
+    console.log('component did update');
+    // if team has changed grab new build details.
+    const { currentTeam } = this.props;
+    const {
+      limit,
+      filteredEnvironments,
+      filteredComponents,
+      startDate,
+      endDate,
+    } = this.state;
+    const hasTeamChanged = this.hasTeamSelectionChanged(prevProps);
+    const selectionChanged = this.haveAnyFiltersChanged(prevStates);
+    console.log(`Team Changed [${hasTeamChanged}], Filters Changed [${selectionChanged}]`);
+    if (hasTeamChanged || selectionChanged) {
+      // if someone selects a new team or there was no previous team
+      this.getBuildsForTeam(currentTeam._id, 0, limit,
+        filteredEnvironments, filteredComponents, startDate, endDate);
+    }
+  }
+
+  hasTeamSelectionChanged = (prevProps) => {
+    const { currentTeam } = this.props;
+    return (
+      (prevProps.currentTeam === undefined && currentTeam !== undefined)
+      || (prevProps.currentTeam && currentTeam && prevProps.currentTeam._id !== currentTeam._id));
+  }
+
+  haveAnyFiltersChanged = (prevStates) => {
     const {
       filteredEnvironments,
       filteredComponents,
       startDate,
       endDate,
     } = this.state;
+    return (prevStates.filteredEnvironments !== filteredEnvironments
+      || prevStates.filteredComponents !== filteredComponents
+      || prevStates.startDate !== startDate
+      || prevStates.endDate !== endDate);
+  }
+
+  getBuildsForTeam = (teamId, skip, limit, filteredEnvironments, filteredComponents,
+    startDate, endDate) => {
+    console.log(`Retrieving builds for team ${teamId}`);
     this.buildRequests.getBuildsWithDateFilters(teamId, filteredEnvironments,
       filteredComponents, skip, limit, startDate, endDate)
       .then(({ builds, count: buildCount }) => this.setState({
@@ -63,27 +113,6 @@ class SummaryPage extends Component {
     const { currentSkip, limit } = this.state;
     const { currentTeam } = this.props;
     this.getBuildsForTeam(currentTeam._id, (currentSkip - limit), limit);
-  }
-
-  componentDidUpdate = (prevProps, prevStates) => {
-    // if team has changed grab new build details.
-    const { currentTeam } = this.props;
-    const {
-      limit,
-      filteredEnvironments,
-      filteredComponents,
-      startDate,
-      endDate,
-    } = this.state;
-    if (prevProps.currentTeam && currentTeam && prevProps.currentTeam._id !== currentTeam._id) {
-      this.setState({ filteredEnvironments: [], filteredComponents: [] });
-      this.getBuildsForTeam(currentTeam._id, 0, limit, startDate, endDate);
-    } else if (prevStates.filteredEnvironments !== filteredEnvironments
-        || prevStates.filteredComponents !== filteredComponents
-        || prevStates.startDate !== startDate
-        || prevStates.endDate !== endDate) {
-      this.getBuildsForTeam(currentTeam._id, 0, limit, startDate, endDate);
-    }
   }
 
   toggleSelectedBuild = (build) => {
@@ -176,7 +205,6 @@ class SummaryPage extends Component {
       buildCount,
       selectedBuilds,
       currentSkip,
-      limit,
       startDate,
       endDate,
     } = this.state;
@@ -190,7 +218,6 @@ class SummaryPage extends Component {
       return null;
     }
     if (!builds) {
-      this.getBuildsForTeam(currentTeam._id, currentSkip, limit);
       // if no builds then don't display
       return (
         <div className="alert alert-primary" role="alert">

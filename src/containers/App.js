@@ -26,7 +26,7 @@ class App extends Component {
     this.state = {
       teams: [],
       environments: [],
-      currentTeam: { name: 'No team selected' },
+      currentTeam: undefined,
       retrievingTeams: false,
       teamsError: undefined,
     };

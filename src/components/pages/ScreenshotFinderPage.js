@@ -181,10 +181,21 @@ class ScreenshotFinderPage extends Component {
             retrievingScreenshots ? (
               <div className="alert alert-primary" role="alert">
                 <span>
-                  <span> Retrieving images.</span>
+                  <i className="fas fa-spinner fa-pulse fa-2x" />
+                  <span> Retrieving screenshot details.</span>
                 </span>
               </div>
             ) : null
+          }
+          {
+            retrievingScreenshots === false
+              && (filteredScreenshots === undefined || filteredScreenshots.length === 0) ? (
+                <div className="alert alert-primary" role="alert">
+                  <span>
+                    <span>No images to display.</span>
+                  </span>
+                </div>
+              ) : null
           }
           {
             retrievingScreenshots === false && filteredScreenshots
@@ -194,13 +205,7 @@ class ScreenshotFinderPage extends Component {
                   selectedScreenshotId={filteredScreenshots[0]._id}
                   selectedTab={selectedTab}
                 />
-              ) : (
-                <div className="alert alert-primary" role="alert">
-                  <span>
-                    <span>No images to display.</span>
-                  </span>
-                </div>
-              )
+              ) : null
           }
         </div>
       </div>
