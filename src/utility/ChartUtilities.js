@@ -1,12 +1,16 @@
 import moment from 'moment';
 
-export const getRandomColor = () => {
+export const getRandomColor = (arraySize) => {
   const letters = '0123456789ABCDEF'.split('');
-  let color = '#';
-  for (let i = 0; i < 6; i += 1) {
-    color += letters[Math.floor(Math.random() * 16)];
+  const colorsArray = [];
+  for (let i = 0; i < arraySize; i += 1) {
+    let color = '#';
+    for (let j = 0; j < 6; j += 1) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    colorsArray.push(color);
   }
-  return color;
+  return colorsArray;
 };
 
 export const getPeriodLabel = (period, groupingPeriod) => {

@@ -51,11 +51,15 @@ class TestPhasesChart extends Component {
             });
           });
           const phaseArray = Array.from(uniquePhases);
+          const colorMap = { colors: [] };
           phaseArray.forEach((phaseName) => {
+            const color = getRandomColor(1)[0];
+            colorMap.colors.push(color);
+            colorMap[phaseName] = { color };
             graphData.datasets.push({
               label: phaseName,
               data: [],
-              backgroundColor: getRandomColor(),
+              backgroundColor: colorMap[phaseName].color,
             });
           });
           metrics.periods.map((period) => {

@@ -17,6 +17,7 @@ import ExecutionMetricsSummary from '../tables/ExecutionMetricsSummary';
 import PlatformDistributionPieChart from '../charts/PlatformDistributionPieChart';
 import './Default.css';
 import PlatformMetricsSummary from '../tables/PlatformMetricsSummary';
+import { getRandomColor } from '../../utility/ChartUtilities';
 
 class MetricsPage extends Component {
   constructor(props) {
@@ -99,6 +100,26 @@ class MetricsPage extends Component {
     return selectedTeam.components;
   }
 
+  getPlatformArrayColors = (metrics) => {
+    const result = { colors: [] };
+    metrics.periods.forEach((period) => {
+      period.phases.forEach((phase) => {
+        phase.executions.forEach((execution) => {
+          if (execution.platforms && execution.platforms.length > 0) {
+            execution.platforms.forEach((platform) => {
+              if (!result[platform.platformName]) {
+                const color = getRandomColor(1)[0];
+                result[platform.platformName] = { color };
+                result.colors.push(color);
+              }
+            });
+          }
+        });
+      });
+    });
+    return result;
+  }
+
   getMetrics = (teamId, componentId, fromDate, toDate, groupingId) => {
     const { metrics } = this.state;
     if (metrics && metrics !== {}) {
@@ -106,10 +127,13 @@ class MetricsPage extends Component {
     }
     this.metricRequests.getPhaseMetrics(teamId, componentId, fromDate, toDate, groupingId)
       .then((returnedMetrics) => {
-        this.setState({ metrics: returnedMetrics });
+        this.setState({
+          metrics: returnedMetrics,
+          platformColors: this.getPlatformArrayColors(returnedMetrics),
+        });
       })
       .catch(() => {
-        this.setState({ metrics: {} });
+        this.setState({ metrics: {}, platformColors: {} });
       });
   }
 
@@ -139,6 +163,7 @@ class MetricsPage extends Component {
       selectedTeam,
       selectedComponent,
       key,
+      platformColors,
     } = this.state;
     const { teams } = this.props;
 
@@ -241,11 +266,17 @@ class MetricsPage extends Component {
                   metrics && Object.keys(metrics).length > 0 ? (
                     <div style={{ display: (metrics && Object.keys(metrics).length > 0) ? 'block' : 'none' }}>
                       <div className="metrics-table-div">
-                        <PlatformMetricsSummary metrics={metrics} />
+                        <PlatformMetricsSummary metrics={metrics} platformColors={platformColors} />
                       </div>
                       <div className="graphContainerParent">
-                        <PlatformDistributionPieChart metrics={metrics} />
-                        <PlatformDistributionChart metrics={metrics} />
+                        <PlatformDistributionPieChart
+                          metrics={metrics}
+                          platformColors={platformColors}
+                        />
+                        <PlatformDistributionChart
+                          metrics={metrics}
+                          platformColors={platformColors}
+                        />
                       </div>
                     </div>
                   ) : null

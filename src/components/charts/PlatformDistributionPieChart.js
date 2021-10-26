@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Chart from 'chart.js';
 import './Charts.css';
-import { getRandomColor } from '../../utility/ChartUtilities';
 
 class PlatformDistributionPieChart extends Component {
     chartRef = React.createRef();
@@ -16,7 +15,7 @@ class PlatformDistributionPieChart extends Component {
     }
 
     componentDidMount() {
-      const { metrics } = this.props;
+      const { metrics, platformColors } = this.props;
       const myChartRef = this.chartRef.current.getContext('2d');
       this.piechart = new Chart(myChartRef, {
         type: 'pie',
@@ -30,10 +29,10 @@ class PlatformDistributionPieChart extends Component {
           },
         },
       });
-      this.renderPieChart(this.piechart, metrics);
+      this.renderPieChart(this.piechart, metrics, platformColors);
     }
 
-    renderPieChart = (piechart, metrics) => {
+    renderPieChart = (piechart, metrics, platformColors) => {
       const result = {};
       if (piechart !== undefined && piechart.config != null) {
         metrics.periods.forEach((period) => {
@@ -60,7 +59,7 @@ class PlatformDistributionPieChart extends Component {
         graphData.datasets = [{
           label: 'Results',
           data,
-          backgroundColor: getRandomColor(),
+          backgroundColor: platformColors.colors,
         }];
         graphData.labels = labels;
         piechart.update();

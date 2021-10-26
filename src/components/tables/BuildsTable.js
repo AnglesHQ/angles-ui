@@ -212,9 +212,12 @@ class BuildsTable extends Component {
                   <div><i className="fas fa-external-link-alt" /></div>
                 </OverlayTrigger>
               </th>
-              <th scope="col">
-                <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">Click on the clipboard icons below to see the build artifacts.</Tooltip>}>
-                  <div><i className="fas fa-clipboard-list" /></div>
+              <th scope="col" style={{ minWidth: '115px' }}>
+                <span>Artifacts </span>
+                <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">Click on the icons below to see the build artifacts versions that were tested as part of the run (you have to enter these using the Angles client).</Tooltip>}>
+                  <span>
+                    <i className="fas fa-info-circle" />
+                  </span>
                 </OverlayTrigger>
               </th>
               <th scope="col">Name</th>

@@ -64,7 +64,7 @@ class BuildFeaturePieChart extends Component {
         graphData.datasets = [{
           label: 'Features',
           data: Object.values(result),
-          backgroundColor: getRandomColor(),
+          backgroundColor: getRandomColor(Object.values(result).length),
         }];
         graphData.labels = Object.keys(result);
 
