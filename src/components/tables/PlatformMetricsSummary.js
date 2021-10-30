@@ -13,7 +13,6 @@ class PlatformMetricsSummary extends Component {
   generateDeviceMetrics = (metrics) => {
     const deviceMetrics = {};
     metrics.periods.forEach((period) => {
-      deviceMetrics[period.id] = {};
       period.phases.forEach((phase) => {
         phase.executions.forEach((execution) => {
           if (execution.platforms && execution.platforms.length > 0) {

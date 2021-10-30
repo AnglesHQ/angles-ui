@@ -158,7 +158,11 @@ class BuildsTable extends Component {
               </OverlayTrigger>
             </div>
           </td>
-          <td>{build.name}</td>
+          <td>
+            <a href={`/build/?buildId=${build._id}`} target="_self">
+              {build.name}
+            </a>
+          </td>
           <td>
             {
               build.phase ? (
