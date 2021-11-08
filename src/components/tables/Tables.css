@@ -323,7 +323,6 @@ pre {
     color: #d39e00;
 }
 
-
 .fa-stack[data-count]:after{
     position:absolute;
     right:0%;
@@ -338,4 +337,10 @@ pre {
     text-align:center;
     min-width:2em;
     font-weight:bold;
+}
+
+.fixed-header thead tr:nth-child(1) th{
+    position: sticky;
+    top: -1px;
+    z-index: 10;
 }
