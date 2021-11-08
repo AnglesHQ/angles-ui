@@ -77,7 +77,7 @@ class ExecutionMetricsSummary extends Component {
 
     return (
       <div className="metrics-table-wrapper">
-        <table className="table">
+        <table className="table fixed-header">
           <thead className="thead-dark metrics-table-head">
             <tr>
               <th scope="col">#</th>

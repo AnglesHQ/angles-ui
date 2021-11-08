@@ -42,11 +42,14 @@ class SummaryPage extends Component {
     const { currentTeam } = this.props;
     const {
       limit,
+      filteredEnvironments,
+      filteredComponents,
       startDate,
       endDate,
     } = this.state;
     if (currentTeam && currentTeam._id) {
-      this.getBuildsForTeam(currentTeam._id, 0, limit, startDate, endDate);
+      this.getBuildsForTeam(currentTeam._id, 0, limit,
+        filteredEnvironments, filteredComponents, startDate, endDate);
     }
   }
 
@@ -104,15 +107,31 @@ class SummaryPage extends Component {
   }
 
   getNextSetOfBuilds = () => {
-    const { currentSkip, limit } = this.state;
+    const {
+      currentSkip,
+      limit,
+      filteredEnvironments,
+      filteredComponents,
+      startDate,
+      endDate,
+    } = this.state;
     const { currentTeam } = this.props;
-    this.getBuildsForTeam(currentTeam._id, (currentSkip + limit), limit);
+    this.getBuildsForTeam(currentTeam._id, (currentSkip + limit), limit,
+      filteredEnvironments, filteredComponents, startDate, endDate);
   }
 
   getPreviousSetOfBuilds = () => {
-    const { currentSkip, limit } = this.state;
+    const {
+      currentSkip,
+      limit,
+      filteredEnvironments,
+      filteredComponents,
+      startDate,
+      endDate,
+    } = this.state;
     const { currentTeam } = this.props;
-    this.getBuildsForTeam(currentTeam._id, (currentSkip - limit), limit);
+    this.getBuildsForTeam(currentTeam._id, (currentSkip - limit), limit,
+      filteredEnvironments, filteredComponents, startDate, endDate);
   }
 
   toggleSelectedBuild = (build) => {
