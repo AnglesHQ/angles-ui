@@ -7,6 +7,7 @@ import update from 'immutability-helper';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import queryString from 'query-string';
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import BuildsTable from '../tables/BuildsTable';
 import BuildBarChart from '../charts/BuildBarChart';
@@ -38,7 +39,6 @@ class SummaryPage extends Component {
   }
 
   componentDidMount() {
-    console.log('component did mount');
     const { currentTeam } = this.props;
     const {
       limit,
@@ -54,7 +54,6 @@ class SummaryPage extends Component {
   }
 
   componentDidUpdate = (prevProps, prevStates) => {
-    console.log('component did update');
     // if team has changed grab new build details.
     const { currentTeam } = this.props;
     const {
@@ -320,4 +319,10 @@ class SummaryPage extends Component {
   }
 }
 
-export default withRouter(SummaryPage);
+const mapStateToProps = (state) => ({
+  currentTeam: state.teamsReducer.currentTeam,
+  teams: state.teamsReducer.teams,
+  environments: state.environmentsReducer.environments,
+  builds: state.buildReducer.builds,
+});
+export default withRouter(connect(mapStateToProps, null)(SummaryPage));

@@ -3,6 +3,7 @@ import { Route, Switch, withRouter } from 'react-router-dom';
 import axios from 'axios';
 import queryString from 'query-string';
 import Cookies from 'js-cookie';
+import { connect } from 'react-redux';
 import { EnvironmentRequests, TeamRequests } from 'angles-javascript-client';
 import AnglesMenu from '../components/menu/AnglesMenu';
 import SummaryPage from '../components/pages/SummaryPage';
@@ -15,6 +16,8 @@ import NotFoundPage from '../components/pages/NotFoundPage';
 import './App.css';
 import '../components/charts/Charts.css';
 import MetricsPage from '../components/pages/MetricsPage';
+import { storeCurrentTeam, storeTeams, storeTeamsError } from '../redux/teamActions';
+import { storeEnvironments } from '../redux/environmentActions';
 
 axios.defaults.baseURL = `${process.env.REACT_APP_ANGLES_API_URL}/rest/api/v1.0`;
 
@@ -24,11 +27,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      teams: [],
-      environments: [],
-      currentTeam: undefined,
-      retrievingTeams: false,
-      teamsError: undefined,
+      // moved to redux.
     };
     this.teamRequests = new TeamRequests(axios);
     this.environmentRequests = new EnvironmentRequests(axios);
@@ -39,10 +38,9 @@ class App extends Component {
     this.retrieveEnvironmentDetails();
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const { teams, currentTeam } = this.state;
-    if (prevState.teams !== teams || prevState.currenTeam !== currentTeam) {
-      const { location } = this.props;
+  componentDidUpdate(prevProps) {
+    const { teams, currentTeam, location } = this.props;
+    if (prevProps.teams !== teams || prevProps.currentTeam !== currentTeam) {
       const query = queryString.parse(location.search);
       // check if there is a query
       if (query.teamId) {
@@ -62,34 +60,37 @@ class App extends Component {
   }
 
   getTeam = (teamId) => {
-    const { teams } = this.state;
+    const { teams } = this.props;
     return teams.find((team) => team._id === teamId);
   }
 
   changeCurrentTeam = (teamId) => {
+    const { saveCurrentTeam } = this.props;
     if (teamId !== undefined) {
-      this.setState({ currentTeam: this.getTeam(teamId) });
+      saveCurrentTeam(this.getTeam(teamId));
       Cookies.set('teamId', teamId, { expires: 365 });
     }
   }
 
   retrieveTeamDetails = () => {
-    this.setState({ retrievingTeams: true });
+    const { saveTeams, saveTeamsError } = this.props;
     this.teamRequests.getTeams()
       .then((teams) => {
+        // TODO: should probably do this in the back-end.
         teams.sort((a, b) => {
           if (a.name < b.name) { return -1; }
           if (a.name > b.name) { return 1; }
           return 0;
         });
-        this.setState({ teams, retrievingTeams: false });
+        saveTeams(teams);
       })
       .catch((teamsError) => {
-        this.setState({ teamsError, retrievingTeams: false });
+        saveTeamsError(teamsError);
       });
   }
 
   retrieveEnvironmentDetails = () => {
+    const { saveEnvironments } = this.props;
     this.environmentRequests.getEnvironments()
       .then((environments) => {
         environments.sort((a, b) => {
@@ -97,23 +98,21 @@ class App extends Component {
           if (a.name > b.name) { return 1; }
           return 0;
         });
-        this.setState({ environments });
+        saveEnvironments(environments);
       });
     // TODO: handle catch.
   }
 
   render() {
     const {
+      history,
       teams,
-      retrievingTeams,
       currentTeam,
-      environments,
       teamsError,
-    } = this.state;
-    const { history } = this.props;
+    } = this.props;
     return (
       <div id="outer-container">
-        <AnglesMenu teams={teams} changeCurrentTeam={this.changeCurrentTeam} />
+        <AnglesMenu />
         <main id="page-wrap">
           <Switch>
             <Route
@@ -132,7 +131,7 @@ class App extends Component {
                     </div>
                   );
                 }
-                if (retrievingTeams) {
+                if (!teamsError && teams === undefined) {
                   return (
                     <div key="retrieving-teams" className="alert alert-primary" role="alert">
                       <span>
@@ -144,11 +143,8 @@ class App extends Component {
                 }
                 return (
                   <SummaryPage
-                    currentTeam={currentTeam}
-                    environments={environments}
                     history={history}
                     changeCurrentTeam={this.changeCurrentTeam}
-                    teams={teams}
                   />
                 );
               }}
@@ -191,4 +187,16 @@ class App extends Component {
   }
 }
 
-export default withRouter(App);
+const mapDispatchToProps = (dispatch) => ({
+  saveCurrentTeam: (selectedTeam) => dispatch(storeCurrentTeam(selectedTeam)),
+  saveTeams: (teams) => dispatch(storeTeams(teams)),
+  saveTeamsError: (teamsError) => dispatch(storeTeamsError(teamsError)),
+  saveEnvironments: (environments) => dispatch(storeEnvironments(environments)),
+});
+
+const mapStateToProps = (state) => ({
+  currentTeam: state.teamsReducer.currentTeam,
+  teams: state.teamsReducer.teams,
+  teamsError: state.teamsReducer.teamsError,
+});
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
