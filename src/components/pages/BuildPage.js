@@ -59,6 +59,9 @@ class BuildPage extends Component {
     this.screenshotRequests.getScreenshotsForBuild(buildId)
       .then((screenshots) => {
         this.setState({ screenshots });
+      })
+      .catch(() => {
+        this.setState({ screenshots: {} });
       });
   }
 
@@ -108,11 +111,16 @@ class BuildPage extends Component {
         </div>
       );
     }
-    if (currentBuild === {}) {
+    if (Object.keys(currentBuild).length === 0) {
       return (
         <div>
           <div className="alert alert-danger" role="alert">
-            <span>Unable to retrieve build details. Please refresh the page and try again.</span>
+            <span>
+              {
+                'Unable to retrieve build details. '
+                + 'Please refresh the page and try again and/or check if the build id is valid.'
+              }
+            </span>
           </div>
         </div>
       );
