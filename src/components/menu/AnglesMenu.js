@@ -30,7 +30,7 @@ class AnglesMenu extends Component {
         </a>
         <a id="screenshot-finder" className="bm-item" href="/screenshot-finder">
           <i className="fa fa-fw fa-images" />
-          <span>Screenshot Finder</span>
+          <span>Screenshot Library</span>
         </a>
         <a id="about" className="bm-item" href="/about">
           <i className="fa fa-fw fa-info" />
