@@ -154,7 +154,7 @@ class App extends Component {
               exact
               path="/matrix/"
               render={() => {
-                if (!currentTeam._id) {
+                if (!currentTeam || !currentTeam._id) {
                   return null;
                 }
                 return <MatrixPage currentTeam={currentTeam} />;
