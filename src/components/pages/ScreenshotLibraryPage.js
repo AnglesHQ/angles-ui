@@ -10,7 +10,7 @@ import 'react-multi-carousel/lib/styles.css';
 import './Default.css';
 import ScreenshotView from './ScreenshotView';
 
-class ScreenshotFinderPage extends Component {
+class ScreenshotLibraryPage extends Component {
   constructor(props) {
     super(props);
     const { location } = this.props;
@@ -129,7 +129,7 @@ class ScreenshotFinderPage extends Component {
     } = this.state;
     return (
       <div>
-        <h1>Screenshot finder</h1>
+        <h1>Screenshot Library</h1>
         <div className="screenshot-form-container">
           <Form onSubmit={this.submitScreenshotSearch}>
             <Form.Row>
@@ -213,4 +213,4 @@ class ScreenshotFinderPage extends Component {
   }
 }
 
-export default withRouter(ScreenshotFinderPage);
+export default withRouter(ScreenshotLibraryPage);

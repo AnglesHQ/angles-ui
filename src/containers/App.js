@@ -9,7 +9,7 @@ import AnglesMenu from '../components/menu/AnglesMenu';
 import SummaryPage from '../components/pages/SummaryPage';
 import BuildPage from '../components/pages/BuildPage';
 import MatrixPage from '../components/pages/MatrixPage';
-import ScreenshotFinderPage from '../components/pages/ScreenshotFinderPage';
+import ScreenshotLibraryPage from '../components/pages/ScreenshotLibraryPage';
 import ExecutionHistoryPage from '../components/pages/ExecutionHistoryPage';
 import AboutPage from '../components/pages/AboutPage';
 import NotFoundPage from '../components/pages/NotFoundPage';
@@ -160,7 +160,8 @@ class App extends Component {
                 return <MatrixPage currentTeam={currentTeam} />;
               }}
             />
-            <Route exact path="/screenshot-finder/" render={() => <ScreenshotFinderPage />} />
+            <Route exact path="/screenshot-finder/" render={() => <ScreenshotLibraryPage />} />
+            <Route exact path="/screenshot-library/" render={() => <ScreenshotLibraryPage />} />
             <Route exact path="/history/" render={() => <ExecutionHistoryPage />} />
             <Route exact path="/about/" render={() => <AboutPage />} />
             <Route
