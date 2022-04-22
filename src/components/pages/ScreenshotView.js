@@ -61,7 +61,7 @@ class ScreenshotView extends Component {
   getScreenshotDetails = (screenshotId) => this.screenshotRequests.getScreenshot(screenshotId)
     .then((currentScreenshotDetails) => {
       this.setState({ currentScreenshotDetails });
-      if (currentScreenshotDetails != null && (currentScreenshotDetails.view !== null && currentScreenshotDetails.view !== '')) {
+      if (currentScreenshotDetails && currentScreenshotDetails.view) {
         // if there is a view, retrieve the history
         this.getScreenshotHistoryByView(currentScreenshotDetails.view,
           currentScreenshotDetails.platformId, 10);
