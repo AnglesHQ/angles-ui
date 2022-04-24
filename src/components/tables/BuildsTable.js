@@ -14,8 +14,6 @@ class BuildsTable extends Component {
     this.state = {
       environments: [],
       components: [],
-      selectedEnvironments: [],
-      selectedComponents: [],
     };
   }
 
@@ -30,11 +28,18 @@ class BuildsTable extends Component {
     const { team, availableEnvironments } = this.props;
     if (prevProps.availableEnvironments !== availableEnvironments) {
       this.resetEnvironmentsForTableFilter(availableEnvironments);
+      this.resetSelectedEnvironments();
     }
     // update components when a new team is selected.
     if (prevProps.team !== team) {
       this.resetComponentsForTableFilter(team);
+      this.resetSelectedComponents();
     }
+  }
+
+  resetSelectedEnvironments = () => {
+    const { setFilteredEnvironments } = this.props;
+    setFilteredEnvironments([]);
   }
 
   resetEnvironmentsForTableFilter = (availableEnvironments) => {
@@ -47,7 +52,12 @@ class BuildsTable extends Component {
       environments.push({ label: uniqueEnvironments[key], value: key });
     });
     environments.sort((a, b) => ((a.label > b.label) ? 1 : -1));
-    this.setState({ environments, selectedEnvironments: [] });
+    this.setState({ environments });
+  }
+
+  resetSelectedComponents = () => {
+    const { setFilteredComponents } = this.props;
+    setFilteredComponents([]);
   }
 
   resetComponentsForTableFilter = (team) => {
@@ -60,7 +70,7 @@ class BuildsTable extends Component {
       components.push({ label: uniqueComponents[key], value: key });
     });
     components.sort((a, b) => ((a.label > b.label) ? 1 : -1));
-    this.setState({ components, selectedComponents: [] });
+    this.setState({ components });
   }
 
   isRowSelected = (build) => {
@@ -79,14 +89,12 @@ class BuildsTable extends Component {
 
   setSelectedEnvironments = (selectedEnvironments) => {
     const { setFilteredEnvironments } = this.props;
-    this.setState({ selectedEnvironments });
-    setFilteredEnvironments(selectedEnvironments.map((environment) => environment.value));
+    setFilteredEnvironments(selectedEnvironments);
   }
 
   setSelectedComponents = (selectedComponents) => {
     const { setFilteredComponents } = this.props;
-    this.setState({ selectedComponents });
-    setFilteredComponents(selectedComponents.map((component) => component.value));
+    setFilteredComponents(selectedComponents);
   }
 
   render() {
@@ -102,14 +110,15 @@ class BuildsTable extends Component {
 
     const {
       components,
-      selectedComponents,
       environments,
-      selectedEnvironments,
     } = this.state;
+
     const {
       builds,
       toggleSelectedBuild,
       currentSkip,
+      selectedEnvironments,
+      selectedComponents,
     } = this.props;
 
     const buildRows = [];

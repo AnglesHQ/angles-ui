@@ -109,6 +109,7 @@ class App extends Component {
       teams,
       currentTeam,
       teamsError,
+      environments,
     } = this.props;
     return (
       <div id="outer-container">
@@ -137,6 +138,16 @@ class App extends Component {
                       <span>
                         <i className="fas fa-spinner fa-pulse fa-2x" />
                         <span>Retrieving teams</span>
+                      </span>
+                    </div>
+                  );
+                }
+                if (!environments) {
+                  return (
+                    <div key="retrieving-environments" className="alert alert-primary" role="alert">
+                      <span>
+                        <i className="fas fa-spinner fa-pulse fa-2x" />
+                        <span>Retrieving environments</span>
                       </span>
                     </div>
                   );
@@ -199,5 +210,6 @@ const mapStateToProps = (state) => ({
   currentTeam: state.teamsReducer.currentTeam,
   teams: state.teamsReducer.teams,
   teamsError: state.teamsReducer.teamsError,
+  environments: state.environmentsReducer.environments,
 });
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
