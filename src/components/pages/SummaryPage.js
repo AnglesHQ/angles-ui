@@ -14,6 +14,7 @@ import BuildBarChart from '../charts/BuildBarChart';
 import BuildTimeLineChart from '../charts/BuildTimeLineChart';
 import '../charts/Charts.css';
 import DatePicker from '../elements/DatePicker';
+import { checkValidityOfIdsQueryString } from '../../utility/ValidationUtilities';
 
 class SummaryPage extends Component {
   constructor(props) {
@@ -23,12 +24,16 @@ class SummaryPage extends Component {
     const {
       startDate,
       endDate,
+      componentsToFilter,
+      environmentsToFilter,
     } = query;
     this.state = {
       builds: undefined,
       selectedBuilds: {},
-      filteredEnvironments: [],
-      filteredComponents: [],
+      filteredComponents: (props.currentTeam
+        ? checkValidityOfIdsQueryString(componentsToFilter, props.currentTeam.components) : []),
+      filteredEnvironments:
+        checkValidityOfIdsQueryString(environmentsToFilter, props.environments) || [],
       buildCount: 0,
       currentSkip: 0,
       limit: 15,
@@ -55,7 +60,7 @@ class SummaryPage extends Component {
 
   componentDidUpdate = (prevProps, prevStates) => {
     // if team has changed grab new build details.
-    const { currentTeam } = this.props;
+    const { currentTeam, location } = this.props;
     const {
       limit,
       filteredEnvironments,
@@ -65,7 +70,19 @@ class SummaryPage extends Component {
     } = this.state;
     const hasTeamChanged = this.hasTeamSelectionChanged(prevProps);
     const selectionChanged = this.haveAnyFiltersChanged(prevStates);
+    const queryChanged = this.haveAnyQueryParamsChanged(prevProps);
     console.log(`Team Changed [${hasTeamChanged}], Filters Changed [${selectionChanged}]`);
+    if (queryChanged) {
+      // url has changed.
+      const query = queryString.parse(location.search);
+      const {
+        componentsToFilter,
+      } = query;
+      const updatedFilteredComponents = checkValidityOfIdsQueryString(
+        componentsToFilter, currentTeam.components,
+      );
+      this.setState({ filteredComponents: updatedFilteredComponents });
+    }
     if (hasTeamChanged || selectionChanged) {
       // if someone selects a new team or there was no previous team
       this.getBuildsForTeam(currentTeam._id, 0, limit,
@@ -93,11 +110,18 @@ class SummaryPage extends Component {
       || prevStates.endDate !== endDate);
   }
 
+  haveAnyQueryParamsChanged = (prevProps) => {
+    const { location } = this.props;
+    return (location.search !== prevProps.location.search);
+  }
+
   getBuildsForTeam = (teamId, skip, limit, filteredEnvironments, filteredComponents,
     startDate, endDate) => {
     console.log(`Retrieving builds for team ${teamId}`);
-    this.buildRequests.getBuildsWithDateFilters(teamId, filteredEnvironments,
-      filteredComponents, skip, limit, startDate, endDate)
+    const environmentIds = filteredEnvironments.map((environment) => environment.value);
+    const componentIds = filteredComponents.map((component) => component.value);
+    this.buildRequests.getBuildsWithDateFilters(teamId, environmentIds,
+      componentIds, skip, limit, startDate, endDate)
       .then(({ builds, count: buildCount }) => this.setState({
         builds,
         buildCount,
@@ -145,7 +169,22 @@ class SummaryPage extends Component {
   }
 
   setFilteredComponents = (filteredComponents) => {
-    this.setState({ filteredComponents });
+    // this.setState({ filteredComponents });
+    this.filterComponentsNavigate(filteredComponents.map((component) => component.value));
+  }
+
+  filterComponentsNavigate = (componentIds) => {
+    const { history, location } = this.props;
+    let query = queryString.parse(location.search);
+    if (componentIds && componentIds.length > 0) {
+      query = { ...query, componentsToFilter: componentIds.join(',') };
+    } else {
+      delete query.componentsToFilter;
+    }
+    history.push({
+      pathname: '/',
+      search: queryString.stringify(query),
+    });
   }
 
   /*
@@ -225,6 +264,8 @@ class SummaryPage extends Component {
       currentSkip,
       startDate,
       endDate,
+      filteredEnvironments,
+      filteredComponents,
     } = this.state;
     const {
       currentTeam,
@@ -294,6 +335,8 @@ class SummaryPage extends Component {
           toggleSelectedBuild={this.toggleSelectedBuild}
           setFilteredEnvironments={this.setFilteredEnvironments}
           setFilteredComponents={this.setFilteredComponents}
+          selectedEnvironments={filteredEnvironments}
+          selectedComponents={filteredComponents}
         />
         <div>
           <span style={{ float: 'left' }}>
