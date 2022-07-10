@@ -69,6 +69,13 @@ class ImageCarousel extends Component {
     }
   }
 
+  grabThumbnail = (screenshot) => {
+    if (screenshot.thumbnail.startsWith('data:image')) {
+      return screenshot.thumbnail;
+    }
+    return `data:image/png;base64, ${screenshot.thumbnail}`;
+  }
+
   render() {
     const { screenshots, loadScreenshot, deviceType } = this.props;
     const responsive = {
@@ -142,10 +149,9 @@ class ImageCarousel extends Component {
                   tabIndex={index + 1}
                 >
                   <img
-                    className={`${this.isSelectedId(screenshot._id) ? 'card-active' : ''}`}
-                    style={{ height: 250 }}
+                    className={`card-screenshot-image ${this.isSelectedId(screenshot._id) ? 'card-active' : ''}`}
                     alt={screenshot.view}
-                    src={`data:image/png;base64, ${screenshot.thumbnail}`}
+                    src={`${this.grabThumbnail(screenshot)}`}
                   />
                 </div>
               </div>

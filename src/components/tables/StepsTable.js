@@ -18,7 +18,11 @@ class StepsTable extends Component {
     if (screenshots !== undefined && screenshotId !== undefined) {
       const image = screenshots.filter((screenshot) => screenshot._id === screenshotId)[0];
       if (image !== undefined) {
-        return image.thumbnail;
+        if (image.thumbnail.startsWith('data:image')) {
+          // to handle move to jimp
+          return image.thumbnail;
+        }
+        return `data:image/png;base64, ${image.thumbnail}`;
       }
     }
     return undefined;
@@ -71,7 +75,7 @@ class StepsTable extends Component {
                       <td onClick={() => openModal(step.screenshot)}>
                         <img
                           className="screenshot-thumbnail"
-                          src={`data:image/png;base64, ${this.getScreenShot(step.screenshot)}`}
+                          src={`${this.getScreenShot(step.screenshot)}`}
                           alt="Thumbnail"
                         />
                       </td>
