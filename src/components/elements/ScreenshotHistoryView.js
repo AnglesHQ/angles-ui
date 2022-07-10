@@ -68,9 +68,9 @@ class ScreenshotHistoryView extends Component {
             { isBaseline(screenshot._id) ? (<div className="card-img-overlay baseline-overlay"><p>baseline</p></div>) : null }
             { !this.isSelectedId(screenshot._id) ? (
               <a title="Go to screenshot" href={`/build?buildId=${screenshot.build}&loadScreenshotId=${screenshot._id}`}>
-                <Card.Img variant="top" src={`${this.grabThumbnail(screenshot)}`} />
+                <Card.Img className="card-image-history" variant="top" src={`${this.grabThumbnail(screenshot)}`} />
               </a>
-            ) : <Card.Img variant="top" src={`${this.grabThumbnail(screenshot)}`} /> }
+            ) : <Card.Img className="card-image-history" variant="top" src={`${this.grabThumbnail(screenshot)}`} /> }
             <Card.Body>
               <Card.Footer>
                 <div>

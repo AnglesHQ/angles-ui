@@ -149,8 +149,7 @@ class ImageCarousel extends Component {
                   tabIndex={index + 1}
                 >
                   <img
-                    className={`${this.isSelectedId(screenshot._id) ? 'card-active' : ''}`}
-                    style={{ height: 250 }}
+                    className={`card-screenshot-image ${this.isSelectedId(screenshot._id) ? 'card-active' : ''}`}
                     alt={screenshot.view}
                     src={`${this.grabThumbnail(screenshot)}`}
                   />
