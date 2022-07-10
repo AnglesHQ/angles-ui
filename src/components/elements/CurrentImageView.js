@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Table from 'react-bootstrap/Table';
+import { withRouter, useNavigate } from 'react-router-dom';
 import ScreenshotDetailsTable from '../tables/ScreenshotDetailsTable';
 
 class CurrentImageView extends Component {
@@ -8,6 +9,13 @@ class CurrentImageView extends Component {
     this.state = {
       //
     };
+  }
+
+  navigateToImage = (screenshotDetails) => {
+    const { history } = this.props;
+    const navigate = useNavigate();
+    const path = `/build/?buildId=${screenshotDetails.build}&loadScreenshotId=${screenshotDetails._id}`;
+    history.push(path);
   }
 
   displayScreenshot = (currentScreenshot) => {
@@ -50,6 +58,14 @@ class CurrentImageView extends Component {
     return null;
   }
 
+  generateAndOpenBaselineImage = (currenScreenshotDetails) => {
+    const { generateDynamicBaseline } = this.props;
+    generateDynamicBaseline(currenScreenshotDetails)
+      .then((dynamicBaselineImage) => {
+        this.navigateToImage(dynamicBaselineImage);
+      });
+  }
+
   render() {
     const {
       currentScreenshotDetails,
@@ -82,6 +98,13 @@ class CurrentImageView extends Component {
                   this.returnMakeBaselineButton(currentScreenshotDetails)
                 }
               </span>
+              <button
+                onClick={() => this.generateAndOpenBaselineImage(currentScreenshotDetails)}
+                type="button"
+                className="btn btn-outline-primary"
+              >
+                Generate Dynamic Baseline
+              </button>
             </td>
           </tr>
         </tbody>
@@ -90,4 +113,4 @@ class CurrentImageView extends Component {
   }
 }
 
-export default CurrentImageView;
+export default withRouter(CurrentImageView);

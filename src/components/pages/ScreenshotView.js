@@ -157,6 +157,11 @@ class ScreenshotView extends Component {
     }
   }
 
+  generateDynamicBaseline = (screenshot) => {
+    const { _id: screenshotId } = screenshot;
+    return this.screenshotRequests.getDynamicBaselineImage(screenshotId, 5);
+  }
+
   setBaselineForView = (screenshot) => this.baselineRequests.setBaseline(screenshot)
     .then((currentBaseLineDetails) => {
       this.setState({ currentBaseLineDetails });
@@ -236,6 +241,7 @@ class ScreenshotView extends Component {
                 currentScreenshot={currentScreenshot}
                 currentScreenshotDetails={currentScreenshotDetails}
                 updateBaseline={this.updateBaseline}
+                generateDynamicBaseline={this.generateDynamicBaseline}
                 isBaseline={this.isBaseline}
               />
             </div>
