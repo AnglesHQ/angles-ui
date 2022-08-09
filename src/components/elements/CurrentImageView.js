@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Table from 'react-bootstrap/Table';
-import { withRouter, useNavigate } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import ScreenshotDetailsTable from '../tables/ScreenshotDetailsTable';
 
 class CurrentImageView extends Component {
@@ -13,7 +13,6 @@ class CurrentImageView extends Component {
 
   navigateToImage = (screenshotDetails) => {
     const { history } = this.props;
-    const navigate = useNavigate();
     const path = `/build/?buildId=${screenshotDetails.build}&loadScreenshotId=${screenshotDetails._id}`;
     history.push(path);
   }
