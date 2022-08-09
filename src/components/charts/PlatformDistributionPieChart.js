@@ -3,79 +3,79 @@ import Chart from 'chart.js';
 import './Charts.css';
 
 class PlatformDistributionPieChart extends Component {
-    chartRef = React.createRef();
+  chartRef = React.createRef();
 
-    piechart;
+  piechart;
 
-    constructor(props) {
-      super(props);
-      this.state = {
-        //
-      };
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      //
+    };
+  }
 
-    componentDidMount() {
-      const { metrics, platformColors } = this.props;
-      const myChartRef = this.chartRef.current.getContext('2d');
-      this.piechart = new Chart(myChartRef, {
-        type: 'pie',
-        data: {},
-        options: {
-          animation: false,
-          responsive: true,
-          title: {
-            display: true,
-            text: 'Platform Distribution',
-          },
+  componentDidMount() {
+    const { metrics, platformColors } = this.props;
+    const myChartRef = this.chartRef.current.getContext('2d');
+    this.piechart = new Chart(myChartRef, {
+      type: 'pie',
+      data: {},
+      options: {
+        animation: false,
+        responsive: true,
+        title: {
+          display: true,
+          text: 'Platform Distribution',
         },
-      });
-      this.renderPieChart(this.piechart, metrics, platformColors);
-    }
+      },
+    });
+    this.renderPieChart(this.piechart, metrics, platformColors);
+  }
 
-    renderPieChart = (piechart, metrics, platformColors) => {
-      const result = {};
-      if (piechart !== undefined && piechart.config != null) {
-        metrics.periods.forEach((period) => {
-          period.phases.forEach((phase) => {
-            phase.executions.forEach((execution) => {
-              if (execution.platforms && execution.platforms.length > 0) {
-                execution.platforms.forEach((platform) => {
-                  if (!result[platform.platformName]) {
-                    result[platform.platformName] = 0;
-                  }
-                  result[platform.platformName] += 1;
-                });
-              }
-            });
+  renderPieChart = (piechart, metrics, platformColors) => {
+    const result = {};
+    if (piechart !== undefined && piechart.config != null) {
+      metrics.periods.forEach((period) => {
+        period.phases.forEach((phase) => {
+          phase.executions.forEach((execution) => {
+            if (execution.platforms && execution.platforms.length > 0) {
+              execution.platforms.forEach((platform) => {
+                if (!result[platform.platformName]) {
+                  result[platform.platformName] = 0;
+                }
+                result[platform.platformName] += 1;
+              });
+            }
           });
         });
-        const graphData = piechart.config.data;
-        const data = [];
-        const labels = [];
-        Object.keys(result).forEach((platformName) => {
-          data.push(result[platformName]);
-          labels.push(platformName);
-        });
-        graphData.datasets = [{
-          label: 'Results',
-          data,
-          backgroundColor: platformColors.colors,
-        }];
-        graphData.labels = labels;
-        piechart.update();
-      }
+      });
+      const graphData = piechart.config.data;
+      const data = [];
+      const labels = [];
+      Object.keys(result).forEach((platformName) => {
+        data.push(result[platformName]);
+        labels.push(platformName);
+      });
+      graphData.datasets = [{
+        label: 'Results',
+        data,
+        backgroundColor: platformColors.colors,
+      }];
+      graphData.labels = labels;
+      piechart.update();
     }
+  };
 
-    render() {
-      return (
-        <div className="graphContainer">
-          <canvas
-            id="myChart"
-            ref={this.chartRef}
-          />
-        </div>
-      );
-    }
+  render() {
+    return (
+      <div className="graphContainer">
+        <canvas
+          id="myChart"
+          ref={this.chartRef}
+        />
+      </div>
+    );
+  }
 }
 
 export default PlatformDistributionPieChart;

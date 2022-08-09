@@ -26,7 +26,7 @@ class ImageCarousel extends Component {
       return true;
     }
     return false;
-  }
+  };
 
   handleArrowKeys = (event) => {
     const { selectedScreenshotDetails } = this.props;
@@ -38,7 +38,7 @@ class ImageCarousel extends Component {
       // right - next
       this.getNextImage(selectedScreenshotDetails._id);
     }
-  }
+  };
 
   getNextImage = (currentScreenshotId) => {
     const { screenshots, loadScreenshot } = this.props;
@@ -58,7 +58,7 @@ class ImageCarousel extends Component {
       loadScreenshot(screenshots[nextIndex]._id);
       this.Carousel.goToSlide(nextIndex, false);
     }
-  }
+  };
 
   loadScreenshotKeyDown = (event) => {
     const { screenshots, loadScreenshot } = this.props;
@@ -67,14 +67,14 @@ class ImageCarousel extends Component {
         loadScreenshot(screenshots[event.key - 1]._id);
       }
     }
-  }
+  };
 
   grabThumbnail = (screenshot) => {
     if (screenshot.thumbnail.startsWith('data:image')) {
       return screenshot.thumbnail;
     }
     return `data:image/png;base64, ${screenshot.thumbnail}`;
-  }
+  };
 
   render() {
     const { screenshots, loadScreenshot, deviceType } = this.props;

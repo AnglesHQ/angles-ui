@@ -50,17 +50,17 @@ class MetricsPage extends Component {
 
   handleGroupingChange = (event) => {
     this.setState({ groupingPeriod: event.target.value });
-  }
+  };
 
   handleTeamChange = (event) => {
     const { changeCurrentTeam } = this.props;
     changeCurrentTeam(event.target.value);
     this.setState({ selectedTeam: event.target.value, selectedComponent: 'any' });
-  }
+  };
 
   handleComponentChange = (event) => {
     this.setState({ selectedComponent: event.target.value });
-  }
+  };
 
   handleSelect(value) {
     if (['execution', 'platform'].includes(value)) this.setState({ key: value });
@@ -68,7 +68,7 @@ class MetricsPage extends Component {
 
   setTab = (key) => {
     this.handleSelect(key);
-  }
+  };
 
   onSubmit = () => {
     const { history } = this.props;
@@ -92,13 +92,13 @@ class MetricsPage extends Component {
       search: `?${new URLSearchParams(params).toString()}`,
     });
     this.retrieveMetrics();
-  }
+  };
 
   getComponents = (teamId) => {
     const { teams } = this.props;
     const selectedTeam = teams.find((team) => team._id === teamId);
     return selectedTeam.components;
-  }
+  };
 
   getPlatformArrayColors = (metrics) => {
     const result = { colors: [] };
@@ -118,7 +118,7 @@ class MetricsPage extends Component {
       });
     });
     return result;
-  }
+  };
 
   getMetrics = (teamId, componentId, fromDate, toDate, groupingId) => {
     const { metrics } = this.state;
@@ -135,7 +135,7 @@ class MetricsPage extends Component {
       .catch(() => {
         this.setState({ metrics: {}, platformColors: {} });
       });
-  }
+  };
 
   retrieveMetrics = () => {
     const {
@@ -152,7 +152,7 @@ class MetricsPage extends Component {
         this.getMetrics(selectedTeam, selectedComponent, startDate, endDate, groupingPeriod);
       }
     }
-  }
+  };
 
   render() {
     const {

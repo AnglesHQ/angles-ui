@@ -22,6 +22,7 @@ import { storeEnvironments } from '../redux/environmentActions';
 axios.defaults.baseURL = `${process.env.REACT_APP_ANGLES_API_URL}/rest/api/v1.0`;
 
 class App extends Component {
+  // eslint-disable-next-line react/no-unused-class-component-methods
   cookies;
 
   constructor(props) {
@@ -33,7 +34,7 @@ class App extends Component {
     this.environmentRequests = new EnvironmentRequests(axios);
   }
 
-  componentDidMount = () => {
+  componentDidMount() {
     this.retrieveTeamDetails();
     this.retrieveEnvironmentDetails();
   }
@@ -62,7 +63,7 @@ class App extends Component {
   getTeam = (teamId) => {
     const { teams } = this.props;
     return teams.find((team) => team._id === teamId);
-  }
+  };
 
   changeCurrentTeam = (teamId) => {
     const { saveCurrentTeam } = this.props;
@@ -70,7 +71,7 @@ class App extends Component {
       saveCurrentTeam(this.getTeam(teamId));
       Cookies.set('teamId', teamId, { expires: 365 });
     }
-  }
+  };
 
   retrieveTeamDetails = () => {
     const { saveTeams, saveTeamsError } = this.props;
@@ -87,7 +88,7 @@ class App extends Component {
       .catch((teamsError) => {
         saveTeamsError(teamsError);
       });
-  }
+  };
 
   retrieveEnvironmentDetails = () => {
     const { saveEnvironments } = this.props;
@@ -101,7 +102,7 @@ class App extends Component {
         saveEnvironments(environments);
       });
     // TODO: handle catch.
-  }
+  };
 
   render() {
     const {

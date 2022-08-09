@@ -63,21 +63,24 @@ class ScreenshotView extends Component {
       this.setState({ currentScreenshotDetails });
       if (currentScreenshotDetails && currentScreenshotDetails.view) {
         // if there is a view, retrieve the history
-        this.getScreenshotHistoryByView(currentScreenshotDetails.view,
-          currentScreenshotDetails.platformId, 10);
+        this.getScreenshotHistoryByView(
+          currentScreenshotDetails.view,
+          currentScreenshotDetails.platformId,
+          10,
+        );
         if (currentScreenshotDetails.platform) {
           this.getBaseLineDetails(currentScreenshotDetails);
         }
       } else if (currentScreenshotDetails != null) {
         this.handleSelect('image');
       }
-    })
+    });
 
   getScreenshotHistoryByView = (view, platformId, limit, offset) => this.screenshotRequests
     .getScreenshotHistoryByView(view, platformId, limit, offset)
     .then((currentScreenshotHistory) => {
       this.setState({ currentScreenshotHistory });
-    })
+    });
 
   getScreenshot = (screenshotId) => this.screenshotRequests.getScreenshotImage(screenshotId)
     .then((screenshot) => {
@@ -91,7 +94,7 @@ class ScreenshotView extends Component {
     }).catch(() => {
       // failed to retrieve baseline.
       this.setState({ currentScreenshot: 'ERROR' });
-    })
+    });
 
   getBaselineScreenshot = (screenshotId) => this.screenshotRequests.getScreenshotImage(screenshotId)
     .then((screenshot) => {
@@ -105,7 +108,7 @@ class ScreenshotView extends Component {
     }).catch(() => {
       // failed to retrieve baseline.
       this.setState({ currentBaseline: 'ERROR' });
-    })
+    });
 
   getBaselineCompare = (screenshotId, useCache) => this.screenshotRequests
     .getBaselineCompareImage(screenshotId, useCache)
@@ -121,7 +124,7 @@ class ScreenshotView extends Component {
     .catch(() => {
       // failed to retrieve baseline.
       this.setState({ currentBaselineCompare: 'ERROR' });
-    })
+    });
 
   getBaselineCompareJson = (screenshotId) => this.screenshotRequests
     .getBaselineCompare(screenshotId)
@@ -131,7 +134,7 @@ class ScreenshotView extends Component {
     .catch(() => {
       // failed to retrieve baseline.
       this.setState({ currentBaselineCompareJson: {} });
-    })
+    });
 
   getBaseLineDetails = (screenshot) => {
     this.baselineRequests.getBaselineForScreenshot(screenshot)
@@ -144,7 +147,7 @@ class ScreenshotView extends Component {
           this.getBaselineScreenshot(baseline.screenshot._id);
         }
       });
-  }
+  };
 
   updateBaseline = (screenshot) => {
     const { currentBaseLineDetails } = this.state;
@@ -155,18 +158,19 @@ class ScreenshotView extends Component {
       // create a new baseline
       this.setBaselineForView(screenshot);
     }
-  }
+  };
 
   generateDynamicBaseline = (screenshot) => {
     const { _id: screenshotId } = screenshot;
     return this.screenshotRequests.getDynamicBaselineImage(screenshotId, 5);
-  }
+  };
 
   setBaselineForView = (screenshot) => this.baselineRequests.setBaseline(screenshot)
     .then((currentBaseLineDetails) => {
       this.setState({ currentBaseLineDetails });
-    })
+    });
 
+  // eslint-disable-next-line react/no-unused-class-component-methods
   forceBaselineCompare = (screenshotId) => this.getBaselineCompare(screenshotId, false);
 
   makeUpdateBaselineRequest = (baselineId, screenshotId, ignoreBoxes) => {
@@ -174,17 +178,17 @@ class ScreenshotView extends Component {
       .then((currentBaseLineDetails) => {
         this.setState({ currentBaseLineDetails });
       });
-  }
+  };
 
   isBaseline = (screenshotId) => {
     const { currentBaseLineDetails } = this.state;
     return (currentBaseLineDetails && currentBaseLineDetails.screenshot
       && currentBaseLineDetails.screenshot._id === screenshotId);
-  }
+  };
 
   setTab = (key) => {
     this.handleSelect(key);
-  }
+  };
 
   loadScreenshot = (screenshotId) => {
     const { currentScreenshotDetails } = this.state;
@@ -198,7 +202,7 @@ class ScreenshotView extends Component {
       this.getScreenshotDetails(screenshotId);
       this.getScreenshot(screenshotId);
     }
-  }
+  };
 
   render() {
     const {

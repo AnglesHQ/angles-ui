@@ -26,12 +26,13 @@ class StepsTable extends Component {
       }
     }
     return undefined;
-  }
+  };
 
+  // eslint-disable-next-line react/no-unused-class-component-methods
   navigateToImageDetails = (imageId) => {
     const { history } = this.props;
     history.push(`/image/${imageId}`);
-  }
+  };
 
   convertTextToLinks = (content) => {
     const reg = /(http:\/\/|https:\/\/)((\w|=|\?|\.|\/|&|-)+)/g;
@@ -39,7 +40,7 @@ class StepsTable extends Component {
       return content.replace(reg, "<a href='$1$2' target='_blank'>$1$2</a>");
     }
     return '';
-  }
+  };
 
   render() {
     const { index, action, openModal } = this.props;

@@ -15,7 +15,7 @@ class CurrentImageView extends Component {
     const { history } = this.props;
     const path = `/build/?buildId=${screenshotDetails.build}&loadScreenshotId=${screenshotDetails._id}`;
     history.push(path);
-  }
+  };
 
   displayScreenshot = (currentScreenshot) => {
     if (!currentScreenshot) {
@@ -38,7 +38,7 @@ class CurrentImageView extends Component {
       );
     }
     return <img className="screenshot" src={currentScreenshot} alt="Screenshot" />;
-  }
+  };
 
   returnMakeBaselineButton = (currentScreenshotDetails) => {
     const { isBaseline, updateBaseline } = this.props;
@@ -55,7 +55,7 @@ class CurrentImageView extends Component {
       );
     }
     return null;
-  }
+  };
 
   generateAndOpenBaselineImage = (currenScreenshotDetails) => {
     const { generateDynamicBaseline } = this.props;
@@ -63,7 +63,7 @@ class CurrentImageView extends Component {
       .then((dynamicBaselineImage) => {
         this.navigateToImage(dynamicBaselineImage);
       });
-  }
+  };
 
   render() {
     const {

@@ -18,14 +18,14 @@ class ScreenshotHistoryView extends Component {
       return true;
     }
     return false;
-  }
+  };
 
   grabThumbnail = (screenshot) => {
     if (screenshot.thumbnail.startsWith('data:image')) {
       return screenshot.thumbnail;
     }
     return `data:image/png;base64, ${screenshot.thumbnail}`;
-  }
+  };
 
   render() {
     const {
@@ -56,8 +56,10 @@ class ScreenshotHistoryView extends Component {
 
     // ensure that the baseline is added if not in the history.
     const screenshotArray = currentScreenshotHistory.map((screenshot) => ({ ...screenshot }));
-    if (currentBaseLineDetails && !doesArrayContainImage(screenshotArray,
-      currentBaseLineDetails.screenshot)) {
+    if (currentBaseLineDetails && !doesArrayContainImage(
+      screenshotArray,
+      currentBaseLineDetails.screenshot,
+    )) {
       screenshotArray.push(currentBaseLineDetails.screenshot);
     }
 

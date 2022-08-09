@@ -16,7 +16,7 @@ class MatrixTable extends Component {
     };
   }
 
-  componentDidMount = () => {
+  componentDidMount() {
     this.reorganiseSuitsForMatrix();
   }
 
@@ -61,7 +61,7 @@ class MatrixTable extends Component {
       });
     });
     this.setState({ headers, matrixSuites, artifacts });
-  }
+  };
 
   render() {
     // populate suite rows and test rows

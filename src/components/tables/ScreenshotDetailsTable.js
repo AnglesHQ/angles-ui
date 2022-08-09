@@ -15,13 +15,13 @@ class ScreenshotDetailsTable extends Component {
     const { history } = this.props;
     e.preventDefault();
     history.push(`/screenshot-finder/?tag=${tag}`);
-  }
+  };
 
   navigateToViewsPage = (view, e) => {
     const { history } = this.props;
     e.preventDefault();
     history.push(`/screenshot-finder/?view=${view}`);
-  }
+  };
 
   render() {
     const { currentScreenshotDetails, isBaseline } = this.props;
