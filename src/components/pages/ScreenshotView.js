@@ -167,7 +167,6 @@ class ScreenshotView extends Component {
     this.loadScreenshot(baselineId);
     const { addImageToBuildScreenshots } = this.props;
     addImageToBuildScreenshots(baselineImage);
-    // this.navigateToImage(baselineImage);
     // add a popup to see if they want to set it as baseline.
     return baselineImage;
   };

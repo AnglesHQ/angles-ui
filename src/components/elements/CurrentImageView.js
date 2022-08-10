@@ -50,14 +50,6 @@ class CurrentImageView extends Component {
     return null;
   };
 
-  // generateAndOpenBaselineImage = (currenScreenshotDetails) => {
-  //   const { generateDynamicBaseline } = this.props;
-  //   generateDynamicBaseline(currenScreenshotDetails)
-  //     .then((dynamicBaselineImage) => {
-  //       this.navigateToImage(dynamicBaselineImage);
-  //     });
-  // };
-
   render() {
     const {
       currentScreenshotDetails,
@@ -90,14 +82,14 @@ class CurrentImageView extends Component {
                 {
                   this.returnMakeBaselineButton(currentScreenshotDetails)
                 }
+                <button
+                  onClick={() => generateDynamicBaseline(currentScreenshotDetails)}
+                  type="button"
+                  className="btn btn-outline-primary second-button"
+                >
+                  Generate Dynamic Baseline
+                </button>
               </span>
-              <button
-                onClick={() => generateDynamicBaseline(currentScreenshotDetails)}
-                type="button"
-                className="btn btn-outline-primary"
-              >
-                Generate Dynamic Baseline
-              </button>
             </td>
           </tr>
         </tbody>
