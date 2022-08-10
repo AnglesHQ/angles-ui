@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Table from 'react-bootstrap/Table';
-import { withRouter } from 'react-router-dom';
 import ScreenshotDetailsTable from '../tables/ScreenshotDetailsTable';
 
 class CurrentImageView extends Component {
@@ -10,12 +9,6 @@ class CurrentImageView extends Component {
       //
     };
   }
-
-  navigateToImage = (screenshotDetails) => {
-    const { history } = this.props;
-    const path = `/build/?buildId=${screenshotDetails.build}&loadScreenshotId=${screenshotDetails._id}`;
-    history.push(path);
-  };
 
   displayScreenshot = (currentScreenshot) => {
     if (!currentScreenshot) {
@@ -57,19 +50,20 @@ class CurrentImageView extends Component {
     return null;
   };
 
-  generateAndOpenBaselineImage = (currenScreenshotDetails) => {
-    const { generateDynamicBaseline } = this.props;
-    generateDynamicBaseline(currenScreenshotDetails)
-      .then((dynamicBaselineImage) => {
-        this.navigateToImage(dynamicBaselineImage);
-      });
-  };
+  // generateAndOpenBaselineImage = (currenScreenshotDetails) => {
+  //   const { generateDynamicBaseline } = this.props;
+  //   generateDynamicBaseline(currenScreenshotDetails)
+  //     .then((dynamicBaselineImage) => {
+  //       this.navigateToImage(dynamicBaselineImage);
+  //     });
+  // };
 
   render() {
     const {
       currentScreenshotDetails,
       currentScreenshot,
       isBaseline,
+      generateDynamicBaseline,
     } = this.props;
 
     return (
@@ -98,7 +92,7 @@ class CurrentImageView extends Component {
                 }
               </span>
               <button
-                onClick={() => this.generateAndOpenBaselineImage(currentScreenshotDetails)}
+                onClick={() => generateDynamicBaseline(currentScreenshotDetails)}
                 type="button"
                 className="btn btn-outline-primary"
               >
@@ -112,4 +106,4 @@ class CurrentImageView extends Component {
   }
 }
 
-export default withRouter(CurrentImageView);
+export default CurrentImageView;

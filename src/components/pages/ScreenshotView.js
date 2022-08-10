@@ -160,9 +160,22 @@ class ScreenshotView extends Component {
     }
   };
 
-  generateDynamicBaseline = (screenshot) => {
+  generateDynamicBaseline = async (screenshot) => {
     const { _id: screenshotId } = screenshot;
-    return this.screenshotRequests.getDynamicBaselineImage(screenshotId, 5);
+    const baselineImage = await this.screenshotRequests.getDynamicBaselineImage(screenshotId, 5);
+    const { _id: baselineId } = baselineImage;
+    this.loadScreenshot(baselineId);
+    const { addImageToBuildScreenshots } = this.props;
+    addImageToBuildScreenshots(baselineImage);
+    // this.navigateToImage(baselineImage);
+    // add a popup to see if they want to set it as baseline.
+    return baselineImage;
+  };
+
+  navigateToImage = (screenshotDetails) => {
+    const { history } = this.props;
+    const path = `/build/?buildId=${screenshotDetails.build}&loadScreenshotId=${screenshotDetails._id}`;
+    history.push(path);
   };
 
   setBaselineForView = (screenshot) => this.baselineRequests.setBaseline(screenshot)

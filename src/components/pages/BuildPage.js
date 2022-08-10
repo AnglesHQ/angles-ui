@@ -90,6 +90,14 @@ class BuildPage extends Component {
     this.setState({ filteredSuites, filterStates });
   };
 
+  addImageToBuildScreenshots = (screenshot) => {
+    const { screenshots } = this.state;
+    screenshots.push(screenshot);
+    this.setState({
+      screenshots,
+    });
+  }
+
   render() {
     const {
       currentBuild,
@@ -160,6 +168,7 @@ class BuildPage extends Component {
               buildScreenshots={screenshots}
               selectedScreenshotId={currentShotId}
               selectedTab={selectedTab}
+              addImageToBuildScreenshots={this.addImageToBuildScreenshots}
             />
           </Modal.Body>
         </Modal>
