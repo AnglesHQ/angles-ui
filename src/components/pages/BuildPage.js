@@ -53,7 +53,7 @@ class BuildPage extends Component {
       .catch(() => {
         this.setState({ currentBuild: {} });
       });
-  }
+  };
 
   getScreenshotDetails = (buildId) => {
     this.screenshotRequests.getScreenshotsForBuild(buildId)
@@ -63,11 +63,11 @@ class BuildPage extends Component {
       .catch(() => {
         this.setState({ screenshots: {} });
       });
-  }
+  };
 
   closeModal = () => {
     this.setState({ showModal: false });
-  }
+  };
 
   openModal = (imageId, tab) => {
     this.setState({
@@ -75,7 +75,7 @@ class BuildPage extends Component {
       currentShotId: imageId,
       selectedTab: tab,
     });
-  }
+  };
 
   filterBuilds = (filterStates) => {
     const filteredSuites = [];
@@ -88,6 +88,14 @@ class BuildPage extends Component {
       filteredSuites.push(newSuite);
     });
     this.setState({ filteredSuites, filterStates });
+  };
+
+  addImageToBuildScreenshots = (screenshot) => {
+    const { screenshots } = this.state;
+    screenshots.push(screenshot);
+    this.setState({
+      screenshots,
+    });
   }
 
   render() {
@@ -160,6 +168,7 @@ class BuildPage extends Component {
               buildScreenshots={screenshots}
               selectedScreenshotId={currentShotId}
               selectedTab={selectedTab}
+              addImageToBuildScreenshots={this.addImageToBuildScreenshots}
             />
           </Modal.Body>
         </Modal>

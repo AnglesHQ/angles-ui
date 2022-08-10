@@ -22,7 +22,7 @@ class ExecutionTable extends Component {
       });
     }
     return platformsToDisplay.join(', ');
-  }
+  };
 
   render() {
     let { executionState } = this.props;

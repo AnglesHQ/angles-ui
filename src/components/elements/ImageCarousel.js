@@ -26,7 +26,7 @@ class ImageCarousel extends Component {
       return true;
     }
     return false;
-  }
+  };
 
   handleArrowKeys = (event) => {
     const { selectedScreenshotDetails } = this.props;
@@ -38,7 +38,7 @@ class ImageCarousel extends Component {
       // right - next
       this.getNextImage(selectedScreenshotDetails._id);
     }
-  }
+  };
 
   getNextImage = (currentScreenshotId) => {
     const { screenshots, loadScreenshot } = this.props;
@@ -58,7 +58,7 @@ class ImageCarousel extends Component {
       loadScreenshot(screenshots[nextIndex]._id);
       this.Carousel.goToSlide(nextIndex, false);
     }
-  }
+  };
 
   loadScreenshotKeyDown = (event) => {
     const { screenshots, loadScreenshot } = this.props;
@@ -67,14 +67,14 @@ class ImageCarousel extends Component {
         loadScreenshot(screenshots[event.key - 1]._id);
       }
     }
-  }
+  };
 
   grabThumbnail = (screenshot) => {
     if (screenshot.thumbnail.startsWith('data:image')) {
       return screenshot.thumbnail;
     }
     return `data:image/png;base64, ${screenshot.thumbnail}`;
-  }
+  };
 
   render() {
     const { screenshots, loadScreenshot, deviceType } = this.props;
@@ -85,23 +85,28 @@ class ImageCarousel extends Component {
         slidesToSlide: 2, // optional, default to 1.
       },
       desktopxl: {
-        breakpoint: { max: 2500, min: 1400 },
+        breakpoint: { max: 2500, min: 1600 },
         items: 5,
         slidesToSlide: 2, // optional, default to 1.
       },
       desktop: {
-        breakpoint: { max: 1400, min: 1130 },
+        breakpoint: { max: 1600, min: 1400 },
         items: 4,
         slidesToSlide: 2, // optional, default to 1.
       },
       tablet: {
-        breakpoint: { max: 1130, min: 830 },
+        breakpoint: { max: 1400, min: 1000 },
         items: 3,
         slidesToSlide: 1, // optional, default to 1.
       },
       mobile: {
-        breakpoint: { max: 830, min: 0 },
+        breakpoint: { max: 1000, min: 700 },
         items: 2,
+        slidesToSlide: 1, // optional, default to 1.
+      },
+      mobilesm: {
+        breakpoint: { max: 700, min: 0 },
+        items: 1,
         slidesToSlide: 1, // optional, default to 1.
       },
     };

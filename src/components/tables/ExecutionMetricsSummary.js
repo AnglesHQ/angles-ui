@@ -21,7 +21,7 @@ class ExecutionMetricsSummary extends Component {
       totalTime += executionTime;
     });
     return getDurationAsString(moment.duration(totalTime));
-  }
+  };
 
   getTestCount = (period) => {
     let testCount = 0;
@@ -29,7 +29,7 @@ class ExecutionMetricsSummary extends Component {
       testCount += phase.tests.length;
     });
     return testCount;
-  }
+  };
 
   getPassRate = (period) => {
     if (period.result.TOTAL > 0) {
@@ -38,7 +38,7 @@ class ExecutionMetricsSummary extends Component {
       return `${percentage}%`;
     }
     return 'NA';
-  }
+  };
 
   render() {
     const { metrics } = this.props;

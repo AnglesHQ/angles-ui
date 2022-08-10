@@ -19,13 +19,13 @@ class BuildsTable extends Component {
     };
   }
 
-  componentDidMount = () => {
+  componentDidMount() {
     const { team, availableEnvironments } = this.props;
     this.resetEnvironmentsForTableFilter(availableEnvironments);
     this.resetComponentsForTableFilter(team);
   }
 
-  componentDidUpdate = (prevProps) => {
+  componentDidUpdate(prevProps) {
     // update environments
     const { team, availableEnvironments } = this.props;
     if (prevProps.availableEnvironments !== availableEnvironments) {
@@ -48,7 +48,7 @@ class BuildsTable extends Component {
     });
     environments.sort((a, b) => ((a.label > b.label) ? 1 : -1));
     this.setState({ environments, selectedEnvironments: [] });
-  }
+  };
 
   resetComponentsForTableFilter = (team) => {
     const uniqueComponents = {};
@@ -61,18 +61,18 @@ class BuildsTable extends Component {
     });
     components.sort((a, b) => ((a.label > b.label) ? 1 : -1));
     this.setState({ components, selectedComponents: [] });
-  }
+  };
 
   isRowSelected = (build) => {
     const { selectedBuilds } = this.props;
     return selectedBuilds[build._id];
-  }
+  };
 
   anyRowsSelected = () => {
     const { retrieveSelectedBuilds } = this.props;
     const selectedRowsArray = retrieveSelectedBuilds();
     return (Object.keys(selectedRowsArray).length > 0);
-  }
+  };
 
   getComponentName = (build) => build.team.components
     .find((component) => component._id === build.component);
@@ -81,13 +81,13 @@ class BuildsTable extends Component {
     const { setFilteredEnvironments } = this.props;
     this.setState({ selectedEnvironments });
     setFilteredEnvironments(selectedEnvironments.map((environment) => environment.value));
-  }
+  };
 
   setSelectedComponents = (selectedComponents) => {
     const { setFilteredComponents } = this.props;
     this.setState({ selectedComponents });
     setFilteredComponents(selectedComponents.map((component) => component.value));
-  }
+  };
 
   render() {
     const componentOverrideStrings = {

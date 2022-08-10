@@ -14,7 +14,7 @@ class AnglesMenu extends Component {
 
   handleStateChange = (state) => {
     this.setState({ menuOpen: state.isOpen });
-  }
+  };
 
   render() {
     const { menuOpen } = this.state;

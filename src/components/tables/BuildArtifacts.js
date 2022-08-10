@@ -11,7 +11,7 @@ class BuildArtifacts extends Component {
   changeExpandedState = () => {
     const { expanded } = this.state;
     this.setState({ expanded: !expanded });
-  }
+  };
 
   render() {
     const { expanded } = this.state;

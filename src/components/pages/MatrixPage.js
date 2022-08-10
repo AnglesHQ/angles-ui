@@ -27,7 +27,7 @@ class MatrixPage extends Component {
     if (!teamId) return [];
     return this.buildRequests.getBuilds(teamId, buildIds, true)
       .then((response) => this.setState({ matrixBuilds: response.builds }));
-  }
+  };
 
   render() {
     const { matrixBuilds } = this.state;

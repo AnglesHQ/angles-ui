@@ -48,12 +48,19 @@ class SummaryPage extends Component {
       endDate,
     } = this.state;
     if (currentTeam && currentTeam._id) {
-      this.getBuildsForTeam(currentTeam._id, 0, limit,
-        filteredEnvironments, filteredComponents, startDate, endDate);
+      this.getBuildsForTeam(
+        currentTeam._id,
+        0,
+        limit,
+        filteredEnvironments,
+        filteredComponents,
+        startDate,
+        endDate,
+      );
     }
   }
 
-  componentDidUpdate = (prevProps, prevStates) => {
+  componentDidUpdate(prevProps, prevStates) {
     // if team has changed grab new build details.
     const { currentTeam } = this.props;
     const {
@@ -68,8 +75,15 @@ class SummaryPage extends Component {
     console.log(`Team Changed [${hasTeamChanged}], Filters Changed [${selectionChanged}]`);
     if (hasTeamChanged || selectionChanged) {
       // if someone selects a new team or there was no previous team
-      this.getBuildsForTeam(currentTeam._id, 0, limit,
-        filteredEnvironments, filteredComponents, startDate, endDate);
+      this.getBuildsForTeam(
+        currentTeam._id,
+        0,
+        limit,
+        filteredEnvironments,
+        filteredComponents,
+        startDate,
+        endDate,
+      );
     }
   }
 
@@ -78,7 +92,7 @@ class SummaryPage extends Component {
     return (
       (prevProps.currentTeam === undefined && currentTeam !== undefined)
       || (prevProps.currentTeam && currentTeam && prevProps.currentTeam._id !== currentTeam._id));
-  }
+  };
 
   haveAnyFiltersChanged = (prevStates) => {
     const {
@@ -91,19 +105,33 @@ class SummaryPage extends Component {
       || prevStates.filteredComponents !== filteredComponents
       || prevStates.startDate !== startDate
       || prevStates.endDate !== endDate);
-  }
+  };
 
-  getBuildsForTeam = (teamId, skip, limit, filteredEnvironments, filteredComponents,
-    startDate, endDate) => {
+  getBuildsForTeam = (
+    teamId,
+    skip,
+    limit,
+    filteredEnvironments,
+    filteredComponents,
+    startDate,
+    endDate,
+  ) => {
     console.log(`Retrieving builds for team ${teamId}`);
-    this.buildRequests.getBuildsWithDateFilters(teamId, filteredEnvironments,
-      filteredComponents, skip, limit, startDate, endDate)
+    this.buildRequests.getBuildsWithDateFilters(
+      teamId,
+      filteredEnvironments,
+      filteredComponents,
+      skip,
+      limit,
+      startDate,
+      endDate,
+    )
       .then(({ builds, count: buildCount }) => this.setState({
         builds,
         buildCount,
         currentSkip: skip,
       }));
-  }
+  };
 
   getNextSetOfBuilds = () => {
     const {
@@ -115,9 +143,16 @@ class SummaryPage extends Component {
       endDate,
     } = this.state;
     const { currentTeam } = this.props;
-    this.getBuildsForTeam(currentTeam._id, (currentSkip + limit), limit,
-      filteredEnvironments, filteredComponents, startDate, endDate);
-  }
+    this.getBuildsForTeam(
+      currentTeam._id, (
+        currentSkip + limit),
+      limit,
+      filteredEnvironments,
+      filteredComponents,
+      startDate,
+      endDate,
+    );
+  };
 
   getPreviousSetOfBuilds = () => {
     const {
@@ -129,24 +164,33 @@ class SummaryPage extends Component {
       endDate,
     } = this.state;
     const { currentTeam } = this.props;
-    this.getBuildsForTeam(currentTeam._id, (currentSkip - limit), limit,
-      filteredEnvironments, filteredComponents, startDate, endDate);
-  }
+    this.getBuildsForTeam(
+      currentTeam._id, (
+        currentSkip - limit),
+      limit,
+      filteredEnvironments,
+      filteredComponents,
+      startDate,
+      endDate,
+    );
+  };
 
   toggleSelectedBuild = (build) => {
     const { selectedBuilds } = this.state;
-    const updatedBuilds = update(selectedBuilds,
-      { [build._id]: { $set: !selectedBuilds[build._id] } });
+    const updatedBuilds = update(
+      selectedBuilds,
+      { [build._id]: { $set: !selectedBuilds[build._id] } },
+    );
     this.setState({ selectedBuilds: updatedBuilds });
-  }
+  };
 
   setFilteredEnvironments = (filteredEnvironments) => {
     this.setState({ filteredEnvironments });
-  }
+  };
 
   setFilteredComponents = (filteredComponents) => {
     this.setState({ filteredComponents });
-  }
+  };
 
   /*
     Selected builds will contain both ticked and unticked, so we just want the selected ones.
@@ -154,25 +198,25 @@ class SummaryPage extends Component {
   retrieveSelectedBuilds = () => {
     const { selectedBuilds } = this.state;
     return Object.keys(selectedBuilds).filter((key) => selectedBuilds[key] === true);
-  }
+  };
 
   multipleBuildsSelected = () => {
     const selectedRowsArray = this.retrieveSelectedBuilds();
     return (selectedRowsArray.length > 1);
-  }
+  };
 
   anyBuildsSelected = () => {
     const selectedRowsArray = this.retrieveSelectedBuilds();
     return (selectedRowsArray.length > 0);
-  }
+  };
 
   navigateToMatrix = () => {
     const { history } = this.props;
     const selectedBuildIds = this.retrieveSelectedBuilds();
     history.push(`/matrix/?buildIds=${selectedBuildIds.join(',')}`);
-  }
+  };
 
-  updateBuildWithKeep = (buildId, keep) => this.buildRequests.setKeep(buildId, keep)
+  updateBuildWithKeep = (buildId, keep) => this.buildRequests.setKeep(buildId, keep);
 
   toggleBuildsToKeep = () => {
     const { builds } = this.state;
@@ -192,26 +236,26 @@ class SummaryPage extends Component {
       .then(() => {
         this.setState({ builds, selectedBuilds: {} });
       });
-  }
+  };
 
   clearSelection = () => {
     this.setState({ selectedBuilds: {} });
-  }
+  };
 
   previousPaginationDisabled = () => {
     const { currentSkip } = this.state;
     return (currentSkip === 0);
-  }
+  };
 
   nextPaginationDisabled = () => {
     const { currentSkip, limit, buildCount } = this.state;
     return ((currentSkip + limit) >= buildCount);
-  }
+  };
 
   handleTeamChange = (event) => {
     const { changeCurrentTeam } = this.props;
     changeCurrentTeam(event.target.value);
-  }
+  };
 
   handleDatesChange = ({ startDate, endDate }) => {
     this.setState({ startDate, endDate });

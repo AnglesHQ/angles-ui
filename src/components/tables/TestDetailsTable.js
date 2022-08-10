@@ -24,7 +24,7 @@ class TestDetailsTable extends Component {
       }
     }
     return '';
-  }
+  };
 
   render() {
     const { execution } = this.props;
