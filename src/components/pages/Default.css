@@ -17,6 +17,14 @@
     border: 1px solid red;
 }
 
+.card-screenshot-image {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-height: 250px;
+  width: auto;
+}
+
 .thumbnail-card .card-body {
   padding: 0px;
 }
@@ -54,6 +62,14 @@
   padding-bottom: 10px;
   margin-bottom: 10px;
   border-bottom: 1px solid #b5a5a53b;
+}
+
+.card-image-history {
+  width: auto;
+  max-height: 250px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
 }
 
 .card-deck-history .card-body {

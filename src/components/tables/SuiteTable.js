@@ -18,19 +18,19 @@ class SuiteTable extends Component {
       return 'N/A';
     }
     return Object.keys(result).reduce((sum, key) => sum + parseFloat(result[key] || 0), 0);
-  }
+  };
 
   expandAll = () => {
     this.setState({ executionStates: this.getStatesDefault(true, true) });
-  }
+  };
 
   expandExecutions = () => {
     this.setState({ executionStates: this.getStatesDefault(true, false) });
-  }
+  };
 
   collapseAll = () => {
     this.setState({ executionStates: this.getStatesDefault(false, false) });
-  }
+  };
 
   getStatesDefault = (expanded, expandActions) => {
     const executionStates = {};
@@ -45,20 +45,20 @@ class SuiteTable extends Component {
       });
     });
     return executionStates;
-  }
+  };
 
   toggleExecution = (executionId) => {
     const { executionStates } = this.state;
     executionStates[executionId].isOpen = !executionStates[executionId].isOpen;
     this.setState({ executionStates });
-  }
+  };
 
   toggleAction = (executionId, actionIndex) => {
     const { executionStates } = this.state;
     executionStates[executionId]
       .actions[actionIndex] = !executionStates[executionId].actions[actionIndex];
     this.setState({ executionStates });
-  }
+  };
 
   render() {
     const { suite, screenshots, openModal } = this.props;

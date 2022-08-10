@@ -18,16 +18,21 @@ class StepsTable extends Component {
     if (screenshots !== undefined && screenshotId !== undefined) {
       const image = screenshots.filter((screenshot) => screenshot._id === screenshotId)[0];
       if (image !== undefined) {
-        return image.thumbnail;
+        if (image.thumbnail.startsWith('data:image')) {
+          // to handle move to jimp
+          return image.thumbnail;
+        }
+        return `data:image/png;base64, ${image.thumbnail}`;
       }
     }
     return undefined;
-  }
+  };
 
+  // eslint-disable-next-line react/no-unused-class-component-methods
   navigateToImageDetails = (imageId) => {
     const { history } = this.props;
     history.push(`/image/${imageId}`);
-  }
+  };
 
   convertTextToLinks = (content) => {
     const reg = /(http:\/\/|https:\/\/)((\w|=|\?|\.|\/|&|-)+)/g;
@@ -35,7 +40,7 @@ class StepsTable extends Component {
       return content.replace(reg, "<a href='$1$2' target='_blank'>$1$2</a>");
     }
     return '';
-  }
+  };
 
   render() {
     const { index, action, openModal } = this.props;
@@ -71,7 +76,7 @@ class StepsTable extends Component {
                       <td onClick={() => openModal(step.screenshot)}>
                         <img
                           className="screenshot-thumbnail"
-                          src={`data:image/png;base64, ${this.getScreenShot(step.screenshot)}`}
+                          src={`${this.getScreenShot(step.screenshot)}`}
                           alt="Thumbnail"
                         />
                       </td>

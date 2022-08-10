@@ -54,8 +54,9 @@ class BaselineImageView extends Component {
       });
       this.setState({ regions: newRegions });
     }
-  }
+  };
 
+  // eslint-disable-next-line react/no-unused-class-component-methods
   changeRegionData = (index, event) => {
     const { regions } = this.state;
     const region = regions[index];
@@ -69,7 +70,7 @@ class BaselineImageView extends Component {
       default:
         break;
     }
-  }
+  };
 
   deleteRegion = (index) => {
     const { regions } = this.state;
@@ -77,7 +78,7 @@ class BaselineImageView extends Component {
     let regionsArray = [];
     regionsArray = regions.filter((s) => s !== region);
     this.onChange(regionsArray);
-  }
+  };
 
   regionRenderer = (regionProps) => {
     const { editing } = this.state;
@@ -101,7 +102,7 @@ class BaselineImageView extends Component {
       );
     }
     return null;
-  }
+  };
 
   toggleEditing = () => {
     const { editing } = this.state;
@@ -111,7 +112,7 @@ class BaselineImageView extends Component {
       makeUpdateBaselineRequest(currentBaseLineDetails._id, undefined, ignoreBlocks);
     }
     this.setState({ editing: !editing });
-  }
+  };
 
   resetIgnoreBlocks = () => {
     const { currentBaseLineDetails } = this.props;
@@ -128,8 +129,9 @@ class BaselineImageView extends Component {
       );
     });
     this.setState({ regions: existingIgnoreBlocks, editing: false });
-  }
+  };
 
+  // eslint-disable-next-line react/no-unused-class-component-methods
   init(newRegions) {
     this.setState({ regions: newRegions });
   }

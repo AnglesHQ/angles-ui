@@ -59,7 +59,7 @@ class PlatformMetricsSummary extends Component {
       });
     });
     return deviceMetrics;
-  }
+  };
 
   platformBackgroundColor = (platform, platformColors) => {
     const hex = platformColors[platform.platformName].color;
@@ -75,7 +75,7 @@ class PlatformMetricsSummary extends Component {
       b = `0x${hex[5]}${hex[6]}`;
     }
     return `rgb(${+r},${+g},${+b}, 0.4)`;
-  }
+  };
 
   render() {
     const { metrics, platformColors } = this.props;

@@ -31,11 +31,15 @@ class ScreenshotLibraryPage extends Component {
     const { numberOfDays } = this.state;
     this.screenshotRequests = new ScreenshotRequests(axios);
     if (query.view) {
-      this.getGroupedScreenshotByPlatform(query.view,
-        query.numberOfDays ? (query.numberOfDays) : numberOfDays);
+      this.getGroupedScreenshotByPlatform(
+        query.view,
+        query.numberOfDays ? (query.numberOfDays) : numberOfDays,
+      );
     } else if (query.tag) {
-      this.getGroupedScreenshotByTag(query.tag,
-        query.numberOfDays ? (query.numberOfDays) : numberOfDays);
+      this.getGroupedScreenshotByTag(
+        query.tag,
+        query.numberOfDays ? (query.numberOfDays) : numberOfDays,
+      );
     }
   }
 
@@ -56,7 +60,7 @@ class ScreenshotLibraryPage extends Component {
       .catch(() => {
         this.setState({ retrievingScreenshots: false });
       });
-  }
+  };
 
   getGroupedScreenshotByTag = (tag, numberOfDays) => {
     this.setState({ retrievingScreenshots: true, filteredScreenshots: undefined });
@@ -84,19 +88,19 @@ class ScreenshotLibraryPage extends Component {
       .catch(() => {
         this.setState({ retrievingScreenshots: false });
       });
-  }
+  };
 
   handleViewChange = (event) => {
     this.setState({ view: event.target.value, tag: '' });
-  }
+  };
 
   handleTagChange = (event) => {
     this.setState({ tag: event.target.value, view: '' });
-  }
+  };
 
   handleNumberOfDaysChange = (event) => {
     this.setState({ numberOfDays: event.target.value });
-  }
+  };
 
   submitScreenshotSearch = (event) => {
     const { view, tag, numberOfDays } = this.state;
@@ -107,14 +111,14 @@ class ScreenshotLibraryPage extends Component {
     } else if (tag !== '') {
       this.getGroupedScreenshotByTag(tag, numberOfDays);
     }
-  }
+  };
 
   filterByPlatform = (event) => {
     const { groupedScreenshots } = this.state;
     const filteredScreenshots = groupedScreenshots
       .filter((screenshot) => screenshot.platformId === event.target.value);
     this.setState({ filteredScreenshots });
-  }
+  };
 
   render() {
     const {

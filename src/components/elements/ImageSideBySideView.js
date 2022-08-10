@@ -32,7 +32,7 @@ class ImageSideBySideView extends Component {
       );
     }
     return <img className="screenshot" src={currentBaseline} alt="Baseline Screenshot" />;
-  }
+  };
 
   displaySideBySideScreenshot = (currentScreenshot) => {
     if (!currentScreenshot) {
@@ -55,7 +55,7 @@ class ImageSideBySideView extends Component {
       );
     }
     return <img className="screenshot" src={currentScreenshot} alt="Screenshot" />;
-  }
+  };
 
   render() {
     const {

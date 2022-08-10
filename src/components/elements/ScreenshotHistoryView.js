@@ -18,7 +18,14 @@ class ScreenshotHistoryView extends Component {
       return true;
     }
     return false;
-  }
+  };
+
+  grabThumbnail = (screenshot) => {
+    if (screenshot.thumbnail.startsWith('data:image')) {
+      return screenshot.thumbnail;
+    }
+    return `data:image/png;base64, ${screenshot.thumbnail}`;
+  };
 
   render() {
     const {
@@ -49,8 +56,10 @@ class ScreenshotHistoryView extends Component {
 
     // ensure that the baseline is added if not in the history.
     const screenshotArray = currentScreenshotHistory.map((screenshot) => ({ ...screenshot }));
-    if (currentBaseLineDetails && !doesArrayContainImage(screenshotArray,
-      currentBaseLineDetails.screenshot)) {
+    if (currentBaseLineDetails && !doesArrayContainImage(
+      screenshotArray,
+      currentBaseLineDetails.screenshot,
+    )) {
       screenshotArray.push(currentBaseLineDetails.screenshot);
     }
 
@@ -61,9 +70,9 @@ class ScreenshotHistoryView extends Component {
             { isBaseline(screenshot._id) ? (<div className="card-img-overlay baseline-overlay"><p>baseline</p></div>) : null }
             { !this.isSelectedId(screenshot._id) ? (
               <a title="Go to screenshot" href={`/build?buildId=${screenshot.build}&loadScreenshotId=${screenshot._id}`}>
-                <Card.Img variant="top" src={`data:image/png;base64, ${screenshot.thumbnail}`} />
+                <Card.Img className="card-image-history" variant="top" src={`${this.grabThumbnail(screenshot)}`} />
               </a>
-            ) : <Card.Img variant="top" src={`data:image/png;base64, ${screenshot.thumbnail}`} /> }
+            ) : <Card.Img className="card-image-history" variant="top" src={`${this.grabThumbnail(screenshot)}`} /> }
             <Card.Body>
               <Card.Footer>
                 <div>

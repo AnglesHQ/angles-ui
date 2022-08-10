@@ -37,12 +37,12 @@ class SummaryPage extends Component {
       });
     });
     this.getScreenshotDetails(screenshotIdArray);
-  }
+  };
 
   getScreenshotDetails = (screenshotIds) => this.screenshotRequests.getScreenshots(screenshotIds)
     .then((screenshots) => {
       this.setState({ screenshots });
-    })
+    });
 
   getExecutionHistoryForExecutionId = (executionId, skip, limit) => this.executionRequests
     .getExecutionHistory(executionId, skip, limit)
@@ -50,11 +50,11 @@ class SummaryPage extends Component {
       const { executions } = response;
       this.retrieveScreenshotDetailsForExecutions(executions);
       this.setState({ executions });
-    })
+    });
 
   closeModal = () => {
     this.setState({ showModal: false });
-  }
+  };
 
   openModal = (imageId, tab) => {
     this.setState({
@@ -62,7 +62,7 @@ class SummaryPage extends Component {
       currentShotId: imageId,
       selectedTab: tab,
     });
-  }
+  };
 
   calculateSuiteResults = (suite) => {
     suite.executions.forEach((execution) => {
@@ -70,7 +70,7 @@ class SummaryPage extends Component {
       suite.result[execution.status] += 1;
     });
     return suite;
-  }
+  };
 
   render() {
     const {
