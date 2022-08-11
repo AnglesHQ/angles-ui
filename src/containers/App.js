@@ -5,6 +5,7 @@ import queryString from 'query-string';
 import Cookies from 'js-cookie';
 import { connect } from 'react-redux';
 import { EnvironmentRequests, TeamRequests } from 'angles-javascript-client';
+import Modal from 'react-bootstrap/Modal';
 import AnglesMenu from '../components/menu/AnglesMenu';
 import SummaryPage from '../components/pages/SummaryPage';
 import BuildPage from '../components/pages/BuildPage';
@@ -18,6 +19,7 @@ import '../components/charts/Charts.css';
 import MetricsPage from '../components/pages/MetricsPage';
 import { storeCurrentTeam, storeTeams, storeTeamsError } from '../redux/teamActions';
 import { storeEnvironments } from '../redux/environmentActions';
+import { clearCurrentErrorMessage } from '../redux/notificationActions';
 
 axios.defaults.baseURL = `${process.env.REACT_APP_ANGLES_API_URL}/rest/api/v1.0`;
 
@@ -104,17 +106,31 @@ class App extends Component {
     // TODO: handle catch.
   };
 
+  closeErrorModal = () => {
+    const { clearErrorMessage } = this.props;
+    clearErrorMessage();
+  }
+
   render() {
     const {
       history,
       teams,
       currentTeam,
       teamsError,
+      currentErrorMessage,
     } = this.props;
     return (
       <div id="outer-container">
         <AnglesMenu />
         <main id="page-wrap">
+          <Modal show={(currentErrorMessage !== undefined)} onHide={this.closeErrorModal} dialogClassName="error-modal">
+            <Modal.Header closeButton>
+              <Modal.Title>Error</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {currentErrorMessage}
+            </Modal.Body>
+          </Modal>
           <Switch>
             <Route
               exact
@@ -194,11 +210,13 @@ const mapDispatchToProps = (dispatch) => ({
   saveTeams: (teams) => dispatch(storeTeams(teams)),
   saveTeamsError: (teamsError) => dispatch(storeTeamsError(teamsError)),
   saveEnvironments: (environments) => dispatch(storeEnvironments(environments)),
+  clearErrorMessage: () => dispatch(clearCurrentErrorMessage()),
 });
 
 const mapStateToProps = (state) => ({
   currentTeam: state.teamsReducer.currentTeam,
   teams: state.teamsReducer.teams,
   teamsError: state.teamsReducer.teamsError,
+  currentErrorMessage: state.notificationReducer.currentErrorMessage,
 });
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { connect } from 'react-redux';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import Alert from 'react-bootstrap/Alert';
@@ -13,6 +14,7 @@ import ImageSideBySideView from '../elements/ImageSideBySideView';
 import ScreenshotHistoryView from '../elements/ScreenshotHistoryView';
 import 'react-multi-carousel/lib/styles.css';
 import './Default.css';
+import { storeCurrentErrorMessage } from '../../redux/notificationActions';
 
 class ScreenshotView extends Component {
   constructor(props) {
@@ -161,14 +163,25 @@ class ScreenshotView extends Component {
   };
 
   generateDynamicBaseline = async (screenshot) => {
+    const { storeErrorMessage } = this.props;
     const { _id: screenshotId } = screenshot;
-    const baselineImage = await this.screenshotRequests.getDynamicBaselineImage(screenshotId, 5);
-    const { _id: baselineId } = baselineImage;
-    this.loadScreenshot(baselineId);
-    const { addImageToBuildScreenshots } = this.props;
-    addImageToBuildScreenshots(baselineImage);
-    // add a popup to see if they want to set it as baseline.
-    return baselineImage;
+    this.screenshotRequests.getDynamicBaselineImage(screenshotId, 5)
+      .then((baselineImage) => {
+        const { _id: baselineId } = baselineImage;
+        this.loadScreenshot(baselineId);
+        const { addImageToBuildScreenshots } = this.props;
+        addImageToBuildScreenshots(baselineImage);
+        return baselineImage;
+      })
+      .catch((error) => {
+        const { response: { data } } = error;
+        if (data && data.message) {
+          storeErrorMessage(data.message);
+        } else {
+          storeErrorMessage(error.message);
+        }
+        return undefined;
+      });
   };
 
   navigateToImage = (screenshotDetails) => {
@@ -303,4 +316,14 @@ class ScreenshotView extends Component {
   }
 }
 
-export default withRouter(ScreenshotView);
+const mapDispatchToProps = (dispatch) => ({
+  storeErrorMessage: (currentErrorMessage) => dispatch(
+    storeCurrentErrorMessage(currentErrorMessage),
+  ),
+});
+
+const mapStateToProps = (state) => ({
+  currentErrorMessage: state.notificationReducer.currentErrorMessage,
+});
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ScreenshotView));
