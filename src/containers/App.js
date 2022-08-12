@@ -123,9 +123,17 @@ class App extends Component {
       <div id="outer-container">
         <AnglesMenu />
         <main id="page-wrap">
-          <Modal show={(currentErrorMessage !== undefined)} onHide={this.closeErrorModal} dialogClassName="error-modal">
+          <Modal
+            show={(currentErrorMessage !== undefined)}
+            onHide={this.closeErrorModal}
+            dialogClassName="error-modal"
+            centered
+          >
             <Modal.Header closeButton>
-              <Modal.Title>Error</Modal.Title>
+              <Modal.Title>
+                <i className="fa fa-exclamation" aria-hidden="true" />
+                <span>Error</span>
+              </Modal.Title>
             </Modal.Header>
             <Modal.Body>
               {currentErrorMessage}
