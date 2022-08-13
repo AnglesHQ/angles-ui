@@ -98,6 +98,14 @@ class BuildPage extends Component {
     });
   }
 
+  removeImageFromBuildScreenshots = (screenshotToRemove) => {
+    const { screenshots } = this.state;
+    const index = screenshots.findIndex((screenshot) => screenshot._id === screenshotToRemove._id);
+    if (index > -1) {
+      this.setState(screenshots.splice(index, 1));
+    }
+  }
+
   render() {
     const {
       currentBuild,
@@ -169,6 +177,7 @@ class BuildPage extends Component {
               selectedScreenshotId={currentShotId}
               selectedTab={selectedTab}
               addImageToBuildScreenshots={this.addImageToBuildScreenshots}
+              removeImageFromBuildScreenshots={this.removeImageFromBuildScreenshots}
             />
           </Modal.Body>
         </Modal>
