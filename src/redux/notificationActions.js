@@ -19,3 +19,14 @@ export const CLEAR_CURRENT_INFO_MESSAGE = 'CLEAR_CURRENT_INFO_MESSAGE';
 export const clearCurrentInfoMessage = () => ({
   type: CLEAR_CURRENT_INFO_MESSAGE,
 });
+
+export const STORE_CURRENT_LOADER_MESSAGE = 'STORE_CURRENT_LOADER_MESSAGE';
+export const storeCurrentLoaderMessage = (currentLoaderMessage) => ({
+  type: STORE_CURRENT_LOADER_MESSAGE,
+  payload: { currentLoaderMessage },
+});
+
+export const CLEAR_CURRENT_LOADER_MESSAGE = 'CLEAR_CURRENT_LOADER_MESSAGE';
+export const clearCurrentLoaderMessage = () => ({
+  type: CLEAR_CURRENT_LOADER_MESSAGE,
+});

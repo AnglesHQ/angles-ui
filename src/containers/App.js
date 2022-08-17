@@ -20,7 +20,7 @@ import '../components/charts/Charts.css';
 import MetricsPage from '../components/pages/MetricsPage';
 import { storeCurrentTeam, storeTeams, storeTeamsError } from '../redux/teamActions';
 import { storeEnvironments } from '../redux/environmentActions';
-import { clearCurrentErrorMessage, clearCurrentInfoMessage } from '../redux/notificationActions';
+import { clearCurrentErrorMessage, clearCurrentInfoMessage, clearCurrentLoaderMessage } from '../redux/notificationActions';
 
 axios.defaults.baseURL = `${process.env.REACT_APP_ANGLES_API_URL}/rest/api/v1.0`;
 
@@ -117,6 +117,11 @@ class App extends Component {
     clearInfoMessage();
   }
 
+  closeLoaderModal = () => {
+    const { clearLoaderMessage } = this.props;
+    clearLoaderMessage();
+  }
+
   render() {
     const {
       history,
@@ -125,6 +130,7 @@ class App extends Component {
       teamsError,
       currentErrorMessage,
       currentInfoMessage,
+      currentLoaderMessage,
     } = this.props;
     return (
       <div id="outer-container">
@@ -191,6 +197,26 @@ class App extends Component {
                   }
                   <Button onClick={this.closeInfoModal}>OK</Button>
                 </Modal.Footer>
+              </Modal>
+            ) : null)
+          }
+          {
+            (currentLoaderMessage ? (
+              <Modal
+                show={(currentLoaderMessage !== undefined)}
+                dialogClassName="info-modal"
+                onHide={this.closeLoaderModal}
+                centered
+              >
+                <Modal.Header closeButton>
+                  <Modal.Title>
+                    <i className="fas fa-spinner fa-pulse fa-2x" />
+                    <span>{currentLoaderMessage.title}</span>
+                  </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  {currentLoaderMessage.body}
+                </Modal.Body>
               </Modal>
             ) : null)
           }
@@ -275,6 +301,7 @@ const mapDispatchToProps = (dispatch) => ({
   saveEnvironments: (environments) => dispatch(storeEnvironments(environments)),
   clearErrorMessage: () => dispatch(clearCurrentErrorMessage()),
   clearInfoMessage: () => dispatch(clearCurrentInfoMessage()),
+  clearLoaderMessage: () => dispatch(clearCurrentLoaderMessage()),
 });
 
 const mapStateToProps = (state) => ({
@@ -283,5 +310,6 @@ const mapStateToProps = (state) => ({
   teamsError: state.teamsReducer.teamsError,
   currentErrorMessage: state.notificationReducer.currentErrorMessage,
   currentInfoMessage: state.notificationReducer.currentInfoMessage,
+  currentLoaderMessage: state.notificationReducer.currentLoaderMessage,
 });
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

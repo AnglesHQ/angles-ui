@@ -6,7 +6,8 @@ class CurrentImageView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      //
+      dynamicBaselineButtonEnabled: true,
+      deleteScreenshotButtonEnable: true,
     };
   }
 
@@ -50,15 +51,27 @@ class CurrentImageView extends Component {
     return null;
   };
 
+  deleteScreenshotClick = async () => {
+    const { currentScreenshotDetails, deleteScreenshot } = this.props;
+    await this.setState({ deleteScreenshotButtonEnable: false });
+    await deleteScreenshot(currentScreenshotDetails);
+    await this.setState({ deleteScreenshotButtonEnable: true });
+  }
+
+  generateDynamicBaselineClick = async () => {
+    const { currentScreenshotDetails, generateDynamicBaseline } = this.props;
+    await this.setState({ dynamicBaselineButtonEnabled: false });
+    await generateDynamicBaseline(currentScreenshotDetails);
+    await this.setState({ dynamicBaselineButtonEnabled: true });
+  }
+
   render() {
     const {
       currentScreenshotDetails,
       currentScreenshot,
       isBaseline,
-      generateDynamicBaseline,
-      deleteScreenshot,
     } = this.props;
-
+    const { dynamicBaselineButtonEnabled, deleteScreenshotButtonEnable } = this.state;
     return (
       <Table>
         <tbody>
@@ -84,7 +97,8 @@ class CurrentImageView extends Component {
                   this.returnMakeBaselineButton(currentScreenshotDetails)
                 }
                 <button
-                  onClick={() => generateDynamicBaseline(currentScreenshotDetails)}
+                  onClick={() => this.generateDynamicBaselineClick()}
+                  disabled={!dynamicBaselineButtonEnabled}
                   type="button"
                   className="btn btn-outline-primary second-button"
                 >
@@ -95,7 +109,8 @@ class CurrentImageView extends Component {
                     currentScreenshotDetails.type && currentScreenshotDetails.type === 'DYNAMIC'
                       && !isBaseline(currentScreenshotDetails._id) ? (
                         <button
-                          onClick={() => deleteScreenshot(currentScreenshotDetails)}
+                          onClick={() => this.deleteScreenshotClick()}
+                          disabled={!deleteScreenshotButtonEnable}
                           type="button"
                           className="btn btn-outline-primary second-button"
                           title="Only available for dynamic baselines that are not configured as a baseline."
