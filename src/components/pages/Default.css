@@ -345,4 +345,15 @@
   cursor: pointer;
   padding-left: 15px;
   color: #d39e00;
+  border: none;
+  background: none;
+}
+
+#report-download:focus {
+  outline: 0;
+}
+
+#report-download:disabled,
+#report-download[disabled]{
+  color: #aba79a;
 }
