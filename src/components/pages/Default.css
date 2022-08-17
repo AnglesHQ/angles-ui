@@ -339,3 +339,10 @@
 .about-versions-table {
   width: 600px;
 }
+
+#report-download {
+  font-size: 33px;
+  cursor: pointer;
+  padding-left: 15px;
+  color: #d39e00;
+}
