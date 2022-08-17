@@ -3,6 +3,7 @@ import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
 import queryString from 'query-string';
 import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { saveAs } from 'file-saver';
 import { BuildRequests, ScreenshotRequests } from 'angles-javascript-client';
 import BuildResultsPieChart from '../charts/BuildResultsPieChart';
@@ -13,6 +14,10 @@ import BuildArtifacts from '../tables/BuildArtifacts';
 import '../charts/Charts.css';
 import './Default.css';
 import ScreenshotView from './ScreenshotView';
+import {
+  clearCurrentLoaderMessage,
+  storeCurrentLoaderMessage,
+} from '../../redux/notificationActions';
 
 class BuildPage extends Component {
   constructor(props) {
@@ -26,6 +31,7 @@ class BuildPage extends Component {
       currentBuild: null,
       filterStates: [],
       filteredSuites: null,
+      downloadReportButtonEnabled: true,
     };
     const { query } = this.state;
     this.buildRequests = new BuildRequests(axios);
@@ -108,9 +114,16 @@ class BuildPage extends Component {
   }
 
   downloadReport = (buildId) => {
+    const { storeLoaderMessage, clearLoaderMessage } = this.props;
+    this.setState({ downloadReportButtonEnabled: false });
+    storeLoaderMessage({ title: 'Generating Report', body: `Generating html report for build with id ${buildId}` });
     this.buildRequests.getBuildReport(buildId)
       .then((response) => {
         saveAs(new Blob([response], { type: 'text/html' }), `${buildId}.html`);
+      })
+      .finally(() => {
+        clearLoaderMessage();
+        this.setState({ downloadReportButtonEnabled: true });
       });
   }
 
@@ -124,6 +137,7 @@ class BuildPage extends Component {
       filteredSuites,
       // eslint-disable-next-line no-unused-vars
       filterStates,
+      downloadReportButtonEnabled,
     } = this.state;
     if (!currentBuild || !screenshots) {
       return (
@@ -155,9 +169,14 @@ class BuildPage extends Component {
           <span>
             { `Build: ${currentBuild.name}`}
           </span>
-          <span id="report-download" onClick={() => { this.downloadReport(currentBuild._id); }}>
+          <button
+            id="report-download"
+            type="button"
+            disabled={!downloadReportButtonEnabled}
+            onClick={() => { this.downloadReport(currentBuild._id); }}
+          >
             <i className="fa-solid fa-file-arrow-down" />
-          </span>
+          </button>
         </h1>
         <BuildSummary build={currentBuild} screenshots={screenshots} openModal={this.openModal} />
         <BuildArtifacts build={currentBuild} />
@@ -199,4 +218,11 @@ class BuildPage extends Component {
   }
 }
 
-export default withRouter(BuildPage);
+const mapDispatchToProps = (dispatch) => ({
+  storeLoaderMessage: (currentLoaderMessage) => dispatch(
+    storeCurrentLoaderMessage(currentLoaderMessage),
+  ),
+  clearLoaderMessage: () => dispatch(clearCurrentLoaderMessage()),
+});
+
+export default withRouter(connect(null, mapDispatchToProps)(BuildPage));

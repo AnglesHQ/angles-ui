@@ -14,7 +14,7 @@ import ImageSideBySideView from '../elements/ImageSideBySideView';
 import ScreenshotHistoryView from '../elements/ScreenshotHistoryView';
 import 'react-multi-carousel/lib/styles.css';
 import './Default.css';
-import { storeCurrentErrorMessage, storeCurrentInfoMessage } from '../../redux/notificationActions';
+import { storeCurrentErrorMessage, storeCurrentInfoMessage, storeCurrentLoaderMessage } from '../../redux/notificationActions';
 
 class ScreenshotView extends Component {
   constructor(props) {
@@ -179,7 +179,13 @@ class ScreenshotView extends Component {
   };
 
   deleteScreenshot = (screenshot) => {
-    const { storeErrorMessage, storeInfoMessage, removeImageFromBuildScreenshots } = this.props;
+    const {
+      storeErrorMessage,
+      storeInfoMessage,
+      storeLoaderMessage,
+      removeImageFromBuildScreenshots,
+    } = this.props;
+    storeLoaderMessage({ title: 'Deleting screenshot', body: `Deleting screenshot with id ${screenshot._id}` });
     this.screenshotRequests.deleteScreenshot(screenshot._id)
       .then((result) => {
         const messageBody = (<div>{result.message}</div>);
@@ -197,10 +203,11 @@ class ScreenshotView extends Component {
       });
   }
 
-  generateDynamicBaseline = async (screenshot) => {
-    const { storeErrorMessage, storeInfoMessage } = this.props;
+  generateDynamicBaseline = (screenshot) => {
+    const { storeErrorMessage, storeInfoMessage, storeLoaderMessage } = this.props;
     const { _id: screenshotId } = screenshot;
-    this.screenshotRequests.getDynamicBaselineImage(screenshotId, 5)
+    storeLoaderMessage({ title: 'Creating dynamic baseline...', body: 'Creating dynamic baseline. This could take a few seconds.' });
+    return this.screenshotRequests.getDynamicBaselineImage(screenshotId, 5)
       .then((baselineImage) => {
         const { _id: baselineId } = baselineImage;
         this.loadScreenshot(baselineId);
@@ -375,11 +382,15 @@ const mapDispatchToProps = (dispatch) => ({
   storeInfoMessage: (currentInfoMessage) => dispatch(
     storeCurrentInfoMessage(currentInfoMessage),
   ),
+  storeLoaderMessage: (currentLoaderMessage) => dispatch(
+    storeCurrentLoaderMessage(currentLoaderMessage),
+  ),
 });
 
 const mapStateToProps = (state) => ({
   currentErrorMessage: state.notificationReducer.currentErrorMessage,
   currentInfoMessage: state.notificationReducer.currentInfoMessage,
+  currentLoaderMessage: state.notificationReducer.currentLoaderMessage,
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ScreenshotView));
