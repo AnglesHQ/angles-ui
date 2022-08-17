@@ -116,6 +116,56 @@
 .modal-content {
   min-height: 200px;
 }
+.error-modal .modal-content {
+  border: #721c24 1px solid;
+  min-height: 160px;
+}
+
+.error-modal .modal-header {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.error-modal .modal-body {
+  color: #721c24;
+  font-weight: 500;
+}
+
+.error-modal span {
+  padding-left: 15px;
+}
+
+.error-modal .error-button {
+  background: #f8d7da;
+  color: #721c24;
+  font-weight: 500;
+  border: #721c24 1px solid;
+}
+.error-modal .error-button:hover {
+  background: #efa8ae;
+  color: #721c24;
+  font-weight: 500;
+}
+
+.info-modal .modal-content {
+  border: #084298 1px solid;
+  min-height: 160px;
+}
+
+.info-modal .modal-header {
+  background: #cfe2ff;
+  color: #084298;
+}
+
+.info-modal .modal-body {
+  color: #084298;
+  font-weight: 500;
+}
+
+.info-modal span {
+  padding-left: 15px;
+}
+
 
 .nav-tabs {
   padding-left: 10px;
@@ -288,4 +338,11 @@
 
 .about-versions-table {
   width: 600px;
+}
+
+#report-download {
+  font-size: 33px;
+  cursor: pointer;
+  padding-left: 15px;
+  color: #d39e00;
 }

@@ -5,6 +5,8 @@ import queryString from 'query-string';
 import Cookies from 'js-cookie';
 import { connect } from 'react-redux';
 import { EnvironmentRequests, TeamRequests } from 'angles-javascript-client';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 import AnglesMenu from '../components/menu/AnglesMenu';
 import SummaryPage from '../components/pages/SummaryPage';
 import BuildPage from '../components/pages/BuildPage';
@@ -18,6 +20,7 @@ import '../components/charts/Charts.css';
 import MetricsPage from '../components/pages/MetricsPage';
 import { storeCurrentTeam, storeTeams, storeTeamsError } from '../redux/teamActions';
 import { storeEnvironments } from '../redux/environmentActions';
+import { clearCurrentErrorMessage, clearCurrentInfoMessage } from '../redux/notificationActions';
 
 axios.defaults.baseURL = `${process.env.REACT_APP_ANGLES_API_URL}/rest/api/v1.0`;
 
@@ -104,17 +107,93 @@ class App extends Component {
     // TODO: handle catch.
   };
 
+  closeErrorModal = () => {
+    const { clearErrorMessage } = this.props;
+    clearErrorMessage();
+  }
+
+  closeInfoModal = () => {
+    const { clearInfoMessage } = this.props;
+    clearInfoMessage();
+  }
+
   render() {
     const {
       history,
       teams,
       currentTeam,
       teamsError,
+      currentErrorMessage,
+      currentInfoMessage,
     } = this.props;
     return (
       <div id="outer-container">
         <AnglesMenu />
         <main id="page-wrap">
+          {
+            (currentErrorMessage ? (
+              <Modal
+                show={(currentErrorMessage !== undefined)}
+                onHide={this.closeErrorModal}
+                dialogClassName="error-modal"
+                centered
+              >
+                <Modal.Header closeButton>
+                  <Modal.Title>
+                    <i className="fa fa-exclamation" aria-hidden="true" />
+                    <span>{currentErrorMessage.title}</span>
+                  </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  {currentErrorMessage.body}
+                </Modal.Body>
+                <Modal.Footer>
+                  {
+                    (currentErrorMessage.actions !== undefined ? (
+                      currentErrorMessage.actions.map((action) => (
+                        <Button className="error-button" onClick={action.method}>
+                          {action.text}
+                        </Button>
+                      ))
+                    ) : null)
+                  }
+                  <Button className="error-button" onClick={this.closeErrorModal}>OK</Button>
+                </Modal.Footer>
+              </Modal>
+            ) : null)
+          }
+          {
+            (currentInfoMessage ? (
+              <Modal
+                show={(currentInfoMessage !== undefined)}
+                onHide={this.closeInfoModal}
+                dialogClassName="info-modal"
+                centered
+              >
+                <Modal.Header closeButton>
+                  <Modal.Title>
+                    <i className="fa fa-info" aria-hidden="true" />
+                    <span>{currentInfoMessage.title}</span>
+                  </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  {currentInfoMessage.body}
+                </Modal.Body>
+                <Modal.Footer>
+                  {
+                    (currentInfoMessage.actions !== undefined ? (
+                      currentInfoMessage.actions.map((action) => (
+                        <Button onClick={action.method}>
+                          {action.text}
+                        </Button>
+                      ))
+                    ) : null)
+                  }
+                  <Button onClick={this.closeInfoModal}>OK</Button>
+                </Modal.Footer>
+              </Modal>
+            ) : null)
+          }
           <Switch>
             <Route
               exact
@@ -194,11 +273,15 @@ const mapDispatchToProps = (dispatch) => ({
   saveTeams: (teams) => dispatch(storeTeams(teams)),
   saveTeamsError: (teamsError) => dispatch(storeTeamsError(teamsError)),
   saveEnvironments: (environments) => dispatch(storeEnvironments(environments)),
+  clearErrorMessage: () => dispatch(clearCurrentErrorMessage()),
+  clearInfoMessage: () => dispatch(clearCurrentInfoMessage()),
 });
 
 const mapStateToProps = (state) => ({
   currentTeam: state.teamsReducer.currentTeam,
   teams: state.teamsReducer.teams,
   teamsError: state.teamsReducer.teamsError,
+  currentErrorMessage: state.notificationReducer.currentErrorMessage,
+  currentInfoMessage: state.notificationReducer.currentInfoMessage,
 });
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

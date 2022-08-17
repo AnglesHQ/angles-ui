@@ -56,6 +56,7 @@ class CurrentImageView extends Component {
       currentScreenshot,
       isBaseline,
       generateDynamicBaseline,
+      deleteScreenshot,
     } = this.props;
 
     return (
@@ -89,6 +90,21 @@ class CurrentImageView extends Component {
                 >
                   Generate Dynamic Baseline
                 </button>
+                {
+                  (
+                    currentScreenshotDetails.type && currentScreenshotDetails.type === 'DYNAMIC'
+                      && !isBaseline(currentScreenshotDetails._id) ? (
+                        <button
+                          onClick={() => deleteScreenshot(currentScreenshotDetails)}
+                          type="button"
+                          className="btn btn-outline-primary second-button"
+                          title="Only available for dynamic baselines that are not configured as a baseline."
+                        >
+                          Delete Screenshot
+                        </button>
+                      ) : null
+                  )
+                }
               </span>
             </td>
           </tr>

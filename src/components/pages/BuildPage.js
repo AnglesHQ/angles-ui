@@ -3,6 +3,7 @@ import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
 import queryString from 'query-string';
 import { withRouter } from 'react-router-dom';
+import { saveAs } from 'file-saver';
 import { BuildRequests, ScreenshotRequests } from 'angles-javascript-client';
 import BuildResultsPieChart from '../charts/BuildResultsPieChart';
 import BuildFeaturePieChart from '../charts/BuildFeaturePieChart';
@@ -98,6 +99,21 @@ class BuildPage extends Component {
     });
   }
 
+  removeImageFromBuildScreenshots = (screenshotToRemove) => {
+    const { screenshots } = this.state;
+    const index = screenshots.findIndex((screenshot) => screenshot._id === screenshotToRemove._id);
+    if (index > -1) {
+      this.setState(screenshots.splice(index, 1));
+    }
+  }
+
+  downloadReport = (buildId) => {
+    this.buildRequests.getBuildReport(buildId)
+      .then((response) => {
+        saveAs(new Blob([response], { type: 'text/html' }), `${buildId}.html`);
+      });
+  }
+
   render() {
     const {
       currentBuild,
@@ -136,7 +152,12 @@ class BuildPage extends Component {
     return (
       <div>
         <h1>
-          <span>{ `Build: ${currentBuild.name}`}</span>
+          <span>
+            { `Build: ${currentBuild.name}`}
+          </span>
+          <span id="report-download" onClick={() => { this.downloadReport(currentBuild._id); }}>
+            <i className="fa-solid fa-file-arrow-down" />
+          </span>
         </h1>
         <BuildSummary build={currentBuild} screenshots={screenshots} openModal={this.openModal} />
         <BuildArtifacts build={currentBuild} />
@@ -169,6 +190,7 @@ class BuildPage extends Component {
               selectedScreenshotId={currentShotId}
               selectedTab={selectedTab}
               addImageToBuildScreenshots={this.addImageToBuildScreenshots}
+              removeImageFromBuildScreenshots={this.removeImageFromBuildScreenshots}
             />
           </Modal.Body>
         </Modal>

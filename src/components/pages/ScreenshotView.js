@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { connect } from 'react-redux';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import Alert from 'react-bootstrap/Alert';
@@ -13,6 +14,7 @@ import ImageSideBySideView from '../elements/ImageSideBySideView';
 import ScreenshotHistoryView from '../elements/ScreenshotHistoryView';
 import 'react-multi-carousel/lib/styles.css';
 import './Default.css';
+import { storeCurrentErrorMessage, storeCurrentInfoMessage } from '../../redux/notificationActions';
 
 class ScreenshotView extends Component {
   constructor(props) {
@@ -151,24 +153,80 @@ class ScreenshotView extends Component {
 
   updateBaseline = (screenshot) => {
     const { currentBaseLineDetails } = this.state;
+    const { storeErrorMessage, storeInfoMessage } = this.props;
+    let updateBaselinePromise;
     if (currentBaseLineDetails) {
-      // if there is already a base line we need to update it.
-      this.makeUpdateBaselineRequest(currentBaseLineDetails._id, screenshot._id);
+      // if there is already a baseline we need to update it.
+      updateBaselinePromise = this
+        .makeUpdateBaselineRequest(currentBaseLineDetails._id, screenshot._id);
     } else {
       // create a new baseline
-      this.setBaselineForView(screenshot);
+      updateBaselinePromise = this.setBaselineForView(screenshot);
     }
+    updateBaselinePromise
+      .then(() => {
+        const messageBody = (<div>Updated Baseline Image</div>);
+        storeInfoMessage({ title: 'Baseline Configured', body: messageBody });
+      })
+      .catch((error) => {
+        const { response: { data } } = error;
+        if (data && data.message) {
+          storeErrorMessage({ title: 'Unable to set baseline', body: data.message });
+        } else {
+          storeErrorMessage({ title: 'Unable to set baseline', body: error.message });
+        }
+      });
   };
 
+  deleteScreenshot = (screenshot) => {
+    const { storeErrorMessage, storeInfoMessage, removeImageFromBuildScreenshots } = this.props;
+    this.screenshotRequests.deleteScreenshot(screenshot._id)
+      .then((result) => {
+        const messageBody = (<div>{result.message}</div>);
+        storeInfoMessage({ title: 'Delete Screenshot', body: messageBody });
+        removeImageFromBuildScreenshots(screenshot);
+        this.loadFirstScreenshot();
+      })
+      .catch((error) => {
+        const { response: { data } } = error;
+        if (data && data.message) {
+          storeErrorMessage({ title: 'Unable to delete image', body: data.message });
+        } else {
+          storeErrorMessage({ title: 'Unable to delete image', body: error.message });
+        }
+      });
+  }
+
   generateDynamicBaseline = async (screenshot) => {
+    const { storeErrorMessage, storeInfoMessage } = this.props;
     const { _id: screenshotId } = screenshot;
-    const baselineImage = await this.screenshotRequests.getDynamicBaselineImage(screenshotId, 5);
-    const { _id: baselineId } = baselineImage;
-    this.loadScreenshot(baselineId);
-    const { addImageToBuildScreenshots } = this.props;
-    addImageToBuildScreenshots(baselineImage);
-    // add a popup to see if they want to set it as baseline.
-    return baselineImage;
+    this.screenshotRequests.getDynamicBaselineImage(screenshotId, 5)
+      .then((baselineImage) => {
+        const { _id: baselineId } = baselineImage;
+        this.loadScreenshot(baselineId);
+        const { addImageToBuildScreenshots } = this.props;
+        addImageToBuildScreenshots(baselineImage);
+        const messageBody = (
+          <div>
+            {`Created dynamic baseline image for view ${baselineImage.view} and platform id ${baselineImage.platformId}`}
+            <img src={baselineImage.thumbnail} alt={baselineImage.view} />
+          </div>
+        );
+        const messageActions = [];
+        messageActions.push({ text: 'Set As Baseline', method: (() => this.updateBaseline(baselineImage)) });
+        messageActions.push({ text: 'Delete Image', method: (() => this.deleteScreenshot(baselineImage)) });
+        storeInfoMessage({ title: 'Created dynamic baseline', body: messageBody, actions: messageActions });
+        return baselineImage;
+      })
+      .catch((error) => {
+        const { response: { data } } = error;
+        if (data && data.message) {
+          storeErrorMessage({ title: 'Unable to generate dynamic baseline', body: data.message });
+        } else {
+          storeErrorMessage({ title: 'Unable to generate dynamic baseline', body: error.message });
+        }
+        return undefined;
+      });
   };
 
   navigateToImage = (screenshotDetails) => {
@@ -185,12 +243,11 @@ class ScreenshotView extends Component {
   // eslint-disable-next-line react/no-unused-class-component-methods
   forceBaselineCompare = (screenshotId) => this.getBaselineCompare(screenshotId, false);
 
-  makeUpdateBaselineRequest = (baselineId, screenshotId, ignoreBoxes) => {
-    this.baselineRequests.updateBaseline(baselineId, screenshotId, ignoreBoxes)
-      .then((currentBaseLineDetails) => {
-        this.setState({ currentBaseLineDetails });
-      });
-  };
+  makeUpdateBaselineRequest = (baselineId, screenshotId, ignoreBoxes) => this
+    .baselineRequests.updateBaseline(baselineId, screenshotId, ignoreBoxes)
+    .then((currentBaseLineDetails) => {
+      this.setState({ currentBaseLineDetails });
+    });
 
   isBaseline = (screenshotId) => {
     const { currentBaseLineDetails } = this.state;
@@ -215,6 +272,13 @@ class ScreenshotView extends Component {
       this.getScreenshot(screenshotId);
     }
   };
+
+  loadFirstScreenshot = () => {
+    const { buildScreenshots } = this.props;
+    if (buildScreenshots !== undefined && buildScreenshots.length > 0) {
+      this.loadScreenshot(buildScreenshots[0]._id);
+    }
+  }
 
   render() {
     const {
@@ -258,6 +322,7 @@ class ScreenshotView extends Component {
                 currentScreenshotDetails={currentScreenshotDetails}
                 updateBaseline={this.updateBaseline}
                 generateDynamicBaseline={this.generateDynamicBaseline}
+                deleteScreenshot={this.deleteScreenshot}
                 isBaseline={this.isBaseline}
               />
             </div>
@@ -303,4 +368,18 @@ class ScreenshotView extends Component {
   }
 }
 
-export default withRouter(ScreenshotView);
+const mapDispatchToProps = (dispatch) => ({
+  storeErrorMessage: (currentErrorMessage) => dispatch(
+    storeCurrentErrorMessage(currentErrorMessage),
+  ),
+  storeInfoMessage: (currentInfoMessage) => dispatch(
+    storeCurrentInfoMessage(currentInfoMessage),
+  ),
+});
+
+const mapStateToProps = (state) => ({
+  currentErrorMessage: state.notificationReducer.currentErrorMessage,
+  currentInfoMessage: state.notificationReducer.currentInfoMessage,
+});
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ScreenshotView));
