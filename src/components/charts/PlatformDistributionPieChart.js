@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Chart from 'chart.js';
+import { Chart } from 'chart.js';
 import './Charts.css';
 
 class PlatformDistributionPieChart extends Component {
@@ -29,12 +29,12 @@ class PlatformDistributionPieChart extends Component {
         },
       },
     });
-    this.renderPieChart(this.piechart, metrics, platformColors);
+    this.renderPieChart(metrics, platformColors);
   }
 
-  renderPieChart = (piechart, metrics, platformColors) => {
+  renderPieChart = (metrics, platformColors) => {
     const result = {};
-    if (piechart !== undefined && piechart.config != null) {
+    if (this.piechart !== undefined && this.piechart.config != null) {
       metrics.periods.forEach((period) => {
         period.phases.forEach((phase) => {
           phase.executions.forEach((execution) => {
@@ -49,7 +49,7 @@ class PlatformDistributionPieChart extends Component {
           });
         });
       });
-      const graphData = piechart.config.data;
+      const graphData = this.piechart.config.data;
       const data = [];
       const labels = [];
       Object.keys(result).forEach((platformName) => {
@@ -62,7 +62,7 @@ class PlatformDistributionPieChart extends Component {
         backgroundColor: platformColors.colors,
       }];
       graphData.labels = labels;
-      piechart.update();
+      this.piechart.update();
     }
   };
 

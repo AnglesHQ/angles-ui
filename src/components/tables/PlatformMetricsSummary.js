@@ -1,16 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 import moment from 'moment';
 import { getDurationAsString } from '../../utility/TimeUtilities';
 
-class PlatformMetricsSummary extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      //
-    };
-  }
-
-  generateDeviceMetrics = (metrics) => {
+const PlatformMetricsSummary = function (props) {
+  const generateDeviceMetrics = (metrics) => {
     const deviceMetrics = {};
     metrics.periods.forEach((period) => {
       period.phases.forEach((phase) => {
@@ -61,7 +54,7 @@ class PlatformMetricsSummary extends Component {
     return deviceMetrics;
   };
 
-  platformBackgroundColor = (platform, platformColors) => {
+  const platformBackgroundColor = (platform, platformColors) => {
     const hex = platformColors[platform.platformName].color;
     hex.replace('#', '');
     let r = 0; let g = 0; let b = 0;
@@ -77,10 +70,10 @@ class PlatformMetricsSummary extends Component {
     return `rgb(${+r},${+g},${+b}, 0.4)`;
   };
 
-  render() {
-    const { metrics, platformColors } = this.props;
+  const generateDeviceRows = () => {
+    const { metrics, platformColors } = props;
     const deviceRows = [];
-    const deviceMetrics = this.generateDeviceMetrics(metrics);
+    const deviceMetrics = generateDeviceMetrics(metrics);
     Object.keys(deviceMetrics).forEach((deviceId, index) => {
       const { platform, result, duration } = deviceMetrics[deviceId];
       if (platform) {
@@ -90,7 +83,7 @@ class PlatformMetricsSummary extends Component {
             style={
               {
                 fontWeight: 'bold',
-                backgroundColor: this.platformBackgroundColor(platform, platformColors),
+                backgroundColor: platformBackgroundColor(platform, platformColors),
               }
             }
           >
@@ -108,33 +101,33 @@ class PlatformMetricsSummary extends Component {
         );
       }
     });
+  };
 
-    return (
-      <div className="metrics-table-wrapper">
-        <table className="table fixed-header">
-          <thead className="thead-dark metrics-table-head">
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Platform</th>
-              <th scope="col">Platform Version</th>
-              <th scope="col">Device</th>
-              <th scope="col">Duration</th>
-              <th scope="col">Pass</th>
-              <th scope="col">Fail</th>
-              <th scope="col">Error</th>
-              <th scope="col">Skipped</th>
-              <th scope="col">Total</th>
-            </tr>
-          </thead>
-          <tbody className="metrics-table-body">
-            {
-              deviceRows
-            }
-          </tbody>
-        </table>
-      </div>
-    );
-  }
-}
+  return (
+    <div className="metrics-table-wrapper">
+      <table className="table fixed-header">
+        <thead className="thead-dark metrics-table-head">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Platform</th>
+            <th scope="col">Platform Version</th>
+            <th scope="col">Device</th>
+            <th scope="col">Duration</th>
+            <th scope="col">Pass</th>
+            <th scope="col">Fail</th>
+            <th scope="col">Error</th>
+            <th scope="col">Skipped</th>
+            <th scope="col">Total</th>
+          </tr>
+        </thead>
+        <tbody className="metrics-table-body">
+          {
+            generateDeviceRows()
+          }
+        </tbody>
+      </table>
+    </div>
+  );
+};
 
 export default PlatformMetricsSummary;

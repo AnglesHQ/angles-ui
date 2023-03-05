@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
 import queryString from 'query-string';
-import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { saveAs } from 'file-saver';
 import { BuildRequests, ScreenshotRequests } from 'angles-javascript-client';
+import { useLocation } from 'react-router-dom';
 import BuildResultsPieChart from '../charts/BuildResultsPieChart';
 import BuildFeaturePieChart from '../charts/BuildFeaturePieChart';
 import SuiteTable from '../tables/SuiteTable';
@@ -19,138 +19,117 @@ import {
   storeCurrentLoaderMessage,
 } from '../../redux/notificationActions';
 
-class BuildPage extends Component {
-  constructor(props) {
-    super(props);
-    const { location } = this.props;
-    this.state = {
-      showModal: false,
-      currentShotId: null,
-      screenshots: null,
-      query: queryString.parse(location.search),
-      currentBuild: null,
-      filterStates: [],
-      filteredSuites: null,
-      downloadReportButtonEnabled: true,
-    };
-    const { query } = this.state;
-    this.buildRequests = new BuildRequests(axios);
-    this.screenshotRequests = new ScreenshotRequests(axios);
-    this.getBuildDetails(query.buildId);
-    this.getScreenshotDetails(query.buildId);
-    this.closeModal = this.closeModal.bind(this);
-  }
+const BuildPage = function (props) {
+  const location = useLocation();
+  const [showModal, setShowModal] = useState(false);
+  const [currentShotId, setCurrentShotId] = useState(null);
+  const [screenshots, setScreenshots] = useState(null);
+  const [query] = useState(queryString.parse(location.search));
+  const [currentBuild, setCurrentBuild] = useState(null);
+  const [, setFilterStates] = useState([]);
+  const [filteredSuites, setFilteredSuites] = useState(null);
+  const [downloadReportButtonEnabled, setDownloadReportButtonEnabled] = useState(true);
+  const [selectedTab, setSelectedTab] = useState(query.selectedTab || 'image');
+  const buildRequests = new BuildRequests(axios);
+  const screenshotRequests = new ScreenshotRequests(axios);
 
-  componentDidMount() {
-    const { query } = this.state;
+  const getBuildDetails = (buildId) => {
+    buildRequests.getBuild(buildId)
+      .then((retrievedBuild) => {
+        setCurrentBuild(retrievedBuild);
+        setFilteredSuites(retrievedBuild.suites);
+      })
+      .catch(() => {
+        setCurrentBuild({});
+      });
+  };
+
+  const getScreenshotDetails = (buildId) => {
+    screenshotRequests.getScreenshotsForBuild(buildId)
+      .then((retrievedScreenshots) => {
+        setScreenshots(retrievedScreenshots);
+      })
+      .catch(() => {
+        setScreenshots({});
+      });
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
+  const openModal = (imageId, tab) => {
+    setShowModal(true);
+    setCurrentShotId(imageId);
+    setSelectedTab(tab);
+  };
+
+  useEffect(() => {
+    getBuildDetails(query.buildId);
+    getScreenshotDetails(query.buildId);
+    // closeModal = closeModal.bind(this);
+  }, []);
+
+  useEffect(() => {
     if (query.loadScreenshotId) {
       if (query.selectedTab) {
-        this.openModal(query.loadScreenshotId, query.selectedTab);
+        openModal(query.loadScreenshotId, query.selectedTab);
       } else {
-        this.openModal(query.loadScreenshotId);
+        openModal(query.loadScreenshotId);
       }
     }
-  }
+  }, [query]);
 
-  getBuildDetails = (buildId) => {
-    this.buildRequests.getBuild(buildId)
-      .then((currentBuild) => {
-        this.setState({ currentBuild, filteredSuites: currentBuild.suites });
-      })
-      .catch(() => {
-        this.setState({ currentBuild: {} });
-      });
-  };
-
-  getScreenshotDetails = (buildId) => {
-    this.screenshotRequests.getScreenshotsForBuild(buildId)
-      .then((screenshots) => {
-        this.setState({ screenshots });
-      })
-      .catch(() => {
-        this.setState({ screenshots: {} });
-      });
-  };
-
-  closeModal = () => {
-    this.setState({ showModal: false });
-  };
-
-  openModal = (imageId, tab) => {
-    this.setState({
-      showModal: true,
-      currentShotId: imageId,
-      selectedTab: tab,
-    });
-  };
-
-  filterBuilds = (filterStates) => {
-    const filteredSuites = [];
-    const { currentBuild } = this.state;
+  const filterBuilds = (statesToFilterBy) => {
+    const filterSuites = [];
     currentBuild.suites.forEach((suite) => {
       const newSuite = { ...suite };
       newSuite.executions = suite.executions
-        .filter((execution) => filterStates.length === 0
-          || filterStates.includes(execution.status));
-      filteredSuites.push(newSuite);
+        .filter((execution) => statesToFilterBy.length === 0
+          || statesToFilterBy.includes(execution.status));
+      filterSuites.push(newSuite);
     });
-    this.setState({ filteredSuites, filterStates });
+    setFilteredSuites(filterSuites);
+    setFilterStates(statesToFilterBy);
   };
 
-  addImageToBuildScreenshots = (screenshot) => {
-    const { screenshots } = this.state;
+  const addImageToBuildScreenshots = (screenshot) => {
     screenshots.push(screenshot);
-    this.setState({
-      screenshots,
-    });
-  }
+    setScreenshots(screenshots);
+  };
 
-  removeImageFromBuildScreenshots = (screenshotToRemove) => {
-    const { screenshots } = this.state;
+  const removeImageFromBuildScreenshots = (screenshotToRemove) => {
     const index = screenshots.findIndex((screenshot) => screenshot._id === screenshotToRemove._id);
     if (index > -1) {
-      this.setState(screenshots.splice(index, 1));
+      setScreenshots(screenshots.splice(index, 1));
     }
-  }
+  };
 
-  downloadReport = (buildId) => {
-    const { storeLoaderMessage, clearLoaderMessage } = this.props;
-    this.setState({ downloadReportButtonEnabled: false });
+  const downloadReport = (buildId) => {
+    const { storeLoaderMessage, clearLoaderMessage } = props;
+    setDownloadReportButtonEnabled(false);
     storeLoaderMessage({ title: 'Generating Report', body: `Generating html report for build with id ${buildId}` });
-    this.buildRequests.getBuildReport(buildId)
+    buildRequests.getBuildReport(buildId)
       .then((response) => {
         saveAs(new Blob([response], { type: 'text/html' }), `${buildId}.html`);
       })
       .finally(() => {
         clearLoaderMessage();
-        this.setState({ downloadReportButtonEnabled: true });
+        setDownloadReportButtonEnabled(true);
       });
-  }
+  };
 
-  render() {
-    const {
-      currentBuild,
-      screenshots,
-      showModal,
-      currentShotId,
-      selectedTab,
-      filteredSuites,
-      // eslint-disable-next-line no-unused-vars
-      filterStates,
-      downloadReportButtonEnabled,
-    } = this.state;
-    if (!currentBuild || !screenshots) {
-      return (
-        <div className="alert alert-primary" role="alert">
-          <span>
-            <i className="fas fa-spinner fa-pulse fa-2x" />
-            <span> Retrieving build details.</span>
-          </span>
-        </div>
-      );
-    }
-    if (Object.keys(currentBuild).length === 0) {
-      return (
+  return (
+    // eslint-disable-next-line no-nested-ternary
+    (!currentBuild || !screenshots) ? (
+      <div className="alert alert-primary" role="alert">
+        <span>
+          <i className="fas fa-spinner fa-pulse fa-2x" />
+          <span> Retrieving build details.</span>
+        </span>
+      </div>
+    ) : (
+      (Object.keys(currentBuild).length === 0) ? (
         <div>
           <div className="alert alert-danger" role="alert">
             <span>
@@ -161,62 +140,61 @@ class BuildPage extends Component {
             </span>
           </div>
         </div>
-      );
-    }
-    return (
-      <div>
-        <h1>
-          <span>
-            { `Build: ${currentBuild.name}`}
-          </span>
-          <button
-            id="report-download"
-            type="button"
-            disabled={!downloadReportButtonEnabled}
-            onClick={() => { this.downloadReport(currentBuild._id); }}
-          >
-            <i className="fa-solid fa-file-arrow-down" />
-          </button>
-        </h1>
-        <BuildSummary build={currentBuild} screenshots={screenshots} openModal={this.openModal} />
-        <BuildArtifacts build={currentBuild} />
-        <div className="graphContainerParent">
-          <BuildResultsPieChart build={currentBuild} filterBuilds={this.filterBuilds} />
-          <BuildFeaturePieChart build={currentBuild} />
-        </div>
-        <br />
+      ) : (
         <div>
-          {
-            filteredSuites.map((suite) => (
-              suite.executions.length > 0 ? (
-                <SuiteTable
-                  key={`${suite.name}`}
-                  suite={suite}
-                  screenshots={screenshots}
-                  openModal={this.openModal}
-                />
-              ) : null
-            ))
-          }
+          <h1>
+            <span>
+              { `Build: ${currentBuild.name}`}
+            </span>
+            <button
+              id="report-download"
+              type="button"
+              disabled={!downloadReportButtonEnabled}
+              onClick={() => { downloadReport(currentBuild._id); }}
+            >
+              <i className="fa-solid fa-file-arrow-down" />
+            </button>
+          </h1>
+          <BuildSummary build={currentBuild} screenshots={screenshots} openModal={openModal} />
+          <BuildArtifacts build={currentBuild} />
+          <div className="graphContainerParent">
+            <BuildResultsPieChart build={currentBuild} filterBuilds={filterBuilds} />
+            <BuildFeaturePieChart build={currentBuild} />
+          </div>
+          <br />
+          <div>
+            {
+              filteredSuites.map((suite) => (
+                suite.executions.length > 0 ? (
+                  <SuiteTable
+                    key={`${suite.name}`}
+                    suite={suite}
+                    screenshots={screenshots}
+                    openModal={openModal}
+                  />
+                ) : null
+              ))
+            }
+          </div>
+          <Modal show={showModal} onHide={closeModal} dialogClassName="screenshot-modal">
+            <Modal.Header closeButton>
+              <Modal.Title>Screenshot Viewer</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <ScreenshotView
+                buildScreenshots={screenshots}
+                selectedScreenshotId={currentShotId}
+                selectedTab={selectedTab}
+                addImageToBuildScreenshots={addImageToBuildScreenshots}
+                removeImageFromBuildScreenshots={removeImageFromBuildScreenshots}
+              />
+            </Modal.Body>
+          </Modal>
         </div>
-        <Modal show={showModal} onHide={this.closeModal} dialogClassName="screenshot-modal">
-          <Modal.Header closeButton>
-            <Modal.Title>Screenshot Viewer</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <ScreenshotView
-              buildScreenshots={screenshots}
-              selectedScreenshotId={currentShotId}
-              selectedTab={selectedTab}
-              addImageToBuildScreenshots={this.addImageToBuildScreenshots}
-              removeImageFromBuildScreenshots={this.removeImageFromBuildScreenshots}
-            />
-          </Modal.Body>
-        </Modal>
-      </div>
-    );
-  }
-}
+      )
+    )
+  );
+};
 
 const mapDispatchToProps = (dispatch) => ({
   storeLoaderMessage: (currentLoaderMessage) => dispatch(
@@ -225,4 +203,4 @@ const mapDispatchToProps = (dispatch) => ({
   clearLoaderMessage: () => dispatch(clearCurrentLoaderMessage()),
 });
 
-export default withRouter(connect(null, mapDispatchToProps)(BuildPage));
+export default connect(null, mapDispatchToProps)(BuildPage);

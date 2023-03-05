@@ -1,33 +1,23 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import Moment from 'react-moment';
 import Popover from 'react-bootstrap/Popover';
-import OverlayTrigger from 'react-bootstrap//OverlayTrigger';
-import Tooltip from 'react-bootstrap//Tooltip';
-import { withRouter } from 'react-router-dom';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
 import TestDetailsTable from './TestDetailsTable';
 
-class MatrixTable extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      headers: [],
-      matrixSuites: {},
-      artifacts: {},
-    };
-  }
+const MatrixTable = function (props) {
+  const [headers, setHeaders] = React.useState([]);
+  const [matrixSuites, setMatrixSuites] = React.useState({});
+  const [artifacts, setArtifacts] = React.useState({});
 
-  componentDidMount() {
-    this.reorganiseSuitsForMatrix();
-  }
-
-  reorganiseSuitsForMatrix = () => {
-    const headers = [];
-    const matrixSuites = {};
-    const artifacts = {};
-    const { matrixBuilds } = this.props;
+  const reorganiseSuitsForMatrix = () => {
+    const headerValues = [];
+    const matrixSuitesValues = {};
+    const artifactValues = {};
+    const { matrixBuilds } = props;
     matrixBuilds.forEach((build) => {
       // populate the header for each build
-      headers.push(build);
+      headerValues.push(build);
 
       if (build.artifacts && build.artifacts.length > 0) {
         build.artifacts.forEach((artifact) => {
@@ -38,35 +28,39 @@ class MatrixTable extends Component {
           } else {
             artifactIdentifier = `${artifact.artifactId}`;
           }
-          if (!artifacts[artifactIdentifier]) {
-            artifacts[artifactIdentifier] = {};
+          if (!artifactValues[artifactIdentifier]) {
+            artifactValues[artifactIdentifier] = {};
           }
-          artifacts[artifactIdentifier][build._id] = artifact.version;
+          artifactValues[artifactIdentifier][build._id] = artifact.version;
         });
       }
 
       // go through the invividual states.
       build.suites.forEach((suite) => {
-        if (!matrixSuites[suite.name]) {
-          matrixSuites[suite.name] = {};
+        if (!matrixSuitesValues[suite.name]) {
+          matrixSuitesValues[suite.name] = {};
         }
         // go through each of the executions
         suite.executions.forEach((execution) => {
-          if (!matrixSuites[suite.name][execution.title]) {
-            matrixSuites[suite.name][execution.title] = {};
+          if (!matrixSuitesValues[suite.name][execution.title]) {
+            matrixSuitesValues[suite.name][execution.title] = {};
           }
           // set the results for each build.
-          matrixSuites[suite.name][execution.title][build._id] = execution;
+          matrixSuitesValues[suite.name][execution.title][build._id] = execution;
         });
       });
     });
-    this.setState({ headers, matrixSuites, artifacts });
+    setHeaders(headerValues);
+    setArtifacts(artifactValues);
+    setMatrixSuites(matrixSuitesValues);
   };
 
-  render() {
-    // populate suite rows and test rows
+  useEffect(() => {
+    reorganiseSuitsForMatrix();
+  }, []);
+
+  const generateMatrixRows = () => {
     const rows = [];
-    const { headers, artifacts, matrixSuites } = this.state;
     // start date
     rows.push(
       <tr key="artifact-header-start-date">
@@ -197,23 +191,24 @@ class MatrixTable extends Component {
         );
       });
     });
+    return rows;
+  };
 
-    return (
-      <table className="table table-hover matrix-table">
-        <thead className="thead-dark">
-          <tr>
-            <th scope="col">Matrix</th>
-            {
-              headers.map((build) => <th key={build._id} scope="col"><div>{build.name}</div></th>)
-            }
-          </tr>
-        </thead>
-        <tbody>
-          {rows}
-        </tbody>
-      </table>
-    );
-  }
-}
+  return (
+    <table className="table table-hover matrix-table">
+      <thead className="thead-dark">
+        <tr>
+          <th scope="col">Matrix</th>
+          {
+            headers.map((build) => <th key={build._id} scope="col"><div>{build.name}</div></th>)
+          }
+        </tr>
+      </thead>
+      <tbody>
+        {generateMatrixRows()}
+      </tbody>
+    </table>
+  );
+};
 
-export default withRouter(MatrixTable);
+export default MatrixTable;

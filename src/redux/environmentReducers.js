@@ -1,6 +1,6 @@
 import { STORE_ENVIRONMENTS } from './environmentActions';
 
-export const environmentsReducer = (state = {}, action) => {
+export const environmentsReducer = (state = {}, action = {}) => {
   const { type, payload } = action;
   switch (type) {
     case STORE_ENVIRONMENTS: {

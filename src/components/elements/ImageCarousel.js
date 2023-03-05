@@ -48,7 +48,7 @@ class ImageCarousel extends Component {
       loadScreenshot(screenshots[nextIndex]._id);
       this.Carousel.goToSlide(nextIndex, false);
     }
-  }
+  };
 
   getPreviousImage = (currentScreenshotId) => {
     const { screenshots, loadScreenshot } = this.props;

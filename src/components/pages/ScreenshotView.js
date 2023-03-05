@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import Alert from 'react-bootstrap/Alert';
-import { withRouter } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { encode as btoa } from 'base-64';
 import { BaselineRequests, ScreenshotRequests } from 'angles-javascript-client';
 import ImageCarousel from '../elements/ImageCarousel';
@@ -16,75 +16,42 @@ import 'react-multi-carousel/lib/styles.css';
 import './Default.css';
 import { storeCurrentErrorMessage, storeCurrentInfoMessage, storeCurrentLoaderMessage } from '../../redux/notificationActions';
 
-class ScreenshotView extends Component {
-  constructor(props) {
-    super(props);
-    const { buildScreenshots } = this.props;
-    this.state = {
-      buildScreenshots,
-      currentScreenshot: null,
-      currentBaseline: null,
-      currentBaselineCompareJson: null,
-    };
-    this.screenshotRequests = new ScreenshotRequests(axios);
-    this.baselineRequests = new BaselineRequests(axios);
-  }
+const ScreenshotView = function (props) {
+  const { buildScreenshots: propsBuildScreenshots } = props;
+  const [buildScreenshots, setBuildScreenshots] = useState(propsBuildScreenshots);
+  const [currentScreenshot, setCurrentScreenshot] = useState(null);
+  const [currentScreenshotDetails, setCurrentScreenshotDetails] = useState(null);
+  const [currentScreenshotHistory, setCurrentScreenshotHistory] = useState(null);
+  const [currentBaseline, setCurrentBaseline] = useState(null);
+  const [currentBaseLineDetails, setCurrentBaseLineDetails] = useState(null);
+  const [currentBaselineCompare, setCurrentBaselineCompare] = useState(null);
+  const [currentBaselineCompareJson, setCurrentBaselineCompareJson] = useState(null);
+  const [key, setKey] = useState('image');
+  const screenshotRequests = new ScreenshotRequests(axios);
+  const baselineRequests = new BaselineRequests(axios);
 
-  componentDidMount() {
-    const { selectedScreenshotId, selectedTab } = this.props;
-    this.loadScreenshot(selectedScreenshotId);
-    if (selectedTab) {
-      this.handleSelect(selectedTab);
+  const isBaseline = (screenshotId) => (currentBaseLineDetails && currentBaseLineDetails.screenshot
+    && currentBaseLineDetails.screenshot._id === screenshotId);
+
+  const handleSelect = (value) => {
+    if (['image', 'history', 'baseline', 'sidebyside'].includes(value)) {
+      setKey(value);
     }
-  }
+  };
 
-  componentDidUpdate(prevProps, prevState) {
-    const { buildScreenshots } = this.props;
-    const { currentBaseLineDetails, currentScreenshotDetails } = this.state;
-    if (prevProps.buildScreenshots !== buildScreenshots) {
-      this.setState({ buildScreenshots });
-      this.loadScreenshot(buildScreenshots[0]._id);
-    }
-    if (prevState.currentBaseLineDetails !== currentBaseLineDetails) {
-      // if base line details have changed, load the new image
-      if (currentBaseLineDetails && currentBaseLineDetails.screenshot) {
-        this.getBaselineCompare(currentScreenshotDetails._id, true);
-        this.getBaselineCompareJson(currentScreenshotDetails._id);
-      } else {
-        this.setState({ currentBaselineCompare: undefined });
-      }
-    }
-  }
+  const setTab = (keyToSelect) => {
+    handleSelect(keyToSelect);
+  };
 
-  handleSelect(value) {
-    if (['image', 'history', 'baseline', 'sidebyside'].includes(value)) this.setState({ key: value });
-  }
+  const getScreenshotHistoryByView = (view, platformId, limit, offset) => {
+    screenshotRequests.getScreenshotHistoryByView(view, platformId, limit, offset)
+      .then((retrievedScreenshotHistory) => {
+        setCurrentScreenshotHistory(retrievedScreenshotHistory);
+      });
+  };
 
-  getScreenshotDetails = (screenshotId) => this.screenshotRequests.getScreenshot(screenshotId)
-    .then((currentScreenshotDetails) => {
-      this.setState({ currentScreenshotDetails });
-      if (currentScreenshotDetails && currentScreenshotDetails.view) {
-        // if there is a view, retrieve the history
-        this.getScreenshotHistoryByView(
-          currentScreenshotDetails.view,
-          currentScreenshotDetails.platformId,
-          10,
-        );
-        if (currentScreenshotDetails.platform) {
-          this.getBaseLineDetails(currentScreenshotDetails);
-        }
-      } else if (currentScreenshotDetails != null) {
-        this.handleSelect('image');
-      }
-    });
-
-  getScreenshotHistoryByView = (view, platformId, limit, offset) => this.screenshotRequests
-    .getScreenshotHistoryByView(view, platformId, limit, offset)
-    .then((currentScreenshotHistory) => {
-      this.setState({ currentScreenshotHistory });
-    });
-
-  getScreenshot = (screenshotId) => this.screenshotRequests.getScreenshotImage(screenshotId)
+  const getBaselineScreenshot = (screenshotId) => screenshotRequests
+    .getScreenshotImage(screenshotId)
     .then((screenshot) => {
       const base64 = btoa(
         new Uint8Array(screenshot).reduce(
@@ -92,76 +59,162 @@ class ScreenshotView extends Component {
           '',
         ),
       );
-      this.setState({ currentScreenshot: `data:;base64,${base64}` });
+      setCurrentBaseline(`data:;base64,${base64}`);
     }).catch(() => {
       // failed to retrieve baseline.
-      this.setState({ currentScreenshot: 'ERROR' });
+      setCurrentBaseline('ERROR');
     });
 
-  getBaselineScreenshot = (screenshotId) => this.screenshotRequests.getScreenshotImage(screenshotId)
-    .then((screenshot) => {
-      const base64 = btoa(
-        new Uint8Array(screenshot).reduce(
-          (data, byte) => data + String.fromCharCode(byte),
-          '',
-        ),
-      );
-      this.setState({ currentBaseline: `data:;base64,${base64}` });
-    }).catch(() => {
-      // failed to retrieve baseline.
-      this.setState({ currentBaseline: 'ERROR' });
-    });
-
-  getBaselineCompare = (screenshotId, useCache) => this.screenshotRequests
-    .getBaselineCompareImage(screenshotId, useCache)
-    .then((screenshot) => {
-      const base64 = btoa(
-        new Uint8Array(screenshot).reduce(
-          (data, byte) => data + String.fromCharCode(byte),
-          '',
-        ),
-      );
-      this.setState({ currentBaselineCompare: `data:;base64,${base64}` });
-    })
-    .catch(() => {
-      // failed to retrieve baseline.
-      this.setState({ currentBaselineCompare: 'ERROR' });
-    });
-
-  getBaselineCompareJson = (screenshotId) => this.screenshotRequests
-    .getBaselineCompare(screenshotId)
-    .then((currentBaselineCompareJson) => {
-      this.setState({ currentBaselineCompareJson });
-    })
-    .catch(() => {
-      // failed to retrieve baseline.
-      this.setState({ currentBaselineCompareJson: {} });
-    });
-
-  getBaseLineDetails = (screenshot) => {
-    this.baselineRequests.getBaselineForScreenshot(screenshot)
+  const getBaseLineDetails = (screenshot) => {
+    baselineRequests.getBaselineForScreenshot(screenshot)
       .then((baselines) => {
         // there should only be one
         const baseline = baselines[0];
         // to handle better in the future
-        this.setState({ currentBaseLineDetails: baseline });
+        setCurrentBaseLineDetails(baseline);
         if (baseline && baseline.screenshot._id) {
-          this.getBaselineScreenshot(baseline.screenshot._id);
+          getBaselineScreenshot(baseline.screenshot._id);
         }
       });
   };
 
-  updateBaseline = (screenshot) => {
-    const { currentBaseLineDetails } = this.state;
-    const { storeErrorMessage, storeInfoMessage } = this.props;
+  const getScreenshotDetails = (screenshotId) => {
+    screenshotRequests.getScreenshot(screenshotId)
+      .then((retrievedScreenshotDetails) => {
+        setCurrentScreenshotDetails(retrievedScreenshotDetails);
+        if (retrievedScreenshotDetails && retrievedScreenshotDetails.view) {
+          // if there is a view, retrieve the history
+          getScreenshotHistoryByView(
+            retrievedScreenshotDetails.view,
+            retrievedScreenshotDetails.platformId,
+            10,
+          );
+          if (retrievedScreenshotDetails.platform) {
+            getBaseLineDetails(retrievedScreenshotDetails);
+          }
+        } else if (retrievedScreenshotDetails != null) {
+          handleSelect('image');
+        }
+      });
+  };
+
+  const getScreenshot = (screenshotId) => {
+    screenshotRequests.getScreenshotImage(screenshotId)
+      .then((screenshot) => {
+        const base64 = btoa(
+          new Uint8Array(screenshot).reduce(
+            (data, byte) => data + String.fromCharCode(byte),
+            '',
+          ),
+        );
+        setCurrentScreenshot(`data:;base64,${base64}`);
+      }).catch(() => {
+        // failed to retrieve baseline.
+        setCurrentScreenshot('ERROR');
+      });
+  };
+
+  const loadScreenshot = (screenshotId) => {
+    if (currentScreenshotDetails === undefined || currentScreenshotDetails._id !== screenshotId) {
+      setCurrentScreenshot(null);
+      setCurrentBaseline(null);
+      setCurrentScreenshotHistory(null);
+      setCurrentBaselineCompare(null);
+      getScreenshotDetails(screenshotId);
+      getScreenshot(screenshotId);
+    }
+  };
+
+  useEffect(() => {
+    const { selectedScreenshotId, selectedTab } = props;
+    loadScreenshot(selectedScreenshotId);
+    if (selectedTab) {
+      handleSelect(selectedTab);
+    }
+  }, []);
+
+  const getBaselineCompare = (screenshotId, useCache) => {
+    screenshotRequests
+      .getBaselineCompareImage(screenshotId, useCache)
+      .then((screenshot) => {
+        const base64 = btoa(
+          new Uint8Array(screenshot).reduce(
+            (data, byte) => data + String.fromCharCode(byte),
+            '',
+          ),
+        );
+        setCurrentBaselineCompare(`data:;base64,${base64}`);
+      })
+      .catch(() => {
+        // failed to retrieve baseline.
+        setCurrentBaselineCompare('ERROR');
+      });
+  };
+
+  const getBaselineCompareJson = (screenshotId) => screenshotRequests
+    .getBaselineCompare(screenshotId)
+    .then((retrievedBaselineCompareJson) => {
+      setCurrentBaselineCompareJson(retrievedBaselineCompareJson);
+    })
+    .catch(() => {
+      // failed to retrieve baseline.
+      setCurrentBaselineCompareJson({});
+    });
+
+  const loadFirstScreenshot = () => {
+    if (buildScreenshots !== undefined && buildScreenshots.length > 0) {
+      loadScreenshot(buildScreenshots[0]._id);
+    }
+  };
+
+  const deleteScreenshot = (screenshot) => {
+    const {
+      storeErrorMessage,
+      storeInfoMessage,
+      storeLoaderMessage,
+      removeImageFromBuildScreenshots,
+    } = props;
+    storeLoaderMessage({ title: 'Deleting screenshot', body: `Deleting screenshot with id ${screenshot._id}` });
+    screenshotRequests.deleteScreenshot(screenshot._id)
+      .then((result) => {
+        const messageBody = (<div>{result.message}</div>);
+        storeInfoMessage({ title: 'Delete Screenshot', body: messageBody });
+        removeImageFromBuildScreenshots(screenshot);
+        loadFirstScreenshot();
+      })
+      .catch((error) => {
+        const { response: { data } } = error;
+        if (data && data.message) {
+          storeErrorMessage({ title: 'Unable to delete image', body: data.message });
+        } else {
+          storeErrorMessage({ title: 'Unable to delete image', body: error.message });
+        }
+      });
+  };
+
+  const setBaselineForView = (screenshot) => baselineRequests.setBaseline(screenshot)
+    .then((retrieveBaselineDetails) => {
+      setCurrentBaseLineDetails(retrieveBaselineDetails);
+    });
+
+  // eslint-disable-next-line no-unused-vars
+  const forceBaselineCompare = (screenshotId) => getBaselineCompare(screenshotId, false);
+
+  const makeUpdateBaselineRequest = (baselineId, screenshotId, ignoreBoxes) => baselineRequests
+    .updateBaseline(baselineId, screenshotId, ignoreBoxes)
+    .then((retrievedBaselineDetails) => {
+      setCurrentBaseLineDetails(retrievedBaselineDetails);
+    });
+
+  const updateBaseline = (screenshot) => {
+    const { storeErrorMessage, storeInfoMessage } = props;
     let updateBaselinePromise;
     if (currentBaseLineDetails) {
       // if there is already a baseline we need to update it.
-      updateBaselinePromise = this
-        .makeUpdateBaselineRequest(currentBaseLineDetails._id, screenshot._id);
+      updateBaselinePromise = makeUpdateBaselineRequest(currentBaseLineDetails._id, screenshot._id);
     } else {
       // create a new baseline
-      updateBaselinePromise = this.setBaselineForView(screenshot);
+      updateBaselinePromise = setBaselineForView(screenshot);
     }
     updateBaselinePromise
       .then(() => {
@@ -178,40 +231,15 @@ class ScreenshotView extends Component {
       });
   };
 
-  deleteScreenshot = (screenshot) => {
-    const {
-      storeErrorMessage,
-      storeInfoMessage,
-      storeLoaderMessage,
-      removeImageFromBuildScreenshots,
-    } = this.props;
-    storeLoaderMessage({ title: 'Deleting screenshot', body: `Deleting screenshot with id ${screenshot._id}` });
-    this.screenshotRequests.deleteScreenshot(screenshot._id)
-      .then((result) => {
-        const messageBody = (<div>{result.message}</div>);
-        storeInfoMessage({ title: 'Delete Screenshot', body: messageBody });
-        removeImageFromBuildScreenshots(screenshot);
-        this.loadFirstScreenshot();
-      })
-      .catch((error) => {
-        const { response: { data } } = error;
-        if (data && data.message) {
-          storeErrorMessage({ title: 'Unable to delete image', body: data.message });
-        } else {
-          storeErrorMessage({ title: 'Unable to delete image', body: error.message });
-        }
-      });
-  }
-
-  generateDynamicBaseline = (screenshot) => {
-    const { storeErrorMessage, storeInfoMessage, storeLoaderMessage } = this.props;
+  const generateDynamicBaseline = (screenshot) => {
+    const { storeErrorMessage, storeInfoMessage, storeLoaderMessage } = props;
     const { _id: screenshotId } = screenshot;
     storeLoaderMessage({ title: 'Creating dynamic baseline...', body: 'Creating dynamic baseline. This could take a few seconds.' });
-    return this.screenshotRequests.getDynamicBaselineImage(screenshotId, 5)
+    return screenshotRequests.getDynamicBaselineImage(screenshotId, 5)
       .then((baselineImage) => {
         const { _id: baselineId } = baselineImage;
-        this.loadScreenshot(baselineId);
-        const { addImageToBuildScreenshots } = this.props;
+        loadScreenshot(baselineId);
+        const { addImageToBuildScreenshots } = props;
         addImageToBuildScreenshots(baselineImage);
         const messageBody = (
           <div>
@@ -220,8 +248,8 @@ class ScreenshotView extends Component {
           </div>
         );
         const messageActions = [];
-        messageActions.push({ text: 'Set As Baseline', method: (() => this.updateBaseline(baselineImage)) });
-        messageActions.push({ text: 'Delete Image', method: (() => this.deleteScreenshot(baselineImage)) });
+        messageActions.push({ text: 'Set As Baseline', method: (() => updateBaseline(baselineImage)) });
+        messageActions.push({ text: 'Delete Image', method: (() => deleteScreenshot(baselineImage)) });
         storeInfoMessage({ title: 'Created dynamic baseline', body: messageBody, actions: messageActions });
         return baselineImage;
       })
@@ -236,101 +264,58 @@ class ScreenshotView extends Component {
       });
   };
 
-  navigateToImage = (screenshotDetails) => {
-    const { history } = this.props;
+  useEffect(() => {
+    setBuildScreenshots(propsBuildScreenshots);
+    loadScreenshot(propsBuildScreenshots[0]._id);
+  }, [propsBuildScreenshots]);
+
+  useEffect(() => {
+    // if base line details have changed, load the new image
+    if (currentBaseLineDetails && currentBaseLineDetails.screenshot) {
+      getBaselineCompare(currentScreenshotDetails._id, true);
+      getBaselineCompareJson(currentScreenshotDetails._id);
+    } else {
+      setCurrentBaselineCompare(null);
+    }
+  }, [currentBaseLineDetails]);
+
+  // eslint-disable-next-line no-unused-vars
+  const navigateToImage = (screenshotDetails) => {
+    const navigate = useNavigate;
     const path = `/build/?buildId=${screenshotDetails.build}&loadScreenshotId=${screenshotDetails._id}`;
-    history.push(path);
+    navigate(path);
   };
 
-  setBaselineForView = (screenshot) => this.baselineRequests.setBaseline(screenshot)
-    .then((currentBaseLineDetails) => {
-      this.setState({ currentBaseLineDetails });
-    });
-
-  // eslint-disable-next-line react/no-unused-class-component-methods
-  forceBaselineCompare = (screenshotId) => this.getBaselineCompare(screenshotId, false);
-
-  makeUpdateBaselineRequest = (baselineId, screenshotId, ignoreBoxes) => this
-    .baselineRequests.updateBaseline(baselineId, screenshotId, ignoreBoxes)
-    .then((currentBaseLineDetails) => {
-      this.setState({ currentBaseLineDetails });
-    });
-
-  isBaseline = (screenshotId) => {
-    const { currentBaseLineDetails } = this.state;
-    return (currentBaseLineDetails && currentBaseLineDetails.screenshot
-      && currentBaseLineDetails.screenshot._id === screenshotId);
-  };
-
-  setTab = (key) => {
-    this.handleSelect(key);
-  };
-
-  loadScreenshot = (screenshotId) => {
-    const { currentScreenshotDetails } = this.state;
-    if (currentScreenshotDetails === undefined || currentScreenshotDetails._id !== screenshotId) {
-      this.setState({
-        currentScreenshot: undefined,
-        currentBaseline: undefined,
-        currentScreenshotHistory: undefined,
-        currentBaselineCompare: undefined,
-      });
-      this.getScreenshotDetails(screenshotId);
-      this.getScreenshot(screenshotId);
-    }
-  };
-
-  loadFirstScreenshot = () => {
-    const { buildScreenshots } = this.props;
-    if (buildScreenshots !== undefined && buildScreenshots.length > 0) {
-      this.loadScreenshot(buildScreenshots[0]._id);
-    }
-  }
-
-  render() {
-    const {
-      buildScreenshots,
-      currentScreenshotDetails,
-      currentScreenshotHistory,
-      currentScreenshot,
-      key,
-      currentBaseLineDetails,
-      currentBaseline,
-      currentBaselineCompare,
-      currentBaselineCompareJson,
-    } = this.state;
-    if (!buildScreenshots || !currentScreenshotDetails) {
-      return (
-        <div className="alert alert-primary" role="alert">
-          <span>
-            <i className="fas fa-spinner fa-pulse fa-2x" />
-            <span> Retrieving screenshot details.</span>
-          </span>
-        </div>
-      );
-    }
-    return (
+  return (
+    (!buildScreenshots || !currentScreenshotDetails) ? (
+      <div className="alert alert-primary" role="alert">
+        <span>
+          <i className="fas fa-spinner fa-pulse fa-2x" />
+          <span> Retrieving screenshot details.</span>
+        </span>
+      </div>
+    ) : (
       <div>
         <ImageCarousel
           screenshots={buildScreenshots}
           selectedScreenshotDetails={currentScreenshotDetails}
-          loadScreenshot={this.loadScreenshot}
+          loadScreenshot={loadScreenshot}
         />
         {
           !currentScreenshotDetails.platform || !currentScreenshotDetails.view
             ? <Alert variant="info">To enable the &quot;History&quot; and &quot;Compare with Baseline&quot; tabs please provide a view and platform details when uploading the screenshots to angles.</Alert>
             : null
         }
-        <Tabs id="image-tabs" activeKey={key} defaultActiveKey="image" onSelect={(tabKey, evt) => this.setTab(tabKey, evt)}>
+        <Tabs id="image-tabs" activeKey={key} defaultActiveKey="image" onSelect={(tabKey, evt) => setTab(tabKey, evt)}>
           <Tab eventKey="image" title="Image">
             <div className="image-page-holder">
               <CurrentImageView
                 currentScreenshot={currentScreenshot}
                 currentScreenshotDetails={currentScreenshotDetails}
-                updateBaseline={this.updateBaseline}
-                generateDynamicBaseline={this.generateDynamicBaseline}
-                deleteScreenshot={this.deleteScreenshot}
-                isBaseline={this.isBaseline}
+                updateBaseline={updateBaseline}
+                generateDynamicBaseline={generateDynamicBaseline}
+                deleteScreenshot={deleteScreenshot}
+                isBaseline={isBaseline}
               />
             </div>
           </Tab>
@@ -340,7 +325,7 @@ class ScreenshotView extends Component {
                 currentScreenshotHistory={currentScreenshotHistory}
                 currentScreenshotDetails={currentScreenshotDetails}
                 currentBaseLineDetails={currentBaseLineDetails}
-                isBaseline={this.isBaseline}
+                isBaseline={isBaseline}
               />
             </div>
           </Tab>
@@ -352,9 +337,9 @@ class ScreenshotView extends Component {
                 currentBaselineCompare={currentBaselineCompare}
                 currentBaselineCompareJson={currentBaselineCompareJson}
                 currentScreenshot={currentScreenshot}
-                isBaseline={this.isBaseline}
-                makeUpdateBaselineRequest={this.makeUpdateBaselineRequest}
-                getBaselineCompare={this.getBaselineCompare}
+                isBaseline={isBaseline}
+                makeUpdateBaselineRequest={makeUpdateBaselineRequest}
+                getBaselineCompare={getBaselineCompare}
               />
             </div>
           </Tab>
@@ -365,15 +350,15 @@ class ScreenshotView extends Component {
                 currentScreenshotDetails={currentScreenshotDetails}
                 currentBaseline={currentBaseline}
                 currentScreenshot={currentScreenshot}
-                isBaseline={this.isBaseline}
+                isBaseline={isBaseline}
               />
             </div>
           </Tab>
         </Tabs>
       </div>
-    );
-  }
-}
+    )
+  );
+};
 
 const mapDispatchToProps = (dispatch) => ({
   storeErrorMessage: (currentErrorMessage) => dispatch(
@@ -393,4 +378,4 @@ const mapStateToProps = (state) => ({
   currentLoaderMessage: state.notificationReducer.currentLoaderMessage,
 });
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ScreenshotView));
+export default connect(mapStateToProps, mapDispatchToProps)(ScreenshotView);

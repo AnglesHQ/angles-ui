@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import CardDeck from 'react-bootstrap/CardDeck';
+import { Container } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 import Moment from 'react-moment';
@@ -64,7 +64,7 @@ class ScreenshotHistoryView extends Component {
     }
 
     return (
-      <CardDeck className="card-deck-history">
+      <Container className="card-deck-history">
         {screenshotArray.map((screenshot) => [
           <Card key={screenshot._id} className={`screenshotCard ${this.isSelectedId(screenshot._id) ? 'card-active' : ''}`}>
             { isBaseline(screenshot._id) ? (<div className="card-img-overlay baseline-overlay"><p>baseline</p></div>) : null }
@@ -123,7 +123,7 @@ class ScreenshotHistoryView extends Component {
             </Card.Body>
           </Card>,
         ])}
-      </CardDeck>
+      </Container>
     );
   }
 }

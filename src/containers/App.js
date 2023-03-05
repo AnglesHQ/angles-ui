@@ -1,5 +1,9 @@
-import React, { Component } from 'react';
-import { Route, Switch, withRouter } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import {
+  Routes,
+  Route,
+  useLocation,
+} from 'react-router-dom';
 import axios from 'axios';
 import queryString from 'query-string';
 import Cookies from 'js-cookie';
@@ -24,275 +28,259 @@ import { clearCurrentErrorMessage, clearCurrentInfoMessage, clearCurrentLoaderMe
 
 axios.defaults.baseURL = `${process.env.REACT_APP_ANGLES_API_URL}/rest/api/v1.0`;
 
-class App extends Component {
-  // eslint-disable-next-line react/no-unused-class-component-methods
-  cookies;
+const App = function (props) {
+  const location = useLocation();
+  const teamRequests = new TeamRequests(axios);
+  const environmentRequests = new EnvironmentRequests(axios);
+  const {
+    teams,
+    currentTeam,
+    saveTeams,
+    saveCurrentTeam,
+    saveTeamsError,
+    saveEnvironments,
+    teamsError,
+    currentErrorMessage,
+    clearErrorMessage,
+    currentInfoMessage,
+    clearInfoMessage,
+    currentLoaderMessage,
+    clearLoaderMessage,
+  } = props;
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      // moved to redux.
-    };
-    this.teamRequests = new TeamRequests(axios);
-    this.environmentRequests = new EnvironmentRequests(axios);
-  }
-
-  componentDidMount() {
-    this.retrieveTeamDetails();
-    this.retrieveEnvironmentDetails();
-  }
-
-  componentDidUpdate(prevProps) {
-    const { teams, currentTeam, location } = this.props;
-    if (prevProps.teams !== teams || prevProps.currentTeam !== currentTeam) {
-      const query = queryString.parse(location.search);
-      // check if there is a query
-      if (query.teamId) {
-        if (!currentTeam || query.teamId !== currentTeam._id) {
-          this.changeCurrentTeam(query.teamId);
-        }
-      } else if (Cookies.get('teamId')) {
-        // if cookie is provided
-        if (!currentTeam || Cookies.get('teamId') !== currentTeam._id) {
-          this.changeCurrentTeam(Cookies.get('teamId'));
-        }
-      } else if (teams.length > 0) {
-        // set team to be the first team
-        this.changeCurrentTeam(teams[0]._id);
-      }
+  const getTeam = (teamId) => {
+    if (teams && Array.isArray(teams)) {
+      return teams.find((team) => team._id === teamId);
     }
-  }
-
-  getTeam = (teamId) => {
-    const { teams } = this.props;
-    return teams.find((team) => team._id === teamId);
+    return undefined;
   };
 
-  changeCurrentTeam = (teamId) => {
-    const { saveCurrentTeam } = this.props;
+  const changeCurrentTeam = (teamId) => {
     if (teamId !== undefined) {
-      saveCurrentTeam(this.getTeam(teamId));
+      saveCurrentTeam(getTeam(teamId));
       Cookies.set('teamId', teamId, { expires: 365 });
     }
   };
 
-  retrieveTeamDetails = () => {
-    const { saveTeams, saveTeamsError } = this.props;
-    this.teamRequests.getTeams()
-      .then((teams) => {
+  const retrieveTeamDetails = () => {
+    teamRequests.getTeams()
+      .then((retrievedTeams) => {
         // TODO: should probably do this in the back-end.
-        teams.sort((a, b) => {
+        retrievedTeams.sort((a, b) => {
           if (a.name < b.name) { return -1; }
           if (a.name > b.name) { return 1; }
           return 0;
         });
-        saveTeams(teams);
+        saveTeams(retrievedTeams);
       })
-      .catch((teamsError) => {
-        saveTeamsError(teamsError);
+      .catch((teamsErrorMessage) => {
+        saveTeamsError(teamsErrorMessage);
       });
   };
 
-  retrieveEnvironmentDetails = () => {
-    const { saveEnvironments } = this.props;
-    this.environmentRequests.getEnvironments()
-      .then((environments) => {
-        environments.sort((a, b) => {
+  const retrieveEnvironmentDetails = () => {
+    environmentRequests.getEnvironments()
+      .then((retrievedEnvironments) => {
+        retrievedEnvironments.sort((a, b) => {
           if (a.name < b.name) { return -1; }
           if (a.name > b.name) { return 1; }
           return 0;
         });
-        saveEnvironments(environments);
+        saveEnvironments(retrievedEnvironments);
       });
     // TODO: handle catch.
   };
 
-  closeErrorModal = () => {
-    const { clearErrorMessage } = this.props;
+  const closeErrorModal = () => {
     clearErrorMessage();
-  }
+  };
 
-  closeInfoModal = () => {
-    const { clearInfoMessage } = this.props;
+  const closeInfoModal = () => {
     clearInfoMessage();
-  }
+  };
 
-  closeLoaderModal = () => {
-    const { clearLoaderMessage } = this.props;
+  const closeLoaderModal = () => {
     clearLoaderMessage();
-  }
+  };
 
-  render() {
-    const {
-      history,
-      teams,
-      currentTeam,
-      teamsError,
-      currentErrorMessage,
-      currentInfoMessage,
-      currentLoaderMessage,
-    } = this.props;
-    return (
-      <div id="outer-container">
-        <AnglesMenu />
-        <main id="page-wrap">
-          {
-            (currentErrorMessage ? (
-              <Modal
-                show={(currentErrorMessage !== undefined)}
-                onHide={this.closeErrorModal}
-                dialogClassName="error-modal"
-                centered
-              >
-                <Modal.Header closeButton>
-                  <Modal.Title>
-                    <i className="fa fa-exclamation" aria-hidden="true" />
-                    <span>{currentErrorMessage.title}</span>
-                  </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                  {currentErrorMessage.body}
-                </Modal.Body>
-                <Modal.Footer>
-                  {
-                    (currentErrorMessage.actions !== undefined ? (
-                      currentErrorMessage.actions.map((action) => (
-                        <Button className="error-button" onClick={action.method}>
-                          {action.text}
-                        </Button>
-                      ))
-                    ) : null)
-                  }
-                  <Button className="error-button" onClick={this.closeErrorModal}>OK</Button>
-                </Modal.Footer>
-              </Modal>
-            ) : null)
-          }
-          {
-            (currentInfoMessage ? (
-              <Modal
-                show={(currentInfoMessage !== undefined)}
-                onHide={this.closeInfoModal}
-                dialogClassName="info-modal"
-                centered
-              >
-                <Modal.Header closeButton>
-                  <Modal.Title>
-                    <i className="fa fa-info" aria-hidden="true" />
-                    <span>{currentInfoMessage.title}</span>
-                  </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                  {currentInfoMessage.body}
-                </Modal.Body>
-                <Modal.Footer>
-                  {
-                    (currentInfoMessage.actions !== undefined ? (
-                      currentInfoMessage.actions.map((action) => (
-                        <Button onClick={action.method}>
-                          {action.text}
-                        </Button>
-                      ))
-                    ) : null)
-                  }
-                  <Button onClick={this.closeInfoModal}>OK</Button>
-                </Modal.Footer>
-              </Modal>
-            ) : null)
-          }
-          {
-            (currentLoaderMessage ? (
-              <Modal
-                show={(currentLoaderMessage !== undefined)}
-                dialogClassName="info-modal"
-                onHide={this.closeLoaderModal}
-                centered
-              >
-                <Modal.Header closeButton>
-                  <Modal.Title>
-                    <i className="fas fa-spinner fa-pulse fa-2x" />
-                    <span>{currentLoaderMessage.title}</span>
-                  </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                  {currentLoaderMessage.body}
-                </Modal.Body>
-              </Modal>
-            ) : null)
-          }
-          <Switch>
-            <Route
-              exact
-              path="/"
-              render={() => {
-                if (teamsError) {
-                  return (
-                    <div key="retrieving-teams-error" className="alert alert-danger" role="alert">
-                      <span>
-                        <i className="fas fa-exclamation" />
-                        <span className="teams-error-message">
-                          {`Something went wrong [${teamsError}]`}
-                        </span>
-                      </span>
-                    </div>
-                  );
+  useEffect(() => {
+    retrieveEnvironmentDetails();
+    retrieveTeamDetails();
+  }, []);
+
+  useEffect(() => {
+    const query = queryString.parse(location.search);
+    // check if there is a query
+    if (query.teamId) {
+      if (!currentTeam || query.teamId !== currentTeam._id) {
+        changeCurrentTeam(query.teamId);
+      }
+    } else if (Cookies.get('teamId')) {
+      // if cookie is provided
+      if (!currentTeam || Cookies.get('teamId') !== currentTeam._id) {
+        changeCurrentTeam(Cookies.get('teamId'));
+      }
+    } else if (teams.length > 0) {
+      // set team to be the first team
+      changeCurrentTeam(teams[0]._id);
+    }
+  }, [teams, currentTeam]);
+
+  return (
+    <div id="outer-container">
+      <AnglesMenu />
+      <main id="page-wrap">
+        {
+          (currentErrorMessage ? (
+            <Modal
+              show={(currentErrorMessage !== undefined)}
+              onHide={closeErrorModal}
+              dialogClassName="error-modal"
+              centered
+            >
+              <Modal.Header closeButton>
+                <Modal.Title>
+                  <i className="fa fa-exclamation" aria-hidden="true" />
+                  <span>{currentErrorMessage.title}</span>
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                {currentErrorMessage.body}
+              </Modal.Body>
+              <Modal.Footer>
+                {
+                  (currentErrorMessage.actions !== undefined ? (
+                    currentErrorMessage.actions.map((action) => (
+                      <Button className="error-button" onClick={action.method}>
+                        {action.text}
+                      </Button>
+                    ))
+                  ) : null)
                 }
-                if (!teamsError && teams === undefined) {
-                  return (
-                    <div key="retrieving-teams" className="alert alert-primary" role="alert">
-                      <span>
-                        <i className="fas fa-spinner fa-pulse fa-2x" />
-                        <span>Retrieving teams</span>
-                      </span>
-                    </div>
-                  );
+                <Button className="error-button" onClick={closeErrorModal}>OK</Button>
+              </Modal.Footer>
+            </Modal>
+          ) : null)
+        }
+        {
+          (currentInfoMessage ? (
+            <Modal
+              show={(currentInfoMessage !== undefined)}
+              onHide={closeInfoModal}
+              dialogClassName="info-modal"
+              centered
+            >
+              <Modal.Header closeButton>
+                <Modal.Title>
+                  <i className="fa fa-info" aria-hidden="true" />
+                  <span>{currentInfoMessage.title}</span>
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                {currentInfoMessage.body}
+              </Modal.Body>
+              <Modal.Footer>
+                {
+                  (currentInfoMessage.actions !== undefined ? (
+                    currentInfoMessage.actions.map((action) => (
+                      <Button onClick={action.method}>
+                        {action.text}
+                      </Button>
+                    ))
+                  ) : null)
                 }
-                return (
-                  <SummaryPage
-                    history={history}
-                    changeCurrentTeam={this.changeCurrentTeam}
-                  />
-                );
-              }}
-            />
-            <Route exact path="/build/" render={() => <BuildPage />} />
-            <Route
-              exact
-              path="/matrix/"
-              render={() => {
-                if (!currentTeam || !currentTeam._id) {
-                  return null;
-                }
-                return <MatrixPage currentTeam={currentTeam} />;
-              }}
-            />
-            <Route exact path="/screenshot-finder/" render={() => <ScreenshotLibraryPage />} />
-            <Route exact path="/screenshot-library/" render={() => <ScreenshotLibraryPage />} />
-            <Route exact path="/history/" render={() => <ExecutionHistoryPage />} />
-            <Route exact path="/about/" render={() => <AboutPage />} />
-            <Route
-              exact
-              path="/metrics/"
-              render={() => {
-                if (currentTeam === undefined || !currentTeam._id) {
-                  return <div>Please select a team</div>;
-                }
-                return (
-                  <MetricsPage
-                    currentTeam={currentTeam}
-                    teams={teams}
-                    changeCurrentTeam={this.changeCurrentTeam}
-                  />
-                );
-              }}
-            />
-            <Route render={() => <NotFoundPage />} />
-          </Switch>
-        </main>
-      </div>
-    );
-  }
-}
+                <Button onClick={closeInfoModal}>OK</Button>
+              </Modal.Footer>
+            </Modal>
+          ) : null)
+        }
+        {
+          (currentLoaderMessage ? (
+            <Modal
+              show={(currentLoaderMessage !== undefined)}
+              dialogClassName="info-modal"
+              onHide={closeLoaderModal}
+              centered
+            >
+              <Modal.Header closeButton>
+                <Modal.Title>
+                  <i className="fas fa-spinner fa-pulse fa-2x" />
+                  <span>{currentLoaderMessage.title}</span>
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                {currentLoaderMessage.body}
+              </Modal.Body>
+            </Modal>
+          ) : null)
+        }
+        <Routes>
+          <Route
+            exact
+            path="/"
+            element={
+               // eslint-disable-next-line no-nested-ternary
+              (teamsError) ? (
+                <div key="retrieving-teams-error" className="alert alert-danger" role="alert">
+                  <span>
+                    <i className="fas fa-exclamation" />
+                    <span className="teams-error-message">
+                      {`Something went wrong [${teamsError}]`}
+                    </span>
+                  </span>
+                </div>
+              ) : (
+                (!teamsError && teams === undefined) ? (
+                  <div key="retrieving-teams" className="alert alert-primary" role="alert">
+                    <span>
+                      <i className="fas fa-spinner fa-pulse fa-2x" />
+                      <span>Retrieving teams</span>
+                    </span>
+                  </div>
+                ) : (
+                  <SummaryPage changeCurrentTeam={changeCurrentTeam} />
+                )
+              )
+             }
+          />
+          <Route path="/build/" element={<BuildPage />} exact />
+          <Route
+            exact
+            path="/matrix/"
+            element={
+              (!currentTeam || !currentTeam._id) ? (
+                null
+              ) : (
+                <MatrixPage currentTeam={currentTeam} />
+              )
+            }
+          />
+          <Route exact path="/screenshot-finder/" element={<ScreenshotLibraryPage />} />
+          <Route exact path="/screenshot-library/" element={<ScreenshotLibraryPage />} />
+          <Route exact path="/history/" element={<ExecutionHistoryPage />} />
+          <Route exact path="/about/" element={<AboutPage />} />
+
+          <Route
+            exact
+            path="/metrics/"
+            element={
+              (currentTeam === undefined || !currentTeam._id) ? (
+                <div>Please select a team</div>
+              ) : (
+                <MetricsPage
+                  currentTeam={currentTeam}
+                  teams={teams}
+                  changeCurrentTeam={changeCurrentTeam}
+                />
+              )
+            }
+          />
+          <Route render={() => <NotFoundPage />} />
+        </Routes>
+      </main>
+    </div>
+  );
+};
 
 const mapDispatchToProps = (dispatch) => ({
   saveCurrentTeam: (selectedTeam) => dispatch(storeCurrentTeam(selectedTeam)),
@@ -308,8 +296,9 @@ const mapStateToProps = (state) => ({
   currentTeam: state.teamsReducer.currentTeam,
   teams: state.teamsReducer.teams,
   teamsError: state.teamsReducer.teamsError,
+  environments: state.environmentsReducer.environments,
   currentErrorMessage: state.notificationReducer.currentErrorMessage,
   currentInfoMessage: state.notificationReducer.currentInfoMessage,
   currentLoaderMessage: state.notificationReducer.currentLoaderMessage,
 });
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
+export default connect(mapStateToProps, mapDispatchToProps)(App);

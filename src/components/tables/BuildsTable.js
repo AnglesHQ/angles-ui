@@ -1,117 +1,101 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import Moment from 'react-moment';
-import OverlayTrigger from 'react-bootstrap//OverlayTrigger';
-import Tooltip from 'react-bootstrap//Tooltip';
-import { withRouter } from 'react-router-dom';
-import MultiSelect from 'react-multi-select-component';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
+import { MultiSelect } from 'react-multi-select-component';
 import Popover from 'react-bootstrap/Popover';
 import { getDuration } from '../../utility/TimeUtilities';
 import ArtifactsDetailsTable from './ArtifactsDetailsTable';
 
-class BuildsTable extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      environments: [],
-      components: [],
-      selectedEnvironments: [],
-      selectedComponents: [],
-    };
-  }
+const BuildsTable = function (props) {
+  const componentOverrideStrings = {
+    selectSomeItems: 'Components...',
+    allItemsAreSelected: 'All components',
+  };
+  const environmentOverrideStrings = {
+    selectSomeItems: 'Environments...',
+    allItemsAreSelected: 'All environments',
+  };
+  const [environments, setEnvironments] = useState([]);
+  const [components, setComponents] = useState([]);
+  const [selectedEnvironments, setSelectedEnvironments] = useState([]);
+  const [selectedComponents, setSelectedComponents] = useState([]);
+  const {
+    team,
+    availableEnvironments,
+    selectedBuilds,
+    retrieveSelectedBuilds,
+    setFilteredEnvironments,
+    setFilteredComponents,
+  } = props;
 
-  componentDidMount() {
-    const { team, availableEnvironments } = this.props;
-    this.resetEnvironmentsForTableFilter(availableEnvironments);
-    this.resetComponentsForTableFilter(team);
-  }
-
-  componentDidUpdate(prevProps) {
-    // update environments
-    const { team, availableEnvironments } = this.props;
-    if (prevProps.availableEnvironments !== availableEnvironments) {
-      this.resetEnvironmentsForTableFilter(availableEnvironments);
-    }
-    // update components when a new team is selected.
-    if (prevProps.team !== team) {
-      this.resetComponentsForTableFilter(team);
-    }
-  }
-
-  resetEnvironmentsForTableFilter = (availableEnvironments) => {
+  const resetEnvironmentsForTableFilter = (allEnvironments) => {
     const uniqueEnvironments = {};
-    availableEnvironments.forEach((environment) => {
+    allEnvironments.forEach((environment) => {
       uniqueEnvironments[environment._id] = environment.name;
     });
-    const environments = [];
+    const environmentsToSet = [];
     Object.keys(uniqueEnvironments).forEach((key) => {
-      environments.push({ label: uniqueEnvironments[key], value: key });
+      environmentsToSet.push({ label: uniqueEnvironments[key], value: key });
     });
-    environments.sort((a, b) => ((a.label > b.label) ? 1 : -1));
-    this.setState({ environments, selectedEnvironments: [] });
+    environmentsToSet.sort((a, b) => ((a.label > b.label) ? 1 : -1));
+    setEnvironments(environmentsToSet);
+    setSelectedEnvironments([]);
   };
 
-  resetComponentsForTableFilter = (team) => {
+  const resetComponentsForTableFilter = (teamWithComponents) => {
     const uniqueComponents = {};
-    team.components.forEach((component) => {
+    teamWithComponents.components.forEach((component) => {
       uniqueComponents[component._id] = component.name;
     });
-    const components = [];
+    const componentsToSet = [];
     Object.keys(uniqueComponents).forEach((key) => {
-      components.push({ label: uniqueComponents[key], value: key });
+      componentsToSet.push({ label: uniqueComponents[key], value: key });
     });
-    components.sort((a, b) => ((a.label > b.label) ? 1 : -1));
-    this.setState({ components, selectedComponents: [] });
+    componentsToSet.sort((a, b) => ((a.label > b.label) ? 1 : -1));
+    setComponents(componentsToSet);
+    setSelectedComponents([]);
   };
 
-  isRowSelected = (build) => {
-    const { selectedBuilds } = this.props;
-    return selectedBuilds[build._id];
-  };
+  useEffect(() => {
+    resetEnvironmentsForTableFilter(availableEnvironments);
+    resetComponentsForTableFilter(team);
+  }, []);
 
-  anyRowsSelected = () => {
-    const { retrieveSelectedBuilds } = this.props;
+  useEffect(() => {
+    resetEnvironmentsForTableFilter(availableEnvironments);
+  }, [availableEnvironments]);
+
+  useEffect(() => {
+    resetComponentsForTableFilter(team);
+  }, [team]);
+
+  const isRowSelected = (build) => selectedBuilds[build._id];
+
+  const anyRowsSelected = () => {
     const selectedRowsArray = retrieveSelectedBuilds();
     return (Object.keys(selectedRowsArray).length > 0);
   };
 
-  getComponentName = (build) => build.team.components
+  const getComponentName = (build) => build.team.components
     .find((component) => component._id === build.component);
 
-  setSelectedEnvironments = (selectedEnvironments) => {
-    const { setFilteredEnvironments } = this.props;
-    this.setState({ selectedEnvironments });
-    setFilteredEnvironments(selectedEnvironments.map((environment) => environment.value));
+  const settingSelectedEnvironments = (environmentToSelect) => {
+    setSelectedEnvironments(environmentToSelect);
+    setFilteredEnvironments(environmentToSelect.map((environment) => environment.value));
   };
 
-  setSelectedComponents = (selectedComponents) => {
-    const { setFilteredComponents } = this.props;
-    this.setState({ selectedComponents });
-    setFilteredComponents(selectedComponents.map((component) => component.value));
+  const settingSelectedComponents = (componentsToSelect) => {
+    setSelectedComponents(componentsToSelect);
+    setFilteredComponents(componentsToSelect.map((component) => component.value));
   };
 
-  render() {
-    const componentOverrideStrings = {
-      selectSomeItems: 'Components...',
-      allItemsAreSelected: 'All components',
-    };
-
-    const environmentOverrideStrings = {
-      selectSomeItems: 'Environments...',
-      allItemsAreSelected: 'All environments',
-    };
-
-    const {
-      components,
-      selectedComponents,
-      environments,
-      selectedEnvironments,
-    } = this.state;
+  const generateBuildRows = () => {
     const {
       builds,
       toggleSelectedBuild,
       currentSkip,
-    } = this.props;
-
+    } = props;
     const buildRows = [];
     let count = 0;
     builds.forEach((build) => {
@@ -130,8 +114,8 @@ class BuildsTable extends Component {
         <tr key={build._id}>
           <th scope="row">{currentSkip + count}</th>
           <td onClick={() => toggleSelectedBuild(build)}>
-            <div key={this.isRowSelected(build)}>
-              <i className={this.isRowSelected(build) ? ('far fa-check-square') : 'far fa-square'} />
+            <div key={isRowSelected(build)}>
+              <i className={isRowSelected(build) ? ('far fa-check-square') : 'far fa-square'} />
             </div>
           </td>
           <td>
@@ -170,7 +154,7 @@ class BuildsTable extends Component {
               ) : 'none'
             }
           </td>
-          <td>{this.getComponentName(build).name}</td>
+          <td>{getComponentName(build).name}</td>
           <td>{build.environment.name}</td>
           <td>
             {build.start ? (
@@ -194,75 +178,76 @@ class BuildsTable extends Component {
         </tr>,
       );
     });
+    return buildRows;
+  };
 
-    return (
-      <div>
-        <table className="table table-hover summary-table">
-          <thead className="thead-dark">
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">
-                <div key={this.anyRowsSelected()}>
-                  <i className={this.anyRowsSelected() ? ('fas fa-check-square') : 'fas fa-square'} />
-                </div>
-              </th>
-              <th scope="col">
-                <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">By setting the &quot;keep&quot; flag the build will not be removed by the nightly clean-up.</Tooltip>}>
-                  <div><i className="fas fa-lock" /></div>
-                </OverlayTrigger>
-              </th>
-              <th scope="col">
-                <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">Click on the links below to go to the individual build reports.</Tooltip>}>
-                  <div><i className="fas fa-external-link-alt" /></div>
-                </OverlayTrigger>
-              </th>
-              <th scope="col" style={{ minWidth: '115px' }}>
-                <span>Artifacts </span>
-                <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">Click on the icons below to see the build artifacts versions that were tested as part of the run (you have to enter these using the Angles client).</Tooltip>}>
-                  <span>
-                    <i className="fas fa-info-circle" />
-                  </span>
-                </OverlayTrigger>
-              </th>
-              <th scope="col">Name</th>
-              <th scope="col">Phase</th>
-              <th scope="col">
-                <MultiSelect
-                  className="build-table-filter"
-                  options={components}
-                  value={selectedComponents}
-                  onChange={this.setSelectedComponents}
-                  overrideStrings={componentOverrideStrings}
-                  hasSelectAll={false}
-                />
-              </th>
-              <th scope="col">
-                <MultiSelect
-                  className="build-table-filter"
-                  options={environments}
-                  value={selectedEnvironments}
-                  onChange={this.setSelectedEnvironments}
-                  labelledBy="Environment"
-                  overrideStrings={environmentOverrideStrings}
-                  hasSelectAll={false}
-                />
-              </th>
-              <th scope="col">Started</th>
-              <th scope="col">Finished</th>
-              <th scope="col">Execution Time</th>
-              <th scope="col">Pass</th>
-              <th scope="col">Fail</th>
-              <th scope="col">Error</th>
-              <th scope="col">Skipped</th>
-            </tr>
-          </thead>
-          <tbody>
-            {buildRows}
-          </tbody>
-        </table>
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <table className="table table-hover summary-table">
+        <thead className="thead-dark">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">
+              <div key={anyRowsSelected()}>
+                <i className={anyRowsSelected() ? ('fas fa-check-square') : 'fas fa-square'} />
+              </div>
+            </th>
+            <th scope="col">
+              <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">By setting the &quot;keep&quot; flag the build will not be removed by the nightly clean-up.</Tooltip>}>
+                <div><i className="fas fa-lock" /></div>
+              </OverlayTrigger>
+            </th>
+            <th scope="col">
+              <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">Click on the links below to go to the individual build reports.</Tooltip>}>
+                <div><i className="fas fa-external-link-alt" /></div>
+              </OverlayTrigger>
+            </th>
+            <th scope="col" style={{ minWidth: '115px' }}>
+              <span>Artifacts </span>
+              <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">Click on the icons below to see the build artifacts versions that were tested as part of the run (you have to enter these using the Angles client).</Tooltip>}>
+                <span>
+                  <i className="fas fa-info-circle" />
+                </span>
+              </OverlayTrigger>
+            </th>
+            <th scope="col">Name</th>
+            <th scope="col">Phase</th>
+            <th scope="col">
+              <MultiSelect
+                className="build-table-filter"
+                options={components}
+                value={selectedComponents}
+                onChange={settingSelectedComponents}
+                overrideStrings={componentOverrideStrings}
+                hasSelectAll={false}
+              />
+            </th>
+            <th scope="col">
+              <MultiSelect
+                className="build-table-filter"
+                options={environments}
+                value={selectedEnvironments}
+                onChange={settingSelectedEnvironments}
+                labelledBy="Environment"
+                overrideStrings={environmentOverrideStrings}
+                hasSelectAll={false}
+              />
+            </th>
+            <th scope="col">Started</th>
+            <th scope="col">Finished</th>
+            <th scope="col">Execution Time</th>
+            <th scope="col">Pass</th>
+            <th scope="col">Fail</th>
+            <th scope="col">Error</th>
+            <th scope="col">Skipped</th>
+          </tr>
+        </thead>
+        <tbody>
+          {generateBuildRows()}
+        </tbody>
+      </table>
+    </div>
+  );
+};
 
-export default withRouter(BuildsTable);
+export default BuildsTable;

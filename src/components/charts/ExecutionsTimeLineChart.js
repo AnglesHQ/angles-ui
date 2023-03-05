@@ -1,6 +1,6 @@
 import moment from 'moment';
 import React, { Component } from 'react';
-import Chart from 'chart.js';
+import { Chart } from 'chart.js';
 import './Charts.css';
 import { getBuildDurationInSeconds } from '../../utility/TimeUtilities';
 
@@ -48,14 +48,14 @@ class ExecutionsTimeLineChart extends Component {
     const { builds, executions } = this.props;
     if (this.lineChart === undefined || this.lineChart.data.datasets.length === 0
       || prevProps.builds !== builds) {
-      this.renderExecutionsLineChart(this.lineChart, executions);
+      this.renderExecutionsLineChart(executions);
       this.updateExecutionLineChart();
     }
   }
 
-  renderExecutionsLineChart = (lineChart, executions) => {
-    if (lineChart !== undefined && lineChart.config != null) {
-      const graphData = lineChart.config.data;
+  renderExecutionsLineChart = (executions) => {
+    if (this.lineChart !== undefined && this.lineChart.config != null) {
+      const graphData = this.lineChart.config.data;
       graphData.labels = [];
       graphData.datasets = [];
       graphData.datasets.push({ label: 'Time', data: [], borderColor: '#0099e6' });
@@ -66,7 +66,7 @@ class ExecutionsTimeLineChart extends Component {
           return graphData;
         });
       }
-      lineChart.update();
+      this.lineChart.update();
     }
   };
 

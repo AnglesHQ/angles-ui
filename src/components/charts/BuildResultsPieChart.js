@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Chart from 'chart.js';
+import { Chart } from 'chart.js';
 import './Charts.css';
 
 class BuildBarChart extends Component {
@@ -62,12 +62,12 @@ class BuildBarChart extends Component {
         },
       },
     });
-    this.renderBuildBarChart(this.piechart, build);
+    this.renderBuildBarChart(build);
   }
 
-  renderBuildBarChart = (piechart, build) => {
-    if (piechart !== undefined && piechart.config != null) {
-      const graphData = piechart.config.data;
+  renderBuildBarChart = (build) => {
+    if (this.piechart !== undefined && this.piechart.config != null) {
+      const graphData = this.piechart.config.data;
       graphData.datasets = [{
         label: 'Results',
         data: [build.result.PASS, build.result.FAIL, build.result.ERROR, build.result.SKIPPED],
@@ -75,9 +75,9 @@ class BuildBarChart extends Component {
       }];
       graphData.labels = ['PASS', 'FAIL', 'ERROR', 'SKIPPED'];
 
-      piechart.update();
+      this.piechart.update();
     }
-  }
+  };
 
   render() {
     return (

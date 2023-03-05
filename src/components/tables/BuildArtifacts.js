@@ -1,29 +1,19 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 
-class BuildArtifacts extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      expanded: false,
-    };
-  }
+const BuildArtifacts = function (props) {
+  const [expanded, setExpanded] = useState(false);
+  const { build } = props;
 
-  changeExpandedState = () => {
-    const { expanded } = this.state;
-    this.setState({ expanded: !expanded });
+  const changeExpandedState = () => {
+    setExpanded(!expanded);
   };
 
-  render() {
-    const { expanded } = this.state;
-    const { build } = this.props;
-    if (!build.artifacts || build.artifacts.length === 0) {
-      return null;
-    }
-    return (
+  return (
+    (!build.artifacts || build.artifacts.length === 0) ? null : (
       <table className="table">
         <thead className="thead-dark">
           <tr>
-            <th scope="col" colSpan="90%" onClick={this.changeExpandedState}>
+            <th scope="col" colSpan="90%" onClick={changeExpandedState}>
               <span>{`Build Artifacts [${build.artifacts.length}]`}</span>
               <span key={expanded} className="expand-artfifacts-span">
                 <i title="Click to display/hide artifacts" className={expanded ? ('fas fa-caret-down') : 'fas fa-caret-left'} />
@@ -47,8 +37,8 @@ class BuildArtifacts extends Component {
           )
           : null }
       </table>
-    );
-  }
-}
+    )
+  );
+};
 
 export default BuildArtifacts;

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Chart from 'chart.js';
+import { Chart } from 'chart.js';
 import './Charts.css';
 
 class ExecutionResultsPieChart extends Component {
@@ -29,11 +29,11 @@ class ExecutionResultsPieChart extends Component {
         },
       },
     });
-    this.renderExecutionsBarChart(this.piechart, executions);
+    this.renderExecutionsBarChart(executions);
   }
 
-  renderExecutionsBarChart = (piechart, executions) => {
-    if (piechart !== undefined && piechart.config != null) {
+  renderExecutionsBarChart = (executions) => {
+    if (this.piechart !== undefined && this.piechart.config != null) {
       const result = {
         PASS: 0,
         FAIL: 0,
@@ -43,14 +43,14 @@ class ExecutionResultsPieChart extends Component {
       executions.forEach((execution) => {
         result[execution.status] += 1;
       });
-      const graphData = piechart.config.data;
+      const graphData = this.piechart.config.data;
       graphData.datasets = [{
         label: 'Results',
         data: [result.PASS, result.FAIL, result.ERROR, result.SKIPPED],
         backgroundColor: ['#74d600', '#ff0000', '#ff8000', '#ffd500'],
       }];
       graphData.labels = ['PASS', 'FAIL', 'ERROR', 'SKIPPED'];
-      piechart.update();
+      this.piechart.update();
     }
   };
 

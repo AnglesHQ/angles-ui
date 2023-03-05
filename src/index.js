@@ -1,7 +1,7 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { BrowserRouter as Router } from 'react-router-dom';
 
 import './index.css';
 // eslint-disable-next-line import/extensions
@@ -11,13 +11,15 @@ import App from './containers/App';
 import * as serviceWorker from './serviceWorker';
 import store from './redux/store';
 
-ReactDOM.render(
-  <Router>
-    <Provider store={store}>
+const domNode = document.getElementById('root');
+const root = createRoot(domNode);
+
+root.render(
+  <Provider store={store}>
+    <BrowserRouter>
       <App />
-    </Provider>
-  </Router>,
-  document.getElementById('root'),
+    </BrowserRouter>
+  </Provider>,
 );
 
 // If you want your app to work offline and load faster, you can change

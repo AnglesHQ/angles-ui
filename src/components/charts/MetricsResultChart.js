@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import Chart from 'chart.js';
+import { Chart } from 'chart.js';
 import './Charts.css';
-import { withRouter } from 'react-router-dom';
 import { getPeriodLabel } from '../../utility/ChartUtilities';
 
 class TestPhasesChart extends Component {
@@ -32,15 +31,15 @@ class TestPhasesChart extends Component {
     const { metrics } = this.props;
     if (this.barchart === undefined || this.barchart.data.datasets.length === 0
       || prevProps.metrics !== metrics) {
-      this.renderBuildBarChart(this.barchart, metrics);
+      this.renderBuildBarChart(metrics);
       this.updateBuildChart();
     }
   }
 
   // populate the data.
-  renderBuildBarChart = (barchart, metrics) => {
-    if (barchart !== undefined && barchart.config != null) {
-      const graphData = barchart.config.data;
+  renderBuildBarChart = (metrics) => {
+    if (this.barchart !== undefined && this.barchart.config != null) {
+      const graphData = this.barchart.config.data;
       graphData.labels = [];
       graphData.datasets = [];
       graphData.datasets.push({ label: 'PASS', data: [], backgroundColor: '#74d600' });
@@ -59,13 +58,12 @@ class TestPhasesChart extends Component {
           return graphData;
         });
       }
-      barchart.update();
+      this.barchart.update();
     }
   };
 
   // update the chart with links to the build pages.
   updateBuildChart = () => {
-    // const { history, metrics } = this.props;
     this.barchart.options = {
       animation: false,
       scales: {
@@ -104,4 +102,4 @@ class TestPhasesChart extends Component {
   }
 }
 
-export default withRouter(TestPhasesChart);
+export default TestPhasesChart;

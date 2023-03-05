@@ -56,14 +56,14 @@ class CurrentImageView extends Component {
     await this.setState({ deleteScreenshotButtonEnable: false });
     await deleteScreenshot(currentScreenshotDetails);
     await this.setState({ deleteScreenshotButtonEnable: true });
-  }
+  };
 
   generateDynamicBaselineClick = async () => {
     const { currentScreenshotDetails, generateDynamicBaseline } = this.props;
     await this.setState({ dynamicBaselineButtonEnabled: false });
     await generateDynamicBaseline(currentScreenshotDetails);
     await this.setState({ dynamicBaselineButtonEnabled: true });
-  }
+  };
 
   render() {
     const {

@@ -1,45 +1,16 @@
-import React, { Component } from 'react';
-import Chart from 'chart.js';
+import React, { useEffect } from 'react';
+import { Chart } from 'chart.js';
 import './Charts.css';
 import moment from 'moment';
-import { withRouter } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-class BuildBarChart extends Component {
-  buildChartRef = React.createRef();
-
-  barchart;
-
-  constructor(props) {
-    super(props);
-    // console.log('constructor: ', props);
-    this.state = {
-      //
-    };
-  }
-
-  componentDidMount() {
-    const myChartRef = this.buildChartRef.current.getContext('2d');
-    const config = {
-      type: 'bar',
-      data: {},
-      options: {},
-    };
-    this.barchart = new Chart(myChartRef, config);
-    // to trigger componentDidUpdate
-    this.setState({});
-  }
-
-  componentDidUpdate(prevProps) {
-    const { builds } = this.props;
-    if (this.barchart === undefined || this.barchart.data.datasets.length === 0
-      || prevProps.builds !== builds) {
-      this.renderBuildBarChart(this.barchart, builds);
-      this.updateBuildChart();
-    }
-  }
+const BuildBarChart = function (props) {
+  const buildChartRef = React.createRef();
+  let barchart = null;
+  const { builds } = props;
 
   // populate the data.
-  renderBuildBarChart = (barchart, builds) => {
+  const renderBuildBarChart = () => {
     if (barchart !== undefined && barchart.config != null) {
       const graphData = barchart.config.data;
       graphData.labels = [];
@@ -65,9 +36,9 @@ class BuildBarChart extends Component {
   };
 
   // update the chart with links to the build pages.
-  updateBuildChart = () => {
-    const { history, builds: localBuilds } = this.props;
-    this.barchart.options = {
+  const updateBuildChart = () => {
+    const navigate = useNavigate();
+    barchart.options = {
       animation: false,
       scales: {
         xAxes: [
@@ -94,21 +65,38 @@ class BuildBarChart extends Component {
       },
       onClick: (evt, item) => {
         if (item[0]) {
-          const buildId = localBuilds[item[0]._index]._id;
-          history.push(`/build/?buildId=${buildId}`);
+          const buildId = builds[item[0]._index]._id;
+          navigate(`/build/?buildId=${buildId}`);
         }
       },
     };
-    this.barchart.update();
+    barchart.update();
   };
 
-  render() {
-    return (
-      <div className="graphContainer">
-        <canvas id="buildMetricsChart" ref={this.buildChartRef} />
-      </div>
-    );
-  }
-}
+  useEffect(() => {
+    const myChartRef = buildChartRef.current.getContext('2d');
+    const config = {
+      type: 'bar',
+      data: {},
+      options: {},
+    };
+    barchart = new Chart(myChartRef, config);
+    // to trigger componentDidUpdate
+    // this.setState({});
+  }, []);
 
-export default withRouter(BuildBarChart);
+  useEffect(() => {
+    if (barchart === undefined || barchart.data.datasets.length === 0) {
+      renderBuildBarChart();
+      updateBuildChart();
+    }
+  }, [builds]);
+
+  return (
+    <div className="graphContainer">
+      <canvas id="buildMetricsChart" ref={buildChartRef} />
+    </div>
+  );
+};
+
+export default BuildBarChart;

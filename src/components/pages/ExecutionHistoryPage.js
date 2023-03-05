@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import queryString from 'query-string';
-import { withRouter } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
+import { useLocation } from 'react-router-dom';
 import { ExecutionRequests, ScreenshotRequests } from 'angles-javascript-client';
 import ExecutionsResultsPieChart from '../charts/ExecutionsResultsPieChart';
 import ExecutionsTimeLineChart from '../charts/ExecutionsTimeLineChart';
@@ -10,61 +10,50 @@ import ScreenshotView from './ScreenshotView';
 import '../charts/Charts.css';
 import SuiteTable from '../tables/SuiteTable';
 
-class SummaryPage extends Component {
-  constructor(props) {
-    super(props);
-    const { location } = this.props;
-    this.state = {
-      limit: 30,
-      currentSkip: 0,
-      executions: undefined,
-      screenshots: [],
-      query: queryString.parse(location.search),
-    };
-    const { query, currentSkip, limit } = this.state;
-    this.screenshotRequests = new ScreenshotRequests(axios);
-    this.executionRequests = new ExecutionRequests(axios);
-    this.getExecutionHistoryForExecutionId(query.executionId, currentSkip, limit);
-  }
+const SummaryPage = function () {
+  const location = useLocation();
+  const [limit] = useState(30);
+  const [currentSkip] = useState(0);
+  const [executions, setExecutions] = useState(undefined);
+  const [screenshots, setScreenshots] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [currentShotId, setCurrentShotId] = useState(null);
+  const [selectedTab, setSelectedTab] = useState('image');
+  const [suiteResult, setSuiteResult] = useState(null);
+  const [query] = useState(queryString.parse(location.search));
+  const screenshotRequests = new ScreenshotRequests(axios);
+  const executionRequests = new ExecutionRequests(axios);
 
-  retrieveScreenshotDetailsForExecutions = (executions) => {
+  const getScreenshotDetails = (screenshotIds) => {
+    screenshotRequests.getScreenshots(screenshotIds)
+      .then((retrievedScreenshots) => {
+        setScreenshots(retrievedScreenshots);
+      });
+  };
+
+  const retrieveScreenshotDetailsForExecutions = (screenshotExecutions) => {
     const screenshotIdArray = [];
-    executions.forEach((execution) => {
+    screenshotExecutions.forEach((execution) => {
       execution.actions.forEach((action) => {
         action.steps.forEach((step) => {
           if (step.screenshot) screenshotIdArray.push(step.screenshot);
         });
       });
     });
-    this.getScreenshotDetails(screenshotIdArray);
+    getScreenshotDetails(screenshotIdArray);
   };
 
-  getScreenshotDetails = (screenshotIds) => this.screenshotRequests.getScreenshots(screenshotIds)
-    .then((screenshots) => {
-      this.setState({ screenshots });
-    });
-
-  getExecutionHistoryForExecutionId = (executionId, skip, limit) => this.executionRequests
-    .getExecutionHistory(executionId, skip, limit)
-    .then((response) => {
-      const { executions } = response;
-      this.retrieveScreenshotDetailsForExecutions(executions);
-      this.setState({ executions });
-    });
-
-  closeModal = () => {
-    this.setState({ showModal: false });
+  const getExecutionHistoryForExecutionId = (executionId, skip, queryLimit) => {
+    executionRequests
+      .getExecutionHistory(executionId, skip, queryLimit)
+      .then((response) => {
+        const { executions: retrievedExecutions } = response;
+        retrieveScreenshotDetailsForExecutions(retrievedExecutions);
+        setExecutions(retrievedExecutions);
+      });
   };
 
-  openModal = (imageId, tab) => {
-    this.setState({
-      showModal: true,
-      currentShotId: imageId,
-      selectedTab: tab,
-    });
-  };
-
-  calculateSuiteResults = (suite) => {
+  const calculateSuiteResults = (suite) => {
     suite.executions.forEach((execution) => {
       // eslint-disable-next-line no-param-reassign
       suite.result[execution.status] += 1;
@@ -72,37 +61,47 @@ class SummaryPage extends Component {
     return suite;
   };
 
-  render() {
-    const {
-      executions,
-      screenshots,
-      showModal,
-      currentShotId,
-      selectedTab,
-    } = this.state;
-    if (executions === undefined) {
-      return (
-        <div className="alert alert-primary" role="alert">
-          <span>
-            <i className="fas fa-spinner fa-pulse fa-2x" />
-            <span> Retrieving executions.</span>
-          </span>
-        </div>
-      );
-    }
-    // create suite object.
-    const suite = this.calculateSuiteResults({
-      executions,
-      result: {
-        PASS: 0,
-        FAIL: 0,
-        ERROR: 0,
-        SKIPPED: 0,
-      },
-      name: executions[0].suite,
-      status: 'N/A',
-    });
-    return (
+  const generateSuiteResult = () => calculateSuiteResults({
+    executions,
+    result: {
+      PASS: 0,
+      FAIL: 0,
+      ERROR: 0,
+      SKIPPED: 0,
+    },
+    name: executions[0].suite,
+    status: 'N/A',
+  });
+
+  useEffect(() => {
+    const suite = generateSuiteResult();
+    setSuiteResult(suite);
+  }, [executions]);
+
+  useEffect(() => {
+    const { executionId } = query;
+    getExecutionHistoryForExecutionId(executionId, currentSkip, limit);
+  }, []);
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
+  const openModal = (imageId, tab) => {
+    setShowModal(true);
+    setCurrentShotId(imageId);
+    setSelectedTab(tab);
+  };
+
+  return (
+    (executions === undefined) ? (
+      <div className="alert alert-primary" role="alert">
+        <span>
+          <i className="fas fa-spinner fa-pulse fa-2x" />
+          <span> Retrieving executions.</span>
+        </span>
+      </div>
+    ) : (
       <div>
         <h1>
           <span>History: </span>
@@ -117,12 +116,12 @@ class SummaryPage extends Component {
           <ExecutionsTimeLineChart executions={executions} />
         </div>
         <SuiteTable
-          key={`${suite.name}`}
-          suite={suite}
+          key={`${suiteResult.name}`}
+          suite={suiteResult}
           screenshots={screenshots}
-          openModal={this.openModal}
+          openModal={openModal}
         />
-        <Modal show={showModal} onHide={this.closeModal} dialogClassName="screenshot-modal">
+        <Modal show={showModal} onHide={closeModal} dialogClassName="screenshot-modal">
           <Modal.Header closeButton>
             <Modal.Title>Screenshot Viewer</Modal.Title>
           </Modal.Header>
@@ -135,8 +134,8 @@ class SummaryPage extends Component {
           </Modal.Body>
         </Modal>
       </div>
-    );
-  }
-}
+    )
+  );
+};
 
-export default withRouter(SummaryPage);
+export default SummaryPage;

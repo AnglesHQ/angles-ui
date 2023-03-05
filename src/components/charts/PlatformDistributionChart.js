@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import Chart from 'chart.js';
+import { Chart } from 'chart.js';
 import './Charts.css';
-import { withRouter } from 'react-router-dom';
 import { getPeriodLabel } from '../../utility/ChartUtilities';
 
 class PlatformDistributionChart extends Component {
@@ -38,9 +37,9 @@ class PlatformDistributionChart extends Component {
   }
 
   // populate the data.
-  renderBuildBarChart = (barchart, metrics, platformColors) => {
-    if (barchart !== undefined && barchart.config != null) {
-      const graphData = barchart.config.data;
+  renderBuildBarChart = (metrics, platformColors) => {
+    if (this.barchart !== undefined && this.barchart.config != null) {
+      const graphData = this.barchart.config.data;
       graphData.labels = [];
       graphData.datasets = [];
       if (Array.isArray(metrics.periods)) {
@@ -85,13 +84,12 @@ class PlatformDistributionChart extends Component {
           return graphData;
         });
       }
-      barchart.update();
+      this.barchart.update();
     }
   };
 
   // update the chart with links to the build pages.
   updateBuildChart = () => {
-    // const { history, metrics } = this.props;
     this.barchart.options = {
       animation: false,
       scales: {
@@ -130,4 +128,4 @@ class PlatformDistributionChart extends Component {
   }
 }
 
-export default withRouter(PlatformDistributionChart);
+export default PlatformDistributionChart;

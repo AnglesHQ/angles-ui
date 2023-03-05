@@ -27,6 +27,7 @@ module.exports = {
   rules: {
     'no-underscore-dangle': ['error', { allow: ['_id', '_index'] }],
     'no-unused-vars': ['error', { varsIgnorePattern: 'should' }],
+    'class-methods-use-this': [0, { enforceForClassFields: true }],
     'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }],
     'react/prop-types': [0, {}],
     'react/no-did-update-set-state': [0, {}],
