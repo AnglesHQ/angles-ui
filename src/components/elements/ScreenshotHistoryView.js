@@ -1,59 +1,41 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Container } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 import Moment from 'react-moment';
 
-class ScreenshotHistoryView extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      //
-    };
-  }
+const ScreenshotHistoryView = function (props) {
+  const {
+    currentScreenshotDetails,
+    currentScreenshotHistory,
+    currentBaseLineDetails,
+    isBaseline,
+  } = props;
 
-  isSelectedId = (screenshotId) => {
-    const { currentScreenshotDetails } = this.props;
+  const isSelectedId = (screenshotId) => {
     if (currentScreenshotDetails && currentScreenshotDetails._id === screenshotId) {
       return true;
     }
     return false;
   };
 
-  grabThumbnail = (screenshot) => {
+  const grabThumbnail = (screenshot) => {
     if (screenshot.thumbnail.startsWith('data:image')) {
       return screenshot.thumbnail;
     }
     return `data:image/png;base64, ${screenshot.thumbnail}`;
   };
 
-  render() {
-    const {
-      currentScreenshotHistory,
-      currentBaseLineDetails,
-      isBaseline,
-    } = this.props;
-
-    if (currentScreenshotHistory == null) {
-      return (
-        <div className="alert alert-primary" role="alert">
-          <span>
-            <i className="fas fa-spinner fa-pulse fa-2x" />
-            <span> Loading history.</span>
-          </span>
-        </div>
-      );
+  const doesArrayContainImage = (screenshotArray, screenshotToLookFor) => {
+    const filterScreenshot = screenshotArray
+      .filter((screenshot) => screenshot._id === screenshotToLookFor._id);
+    if (filterScreenshot.length > 0) {
+      return true;
     }
+    return false;
+  };
 
-    const doesArrayContainImage = (screenshotArray, screenshotToLookFor) => {
-      const filterScreenshot = screenshotArray
-        .filter((screenshot) => screenshot._id === screenshotToLookFor._id);
-      if (filterScreenshot.length > 0) {
-        return true;
-      }
-      return false;
-    };
-
+  const getScreenshotArray = () => {
     // ensure that the baseline is added if not in the history.
     const screenshotArray = currentScreenshotHistory.map((screenshot) => ({ ...screenshot }));
     if (currentBaseLineDetails && !doesArrayContainImage(
@@ -62,17 +44,27 @@ class ScreenshotHistoryView extends Component {
     )) {
       screenshotArray.push(currentBaseLineDetails.screenshot);
     }
+    return screenshotArray;
+  };
 
-    return (
+  return (
+    (currentScreenshotHistory == null) ? (
+      <div className="alert alert-primary" role="alert">
+        <span>
+          <i className="fas fa-spinner fa-pulse fa-2x" />
+          <span> Loading history.</span>
+        </span>
+      </div>
+    ) : (
       <Container className="card-deck-history">
-        {screenshotArray.map((screenshot) => [
-          <Card key={screenshot._id} className={`screenshotCard ${this.isSelectedId(screenshot._id) ? 'card-active' : ''}`}>
+        {getScreenshotArray().map((screenshot) => [
+          <Card key={screenshot._id} className={`screenshotCard ${isSelectedId(screenshot._id) ? 'card-active' : ''}`}>
             { isBaseline(screenshot._id) ? (<div className="card-img-overlay baseline-overlay"><p>baseline</p></div>) : null }
-            { !this.isSelectedId(screenshot._id) ? (
+            { !isSelectedId(screenshot._id) ? (
               <a title="Go to screenshot" href={`/build?buildId=${screenshot.build}&loadScreenshotId=${screenshot._id}`}>
-                <Card.Img className="card-image-history" variant="top" src={`${this.grabThumbnail(screenshot)}`} />
+                <Card.Img className="card-image-history" variant="top" src={`${grabThumbnail(screenshot)}`} />
               </a>
-            ) : <Card.Img className="card-image-history" variant="top" src={`${this.grabThumbnail(screenshot)}`} /> }
+            ) : <Card.Img className="card-image-history" variant="top" src={`${grabThumbnail(screenshot)}`} /> }
             <Card.Body>
               <Card.Footer>
                 <div>
@@ -124,8 +116,8 @@ class ScreenshotHistoryView extends Component {
           </Card>,
         ])}
       </Container>
-    );
-  }
-}
+    )
+  );
+};
 
 export default ScreenshotHistoryView;

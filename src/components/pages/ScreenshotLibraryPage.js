@@ -4,6 +4,7 @@ import axios from 'axios';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 import queryString from 'query-string';
 import { ScreenshotRequests } from 'angles-javascript-client';
 import 'react-multi-carousel/lib/styles.css';
@@ -120,7 +121,7 @@ const ScreenshotLibraryPage = function () {
       <h1>Screenshot Library</h1>
       <div className="screenshot-form-container">
         <Form onSubmit={submitScreenshotSearch}>
-          <Form.Row>
+          <Row>
             <Form.Group as={Col} className="tag-form-group">
               <Form.Label htmlFor="viewInput"><b>View</b></Form.Label>
               <Form.Control type="text" id="viewInput" value={view} onChange={handleViewChange} />
@@ -133,8 +134,8 @@ const ScreenshotLibraryPage = function () {
               <Form.Label htmlFor="tagInput"><b>Tag</b></Form.Label>
               <Form.Control type="text" id="tagInput" value={tag} onChange={handleTagChange} />
             </Form.Group>
-          </Form.Row>
-          <Form.Row>
+          </Row>
+          <Row>
             <Form.Group as={Col}>
               <Form.Label htmlFor="numberOfDays"><b>Number of days</b></Form.Label>
               <Form.Control id="numberOfDays" as="select" value={numberOfDays} onChange={handleNumberOfDaysChange}>
@@ -161,7 +162,7 @@ const ScreenshotLibraryPage = function () {
                   ) : null
               }
             </Form.Group>
-          </Form.Row>
+          </Row>
         </Form>
       </div>
       <div className="screenshot-viewer-surround">
@@ -177,7 +178,8 @@ const ScreenshotLibraryPage = function () {
         }
         {
           retrievingScreenshots === false
-            && (filteredScreenshots === undefined || filteredScreenshots.length === 0) ? (
+            && (filteredScreenshots === undefined || (Array.isArray(filteredScreenshots)
+            && filteredScreenshots.length === 0)) ? (
               <div className="alert alert-primary" role="alert">
                 <span>
                   <span>No images to display.</span>
@@ -187,12 +189,12 @@ const ScreenshotLibraryPage = function () {
         }
         {
           retrievingScreenshots === false && filteredScreenshots
-            && filteredScreenshots.length > 0 ? (
-              <ScreenshotView
-                buildScreenshots={filteredScreenshots}
-                selectedScreenshotId={filteredScreenshots[0]._id}
-                selectedTab={selectedTab}
-              />
+          && Array.isArray(filteredScreenshots) && filteredScreenshots.length > 0 ? (
+            <ScreenshotView
+              buildScreenshots={filteredScreenshots}
+              selectedScreenshotId={filteredScreenshots[0]._id}
+              selectedTab={selectedTab}
+            />
             ) : null
         }
       </div>

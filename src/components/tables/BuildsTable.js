@@ -102,12 +102,12 @@ const BuildsTable = function (props) {
       count += 1;
       const popover = (
         <Popover id="popover-basic">
-          <Popover.Title as="h3">
+          <Popover.Header as="h3">
             <b>Artifacts</b>
-          </Popover.Title>
-          <Popover.Content>
+          </Popover.Header>
+          <Popover.Body>
             <ArtifactsDetailsTable artifacts={build.artifacts} />
-          </Popover.Content>
+          </Popover.Body>
         </Popover>
       );
       buildRows.push(

@@ -40,12 +40,12 @@ const ExecutionMetricsSummary = function (props) {
     periods.reverse().forEach((period, index) => {
       const popover = (
         <Popover id="popover-basic">
-          <Popover.Title as="h3">
+          <Popover.Header as="h3">
             <b>Unique Tests</b>
-          </Popover.Title>
-          <Popover.Content>
+          </Popover.Header>
+          <Popover.Body>
             <MetricsTestsTable period={period} />
-          </Popover.Content>
+          </Popover.Body>
         </Popover>
       );
       periodRows.push(

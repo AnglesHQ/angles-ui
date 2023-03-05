@@ -4,9 +4,10 @@ import moment from 'moment';
 import queryString from 'query-string';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { MetricRequests } from 'angles-javascript-client';
-import { DateRangePicker } from 'rsuite';
+// import { DateRangePicker } from 'rsuite';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
@@ -145,7 +146,7 @@ const MetricsPage = function (props) {
       <h1>Metrics</h1>
       <div className="metrics-form-container">
         <Form>
-          <Form.Row>
+          <Row>
             <Form.Group as={Col} className="metrics-form-group">
               <Form.Label htmlFor="teamId"><b>Team</b></Form.Label>
               <Form.Control id="teamId" as="select" value={selectedTeam} onChange={handleTeamChange} className="metrics-grouping-period-select">
@@ -173,7 +174,7 @@ const MetricsPage = function (props) {
             </Form.Group>
             <Form.Group as={Col} className="metrics-form-group-period">
               <Form.Label htmlFor="periodSelect"><b>Period</b></Form.Label>
-              <DateRangePicker />
+              {/* <DateRangePicker /> */}
               { /*
                 className="metrics-date-picker"
                 startDate={startDate}
@@ -195,7 +196,7 @@ const MetricsPage = function (props) {
             <Form.Group as={Col} className="metrics-form-group">
               <Button variant="primary" type="button" className="metrics-button" onClick={() => { onSubmit(); }}>Retrieve Metrics</Button>
             </Form.Group>
-          </Form.Row>
+          </Row>
         </Form>
       </div>
       <div className="metrics-data-container">

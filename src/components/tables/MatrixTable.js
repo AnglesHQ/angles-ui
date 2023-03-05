@@ -137,13 +137,13 @@ const MatrixTable = function (props) {
             if (!firstExecution) firstExecution = testDetails;
             const popover = (
               <Popover id="popover-basic">
-                <Popover.Title as="h3">
+                <Popover.Header as="h3">
                   <b>Test: </b>
                   {testDetails.title}
-                </Popover.Title>
-                <Popover.Content>
+                </Popover.Header>
+                <Popover.Body>
                   <TestDetailsTable execution={testDetails} />
-                </Popover.Content>
+                </Popover.Body>
               </Popover>
             );
 

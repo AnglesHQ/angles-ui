@@ -1,121 +1,28 @@
 /* eslint  no-param-reassign: [0] */
-// TODO: remove this rule and fix.
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import Table from 'react-bootstrap/Table';
 import RegionSelect from 'react-region-select';
 import BaselineCompareDetailsTable from '../tables/BaselineCompareDetailsTable';
 import ScreenshotDetailsTable from '../tables/ScreenshotDetailsTable';
 import '../pages/Default.css';
 
-class BaselineImageView extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      editing: false,
-      regions: [],
-      ignoreBlocks: [],
-    };
-  }
+const BaselineImageView = (props) => {
+  const {
+    currentBaseLineDetails,
+    currentScreenshotDetails,
+    currentBaselineCompare,
+    currentBaselineCompareJson,
+    currentScreenshot,
+    isBaseline,
+    getBaselineCompare,
+    makeUpdateBaselineRequest,
+  } = props;
+  const [regions, setRegions] = React.useState([]);
+  const [editing, setEditing] = React.useState(false);
+  const [ignoreBlocks] = React.useState([]);
+  const regionStyle = { background: 'rgba(0, 255, 80, 0.3)' };
 
-  componentDidUpdate(prevProps, prevState) {
-    const { currentBaseLineDetails } = this.props;
-    if (currentBaseLineDetails !== prevProps.currentBaseLineDetails) {
-      if (currentBaseLineDetails && currentBaseLineDetails.ignoreBoxes
-        && currentBaseLineDetails.ignoreBoxes.length > 0) {
-        this.resetIgnoreBlocks();
-      } else {
-        this.setState({ regions: [], editing: false });
-      }
-    }
-
-    const { regions } = this.state;
-    if (prevState.regions !== regions) {
-      const latestIgnoreBlocks = [];
-      regions.forEach((crtRegion) => {
-        latestIgnoreBlocks.push({
-          left: crtRegion.x,
-          top: crtRegion.y,
-          right: 100 - (crtRegion.x + crtRegion.width),
-          bottom: 100 - (crtRegion.y + crtRegion.height),
-        });
-      });
-      this.setState({ ignoreBlocks: latestIgnoreBlocks });
-    }
-  }
-
-  onChange = (newRegions) => {
-    const { editing } = this.state;
-    if (editing) {
-      newRegions.forEach((el) => {
-        el.x = parseInt(el.x, 10);
-        el.y = parseInt(el.y, 10);
-        el.width = parseInt(el.width, 10);
-        el.height = parseInt(el.height, 10);
-      });
-      this.setState({ regions: newRegions });
-    }
-  };
-
-  // eslint-disable-next-line react/no-unused-class-component-methods
-  changeRegionData = (index, event) => {
-    const { regions } = this.state;
-    const region = regions[index];
-    let regionsArray = [];
-    switch (event.target.value) {
-      case 'delete':
-        // delete region
-        regionsArray = regions.filter((s) => s !== region);
-        this.onChange(regionsArray);
-        break;
-      default:
-        break;
-    }
-  };
-
-  deleteRegion = (index) => {
-    const { regions } = this.state;
-    const region = regions[index];
-    let regionsArray = [];
-    regionsArray = regions.filter((s) => s !== region);
-    this.onChange(regionsArray);
-  };
-
-  regionRenderer = (regionProps) => {
-    const { editing } = this.state;
-    if (!regionProps.isChanging) {
-      return (
-        <div style={{ position: 'absolute', right: 0, bottom: '-25px' }}>
-          {
-           editing
-             ? (
-               <span
-                 className="remove-region-icon"
-                 type="button"
-                 onClick={() => this.deleteRegion(regionProps.index)}
-               >
-                 <i className="far fa-trash-alt" />
-               </span>
-             )
-             : null
-          }
-        </div>
-      );
-    }
-    return null;
-  };
-
-  toggleEditing = () => {
-    const { editing } = this.state;
-    if (editing) {
-      const { currentBaseLineDetails, makeUpdateBaselineRequest } = this.props;
-      const { ignoreBlocks } = this.state;
-      makeUpdateBaselineRequest(currentBaseLineDetails._id, undefined, ignoreBlocks);
-    }
-    this.setState({ editing: !editing });
-  };
-
-  resetIgnoreBlocks = () => {
-    const { currentBaseLineDetails } = this.props;
+  const resetIgnoreBlocks = () => {
     const existingIgnoreBlocks = [];
     currentBaseLineDetails.ignoreBoxes.forEach((block) => {
       existingIgnoreBlocks.push(
@@ -128,30 +35,107 @@ class BaselineImageView extends Component {
         },
       );
     });
-    this.setState({ regions: existingIgnoreBlocks, editing: false });
+    setRegions(existingIgnoreBlocks);
+    setEditing(false);
   };
 
-  // eslint-disable-next-line react/no-unused-class-component-methods
-  init(newRegions) {
-    this.setState({ regions: newRegions });
-  }
+  useEffect(() => {
+    if (currentBaseLineDetails && currentBaseLineDetails.ignoreBoxes
+      && currentBaseLineDetails.ignoreBoxes.length > 0) {
+      resetIgnoreBlocks();
+    } else {
+      this.setState({ regions: [], editing: false });
+    }
+  }, [currentBaseLineDetails]);
 
-  render() {
-    const { regions, editing } = this.state;
-    const {
-      currentBaseLineDetails,
-      currentScreenshotDetails,
-      currentBaselineCompare,
-      currentBaselineCompareJson,
-      currentScreenshot,
-      isBaseline,
-      getBaselineCompare,
-    } = this.props;
+  useEffect(() => {
+    const latestIgnoreBlocks = [];
+    regions.forEach((crtRegion) => {
+      latestIgnoreBlocks.push({
+        left: crtRegion.x,
+        top: crtRegion.y,
+        right: 100 - (crtRegion.x + crtRegion.width),
+        bottom: 100 - (crtRegion.y + crtRegion.height),
+      });
+    });
+    this.setState({ ignoreBlocks: latestIgnoreBlocks });
+  }, [regions]);
 
-    const regionStyle = {
-      background: 'rgba(0, 255, 80, 0.3)',
-    };
+  const onChange = (newRegions) => {
+    if (editing) {
+      newRegions.forEach((el) => {
+        const {
+          x,
+          y,
+          width,
+          height,
+        } = el;
+        el.x = parseInt(x, 10);
+        el.y = parseInt(y, 10);
+        el.width = parseInt(width, 10);
+        el.height = parseInt(height, 10);
+      });
+      this.setState({ regions: newRegions });
+    }
+  };
 
+  // eslint-disable-next-line no-unused-vars
+  const changeRegionData = (index, event) => {
+    const region = regions[index];
+    let regionsArray = [];
+    switch (event.target.value) {
+      case 'delete':
+        // delete region
+        regionsArray = regions.filter((s) => s !== region);
+        onChange(regionsArray);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const deleteRegion = (index) => {
+    const region = regions[index];
+    let regionsArray = [];
+    regionsArray = regions.filter((s) => s !== region);
+    onChange(regionsArray);
+  };
+
+  const regionRenderer = (regionProps) => {
+    if (!regionProps.isChanging) {
+      return (
+        <div style={{ position: 'absolute', right: 0, bottom: '-25px' }}>
+          {
+           editing
+             ? (
+               <span
+                 className="remove-region-icon"
+                 type="button"
+                 onClick={() => deleteRegion(regionProps.index)}
+               >
+                 <i className="far fa-trash-alt" />
+               </span>
+             )
+             : null
+          }
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const toggleEditing = () => {
+    if (editing) {
+      makeUpdateBaselineRequest(currentBaseLineDetails._id, undefined, ignoreBlocks);
+    }
+    setEditing(!editing);
+  };
+
+  // init(newRegions) {
+  //   setRegions(newRegions);
+  // }
+
+  const renderPage = () => {
     if (!currentBaseLineDetails) {
       return 'No Baseline selected yet for this view and deviceName or browser combination. To select a baseline, navigate to the image you want as a baseline and click on the "Make Baseline Image" button';
     }
@@ -181,8 +165,8 @@ class BaselineImageView extends Component {
                       regions={regions}
                       regionStyle={regionStyle}
                       constraint
-                      onChange={this.onChange}
-                      regionRenderer={this.regionRenderer}
+                      onChange={onChange}
+                      regionRenderer={regionRenderer}
                       style={{ border: '1px solid black' }}
                     >
                       <img className="screenshot" src={currentScreenshot} id="baseline" alt="Compare" width="100%" />
@@ -197,7 +181,7 @@ class BaselineImageView extends Component {
                   <button
                     type="button"
                     className="btn btn-outline-primary"
-                    onMouseUp={() => this.toggleEditing()}
+                    onMouseUp={() => toggleEditing()}
                   >
                     {`${editing ? 'Save' : 'Edit'} Ignore Blocks`}
                   </button>
@@ -206,7 +190,7 @@ class BaselineImageView extends Component {
                       <button
                         type="button"
                         className="btn btn-outline-primary second-button"
-                        onMouseUp={() => this.resetIgnoreBlocks()}
+                        onMouseUp={() => resetIgnoreBlocks()}
                       >
                         Cancel Changes
                       </button>
@@ -232,7 +216,7 @@ class BaselineImageView extends Component {
     if (currentBaselineCompare === 'ERROR') {
       return (
         <div className="alert alert-danger" role="alert">
-          <span>Failed to retrieve basedline compare.</span>
+          <span>Failed to retrieve baseline compare.</span>
         </div>
       );
     }
@@ -284,7 +268,7 @@ class BaselineImageView extends Component {
                 <button
                   type="button"
                   className="btn btn-outline-primary"
-                  onMouseUp={() => this.toggleEditing()}
+                  onMouseUp={() => toggleEditing()}
                 >
                   {`${editing ? 'Save' : 'Edit'} Ignore Blocks`}
                 </button>
@@ -293,7 +277,7 @@ class BaselineImageView extends Component {
                     <button
                       type="button"
                       className="btn btn-outline-primary second-button"
-                      onMouseUp={() => this.resetIgnoreBlocks()}
+                      onMouseUp={() => resetIgnoreBlocks()}
                     >
                       Cancel Changes
                     </button>
@@ -305,7 +289,9 @@ class BaselineImageView extends Component {
         </tbody>
       </Table>
     );
-  }
-}
+  };
+
+  return renderPage();
+};
 
 export default BaselineImageView;

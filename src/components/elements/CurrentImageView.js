@@ -1,18 +1,21 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Table from 'react-bootstrap/Table';
 import ScreenshotDetailsTable from '../tables/ScreenshotDetailsTable';
 
-class CurrentImageView extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      dynamicBaselineButtonEnabled: true,
-      deleteScreenshotButtonEnable: true,
-    };
-  }
+const CurrentImageView = function (props) {
+  const [dynamicBaselineButtonEnabled, setDynamicBaselineButtonEnabled] = React.useState(true);
+  const [deleteScreenshotButtonEnabled, setDeleteScreenshotButtonEnabled] = React.useState(true);
+  const {
+    currentScreenshotDetails,
+    currentScreenshot,
+    isBaseline,
+    updateBaseline,
+    generateDynamicBaseline,
+    deleteScreenshot,
+  } = props;
 
-  displayScreenshot = (currentScreenshot) => {
-    if (!currentScreenshot) {
+  const displayScreenshot = (currentScreenshotToDisplay) => {
+    if (!currentScreenshotToDisplay) {
       return (
         <div className="alert alert-primary" role="alert">
           <span>
@@ -22,7 +25,7 @@ class CurrentImageView extends Component {
         </div>
       );
     }
-    if (currentScreenshot === 'ERROR') {
+    if (currentScreenshotToDisplay === 'ERROR') {
       return (
         <div className="alert alert-danger" role="alert">
           <span>
@@ -31,102 +34,91 @@ class CurrentImageView extends Component {
         </div>
       );
     }
-    return <img className="screenshot" src={currentScreenshot} alt="Screenshot" />;
+    return <img className="screenshot" src={currentScreenshotToDisplay} alt="Screenshot" />;
   };
 
-  returnMakeBaselineButton = (currentScreenshotDetails) => {
-    const { isBaseline, updateBaseline } = this.props;
-    if (currentScreenshotDetails.platform && currentScreenshotDetails.view) {
+  const returnMakeBaselineButton = (screenshotDetailsForButton) => {
+    if (screenshotDetailsForButton.platform && screenshotDetailsForButton.view) {
       return (
         <button
-          onClick={() => updateBaseline(currentScreenshotDetails)}
-          disabled={isBaseline(currentScreenshotDetails._id)}
+          onClick={() => updateBaseline(screenshotDetailsForButton)}
+          disabled={isBaseline(screenshotDetailsForButton._id)}
           type="button"
           className="btn btn-outline-primary"
         >
-          { !isBaseline(currentScreenshotDetails._id) ? ('Make Baseline Image') : 'This is the Baseline Image'}
+          { !isBaseline(screenshotDetailsForButton._id) ? ('Make Baseline Image') : 'This is the Baseline Image'}
         </button>
       );
     }
     return null;
   };
 
-  deleteScreenshotClick = async () => {
-    const { currentScreenshotDetails, deleteScreenshot } = this.props;
-    await this.setState({ deleteScreenshotButtonEnable: false });
+  const deleteScreenshotClick = async () => {
+    await setDeleteScreenshotButtonEnabled(false);
     await deleteScreenshot(currentScreenshotDetails);
-    await this.setState({ deleteScreenshotButtonEnable: true });
+    await setDeleteScreenshotButtonEnabled(true);
   };
 
-  generateDynamicBaselineClick = async () => {
-    const { currentScreenshotDetails, generateDynamicBaseline } = this.props;
-    await this.setState({ dynamicBaselineButtonEnabled: false });
+  const generateDynamicBaselineClick = async () => {
+    await setDynamicBaselineButtonEnabled(false);
     await generateDynamicBaseline(currentScreenshotDetails);
-    await this.setState({ dynamicBaselineButtonEnabled: true });
+    await setDynamicBaselineButtonEnabled(true);
   };
 
-  render() {
-    const {
-      currentScreenshotDetails,
-      currentScreenshot,
-      isBaseline,
-    } = this.props;
-    const { dynamicBaselineButtonEnabled, deleteScreenshotButtonEnable } = this.state;
-    return (
-      <Table>
-        <tbody>
-          <tr>
-            <td className="screenshot-details-td">
-              <div>
-                <ScreenshotDetailsTable
-                  currentScreenshotDetails={currentScreenshotDetails}
-                  isBaseline={isBaseline(currentScreenshotDetails._id)}
-                />
-              </div>
-            </td>
-            <td>
+  return (
+    <Table>
+      <tbody>
+        <tr>
+          <td className="screenshot-details-td">
+            <div>
+              <ScreenshotDetailsTable
+                currentScreenshotDetails={currentScreenshotDetails}
+                isBaseline={isBaseline(currentScreenshotDetails._id)}
+              />
+            </div>
+          </td>
+          <td>
+            {
+              displayScreenshot(currentScreenshot)
+            }
+          </td>
+        </tr>
+        <tr>
+          <td colSpan="100%">
+            <span style={{ float: 'left' }}>
               {
-                this.displayScreenshot(currentScreenshot)
+                returnMakeBaselineButton(currentScreenshotDetails)
               }
-            </td>
-          </tr>
-          <tr>
-            <td colSpan="100%">
-              <span style={{ float: 'left' }}>
-                {
-                  this.returnMakeBaselineButton(currentScreenshotDetails)
-                }
-                <button
-                  onClick={() => this.generateDynamicBaselineClick()}
-                  disabled={!dynamicBaselineButtonEnabled}
-                  type="button"
-                  className="btn btn-outline-primary second-button"
-                >
-                  Generate Dynamic Baseline
-                </button>
-                {
-                  (
-                    currentScreenshotDetails.type && currentScreenshotDetails.type === 'DYNAMIC'
-                      && !isBaseline(currentScreenshotDetails._id) ? (
-                        <button
-                          onClick={() => this.deleteScreenshotClick()}
-                          disabled={!deleteScreenshotButtonEnable}
-                          type="button"
-                          className="btn btn-outline-primary second-button"
-                          title="Only available for dynamic baselines that are not configured as a baseline."
-                        >
-                          Delete Screenshot
-                        </button>
-                      ) : null
-                  )
-                }
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </Table>
-    );
-  }
-}
+              <button
+                onClick={() => generateDynamicBaselineClick()}
+                disabled={!dynamicBaselineButtonEnabled}
+                type="button"
+                className="btn btn-outline-primary second-button"
+              >
+                Generate Dynamic Baseline
+              </button>
+              {
+                (
+                  currentScreenshotDetails.type && currentScreenshotDetails.type === 'DYNAMIC'
+                    && !isBaseline(currentScreenshotDetails._id) ? (
+                      <button
+                        onClick={() => deleteScreenshotClick()}
+                        disabled={!deleteScreenshotButtonEnabled}
+                        type="button"
+                        className="btn btn-outline-primary second-button"
+                        title="Only available for dynamic baselines that are not configured as a baseline."
+                      >
+                        Delete Screenshot
+                      </button>
+                    ) : null
+                )
+              }
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </Table>
+  );
+};
 
 export default CurrentImageView;

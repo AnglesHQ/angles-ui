@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { BuildRequests } from 'angles-javascript-client';
 import moment from 'moment';
-import Pagination from 'react-bootstrap/Pagination';
 import update from 'immutability-helper';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
+import Pagination from 'react-bootstrap/Pagination';
 import queryString from 'query-string';
 import { connect } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -16,6 +17,7 @@ import '../charts/Charts.css';
 
 const SummaryPage = function (props) {
   const location = useLocation();
+  const navigate = useNavigate();
   const query = queryString.parse(location.search);
   const { startDate: queryStartDate, endDate: queryEndDate } = query;
   const [builds, setBuilds] = useState(undefined);
@@ -114,7 +116,6 @@ const SummaryPage = function (props) {
   };
 
   const navigateToMatrix = () => {
-    const navigate = useNavigate();
     const selectedBuildIds = retrieveSelectedBuilds();
     navigate(`/matrix/?buildIds=${selectedBuildIds.join(',')}`);
   };
@@ -177,7 +178,7 @@ const SummaryPage = function (props) {
           <h1>Builds</h1>
           <div className="metrics-form-container">
             <Form>
-              <Form.Row>
+              <Row>
                 <Form.Group as={Col} className="metrics-form-group">
                   <Form.Label htmlFor="teamId"><b>Team</b></Form.Label>
                   <Form.Control id="teamId" as="select" value={currentTeam._id} onChange={handleTeamChange} className="metrics-grouping-period-select">
@@ -193,11 +194,11 @@ const SummaryPage = function (props) {
                 <Form.Group as={Col} className="metrics-form-group-period">
                   <Form.Label htmlFor="periodSelect"><b>Period</b></Form.Label>
                 </Form.Group>
-              </Form.Row>
+              </Row>
             </Form>
           </div>
           <div className="graphContainerParent">
-            <BuildBarChart builds={builds} />
+            <BuildBarChart builds={builds} navigate={navigate} />
             <BuildTimeLineChart builds={builds} />
           </div>
           <h1>

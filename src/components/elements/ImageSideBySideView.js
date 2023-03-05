@@ -1,17 +1,18 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Table from 'react-bootstrap/Table';
 import ScreenshotDetailsTable from '../tables/ScreenshotDetailsTable';
 
-class ImageSideBySideView extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      //
-    };
-  }
+const ImageSideBySideView = function (props) {
+  const {
+    currentBaseLineDetails,
+    currentScreenshotDetails,
+    currentScreenshot,
+    currentBaseline,
+    isBaseline,
+  } = props;
 
-  displaySideBySideBaseline = (currentBaseline) => {
-    if (!currentBaseline) {
+  const displaySideBySideBaseline = (baseline) => {
+    if (!baseline) {
       return (
         <div className="alert alert-primary" role="alert">
           <span>
@@ -21,7 +22,7 @@ class ImageSideBySideView extends Component {
         </div>
       );
     }
-    if (currentBaseline === 'ERROR') {
+    if (baseline === 'ERROR') {
       return (
         <div className="alert alert-danger" role="alert">
           <span>
@@ -31,11 +32,11 @@ class ImageSideBySideView extends Component {
         </div>
       );
     }
-    return <img className="screenshot" src={currentBaseline} alt="Baseline Screenshot" />;
+    return <img className="screenshot" src={baseline} alt="Baseline Screenshot" />;
   };
 
-  displaySideBySideScreenshot = (currentScreenshot) => {
-    if (!currentScreenshot) {
+  const displaySideBySideScreenshot = (screenshot) => {
+    if (!screenshot) {
       return (
         <div className="alert alert-primary" role="alert">
           <span>
@@ -45,7 +46,7 @@ class ImageSideBySideView extends Component {
         </div>
       );
     }
-    if (currentScreenshot === 'ERROR') {
+    if (screenshot === 'ERROR') {
       return (
         <div className="alert alert-danger" role="alert">
           <span>
@@ -54,48 +55,36 @@ class ImageSideBySideView extends Component {
         </div>
       );
     }
-    return <img className="screenshot" src={currentScreenshot} alt="Screenshot" />;
+    return <img className="screenshot" src={screenshot} alt="Screenshot" />;
   };
 
-  render() {
-    const {
-      currentBaseLineDetails,
-      currentScreenshotDetails,
-      currentScreenshot,
-      currentBaseline,
-      isBaseline,
-    } = this.props;
-
-    if (isBaseline(currentScreenshotDetails._id)) {
-      return (
-        <Table>
-          <tbody>
-            <tr>
-              <td colSpan="100%" className="sbs-header">
-                Current Image (and Baseline)
-              </td>
-            </tr>
-            <tr>
-              <td className="screenshot-details-td">
-                <div>
-                  <ScreenshotDetailsTable
-                    currentScreenshotDetails={currentScreenshotDetails}
-                    isBaseline={isBaseline(currentScreenshotDetails._id)}
-                  />
-                </div>
-              </td>
-              <td>
-                {
-                  this.displaySideBySideScreenshot(currentScreenshot)
-                }
-              </td>
-            </tr>
-          </tbody>
-        </Table>
-      );
-    }
-
-    return (
+  return (
+    isBaseline(currentScreenshotDetails._id) ? (
+      <Table>
+        <tbody>
+          <tr>
+            <td colSpan="100%" className="sbs-header">
+              Current Image (and Baseline)
+            </td>
+          </tr>
+          <tr>
+            <td className="screenshot-details-td">
+              <div>
+                <ScreenshotDetailsTable
+                  currentScreenshotDetails={currentScreenshotDetails}
+                  isBaseline={isBaseline(currentScreenshotDetails._id)}
+                />
+              </div>
+            </td>
+            <td>
+              {
+                displaySideBySideScreenshot(currentScreenshot)
+              }
+            </td>
+          </tr>
+        </tbody>
+      </Table>
+    ) : (
       <Table>
         <tbody>
           <tr>
@@ -114,7 +103,7 @@ class ImageSideBySideView extends Component {
             </td>
             <td>
               {
-                this.displaySideBySideScreenshot(currentScreenshot)
+                displaySideBySideScreenshot(currentScreenshot)
               }
             </td>
           </tr>
@@ -136,7 +125,7 @@ class ImageSideBySideView extends Component {
                 </td>
                 <td>
                   {
-                    this.displaySideBySideBaseline(currentBaseline)
+                    displaySideBySideBaseline(currentBaseline)
                   }
                 </td>
               </tr>,
@@ -144,8 +133,8 @@ class ImageSideBySideView extends Component {
           }
         </tbody>
       </Table>
-    );
-  }
-}
+    )
+  );
+};
 
 export default ImageSideBySideView;
