@@ -6,10 +6,14 @@ import { useNavigate } from 'react-router-dom';
 import '../pages/Default.css';
 
 const StepsTable = function (props) {
-  const { index, action, openModal } = props;
+  const {
+    index,
+    action,
+    openModal,
+    screenshots,
+  } = props;
 
   const getScreenShot = (screenshotId) => {
-    const { screenshots } = this.state;
     if (screenshots !== undefined && screenshotId !== undefined) {
       const image = screenshots.filter((screenshot) => screenshot._id === screenshotId)[0];
       if (image !== undefined) {

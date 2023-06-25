@@ -1,18 +1,21 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Table from 'react-bootstrap/Table';
 import ScreenshotDetailsTable from '../tables/ScreenshotDetailsTable';
+import CurrentScreenshotContext from '../../context/CurrentScreenshotContext';
 
 const CurrentImageView = function (props) {
   const [dynamicBaselineButtonEnabled, setDynamicBaselineButtonEnabled] = React.useState(true);
   const [deleteScreenshotButtonEnabled, setDeleteScreenshotButtonEnabled] = React.useState(true);
   const {
-    currentScreenshotDetails,
-    currentScreenshot,
     isBaseline,
     updateBaseline,
     generateDynamicBaseline,
     deleteScreenshot,
   } = props;
+  const {
+    currentScreenshot,
+    currentScreenshotDetails,
+  } = useContext(CurrentScreenshotContext);
 
   const displayScreenshot = (currentScreenshotToDisplay) => {
     if (!currentScreenshotToDisplay) {

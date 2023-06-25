@@ -250,13 +250,13 @@
 
 .build-table-filter {
   color: black;
-  width: 250px;
+  width: 150px;
   font-size: 14px;
 }
 
 .build-table-filter span {
     display: inline-block;
-    width: 200px;
+    width: 250px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -343,4 +343,8 @@ pre {
     position: sticky;
     top: -1px;
     z-index: 10;
+}
+
+.build-details {
+    min-width: 250px;
 }

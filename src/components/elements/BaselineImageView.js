@@ -1,25 +1,28 @@
 /* eslint  no-param-reassign: [0] */
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import Table from 'react-bootstrap/Table';
 import RegionSelect from 'react-region-select';
 import BaselineCompareDetailsTable from '../tables/BaselineCompareDetailsTable';
 import ScreenshotDetailsTable from '../tables/ScreenshotDetailsTable';
 import '../pages/Default.css';
+import CurrentScreenshotContext from '../../context/CurrentScreenshotContext';
 
 const BaselineImageView = (props) => {
   const {
-    currentBaseLineDetails,
-    currentScreenshotDetails,
-    currentBaselineCompare,
-    currentBaselineCompareJson,
-    currentScreenshot,
     isBaseline,
     getBaselineCompare,
     makeUpdateBaselineRequest,
   } = props;
+  const {
+    currentScreenshot,
+    currentScreenshotDetails,
+    currentBaseLineDetails,
+    currentBaselineCompare,
+    currentBaselineCompareJson,
+  } = useContext(CurrentScreenshotContext);
   const [regions, setRegions] = React.useState([]);
   const [editing, setEditing] = React.useState(false);
-  const [ignoreBlocks] = React.useState([]);
+  const [ignoreBlocks, setIgnoreBlocks] = React.useState([]);
   const regionStyle = { background: 'rgba(0, 255, 80, 0.3)' };
 
   const resetIgnoreBlocks = () => {
@@ -44,7 +47,8 @@ const BaselineImageView = (props) => {
       && currentBaseLineDetails.ignoreBoxes.length > 0) {
       resetIgnoreBlocks();
     } else {
-      this.setState({ regions: [], editing: false });
+      setRegions([]);
+      setEditing(false);
     }
   }, [currentBaseLineDetails]);
 
@@ -58,7 +62,7 @@ const BaselineImageView = (props) => {
         bottom: 100 - (crtRegion.y + crtRegion.height),
       });
     });
-    this.setState({ ignoreBlocks: latestIgnoreBlocks });
+    setIgnoreBlocks(latestIgnoreBlocks);
   }, [regions]);
 
   const onChange = (newRegions) => {
@@ -75,7 +79,7 @@ const BaselineImageView = (props) => {
         el.width = parseInt(width, 10);
         el.height = parseInt(height, 10);
       });
-      this.setState({ regions: newRegions });
+      setRegions(newRegions);
     }
   };
 
@@ -252,8 +256,8 @@ const BaselineImageView = (props) => {
                     regions={regions}
                     regionStyle={regionStyle}
                     constraint
-                    onChange={this.onChange}
-                    regionRenderer={this.regionRenderer}
+                    onChange={onChange}
+                    regionRenderer={regionRenderer}
                     style={{ border: '1px solid black' }}
                   >
                     <img className="screenshot" src={currentBaselineCompare} id="baseline" alt="Compare" width="100%" />

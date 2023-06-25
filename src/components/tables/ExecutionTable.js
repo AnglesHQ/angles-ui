@@ -1,21 +1,17 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import ActionComponent from './ActionComponent';
+import ExecutionStateContext from '../../context/ExecutionStateContext';
 
 const ExecutionTable = function (props) {
-  let { executionState } = props;
+  const { isExecutionExpanded, toggleExecution } = useContext(ExecutionStateContext);
   const {
     index,
     execution,
     screenshots,
     openModal,
-    toggleExecution,
-    toggleAction,
   } = props;
-  if (!executionState) {
-    executionState = { isOpen: false };
-  }
 
   const getPlatformName = (executionToGenerateNameFor) => {
     const platformsToDisplay = [];
@@ -31,50 +27,51 @@ const ExecutionTable = function (props) {
     return platformsToDisplay.join(', ');
   };
 
-  return [
-    <tr key={`execution_${index}`} className="test-row">
-      <td colSpan="100%" className={`${execution.status}`}>
-        <span key={executionState.isOpen} className="test-name" onClick={() => toggleExecution(execution._id)}>
-          <i title="Click to display/hide test steps" className={executionState.isOpen ? ('fa fa-caret-down') : 'fas fa-caret-right'} />
-          <span>{`Test: ${execution.title} `}</span>
-        </span>
-        <span>
-          { execution.platforms && execution.platforms.length > 0 ? <span className="device-details">{getPlatformName(execution)}</span> : null }
-        </span>
-        <span className="history-link-execution">
-          <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{`See execution history for ${execution.title}`}</Tooltip>}>
-            <span className="d-inline-block">
-              <a className="test-history-link" title={`See execution history for ${execution.title}`} href={`/history?executionId=${execution._id}`}>
-                <span><i className="fa fa-history" aria-hidden="true">history</i></span>
-              </a>
-            </span>
-          </OverlayTrigger>
-        </span>
-      </td>
-    </tr>,
-    <tr key={`execution_actions_${index}`} className="actions-row">
-      { executionState.isOpen ? (
-        <td colSpan="100%" className="actions-wrapper">
-          <table className="actions-table">
-            <tbody>
-              { execution.actions.map((action, actionIndex) => [
-                <ActionComponent
-                  key={index}
-                  action={action}
-                  index={index}
-                  screenshots={screenshots}
-                  openModal={openModal}
-                  toggleAction={toggleAction}
-                  actionIndex={actionIndex}
-                  isOpen={executionState.actions[actionIndex]}
-                />,
-              ])}
-            </tbody>
-          </table>
+  return (
+    <>
+      <tr key={`execution_${index}`} className="test-row">
+        <td colSpan="100%" className={`${execution.status}`}>
+          <span key={isExecutionExpanded(execution._id)} className="test-name" onClick={() => toggleExecution(execution._id)}>
+            <i title="Click to display/hide test steps" className={isExecutionExpanded(execution._id) ? ('fa fa-caret-down') : 'fas fa-caret-right'} />
+            <span>{`Test: ${execution.title} `}</span>
+          </span>
+          <span>
+            { execution.platforms && execution.platforms.length > 0 ? <span className="device-details">{getPlatformName(execution)}</span> : null }
+          </span>
+          <span className="history-link-execution">
+            <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{`See execution history for ${execution.title}`}</Tooltip>}>
+              <span className="d-inline-block">
+                <a className="test-history-link" title={`See execution history for ${execution.title}`} href={`/history?executionId=${execution._id}`}>
+                  <span><i className="fa fa-history" aria-hidden="true">history</i></span>
+                </a>
+              </span>
+            </OverlayTrigger>
+          </span>
         </td>
-      ) : null}
-    </tr>,
-  ];
+      </tr>
+      <tr key={`execution_actions_${index}`} className="actions-row">
+        { isExecutionExpanded(execution._id) ? (
+          <td colSpan="100%" className="actions-wrapper">
+            <table className="actions-table">
+              <tbody>
+                { execution.actions.map((action, actionIndex) => [
+                  <ActionComponent
+                    key={index}
+                    action={action}
+                    index={index}
+                    screenshots={screenshots}
+                    openModal={openModal}
+                    actionIndex={actionIndex}
+                    execution={execution}
+                  />,
+                ])}
+              </tbody>
+            </table>
+          </td>
+        ) : null}
+      </tr>
+    </>
+  );
 };
 
 export default ExecutionTable;

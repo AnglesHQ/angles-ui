@@ -25,6 +25,7 @@ import MetricsPage from '../components/pages/MetricsPage';
 import { storeCurrentTeam, storeTeams, storeTeamsError } from '../redux/teamActions';
 import { storeEnvironments } from '../redux/environmentActions';
 import { clearCurrentErrorMessage, clearCurrentInfoMessage, clearCurrentLoaderMessage } from '../redux/notificationActions';
+import { CurrentScreenshotProvider } from '../context/CurrentScreenshotContext';
 
 axios.defaults.baseURL = `${process.env.REACT_APP_ANGLES_API_URL}/rest/api/v1.0`;
 
@@ -243,7 +244,7 @@ const App = function (props) {
               )
              }
           />
-          <Route path="/build/" element={<BuildPage />} exact />
+          <Route path="/build/" element={<CurrentScreenshotProvider><BuildPage /></CurrentScreenshotProvider>} exact />
           <Route
             exact
             path="/matrix/"

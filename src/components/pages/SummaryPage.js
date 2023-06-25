@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { BuildRequests } from 'angles-javascript-client';
+import { DateRangePicker } from 'rsuite';
 import moment from 'moment';
 import update from 'immutability-helper';
 import Col from 'react-bootstrap/Col';
@@ -10,9 +11,13 @@ import Pagination from 'react-bootstrap/Pagination';
 import queryString from 'query-string';
 import { connect } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  BarChart,
+  YAxis,
+  Bars,
+  Line,
+} from '@rsuite/charts';
 import BuildsTable from '../tables/BuildsTable';
-import BuildBarChart from '../charts/BuildBarChart';
-import BuildTimeLineChart from '../charts/BuildTimeLineChart';
 import '../charts/Charts.css';
 
 const SummaryPage = function (props) {
@@ -27,11 +32,11 @@ const SummaryPage = function (props) {
   const [buildCount, setBuildCount] = useState(0);
   const [currentSkip, setCurrentSkip] = useState(0);
   const [limit] = useState(15);
-  const [startDate] = useState(queryStartDate ? moment(queryStartDate) : moment().subtract(90, 'days'));
-  const [endDate] = useState(queryEndDate ? moment(queryEndDate) : moment());
+  const [startDate, setStartDate] = useState(queryStartDate ? moment(queryStartDate) : moment().subtract(90, 'days'));
+  const [endDate, setEndDate] = useState(queryEndDate ? moment(queryEndDate) : moment());
   const buildRequests = new BuildRequests(axios);
   const { currentTeam, teams, environments } = props;
-
+  const { afterToday } = DateRangePicker;
   const getBuildsForTeam = (
     teamId,
     skip,
@@ -100,7 +105,7 @@ const SummaryPage = function (props) {
   };
 
   /*
-    Selected builds will contain both ticked and unticked, so we just want the selected ones.
+    Selected builds will contain both ticked and un-ticked, so we just want the selected ones.
   */
   const retrieveSelectedBuilds = () => Object.keys(selectedBuilds)
     .filter((key) => selectedBuilds[key] === true);
@@ -159,7 +164,19 @@ const SummaryPage = function (props) {
   //   setStartDate(selectedStartDate);
   //   setEndDate(selectedEndDate);
   // };
-
+  const generateBuildData = () => {
+    const buildData = [];
+    builds.forEach((build) => {
+      const {
+        PASS,
+        SKIPPED,
+        ERROR,
+        FAIL,
+      } = build.result;
+      buildData.push([moment(build.start).format('YYYY-MM-DD'), PASS, SKIPPED, ERROR, FAIL]);
+    });
+    return buildData;
+  };
   return (
     // eslint-disable-next-line no-nested-ternary
     (!currentTeam || !currentTeam._id) ? (
@@ -193,13 +210,31 @@ const SummaryPage = function (props) {
                 </Form.Group>
                 <Form.Group as={Col} className="metrics-form-group-period">
                   <Form.Label htmlFor="periodSelect"><b>Period</b></Form.Label>
+                  <Form.Group>
+                    <DateRangePicker
+                      value={[startDate.toDate(), endDate.toDate()]}
+                      format="dd-MMM-yyyy"
+                      character=" - "
+                      onChange={(value) => {
+                        setStartDate(moment(value[0]));
+                        setEndDate(moment(value[1]));
+                      }}
+                      disabledDate={afterToday()}
+                    />
+                  </Form.Group>
                 </Form.Group>
               </Row>
             </Form>
           </div>
           <div className="graphContainerParent">
-            <BuildBarChart builds={builds} navigate={navigate} />
-            <BuildTimeLineChart builds={builds} />
+            <BarChart data={generateBuildData()}>
+              <YAxis minInterval={1} axisLabel={(value) => `${value}`} />
+              <Bars name="Pass" color="#98dc79" stack="1" />
+              <Bars name="SKIPPED" color="#2485C1" stack="1" />
+              <Bars name="Error" color="#ff8000" stack="1" />
+              <Bars name="Fail" color="#c61410" stack="1" />
+              <Line name="Execution Time" />
+            </BarChart>
           </div>
           <h1>
             <span>Builds </span>

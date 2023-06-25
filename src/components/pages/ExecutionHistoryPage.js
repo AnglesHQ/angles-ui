@@ -9,12 +9,14 @@ import ExecutionsTimeLineChart from '../charts/ExecutionsTimeLineChart';
 import ScreenshotView from './ScreenshotView';
 import '../charts/Charts.css';
 import SuiteTable from '../tables/SuiteTable';
+import { ExecutionStateProvider } from '../../context/ExecutionStateContext';
+import { useConstructor } from '../../utility/GeneralUtilities';
 
 const SummaryPage = function () {
   const location = useLocation();
   const [limit] = useState(30);
   const [currentSkip] = useState(0);
-  const [executions, setExecutions] = useState(undefined);
+  const [executions, setExecutions] = useState([]);
   const [screenshots, setScreenshots] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [currentShotId, setCurrentShotId] = useState(null);
@@ -49,9 +51,15 @@ const SummaryPage = function () {
       .then((response) => {
         const { executions: retrievedExecutions } = response;
         retrieveScreenshotDetailsForExecutions(retrievedExecutions);
-        setExecutions(retrievedExecutions);
+        const executionsToSave = [...retrievedExecutions];
+        setExecutions(executionsToSave);
       });
   };
+
+  useConstructor(() => {
+    const { executionId } = query;
+    getExecutionHistoryForExecutionId(executionId, currentSkip, limit);
+  });
 
   const calculateSuiteResults = (suite) => {
     suite.executions.forEach((execution) => {
@@ -61,27 +69,24 @@ const SummaryPage = function () {
     return suite;
   };
 
-  const generateSuiteResult = () => calculateSuiteResults({
-    executions,
+  const generateSuiteResult = (executionsArray) => calculateSuiteResults({
+    executions: executionsArray,
     result: {
       PASS: 0,
       FAIL: 0,
       ERROR: 0,
       SKIPPED: 0,
     },
-    name: executions[0].suite,
+    name: executionsArray[0].suite,
     status: 'N/A',
   });
 
   useEffect(() => {
-    const suite = generateSuiteResult();
-    setSuiteResult(suite);
+    if (executions.length > 0) {
+      const suite = generateSuiteResult(executions);
+      setSuiteResult(suite);
+    }
   }, [executions]);
-
-  useEffect(() => {
-    const { executionId } = query;
-    getExecutionHistoryForExecutionId(executionId, currentSkip, limit);
-  }, []);
 
   const closeModal = () => {
     setShowModal(false);
@@ -94,7 +99,7 @@ const SummaryPage = function () {
   };
 
   return (
-    (executions === undefined) ? (
+    (executions.length === 0 || suiteResult === null) ? (
       <div className="alert alert-primary" role="alert">
         <span>
           <i className="fas fa-spinner fa-pulse fa-2x" />
@@ -115,12 +120,14 @@ const SummaryPage = function () {
           <ExecutionsResultsPieChart executions={executions} />
           <ExecutionsTimeLineChart executions={executions} />
         </div>
-        <SuiteTable
-          key={`${suiteResult.name}`}
-          suite={suiteResult}
-          screenshots={screenshots}
-          openModal={openModal}
-        />
+        <ExecutionStateProvider key={`state-provider-${suiteResult.name}`}>
+          <SuiteTable
+            key={`${suiteResult.name}`}
+            suite={suiteResult}
+            screenshots={screenshots}
+            openModal={openModal}
+          />
+        </ExecutionStateProvider>
         <Modal show={showModal} onHide={closeModal} dialogClassName="screenshot-modal">
           <Modal.Header closeButton>
             <Modal.Title>Screenshot Viewer</Modal.Title>

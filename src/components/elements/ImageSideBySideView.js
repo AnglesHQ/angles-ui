@@ -1,16 +1,18 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Table from 'react-bootstrap/Table';
 import ScreenshotDetailsTable from '../tables/ScreenshotDetailsTable';
+import CurrentScreenshotContext from '../../context/CurrentScreenshotContext';
 
 const ImageSideBySideView = function (props) {
   const {
-    currentBaseLineDetails,
-    currentScreenshotDetails,
-    currentScreenshot,
-    currentBaseline,
     isBaseline,
   } = props;
-
+  const {
+    currentScreenshot,
+    currentScreenshotDetails,
+    currentBaseline,
+    currentBaseLineDetails,
+  } = useContext(CurrentScreenshotContext);
   const displaySideBySideBaseline = (baseline) => {
     if (!baseline) {
       return (

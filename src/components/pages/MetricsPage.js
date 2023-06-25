@@ -11,6 +11,7 @@ import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
+import { DateRangePicker } from 'rsuite';
 import MetricsResultChart from '../charts/MetricsResultChart';
 import TestPhasesChart from '../charts/TestPhasesChart';
 import PlatformDistributionChart from '../charts/PlatformDistributionChart';
@@ -30,8 +31,8 @@ const MetricsPage = function (props) {
     startDate: queryStartDate,
     endDate: queryEndDate,
   } = query;
-  const [startDate] = useState(queryStartDate ? moment(queryStartDate) : moment().subtract(30, 'days'));
-  const [endDate] = useState(queryEndDate ? moment(queryEndDate) : moment());
+  const [startDate, setStartDate] = useState(queryStartDate ? moment(queryStartDate) : moment().subtract(30, 'days'));
+  const [endDate, setEndDate] = useState(queryEndDate ? moment(queryEndDate) : moment());
   const [groupingPeriod, setGroupingPeriod] = useState(grouping || 'week');
   const [selectedTeam, setSelectedTeam] = useState(currentTeam._id);
   const [selectedComponent, setSelectedComponent] = useState(component || 'any');
@@ -39,6 +40,7 @@ const MetricsPage = function (props) {
   const [metrics, setMetrics] = useState({});
   const [platformColors, setPlatformColors] = useState({});
   const metricRequests = new MetricRequests(axios);
+  const { afterToday } = DateRangePicker;
 
   const getPlatformArrayColors = (metricsToUse) => {
     const result = { colors: [] };
@@ -174,14 +176,16 @@ const MetricsPage = function (props) {
             </Form.Group>
             <Form.Group as={Col} className="metrics-form-group-period">
               <Form.Label htmlFor="periodSelect"><b>Period</b></Form.Label>
-              {/* <DateRangePicker /> */}
-              { /*
-                className="metrics-date-picker"
-                startDate={startDate}
-                endDate={endDate}
-                handleDatesChange={this.handleDatesChange}
-                */
-              }
+              <Form.Group>
+                <DateRangePicker
+                  value={[startDate.toDate(), endDate.toDate()]}
+                  onChange={(value) => {
+                    setStartDate(moment(value[0]));
+                    setEndDate(moment(value[1]));
+                  }}
+                  disabledDate={afterToday()}
+                />
+              </Form.Group>
             </Form.Group>
             <Form.Group as={Col} className="metrics-form-group">
               <Form.Label htmlFor="grouping"><b>Grouping</b></Form.Label>

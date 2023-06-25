@@ -257,10 +257,10 @@
   padding-left: 15px;
   padding-right: 15px;
   padding-top: 5px;
+  padding-bottom: 15px;
   border-radius: 10px;
   background: #b5a5a53b;
   border: 1px solid grey;
-  marging-bottom: 30px;
 }
 
 .metrics-data-container {

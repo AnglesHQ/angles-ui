@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
 import queryString from 'query-string';
@@ -18,11 +18,13 @@ import {
   clearCurrentLoaderMessage,
   storeCurrentLoaderMessage,
 } from '../../redux/notificationActions';
+import { ExecutionStateProvider } from '../../context/ExecutionStateContext';
+import { useConstructor } from '../../utility/GeneralUtilities';
+import CurrentScreenshotContext from '../../context/CurrentScreenshotContext';
 
 const BuildPage = function (props) {
   const location = useLocation();
   const [showModal, setShowModal] = useState(false);
-  const [currentShotId, setCurrentShotId] = useState(null);
   const [screenshots, setScreenshots] = useState(null);
   const [query] = useState(queryString.parse(location.search));
   const [currentBuild, setCurrentBuild] = useState(null);
@@ -32,7 +34,9 @@ const BuildPage = function (props) {
   const [selectedTab, setSelectedTab] = useState(query.selectedTab || 'image');
   const buildRequests = new BuildRequests(axios);
   const screenshotRequests = new ScreenshotRequests(axios);
-
+  const {
+    setCurrentScreenshotId,
+  } = useContext(CurrentScreenshotContext);
   const getBuildDetails = (buildId) => {
     buildRequests.getBuild(buildId)
       .then((retrievedBuild) => {
@@ -44,15 +48,17 @@ const BuildPage = function (props) {
       });
   };
 
-  const getScreenshotDetails = (buildId) => {
+  const getScreenshotDetails = async (buildId) => new Promise((resolve, reject) => {
     screenshotRequests.getScreenshotsForBuild(buildId)
       .then((retrievedScreenshots) => {
         setScreenshots(retrievedScreenshots);
+        resolve(retrievedScreenshots);
       })
-      .catch(() => {
+      .catch((error) => {
         setScreenshots({});
+        reject(error);
       });
-  };
+  });
 
   const closeModal = () => {
     setShowModal(false);
@@ -60,25 +66,23 @@ const BuildPage = function (props) {
 
   const openModal = (imageId, tab) => {
     setShowModal(true);
-    setCurrentShotId(imageId);
+    setCurrentScreenshotId(imageId);
     setSelectedTab(tab);
   };
 
-  useEffect(() => {
+  useConstructor(() => {
     getBuildDetails(query.buildId);
-    getScreenshotDetails(query.buildId);
-    // closeModal = closeModal.bind(this);
-  }, []);
-
-  useEffect(() => {
-    if (query.loadScreenshotId) {
-      if (query.selectedTab) {
-        openModal(query.loadScreenshotId, query.selectedTab);
-      } else {
-        openModal(query.loadScreenshotId);
-      }
-    }
-  }, [query]);
+    getScreenshotDetails(query.buildId)
+      .then(() => {
+        if (query.loadScreenshotId) {
+          if (query.selectedTab) {
+            openModal(query.loadScreenshotId, query.selectedTab);
+          } else {
+            openModal(query.loadScreenshotId);
+          }
+        }
+      });
+  });
 
   const filterBuilds = (statesToFilterBy) => {
     const filterSuites = [];
@@ -166,12 +170,14 @@ const BuildPage = function (props) {
             {
               filteredSuites.map((suite) => (
                 suite.executions.length > 0 ? (
-                  <SuiteTable
-                    key={`${suite.name}`}
-                    suite={suite}
-                    screenshots={screenshots}
-                    openModal={openModal}
-                  />
+                  <ExecutionStateProvider key={`state-provider-${suite.name}`}>
+                    <SuiteTable
+                      key={`${suite.name}`}
+                      suite={suite}
+                      screenshots={screenshots}
+                      openModal={openModal}
+                    />
+                  </ExecutionStateProvider>
                 ) : null
               ))
             }
@@ -183,7 +189,6 @@ const BuildPage = function (props) {
             <Modal.Body>
               <ScreenshotView
                 buildScreenshots={screenshots}
-                selectedScreenshotId={currentShotId}
                 selectedTab={selectedTab}
                 addImageToBuildScreenshots={addImageToBuildScreenshots}
                 removeImageFromBuildScreenshots={removeImageFromBuildScreenshots}

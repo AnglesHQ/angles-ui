@@ -1,16 +1,19 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Container } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 import Moment from 'react-moment';
+import CurrentScreenshotContext from '../../context/CurrentScreenshotContext';
 
 const ScreenshotHistoryView = function (props) {
+  const {
+    isBaseline,
+  } = props;
   const {
     currentScreenshotDetails,
     currentScreenshotHistory,
     currentBaseLineDetails,
-    isBaseline,
-  } = props;
+  } = useContext(CurrentScreenshotContext);
 
   const isSelectedId = (screenshotId) => {
     if (currentScreenshotDetails && currentScreenshotDetails._id === screenshotId) {

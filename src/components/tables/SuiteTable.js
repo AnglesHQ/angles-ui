@@ -1,27 +1,18 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import { getDuration } from '../../utility/TimeUtilities';
 import ExecutionTable from './ExecutionTable';
+import ExecutionStateContext from '../../context/ExecutionStateContext';
 import './Tables.css';
 
 const SuiteTable = function (props) {
-  const getStatesDefault = (expanded, expandActions) => {
-    const executionStates = {};
-    const { suite } = props;
-    suite.executions.forEach((execution) => {
-      executionStates[execution._id] = {
-        isOpen: expanded,
-        actions: [],
-      };
-      execution.actions.forEach((action, index) => {
-        executionStates[execution._id].actions[index] = expandActions;
-      });
-    });
-    return executionStates;
-  };
-
-  const [executionStates, setExecutionStates] = useState([getStatesDefault(false)]);
+  const {
+    executionStates,
+    setExecutionStates,
+    getStatesDefault,
+    setDefaultStates,
+  } = useContext(ExecutionStateContext);
   const { suite, screenshots, openModal } = props;
 
   const sum = (result) => {
@@ -32,27 +23,21 @@ const SuiteTable = function (props) {
       .reduce((sumValue, key) => sumValue + parseFloat(result[key] || 0), 0);
   };
 
+  useEffect(() => {
+    // set the default state of the executions and actions
+    setDefaultStates(suite);
+  }, []);
+
   const expandAll = () => {
-    setExecutionStates(getStatesDefault(true, true));
+    setExecutionStates(getStatesDefault(true, true, suite));
   };
 
   const expandExecutions = () => {
-    setExecutionStates(getStatesDefault(true, false));
+    setExecutionStates(getStatesDefault(true, false, suite));
   };
 
   const collapseAll = () => {
-    setExecutionStates(getStatesDefault(false, false));
-  };
-
-  const toggleExecution = (executionId) => {
-    executionStates[executionId].isOpen = !executionStates[executionId].isOpen;
-    setExecutionStates(executionStates);
-  };
-
-  const toggleAction = (executionId, actionIndex) => {
-    executionStates[executionId]
-      .actions[actionIndex] = !executionStates[executionId].actions[actionIndex];
-    setExecutionStates(executionStates);
+    setExecutionStates(getStatesDefault(false, false, suite));
   };
 
   return (
@@ -113,14 +98,11 @@ const SuiteTable = function (props) {
         {
           suite.executions.map((execution) => [
             <ExecutionTable
-              key={execution._id}
+              key={`${execution._id}.${(executionStates[execution._id]) ? (executionStates[execution._id]).isOpen : false}`}
               execution={execution}
               index={execution._id}
               screenshots={screenshots}
               openModal={openModal}
-              executionState={executionStates[execution._id]}
-              toggleExecution={toggleExecution}
-              toggleAction={toggleAction}
             />,
           ])
       }

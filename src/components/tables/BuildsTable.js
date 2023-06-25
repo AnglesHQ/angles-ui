@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import Moment from 'react-moment';
+// import { TagPicker } from 'rsuite';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import Tooltip from 'react-bootstrap/Tooltip';
 import { MultiSelect } from 'react-multi-select-component';
 import Popover from 'react-bootstrap/Popover';
+import ProgressBar from 'react-bootstrap/ProgressBar';
+import TimeIcon from '@rsuite/icons/Time';
+import TreeIcon from '@rsuite/icons/Tree';
+import { Badge, FlexboxGrid } from 'rsuite';
+
 import { getDuration } from '../../utility/TimeUtilities';
 import ArtifactsDetailsTable from './ArtifactsDetailsTable';
 
@@ -90,6 +95,23 @@ const BuildsTable = function (props) {
     setFilteredComponents(componentsToSelect.map((component) => component.value));
   };
 
+  const getPercentageString = (resultState, result) => {
+    let total = 0;
+    Object.keys(result).forEach((key) => {
+      total += result[key];
+    });
+    return Math.round(((result[resultState] / total) * 100));
+  };
+
+  const generateResultBar = (result) => (
+    <ProgressBar style={{ height: '2em' }}>
+      <ProgressBar label={`${getPercentageString('PASS', result)}%`} variant="success" now={getPercentageString('PASS', result)} key={1} />
+      <ProgressBar label={`${getPercentageString('SKIPPED', result)}%`} variant="info" now={getPercentageString('SKIPPED', result)} key={2} />
+      <ProgressBar label={`${getPercentageString('ERROR', result)}%`} variant="warning" now={getPercentageString('ERROR', result)} key={3} />
+      <ProgressBar label={`${getPercentageString('FAIL', result)}%`} variant="danger" now={getPercentageString('FAIL', result)} key={4} />
+    </ProgressBar>
+  );
+
   const generateBuildRows = () => {
     const {
       builds,
@@ -118,63 +140,70 @@ const BuildsTable = function (props) {
               <i className={isRowSelected(build) ? ('far fa-check-square') : 'far fa-square'} />
             </div>
           </td>
-          <td>
-            {
-              build.keep ? (
-                <div><i className="fas fa-lock" /></div>
-              ) : null
-            }
+          <td className="build-details">
+            <FlexboxGrid justify="start">
+              <FlexboxGrid.Item colspan={2}>
+                {
+                  build.keep ? (
+                    <i className="fas fa-lock" />
+                  ) : null
+                }
+              </FlexboxGrid.Item>
+              <FlexboxGrid.Item colspan={18}>
+                <div>
+                  <a href={`/build/?buildId=${build._id}`} target="_self">
+                    {build.name}
+                  </a>
+                </div>
+                <div>
+                  {
+                    build.phase ? (
+                      <span>{build.phase.name}</span>
+                    ) : 'none'
+                  }
+                </div>
+              </FlexboxGrid.Item>
+              <FlexboxGrid.Item colspan={4}>
+                <OverlayTrigger trigger="click" rootClose placement="right" overlay={popover}>
+                  <Badge content={build.artifacts.length}>
+                    <TreeIcon style={{ fontSize: '1.5em' }} />
+                  </Badge>
+                </OverlayTrigger>
+              </FlexboxGrid.Item>
+            </FlexboxGrid>
           </td>
           <td>
-            <div className="report-link">
-              <a href={`/build/?buildId=${build._id}`} target="_self">
-                <i className="fas fa-external-link-alt" />
-              </a>
-            </div>
-          </td>
-          <td>
-            <div>
-              <OverlayTrigger trigger="click" rootClose placement="right" overlay={popover}>
-                <span className="matrix-info-icon fa-stack fa-5x has-badge" data-count={build.artifacts.length}>
-                  <i className="fa fa-circle fa-stack-2x" />
-                  <i className="fas fa-clipboard-list fa-stack-1x fa-inverse" />
-                </span>
-              </OverlayTrigger>
-            </div>
-          </td>
-          <td>
-            <a href={`/build/?buildId=${build._id}`} target="_self">
-              {build.name}
-            </a>
-          </td>
-          <td>
-            {
-              build.phase ? (
-                build.phase.name
-              ) : 'none'
-            }
+            {build.start ? (
+              <div>
+                <div>
+                  <span>
+                    <Moment format="DD MMM">
+                      {build.start}
+                    </Moment>
+                  </span>
+                  <span> </span>
+                  <Moment format="HH:mm">
+                    {build.start}
+                  </Moment>
+                </div>
+                { build.end ? (
+                  <div>
+                    <span>
+                      <TimeIcon />
+                      { getDuration(build)}
+                    </span>
+                  </div>
+                ) : null}
+              </div>
+            ) : 'N/A'}
           </td>
           <td>{getComponentName(build).name}</td>
           <td>{build.environment.name}</td>
           <td>
-            {build.start ? (
-              <Moment format="DD-MM-YYYY HH:mm:ss">
-                {build.start}
-              </Moment>
-            ) : 'N/A'}
+            <div>
+              { generateResultBar(build.result) }
+            </div>
           </td>
-          <td>
-            {build.end ? (
-              <Moment format="DD-MM-YYYY HH:mm:ss">
-                {build.end}
-              </Moment>
-            ) : 'N/A'}
-          </td>
-          <td>{getDuration(build)}</td>
-          <td>{build.result.PASS}</td>
-          <td>{build.result.FAIL}</td>
-          <td>{build.result.ERROR}</td>
-          <td>{build.result.SKIPPED}</td>
         </tr>,
       );
     });
@@ -192,26 +221,8 @@ const BuildsTable = function (props) {
                 <i className={anyRowsSelected() ? ('fas fa-check-square') : 'fas fa-square'} />
               </div>
             </th>
-            <th scope="col">
-              <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">By setting the &quot;keep&quot; flag the build will not be removed by the nightly clean-up.</Tooltip>}>
-                <div><i className="fas fa-lock" /></div>
-              </OverlayTrigger>
-            </th>
-            <th scope="col">
-              <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">Click on the links below to go to the individual build reports.</Tooltip>}>
-                <div><i className="fas fa-external-link-alt" /></div>
-              </OverlayTrigger>
-            </th>
-            <th scope="col" style={{ minWidth: '115px' }}>
-              <span>Artifacts </span>
-              <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">Click on the icons below to see the build artifacts versions that were tested as part of the run (you have to enter these using the Angles client).</Tooltip>}>
-                <span>
-                  <i className="fas fa-info-circle" />
-                </span>
-              </OverlayTrigger>
-            </th>
-            <th scope="col">Name</th>
-            <th scope="col">Phase</th>
+            <th scope="col">Build Details</th>
+            <th scope="col">Date/Time</th>
             <th scope="col">
               <MultiSelect
                 className="build-table-filter"
@@ -233,13 +244,8 @@ const BuildsTable = function (props) {
                 hasSelectAll={false}
               />
             </th>
-            <th scope="col">Started</th>
-            <th scope="col">Finished</th>
-            <th scope="col">Execution Time</th>
-            <th scope="col">Pass</th>
-            <th scope="col">Fail</th>
-            <th scope="col">Error</th>
-            <th scope="col">Skipped</th>
+
+            <th scope="col">Result</th>
           </tr>
         </thead>
         <tbody>

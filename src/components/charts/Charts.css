@@ -1,3 +1,9 @@
+@import "rsuite/dist/rsuite.css";
+
+.rs-picker-menu {
+    z-index: 11;
+}
+
 .graphContainer {
     /* width: 45vw; */
     flex: 1;

@@ -1,90 +1,26 @@
-import React, { useEffect } from 'react';
+import React, { Component } from 'react';
 import Carousel from 'react-multi-carousel';
 
-const ImageCarousel = function (props) {
-  const {
-    screenshots,
-    loadScreenshot,
-    deviceType,
-    selectedScreenshotDetails,
-  } = props;
-  // eslint-disable-next-line react/no-this-in-sfc
-  const setReference = (el) => { this.Carousel = el; };
-  const responsive = {
-    desktopxxl: {
-      breakpoint: { max: 5000, min: 2500 },
-      items: 6,
-      slidesToSlide: 2, // optional, default to 1.
-    },
-    desktopxl: {
-      breakpoint: { max: 2500, min: 1600 },
-      items: 5,
-      slidesToSlide: 2, // optional, default to 1.
-    },
-    desktop: {
-      breakpoint: { max: 1600, min: 1400 },
-      items: 4,
-      slidesToSlide: 2, // optional, default to 1.
-    },
-    tablet: {
-      breakpoint: { max: 1400, min: 1000 },
-      items: 3,
-      slidesToSlide: 1, // optional, default to 1.
-    },
-    mobile: {
-      breakpoint: { max: 1000, min: 700 },
-      items: 2,
-      slidesToSlide: 1, // optional, default to 1.
-    },
-    mobilesm: {
-      breakpoint: { max: 700, min: 0 },
-      items: 1,
-      slidesToSlide: 1, // optional, default to 1.
-    },
-  };
+class ImageCarousel extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
 
-  const getNextImage = (currentScreenshotId) => {
-    const index = screenshots.findIndex((screenshot) => screenshot._id === currentScreenshotId);
-    const nextIndex = index + 1;
-    if (nextIndex < screenshots.length) {
-      loadScreenshot(screenshots[nextIndex]._id);
-      // eslint-disable-next-line react/no-this-in-sfc
-      this.Carousel.goToSlide(nextIndex, false);
-    }
-  };
+    };
+  }
 
-  const getPreviousImage = (currentScreenshotId) => {
-    const index = screenshots.findIndex((screenshot) => screenshot._id === currentScreenshotId);
-    const nextIndex = index - 1;
-    if (nextIndex >= 0) {
-      loadScreenshot(screenshots[nextIndex]._id);
-      // eslint-disable-next-line react/no-this-in-sfc
-      this.Carousel.goToSlide(nextIndex, false);
-    }
-  };
-
-  const handleArrowKeys = (event) => {
-    if (event.keyCode === 37 && selectedScreenshotDetails) {
-      // left - previous
-      getPreviousImage(selectedScreenshotDetails._id);
-    }
-    if (event.keyCode === 39 && selectedScreenshotDetails) {
-      // right - next
-      getNextImage(selectedScreenshotDetails._id);
-    }
-  };
-
-  useEffect(() => {
+  componentDidMount() {
     // start listening for key events
-    document.addEventListener('keydown', handleArrowKeys, false);
-  }, []);
+    document.addEventListener('keydown', this.handleArrowKeys, false);
+  }
 
-  // componentWillUnmount() {
-  //   // stop listening for key events
-  //   document.removeEventListener('keydown', handleArrowKeys, false);
-  // }
+  componentWillUnmount() {
+    // stop listening for key events
+    document.removeEventListener('keydown', this.handleArrowKeys, false);
+  }
 
-  const isSelectedId = (screenshotId) => {
+  isSelectedId = (screenshotId) => {
+    const { selectedScreenshotDetails } = this.props;
     if (selectedScreenshotDetails
       && selectedScreenshotDetails._id === screenshotId) {
       return true;
@@ -92,7 +28,40 @@ const ImageCarousel = function (props) {
     return false;
   };
 
-  const loadScreenshotKeyDown = (event) => {
+  handleArrowKeys = (event) => {
+    const { selectedScreenshotDetails } = this.props;
+    if (event.keyCode === 37 && selectedScreenshotDetails) {
+      // left - previous
+      this.getPreviousImage(selectedScreenshotDetails._id);
+    }
+    if (event.keyCode === 39 && selectedScreenshotDetails) {
+      // right - next
+      this.getNextImage(selectedScreenshotDetails._id);
+    }
+  };
+
+  getNextImage = (currentScreenshotId) => {
+    const { screenshots, loadScreenshot } = this.props;
+    const index = screenshots.findIndex((screenshot) => screenshot._id === currentScreenshotId);
+    const nextIndex = index + 1;
+    if (nextIndex < screenshots.length) {
+      loadScreenshot(screenshots[nextIndex]._id);
+      this.Carousel.goToSlide(nextIndex, false);
+    }
+  };
+
+  getPreviousImage = (currentScreenshotId) => {
+    const { screenshots, loadScreenshot } = this.props;
+    const index = screenshots.findIndex((screenshot) => screenshot._id === currentScreenshotId);
+    const nextIndex = index - 1;
+    if (nextIndex >= 0) {
+      loadScreenshot(screenshots[nextIndex]._id);
+      this.Carousel.goToSlide(nextIndex, false);
+    }
+  };
+
+  loadScreenshotKeyDown = (event) => {
+    const { screenshots, loadScreenshot } = this.props;
     if (!Number.isNaN(event.key) && event.key > 0 && event.key < 10) {
       if (event.key <= screenshots.length) {
         loadScreenshot(screenshots[event.key - 1]._id);
@@ -100,19 +69,59 @@ const ImageCarousel = function (props) {
     }
   };
 
-  const grabThumbnail = (screenshot) => {
+  grabThumbnail = (screenshot) => {
     if (screenshot.thumbnail.startsWith('data:image')) {
       return screenshot.thumbnail;
     }
     return `data:image/png;base64, ${screenshot.thumbnail}`;
   };
 
-  return (
-    (!screenshots || screenshots.length === 0) ? (
-      null
-    ) : (
+  render() {
+    const { screenshots, loadScreenshot, deviceType } = this.props;
+    const responsive = {
+      desktopxxl: {
+        breakpoint: { max: 5000, min: 2500 },
+        items: 6,
+        slidesToSlide: 2, // optional, default to 1.
+      },
+      desktopxl: {
+        breakpoint: { max: 2500, min: 1600 },
+        items: 5,
+        slidesToSlide: 2, // optional, default to 1.
+      },
+      desktop: {
+        breakpoint: { max: 1600, min: 1400 },
+        items: 4,
+        slidesToSlide: 2, // optional, default to 1.
+      },
+      tablet: {
+        breakpoint: { max: 1400, min: 1000 },
+        items: 3,
+        slidesToSlide: 1, // optional, default to 1.
+      },
+      mobile: {
+        breakpoint: { max: 1000, min: 700 },
+        items: 2,
+        slidesToSlide: 1, // optional, default to 1.
+      },
+      mobilesm: {
+        breakpoint: { max: 700, min: 0 },
+        items: 1,
+        slidesToSlide: 1, // optional, default to 1.
+      },
+    };
+
+    if (!screenshots || screenshots.length === 0) {
+      return null;
+    }
+
+    const setRefercence = (el) => {
+      this.Carousel = el;
+    };
+
+    return (
       <Carousel
-        ref={setReference}
+        ref={setRefercence}
         swipeable
         draggable={false}
         showDots
@@ -135,27 +144,27 @@ const ImageCarousel = function (props) {
           screenshots ? (
             screenshots.map((screenshot, index) => (
               <div key={screenshot._id}>
-                <div className={`card-text ${isSelectedId(screenshot._id) ? 'card-text-active' : ''}`}>
+                <div className={`card-text ${this.isSelectedId(screenshot._id) ? 'card-text-active' : ''}`}>
                   {`${index + 1} - ${screenshot.view ? screenshot.view : `screenshot-${index + 1}`}`}
                 </div>
                 <div
                   role="button"
                   onClick={() => loadScreenshot(screenshot._id)}
-                  onKeyDown={(event) => loadScreenshotKeyDown(event)}
+                  onKeyDown={(event) => this.loadScreenshotKeyDown(event)}
                   tabIndex={index + 1}
                 >
                   <img
-                    className={`card-screenshot-image ${isSelectedId(screenshot._id) ? 'card-active' : ''}`}
+                    className={`card-screenshot-image ${this.isSelectedId(screenshot._id) ? 'card-active' : ''}`}
                     alt={screenshot.view}
-                    src={`${grabThumbnail(screenshot)}`}
+                    src={`${this.grabThumbnail(screenshot)}`}
                   />
                 </div>
               </div>
             ))) : ''
         }
       </Carousel>
-    )
-  );
-};
+    );
+  }
+}
 
 export default ImageCarousel;
