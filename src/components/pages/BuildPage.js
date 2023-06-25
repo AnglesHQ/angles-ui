@@ -4,6 +4,7 @@ import Modal from 'react-bootstrap/Modal';
 import queryString from 'query-string';
 import { connect } from 'react-redux';
 import { saveAs } from 'file-saver';
+import FileDownloadIcon from '@rsuite/icons/FileDownload';
 import { BuildRequests, ScreenshotRequests } from 'angles-javascript-client';
 import { useLocation } from 'react-router-dom';
 import BuildResultsPieChart from '../charts/BuildResultsPieChart';
@@ -156,7 +157,7 @@ const BuildPage = function (props) {
               disabled={!downloadReportButtonEnabled}
               onClick={() => { downloadReport(currentBuild._id); }}
             >
-              <i className="fa-solid fa-file-arrow-down" />
+              <FileDownloadIcon />
             </button>
           </h1>
           <BuildSummary build={currentBuild} screenshots={screenshots} openModal={openModal} />

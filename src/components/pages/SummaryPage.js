@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { BuildRequests } from 'angles-javascript-client';
-import { DateRangePicker } from 'rsuite';
+import { DateRangePicker, Pagination, SelectPicker } from 'rsuite';
 import moment from 'moment';
 import update from 'immutability-helper';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
-import Pagination from 'react-bootstrap/Pagination';
 import queryString from 'query-string';
 import { connect } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -31,12 +30,16 @@ const SummaryPage = function (props) {
   const [filteredComponents, setFilteredComponents] = useState([]);
   const [buildCount, setBuildCount] = useState(0);
   const [currentSkip, setCurrentSkip] = useState(0);
-  const [limit] = useState(15);
+  const [limit, setLimit] = useState(15);
   const [startDate, setStartDate] = useState(queryStartDate ? moment(queryStartDate) : moment().subtract(90, 'days'));
   const [endDate, setEndDate] = useState(queryEndDate ? moment(queryEndDate) : moment());
   const buildRequests = new BuildRequests(axios);
   const { currentTeam, teams, environments } = props;
   const { afterToday } = DateRangePicker;
+  const [activePage, setActivePage] = React.useState(1);
+  const limitValues = [10, 15, 25, 50].map(
+    (item) => ({ label: item, value: item }),
+  );
   const getBuildsForTeam = (
     teamId,
     skip,
@@ -62,7 +65,7 @@ const SummaryPage = function (props) {
     if (currentTeam) {
       getBuildsForTeam(
         currentTeam._id,
-        0,
+        (activePage * limit) - limit,
         limit,
         filteredEnvironments,
         filteredComponents,
@@ -70,31 +73,8 @@ const SummaryPage = function (props) {
         endDate,
       );
     }
-  }, [currentTeam, limit, filteredEnvironments, filteredComponents, startDate, endDate]);
-
-  const getNextSetOfBuilds = () => {
-    getBuildsForTeam(
-      currentTeam._id, (
-        currentSkip + limit),
-      limit,
-      filteredEnvironments,
-      filteredComponents,
-      startDate,
-      endDate,
-    );
-  };
-
-  const getPreviousSetOfBuilds = () => {
-    getBuildsForTeam(
-      currentTeam._id, (
-        currentSkip - limit),
-      limit,
-      filteredEnvironments,
-      filteredComponents,
-      startDate,
-      endDate,
-    );
-  };
+  }, [currentTeam, limit, filteredEnvironments,
+    filteredComponents, startDate, endDate, activePage]);
 
   const toggleSelectedBuild = (build) => {
     const updatedBuilds = update(
@@ -151,13 +131,16 @@ const SummaryPage = function (props) {
     setSelectedBuilds({});
   };
 
-  const previousPaginationDisabled = () => (currentSkip === 0);
-
-  const nextPaginationDisabled = () => ((currentSkip + limit) >= buildCount);
-
   const handleTeamChange = (event) => {
     const { changeCurrentTeam } = props;
     changeCurrentTeam(event.target.value);
+  };
+
+  const handleLimitChange = (newLimit) => {
+    if (newLimit) {
+      console.log(JSON.stringify(newLimit));
+      setLimit(newLimit);
+    }
   };
 
   // const handleDatesChange = ({ selectedStartDate, selectedEndDate }) => {
@@ -238,7 +221,6 @@ const SummaryPage = function (props) {
           </div>
           <h1>
             <span>Builds </span>
-            <span style={{ fontSize: 15 }}>{`[Total: ${buildCount}]`}</span>
           </h1>
           <BuildsTable
             team={currentTeam}
@@ -256,18 +238,25 @@ const SummaryPage = function (props) {
               <button disabled={!multipleBuildsSelected()} onClick={() => navigateToMatrix()} type="button" className="btn btn-outline-primary">Open Matrix</button>
               <button disabled={!anyBuildsSelected()} onClick={() => toggleBuildsToKeep()} type="button" className="btn btn-outline-primary second-button">Toggle Keep</button>
               <button disabled={!anyBuildsSelected()} onClick={() => clearSelection()} type="button" className="btn btn-outline-primary second-button">Clear Selection</button>
+              <SelectPicker data={limitValues} appearance="default" style={{ width: 120 }} defaultValue={limit} searchable={false} onChange={handleLimitChange} />
             </span>
+
             <span style={{ float: 'right' }}>
-              <Pagination>
-                <Pagination.Prev
-                  disabled={previousPaginationDisabled() === true}
-                  onClick={() => getPreviousSetOfBuilds()}
-                />
-                <Pagination.Next
-                  disabled={nextPaginationDisabled() === true}
-                  onClick={() => getNextSetOfBuilds()}
-                />
-              </Pagination>
+              <Pagination
+                prev
+                last
+                next
+                first
+                layout={['total', '|', 'pager']}
+                size="md"
+                total={buildCount}
+                limit={limit}
+                activePage={activePage}
+                onChangePage={setActivePage}
+                boundaryLinks
+                ellipsis
+                maxButtons={3}
+              />
             </span>
           </div>
         </div>

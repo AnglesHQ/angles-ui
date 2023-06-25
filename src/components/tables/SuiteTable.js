@@ -1,6 +1,9 @@
 import React, { useContext, useEffect } from 'react';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
+import ExpandOutlineIcon from '@rsuite/icons/ExpandOutline';
+import CollaspedOutlineIcon from '@rsuite/icons/CollaspedOutline';
+import PlusRoundIcon from '@rsuite/icons/PlusRound';
 import { getDuration } from '../../utility/TimeUtilities';
 import ExecutionTable from './ExecutionTable';
 import ExecutionStateContext from '../../context/ExecutionStateContext';
@@ -12,6 +15,7 @@ const SuiteTable = function (props) {
     setExecutionStates,
     getStatesDefault,
     setDefaultStates,
+    isSuiteExpanded,
   } = useContext(ExecutionStateContext);
   const { suite, screenshots, openModal } = props;
 
@@ -78,19 +82,24 @@ const SuiteTable = function (props) {
           <td>
             <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{`Expand all test cases and actions for suite ${suite.name}`}</Tooltip>}>
               <span className="expand-icons" onClick={() => expandAll()}>
-                <i className="fas fa-angle-double-down" />
+                <PlusRoundIcon />
               </span>
             </OverlayTrigger>
-            <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{`Expand all test cases for suite ${suite.name}`}</Tooltip>}>
-              <span className="expand-icons" onClick={() => expandExecutions()}>
-                <i className="fas fa-angle-down" />
-              </span>
-            </OverlayTrigger>
-            <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{`Collapse all test cases and actions for suite ${suite.name}`}</Tooltip>}>
-              <span className="expand-icons" onClick={() => collapseAll()}>
-                <i className="fas fa-angle-up" />
-              </span>
-            </OverlayTrigger>
+            {
+              isSuiteExpanded(suite) ? (
+                <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{`Collapse all test cases and actions for suite ${suite.name}`}</Tooltip>}>
+                  <span className="expand-icons" onClick={() => collapseAll()}>
+                    <CollaspedOutlineIcon />
+                  </span>
+                </OverlayTrigger>
+              ) : (
+                <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{`Expand all test cases for suite ${suite.name}`}</Tooltip>}>
+                  <span className="expand-icons" onClick={() => expandExecutions()}>
+                    <ExpandOutlineIcon />
+                  </span>
+                </OverlayTrigger>
+              )
+            }
           </td>
         </tr>
       </thead>

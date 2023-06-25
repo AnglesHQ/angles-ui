@@ -26,6 +26,11 @@ export function ExecutionStateProvider({ children }) {
     }
     return false;
   };
+  const isSuiteExpanded = (suite) => {
+    const expandedExecutions = suite.executions
+      .find((execution) => isExecutionExpanded(execution._id));
+    return expandedExecutions !== undefined;
+  };
   const toggleExecution = (executionId) => {
     executionStates[executionId].isOpen = !executionStates[executionId].isOpen;
     setExecutionStates({ ...executionStates });
@@ -36,7 +41,6 @@ export function ExecutionStateProvider({ children }) {
     }
     return false;
   };
-
   const toggleAction = (executionId, actionIndex) => {
     executionStates[executionId]
       .actions[actionIndex] = !executionStates[executionId].actions[actionIndex];
@@ -48,6 +52,7 @@ export function ExecutionStateProvider({ children }) {
         executionStates,
         setExecutionStates,
         isExecutionExpanded,
+        isSuiteExpanded,
         toggleExecution,
         isActionExpanded,
         toggleAction,

@@ -4,8 +4,6 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 
 import './index.css';
-// eslint-disable-next-line import/extensions
-import '@fortawesome/fontawesome-free/js/all.js';
 
 import App from './containers/App';
 import * as serviceWorker from './serviceWorker';

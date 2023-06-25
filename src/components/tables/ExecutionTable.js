@@ -1,6 +1,9 @@
 import React, { useContext } from 'react';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
+import HistoryIcon from '@rsuite/icons/History';
+import ExpandOutlineIcon from '@rsuite/icons/ExpandOutline';
+import CollaspedOutlineIcon from '@rsuite/icons/CollaspedOutline';
 import ActionComponent from './ActionComponent';
 import ExecutionStateContext from '../../context/ExecutionStateContext';
 
@@ -32,7 +35,11 @@ const ExecutionTable = function (props) {
       <tr key={`execution_${index}`} className="test-row">
         <td colSpan="100%" className={`${execution.status}`}>
           <span key={isExecutionExpanded(execution._id)} className="test-name" onClick={() => toggleExecution(execution._id)}>
-            <i title="Click to display/hide test steps" className={isExecutionExpanded(execution._id) ? ('fa fa-caret-down') : 'fas fa-caret-right'} />
+            {
+              isExecutionExpanded(execution._id) ? (
+                <CollaspedOutlineIcon />
+              ) : <ExpandOutlineIcon />
+            }
             <span>{`Test: ${execution.title} `}</span>
           </span>
           <span>
@@ -42,7 +49,9 @@ const ExecutionTable = function (props) {
             <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{`See execution history for ${execution.title}`}</Tooltip>}>
               <span className="d-inline-block">
                 <a className="test-history-link" title={`See execution history for ${execution.title}`} href={`/history?executionId=${execution._id}`}>
-                  <span><i className="fa fa-history" aria-hidden="true">history</i></span>
+                  <span>
+                    <HistoryIcon />
+                  </span>
                 </a>
               </span>
             </OverlayTrigger>
