@@ -2,7 +2,7 @@ import React from 'react';
 import Moment from 'react-moment';
 import Table from 'react-bootstrap/Table';
 import { useNavigate } from 'react-router-dom';
-import '../pages/Default.css';
+// import '../pages/Default.css';
 
 const BaselineCompareDetailsTable = function (props) {
   const {

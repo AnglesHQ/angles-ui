@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Routes,
   Route,
@@ -11,21 +11,37 @@ import { connect } from 'react-redux';
 import { EnvironmentRequests, TeamRequests } from 'angles-javascript-client';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import AnglesMenu from '../components/menu/AnglesMenu';
-import SummaryPage from '../components/pages/SummaryPage';
+
+import {
+  Container,
+  Sidebar,
+  Sidenav,
+  Content,
+  Navbar,
+  Nav,
+} from 'rsuite';
+import AngleLeftIcon from '@rsuite/icons/legacy/AngleLeft';
+import AngleRightIcon from '@rsuite/icons/legacy/AngleRight';
+import Image from '@rsuite/icons/Image';
+import BarChart from '@rsuite/icons/BarChart';
+import DocPass from '@rsuite/icons/DocPass';
+import InfoRound from '@rsuite/icons/InfoRound';
+
+import SummaryPage from '../components/pages/dashboard';
 import BuildPage from '../components/pages/BuildPage';
 import MatrixPage from '../components/pages/MatrixPage';
-import ScreenshotLibraryPage from '../components/pages/ScreenshotLibraryPage';
+import ScreenshotLibraryPage from '../components/pages/screenshot-library';
 import ExecutionHistoryPage from '../components/pages/ExecutionHistoryPage';
-import AboutPage from '../components/pages/AboutPage';
+import AboutPage from '../components/pages/about';
 import NotFoundPage from '../components/pages/NotFoundPage';
-import './App.css';
-import '../components/charts/Charts.css';
+
 import MetricsPage from '../components/pages/MetricsPage';
 import { storeCurrentTeam, storeTeams, storeTeamsError } from '../redux/teamActions';
 import { storeEnvironments } from '../redux/environmentActions';
 import { clearCurrentErrorMessage, clearCurrentInfoMessage, clearCurrentLoaderMessage } from '../redux/notificationActions';
 import { CurrentScreenshotProvider } from '../context/CurrentScreenshotContext';
+
+import '../styles/index.less';
 
 axios.defaults.baseURL = `${process.env.REACT_APP_ANGLES_API_URL}/rest/api/v1.0`;
 
@@ -33,6 +49,7 @@ const App = function (props) {
   const location = useLocation();
   const teamRequests = new TeamRequests(axios);
   const environmentRequests = new EnvironmentRequests(axios);
+  const [expand, setExpand] = useState(true);
   const {
     teams,
     currentTeam,
@@ -128,158 +145,196 @@ const App = function (props) {
   }, [teams, currentTeam]);
 
   return (
-    <div id="outer-container">
-      <AnglesMenu />
-      <main id="page-wrap">
-        {
-          (currentErrorMessage ? (
-            <Modal
-              show={(currentErrorMessage !== undefined)}
-              onHide={closeErrorModal}
-              dialogClassName="error-modal"
-              centered
-            >
-              <Modal.Header closeButton>
-                <Modal.Title>
-                  <i className="fa fa-exclamation" aria-hidden="true" />
-                  <span>{currentErrorMessage.title}</span>
-                </Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                {currentErrorMessage.body}
-              </Modal.Body>
-              <Modal.Footer>
-                {
-                  (currentErrorMessage.actions !== undefined ? (
-                    currentErrorMessage.actions.map((action) => (
-                      <Button className="error-button" onClick={action.method}>
-                        {action.text}
-                      </Button>
-                    ))
-                  ) : null)
-                }
-                <Button className="error-button" onClick={closeErrorModal}>OK</Button>
-              </Modal.Footer>
-            </Modal>
-          ) : null)
-        }
-        {
-          (currentInfoMessage ? (
-            <Modal
-              show={(currentInfoMessage !== undefined)}
-              onHide={closeInfoModal}
-              dialogClassName="info-modal"
-              centered
-            >
-              <Modal.Header closeButton>
-                <Modal.Title>
-                  <i className="fa fa-info" aria-hidden="true" />
-                  <span>{currentInfoMessage.title}</span>
-                </Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                {currentInfoMessage.body}
-              </Modal.Body>
-              <Modal.Footer>
-                {
-                  (currentInfoMessage.actions !== undefined ? (
-                    currentInfoMessage.actions.map((action) => (
-                      <Button onClick={action.method}>
-                        {action.text}
-                      </Button>
-                    ))
-                  ) : null)
-                }
-                <Button onClick={closeInfoModal}>OK</Button>
-              </Modal.Footer>
-            </Modal>
-          ) : null)
-        }
-        {
-          (currentLoaderMessage ? (
-            <Modal
-              show={(currentLoaderMessage !== undefined)}
-              dialogClassName="info-modal"
-              onHide={closeLoaderModal}
-              centered
-            >
-              <Modal.Header closeButton>
-                <Modal.Title>
-                  <i className="fas fa-spinner fa-pulse fa-2x" />
-                  <span>{currentLoaderMessage.title}</span>
-                </Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                {currentLoaderMessage.body}
-              </Modal.Body>
-            </Modal>
-          ) : null)
-        }
-        <Routes>
-          <Route
-            exact
-            path="/"
-            element={
-               // eslint-disable-next-line no-nested-ternary
-              (teamsError) ? (
-                <div key="retrieving-teams-error" className="alert alert-danger" role="alert">
-                  <span>
-                    <i className="fas fa-exclamation" />
-                    <span className="teams-error-message">
-                      {`Something went wrong [${teamsError}]`}
-                    </span>
-                  </span>
-                </div>
-              ) : (
-                (!teamsError && teams === undefined) ? (
-                  <div key="retrieving-teams" className="alert alert-primary" role="alert">
-                    <span>
+    <Container>
+      <Sidebar
+        className="main-sidebar"
+        width={expand ? 260 : 56}
+        collapsible
+      >
+        <Sidenav expanded={expand} defaultOpenKeys={['3']} appearance="subtle">
+          <Sidenav.Header>
+            <div className="sidebar-header">
+              <img src="assets/angles-icon.png" alt="Angles" className="sidebar-angles-icon" />
+              <img src="assets/angles-text-logo.png" alt="Angles" className="sidebar-angles-text-icon" />
+            </div>
+          </Sidenav.Header>
+          <Sidenav.Body>
+            <Nav>
+              <Nav.Item eventKey="1" icon={<DocPass />} href="/">
+                <span>Dashboard</span>
+              </Nav.Item>
+              <Nav.Item eventKey="2" icon={<BarChart />} href="/metrics">
+                <span>Metrics</span>
+              </Nav.Item>
+              <Nav.Item eventKey="3" icon={<Image />} href="/screenshot-finder">
+                <span>Screenshot Library</span>
+              </Nav.Item>
+              <Nav.Item eventKey="4" icon={<InfoRound />} href="/about">
+                <span>About Angles</span>
+              </Nav.Item>
+            </Nav>
+          </Sidenav.Body>
+          <Navbar appearance="subtle" className="nav-toggle">
+            <Nav pullRight>
+              <Nav.Item style={{ width: 56, textAlign: 'center' }} onClick={() => setExpand(!expand)}>
+                {expand ? <AngleLeftIcon /> : <AngleRightIcon />}
+              </Nav.Item>
+            </Nav>
+          </Navbar>
+        </Sidenav>
+      </Sidebar>
+      <Container>
+        <Content className="main-content">
+          <main>
+            {
+              (currentErrorMessage ? (
+                <Modal
+                  show={(currentErrorMessage !== undefined)}
+                  onHide={closeErrorModal}
+                  dialogClassName="error-modal"
+                  centered
+                >
+                  <Modal.Header closeButton>
+                    <Modal.Title>
+                      <i className="fa fa-exclamation" aria-hidden="true" />
+                      <span>{currentErrorMessage.title}</span>
+                    </Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    {currentErrorMessage.body}
+                  </Modal.Body>
+                  <Modal.Footer>
+                    {
+                      (currentErrorMessage.actions !== undefined ? (
+                        currentErrorMessage.actions.map((action) => (
+                          <Button className="error-button" onClick={action.method}>
+                            {action.text}
+                          </Button>
+                        ))
+                      ) : null)
+                    }
+                    <Button className="error-button" onClick={closeErrorModal}>OK</Button>
+                  </Modal.Footer>
+                </Modal>
+              ) : null)
+            }
+            {
+              (currentInfoMessage ? (
+                <Modal
+                  show={(currentInfoMessage !== undefined)}
+                  onHide={closeInfoModal}
+                  dialogClassName="info-modal"
+                  centered
+                >
+                  <Modal.Header closeButton>
+                    <Modal.Title>
+                      <i className="fa fa-info" aria-hidden="true" />
+                      <span>{currentInfoMessage.title}</span>
+                    </Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    {currentInfoMessage.body}
+                  </Modal.Body>
+                  <Modal.Footer>
+                    {
+                      (currentInfoMessage.actions !== undefined ? (
+                        currentInfoMessage.actions.map((action) => (
+                          <Button onClick={action.method}>
+                            {action.text}
+                          </Button>
+                        ))
+                      ) : null)
+                    }
+                    <Button onClick={closeInfoModal}>OK</Button>
+                  </Modal.Footer>
+                </Modal>
+              ) : null)
+            }
+            {
+              (currentLoaderMessage ? (
+                <Modal
+                  show={(currentLoaderMessage !== undefined)}
+                  dialogClassName="info-modal"
+                  onHide={closeLoaderModal}
+                  centered
+                >
+                  <Modal.Header closeButton>
+                    <Modal.Title>
                       <i className="fas fa-spinner fa-pulse fa-2x" />
-                      <span>Retrieving teams</span>
-                    </span>
-                  </div>
-                ) : (
-                  <SummaryPage changeCurrentTeam={changeCurrentTeam} />
-                )
-              )
-             }
-          />
-          <Route path="/build/" element={<CurrentScreenshotProvider><BuildPage /></CurrentScreenshotProvider>} exact />
-          <Route
-            exact
-            path="/matrix/"
-            element={
-              (!currentTeam || !currentTeam._id) ? (
-                null
-              ) : (
-                <MatrixPage currentTeam={currentTeam} />
-              )
+                      <span>{currentLoaderMessage.title}</span>
+                    </Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    {currentLoaderMessage.body}
+                  </Modal.Body>
+                </Modal>
+              ) : null)
             }
-          />
-          <Route exact path="/screenshot-finder/" element={<ScreenshotLibraryPage />} />
-          <Route exact path="/screenshot-library/" element={<ScreenshotLibraryPage />} />
-          <Route exact path="/history/" element={<ExecutionHistoryPage />} />
-          <Route exact path="/about/" element={<AboutPage />} />
-
-          <Route
-            exact
-            path="/metrics/"
-            element={
-              (currentTeam === undefined || !currentTeam._id) ? (
-                <div>Please select a team</div>
-              ) : (
-                <MetricsPage
-                  currentTeam={currentTeam}
-                  teams={teams}
-                  changeCurrentTeam={changeCurrentTeam}
-                />
-              )
-            }
-          />
-          <Route render={() => <NotFoundPage />} />
-        </Routes>
-      </main>
-    </div>
+            <Routes>
+              <Route
+                exact
+                path="/"
+                element={
+                  // eslint-disable-next-line no-nested-ternary
+                  (teamsError) ? (
+                    <div key="retrieving-teams-error" className="alert alert-danger" role="alert">
+                      <span>
+                        <i className="fas fa-exclamation" />
+                        <span className="teams-error-message">
+                          {`Something went wrong [${teamsError}]`}
+                        </span>
+                      </span>
+                    </div>
+                  ) : (
+                    (!teamsError && teams === undefined) ? (
+                      <div key="retrieving-teams" className="alert alert-primary" role="alert">
+                        <span>
+                          <i className="fas fa-spinner fa-pulse fa-2x" />
+                          <span>Retrieving teams</span>
+                        </span>
+                      </div>
+                    ) : (
+                      <SummaryPage changeCurrentTeam={changeCurrentTeam} />
+                    )
+                  )
+                }
+              />
+              <Route path="/build/" element={<CurrentScreenshotProvider><BuildPage /></CurrentScreenshotProvider>} exact />
+              <Route
+                exact
+                path="/matrix/"
+                element={
+                  (!currentTeam || !currentTeam._id) ? (
+                    null
+                  ) : (
+                    <MatrixPage currentTeam={currentTeam} />
+                  )
+                }
+              />
+              <Route exact path="/screenshot-library/" element={<ScreenshotLibraryPage />} />
+              <Route exact path="/history/" element={<ExecutionHistoryPage />} />
+              <Route exact path="/about/" element={<AboutPage />} />
+              <Route
+                exact
+                path="/metrics/"
+                element={
+                  (currentTeam === undefined || !currentTeam._id) ? (
+                    <div>Please select a team</div>
+                  ) : (
+                    <MetricsPage
+                      currentTeam={currentTeam}
+                      teams={teams}
+                      changeCurrentTeam={changeCurrentTeam}
+                    />
+                  )
+                }
+              />
+              <Route render={() => <NotFoundPage />} />
+            </Routes>
+          </main>
+        </Content>
+      </Container>
+    </Container>
   );
 };
 

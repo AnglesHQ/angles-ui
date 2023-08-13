@@ -7,7 +7,7 @@ import { ExecutionRequests, ScreenshotRequests } from 'angles-javascript-client'
 import ExecutionsResultsPieChart from '../charts/ExecutionsResultsPieChart';
 import ExecutionsTimeLineChart from '../charts/ExecutionsTimeLineChart';
 import ScreenshotView from './ScreenshotView';
-import '../charts/Charts.css';
+// import '../charts/Charts.css';
 import SuiteTable from '../tables/SuiteTable';
 import { ExecutionStateProvider } from '../../context/ExecutionStateContext';
 import { useConstructor } from '../../utility/GeneralUtilities';

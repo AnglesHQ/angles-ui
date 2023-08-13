@@ -1,6 +1,6 @@
 import React from 'react';
 import Table from 'react-bootstrap/Table';
-import '../pages/Default.css';
+// import '../pages/Default.css';
 
 const ArtifactsDetailsTable = function (props) {
   const { artifacts } = props;

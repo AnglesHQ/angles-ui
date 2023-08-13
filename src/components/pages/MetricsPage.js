@@ -17,7 +17,7 @@ import TestPhasesChart from '../charts/TestPhasesChart';
 import PlatformDistributionChart from '../charts/PlatformDistributionChart';
 import ExecutionMetricsSummary from '../tables/ExecutionMetricsSummary';
 import PlatformDistributionPieChart from '../charts/PlatformDistributionPieChart';
-import './Default.css';
+// import './Default.css';
 import PlatformMetricsSummary from '../tables/PlatformMetricsSummary';
 import { getRandomColor } from '../../utility/ChartUtilities';
 

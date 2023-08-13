@@ -1,37 +1,202 @@
 import React, { useEffect, useState } from 'react';
 import Moment from 'react-moment';
 // import { TagPicker } from 'rsuite';
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import { MultiSelect } from 'react-multi-select-component';
-import Popover from 'react-bootstrap/Popover';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import TimeIcon from '@rsuite/icons/Time';
 import TreeIcon from '@rsuite/icons/Tree';
-import { Badge, FlexboxGrid } from 'rsuite';
-
+import FunnelIcon from '@rsuite/icons/Funnel';
+import TagLockIcon from '@rsuite/icons/TagLock';
+import {
+  Badge,
+  FlexboxGrid,
+  Checkbox,
+  Table,
+  Popover,
+  Whisper,
+  MultiCascader,
+} from 'rsuite';
 import { getDuration } from '../../utility/TimeUtilities';
 import ArtifactsDetailsTable from './ArtifactsDetailsTable';
 
+const { Column, HeaderCell, Cell } = Table;
+
+const componentDetailsSpeaker = (build) => (
+  <Popover title="Artifacts">
+    <ArtifactsDetailsTable artifacts={build.artifacts} />
+  </Popover>
+);
+
+const BuildDetailsCell = function (props) {
+  const { rowData: build } = props;
+  return (
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    <Cell {... props}>
+      <FlexboxGrid justify="start">
+        <FlexboxGrid.Item colspan={4}>
+          {
+            build.keep ? (
+              <TagLockIcon style={{ fontSize: '1.5em' }} />
+            ) : null
+          }
+        </FlexboxGrid.Item>
+        <FlexboxGrid.Item colspan={16}>
+          <div>
+            <a href={`/build/?buildId=${build._id}`} target="_self">
+              {build.name}
+            </a>
+          </div>
+          <div>
+            {
+              build.phase ? (
+                <span>{build.phase.name}</span>
+              ) : 'none'
+            }
+          </div>
+        </FlexboxGrid.Item>
+        <FlexboxGrid.Item colspan={4}>
+          <Whisper placement="right" trigger="hover" controlId="control-id-hover" speaker={componentDetailsSpeaker(build)}>
+            <Badge content={build.artifacts.length}>
+              <TreeIcon style={{ fontSize: '1.5em' }} />
+            </Badge>
+          </Whisper>
+        </FlexboxGrid.Item>
+      </FlexboxGrid>
+    </Cell>
+  );
+};
+
+const CheckCell = function (props) {
+  const { rowData: build, toggleSelectedBuild, isRowSelected } = props;
+  return (
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    <Cell {... props}>
+      <Checkbox
+        value={build._id}
+        onClick={() => toggleSelectedBuild(build)}
+        checked={isRowSelected(build)}
+      />
+    </Cell>
+  );
+};
+
+const DateCell = function (props) {
+  const { rowData: build } = props;
+  return (
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    <Cell {... props}>
+      { build.start ? (
+        <div>
+          <div>
+            <span>
+              <Moment format="DD MMM">
+                {build.start}
+              </Moment>
+            </span>
+            <span> </span>
+            <Moment format="HH:mm">
+              {build.start}
+            </Moment>
+          </div>
+          { build.end ? (
+            <div>
+              <span>
+                <TimeIcon />
+                { getDuration(build)}
+              </span>
+            </div>
+          ) : null}
+        </div>
+      ) : 'N/A'}
+    </Cell>
+  );
+};
+
+const ResultCell = function (props) {
+  const { rowData: build, generateResultBar } = props;
+  return (
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    <Cell {... props}>
+      <div>
+        { generateResultBar(build.result) }
+      </div>
+    </Cell>
+  );
+};
+
+const generateData = function (environments, components) {
+  const data = [];
+  data.push({
+    label: 'Environments',
+    value: 1,
+    children: environments,
+  });
+  data.push({
+    label: 'Components',
+    value: 2,
+    children: components,
+  });
+  return data;
+};
+
+const FilterMenu = function (props) {
+  const {
+    data,
+    setFilteredComponents,
+    setFilteredEnvironments,
+    environments,
+    components,
+    filteredValues,
+    setFilteredValues,
+  } = props;
+  return (
+    <MultiCascader
+      style={{ width: 50 }}
+      uncheckableItemValues={[1, 2]}
+      placeholder={(
+        <span>
+          <FunnelIcon />
+        </span>
+      )}
+      renderValue={(value, selectedItems) => (
+        <span>
+          <span style={{ color: '#575757' }}>
+            <Badge content={selectedItems.length}>
+              <FunnelIcon />
+            </Badge>
+          </span>
+        </span>
+      )}
+      data={data}
+      menuWidth={220}
+      onChange={
+        (value) => {
+          setFilteredValues(value);
+          setFilteredComponents(components.filter((component) => value
+            .includes(component.value)).map((component) => component.value));
+          setFilteredEnvironments(environments.filter((environment) => value
+            .includes(environment.value)).map((environment) => environment.value));
+        }
+      }
+      value={filteredValues}
+    />
+  );
+};
+
 const BuildsTable = function (props) {
-  const componentOverrideStrings = {
-    selectSomeItems: 'Components...',
-    allItemsAreSelected: 'All components',
-  };
-  const environmentOverrideStrings = {
-    selectSomeItems: 'Environments...',
-    allItemsAreSelected: 'All environments',
-  };
   const [environments, setEnvironments] = useState([]);
   const [components, setComponents] = useState([]);
-  const [selectedEnvironments, setSelectedEnvironments] = useState([]);
-  const [selectedComponents, setSelectedComponents] = useState([]);
+  const [, setSelectedEnvironments] = useState([]);
+  const [, setSelectedComponents] = useState([]);
+  const [filteredValues, setFilteredValues] = useState([]);
   const {
+    builds,
     team,
     availableEnvironments,
     selectedBuilds,
     retrieveSelectedBuilds,
     setFilteredEnvironments,
     setFilteredComponents,
+    toggleSelectedBuild,
   } = props;
 
   const resetEnvironmentsForTableFilter = (allEnvironments) => {
@@ -85,16 +250,6 @@ const BuildsTable = function (props) {
   const getComponentName = (build) => build.team.components
     .find((component) => component._id === build.component);
 
-  const settingSelectedEnvironments = (environmentToSelect) => {
-    setSelectedEnvironments(environmentToSelect);
-    setFilteredEnvironments(environmentToSelect.map((environment) => environment.value));
-  };
-
-  const settingSelectedComponents = (componentsToSelect) => {
-    setSelectedComponents(componentsToSelect);
-    setFilteredComponents(componentsToSelect.map((component) => component.value));
-  };
-
   const getPercentageString = (resultState, result) => {
     let total = 0;
     Object.keys(result).forEach((key) => {
@@ -112,146 +267,57 @@ const BuildsTable = function (props) {
     </ProgressBar>
   );
 
-  const generateBuildRows = () => {
-    const {
-      builds,
-      toggleSelectedBuild,
-      currentSkip,
-    } = props;
-    const buildRows = [];
-    let count = 0;
-    builds.forEach((build) => {
-      count += 1;
-      const popover = (
-        <Popover id="popover-basic">
-          <Popover.Header as="h3">
-            <b>Artifacts</b>
-          </Popover.Header>
-          <Popover.Body>
-            <ArtifactsDetailsTable artifacts={build.artifacts} />
-          </Popover.Body>
-        </Popover>
-      );
-      buildRows.push(
-        <tr key={build._id}>
-          <th scope="row">{currentSkip + count}</th>
-          <td onClick={() => toggleSelectedBuild(build)}>
-            <div key={isRowSelected(build)}>
-              <i className={isRowSelected(build) ? ('far fa-check-square') : 'far fa-square'} />
-            </div>
-          </td>
-          <td className="build-details">
-            <FlexboxGrid justify="start">
-              <FlexboxGrid.Item colspan={2}>
-                {
-                  build.keep ? (
-                    <i className="fas fa-lock" />
-                  ) : null
-                }
-              </FlexboxGrid.Item>
-              <FlexboxGrid.Item colspan={18}>
-                <div>
-                  <a href={`/build/?buildId=${build._id}`} target="_self">
-                    {build.name}
-                  </a>
-                </div>
-                <div>
-                  {
-                    build.phase ? (
-                      <span>{build.phase.name}</span>
-                    ) : 'none'
-                  }
-                </div>
-              </FlexboxGrid.Item>
-              <FlexboxGrid.Item colspan={4}>
-                <OverlayTrigger trigger="click" rootClose placement="right" overlay={popover}>
-                  <Badge content={build.artifacts.length}>
-                    <TreeIcon style={{ fontSize: '1.5em' }} />
-                  </Badge>
-                </OverlayTrigger>
-              </FlexboxGrid.Item>
-            </FlexboxGrid>
-          </td>
-          <td>
-            {build.start ? (
-              <div>
-                <div>
-                  <span>
-                    <Moment format="DD MMM">
-                      {build.start}
-                    </Moment>
-                  </span>
-                  <span> </span>
-                  <Moment format="HH:mm">
-                    {build.start}
-                  </Moment>
-                </div>
-                { build.end ? (
-                  <div>
-                    <span>
-                      <TimeIcon />
-                      { getDuration(build)}
-                    </span>
-                  </div>
-                ) : null}
-              </div>
-            ) : 'N/A'}
-          </td>
-          <td>{getComponentName(build).name}</td>
-          <td>{build.environment.name}</td>
-          <td>
-            <div>
-              { generateResultBar(build.result) }
-            </div>
-          </td>
-        </tr>,
-      );
-    });
-    return buildRows;
-  };
-
   return (
     <div>
-      <table className="table table-hover summary-table">
-        <thead className="thead-dark">
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">
-              <div key={anyRowsSelected()}>
-                <i className={anyRowsSelected() ? ('fas fa-check-square') : 'fas fa-square'} />
-              </div>
-            </th>
-            <th scope="col">Build Details</th>
-            <th scope="col">Date/Time</th>
-            <th scope="col">
-              <MultiSelect
-                className="build-table-filter"
-                options={components}
-                value={selectedComponents}
-                onChange={settingSelectedComponents}
-                overrideStrings={componentOverrideStrings}
-                hasSelectAll={false}
-              />
-            </th>
-            <th scope="col">
-              <MultiSelect
-                className="build-table-filter"
-                options={environments}
-                value={selectedEnvironments}
-                onChange={settingSelectedEnvironments}
-                labelledBy="Environment"
-                overrideStrings={environmentOverrideStrings}
-                hasSelectAll={false}
-              />
-            </th>
-
-            <th scope="col">Result</th>
-          </tr>
-        </thead>
-        <tbody>
-          {generateBuildRows()}
-        </tbody>
-      </table>
+      <FilterMenu
+        data={generateData(environments, components)}
+        setFilteredComponents={setFilteredComponents}
+        setFilteredEnvironments={setFilteredEnvironments}
+        components={components}
+        environments={environments}
+        filteredValues={filteredValues}
+        setFilteredValues={setFilteredValues}
+      />
+      <Table rowHeight={65} height={300} data={builds} id="table">
+        <Column width={50} align="center">
+          <HeaderCell style={{ padding: 0 }}>#</HeaderCell>
+          <Cell dataKey="index" />
+        </Column>
+        <Column width={50}>
+          <HeaderCell>
+            <div key={anyRowsSelected()}>
+              <Checkbox checked={anyRowsSelected()} />
+            </div>
+          </HeaderCell>
+          <CheckCell isRowSelected={isRowSelected} toggleSelectedBuild={toggleSelectedBuild} />
+        </Column>
+        <Column width={250}>
+          <HeaderCell>Build Details</HeaderCell>
+          <BuildDetailsCell />
+        </Column>
+        <Column width={150}>
+          <HeaderCell>Date/Time</HeaderCell>
+          <DateCell />
+        </Column>
+        <Column width={150}>
+          <HeaderCell>Component</HeaderCell>
+          <Cell>
+            {
+              (rowData) => getComponentName(rowData).name
+            }
+          </Cell>
+        </Column>
+        <Column width={150}>
+          <HeaderCell>Environment</HeaderCell>
+          <Cell dataKey="environment.name" />
+        </Column>
+        <Column width={150}>
+          <HeaderCell>
+            <span>Result</span>
+          </HeaderCell>
+          <ResultCell generateResultBar={generateResultBar} />
+        </Column>
+      </Table>
     </div>
   );
 };

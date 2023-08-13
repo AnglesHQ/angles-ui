@@ -1,6 +1,6 @@
 import React from 'react';
 import Table from 'react-bootstrap/Table';
-import '../pages/Default.css';
+// import '../pages/Default.css';
 import { getDuration } from '../../utility/TimeUtilities';
 
 const TestDetailsTable = function (props) {

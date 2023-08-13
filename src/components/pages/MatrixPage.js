@@ -4,7 +4,7 @@ import queryString from 'query-string';
 import axios from 'axios';
 import { BuildRequests } from 'angles-javascript-client';
 import MatrixTable from '../tables/MatrixTable';
-import '../charts/Charts.css';
+// import '../charts/Charts.css';
 
 const MatrixPage = function (props) {
   const location = useLocation();

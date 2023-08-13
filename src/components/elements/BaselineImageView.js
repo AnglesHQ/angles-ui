@@ -4,7 +4,7 @@ import Table from 'react-bootstrap/Table';
 import RegionSelect from 'react-region-select';
 import BaselineCompareDetailsTable from '../tables/BaselineCompareDetailsTable';
 import ScreenshotDetailsTable from '../tables/ScreenshotDetailsTable';
-import '../pages/Default.css';
+// import '../pages/Default.css';
 import CurrentScreenshotContext from '../../context/CurrentScreenshotContext';
 
 const BaselineImageView = (props) => {

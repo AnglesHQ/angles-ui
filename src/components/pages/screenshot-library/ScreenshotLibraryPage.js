@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
 import queryString from 'query-string';
 import { ScreenshotRequests } from 'angles-javascript-client';
-import 'react-multi-carousel/lib/styles.css';
-import './Default.css';
-import ScreenshotView from './ScreenshotView';
+import {
+  Form,
+  Button,
+} from 'rsuite';
+import ScreenshotView from '../ScreenshotView';
 
 const ScreenshotLibraryPage = function () {
   const location = useLocation();
@@ -19,8 +17,6 @@ const ScreenshotLibraryPage = function () {
   const [retrievingScreenshots, setRetrievingScreenshots] = useState(false);
   const [platforms, setPlatforms] = useState(null);
   const [groupType, setGroupType] = useState(null);
-  // const [selectedScreenshot, setSelectedScreenshot] = useState(null);
-  // const [currentScreenshotDetails, setCurrentScreenshotDetails] = useState(null);
   const [selectedTab] = useState(query.selectedTab || 'image');
   const [view, setView] = useState('');
   const [tag, setTag] = useState('');
@@ -118,51 +114,46 @@ const ScreenshotLibraryPage = function () {
 
   return (
     <div>
-      <h1>Screenshot Library</h1>
-      <div className="screenshot-form-container">
+      <div>
         <Form onSubmit={submitScreenshotSearch}>
-          <Row>
-            <Form.Group as={Col} className="tag-form-group">
-              <Form.Label htmlFor="viewInput"><b>View</b></Form.Label>
-              <Form.Control type="text" id="viewInput" value={view} onChange={handleViewChange} />
-              <Form.Text id="viewInput" muted>
-                Please fill in the view OR the tag input and click submit.
-              </Form.Text>
-            </Form.Group>
-            <div className="screenshot-finder-form-or-div">OR</div>
-            <Form.Group as={Col}>
-              <Form.Label htmlFor="tagInput"><b>Tag</b></Form.Label>
-              <Form.Control type="text" id="tagInput" value={tag} onChange={handleTagChange} />
-            </Form.Group>
-          </Row>
-          <Row>
-            <Form.Group as={Col}>
-              <Form.Label htmlFor="numberOfDays"><b>Number of days</b></Form.Label>
-              <Form.Control id="numberOfDays" as="select" value={numberOfDays} onChange={handleNumberOfDaysChange}>
-                <option key="1" value="1">1 Day</option>
-                <option key="2" value="7">1 Week</option>
-                <option key="3" value="14">2 Weeks</option>
-                <option key="4" value="31">1 Month</option>
-                <option key="5" value="90">3 Months</option>
-                <option key="6" value="180">6 Months</option>
-              </Form.Control>
-              <Button disabled={view === '' && tag === ''} variant="primary" type="submit" className="search-button">Search Screenshots</Button>
-            </Form.Group>
-            <Form.Group as={Col} className="tag-form-group tag-form-group-platform">
-              {
-                  groupType === 'tag' && platforms && platforms.length > 0 ? (
-                    <div>
-                      <Form.Label htmlFor="platformSelect"><b>{ `Platform (${platforms.length})`}</b></Form.Label>
-                      <Form.Control id="platformSelect" as="select" onChange={filterByPlatform}>
-                        {
-                         platforms.map((platform) => <option key={platform}>{platform}</option>)
-                       }
-                      </Form.Control>
-                    </div>
-                  ) : null
-              }
-            </Form.Group>
-          </Row>
+          <Form.Group className="tag-form-group">
+            <Form.Label htmlFor="viewInput"><b>View</b></Form.Label>
+            <Form.Control type="text" id="viewInput" value={view} onChange={handleViewChange} />
+            <Form.Text id="viewInput" muted>
+              Please fill in the view OR the tag input and click submit.
+            </Form.Text>
+          </Form.Group>
+          <div className="screenshot-finder-form-or-div">OR</div>
+          <Form.Group>
+            <Form.Label htmlFor="tagInput"><b>Tag</b></Form.Label>
+            <Form.Control type="text" id="tagInput" value={tag} onChange={handleTagChange} />
+          </Form.Group>
+          <Form.Group>
+            <Form.Label htmlFor="numberOfDays"><b>Number of days</b></Form.Label>
+            <Form.Control id="numberOfDays" as="select" value={numberOfDays} onChange={handleNumberOfDaysChange}>
+              <option key="1" value="1">1 Day</option>
+              <option key="2" value="7">1 Week</option>
+              <option key="3" value="14">2 Weeks</option>
+              <option key="4" value="31">1 Month</option>
+              <option key="5" value="90">3 Months</option>
+              <option key="6" value="180">6 Months</option>
+            </Form.Control>
+            <Button disabled={view === '' && tag === ''} variant="primary" type="submit" className="search-button">Search Screenshots</Button>
+          </Form.Group>
+          <Form.Group className="tag-form-group tag-form-group-platform">
+            {
+                groupType === 'tag' && platforms && platforms.length > 0 ? (
+                  <div>
+                    <Form.Label htmlFor="platformSelect"><b>{ `Platform (${platforms.length})`}</b></Form.Label>
+                    <Form.Control id="platformSelect" as="select" onChange={filterByPlatform}>
+                      {
+                       platforms.map((platform) => <option key={platform}>{platform}</option>)
+                     }
+                    </Form.Control>
+                  </div>
+                ) : null
+            }
+          </Form.Group>
         </Form>
       </div>
       <div className="screenshot-viewer-surround">

@@ -12,8 +12,8 @@ import BuildFeaturePieChart from '../charts/BuildFeaturePieChart';
 import SuiteTable from '../tables/SuiteTable';
 import BuildSummary from '../tables/BuildSummary';
 import BuildArtifacts from '../tables/BuildArtifacts';
-import '../charts/Charts.css';
-import './Default.css';
+// import '../charts/Charts.css';
+// import './Default.css';
 import ScreenshotView from './ScreenshotView';
 import {
   clearCurrentLoaderMessage,

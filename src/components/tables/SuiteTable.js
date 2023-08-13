@@ -7,7 +7,7 @@ import PlusRoundIcon from '@rsuite/icons/PlusRound';
 import { getDuration } from '../../utility/TimeUtilities';
 import ExecutionTable from './ExecutionTable';
 import ExecutionStateContext from '../../context/ExecutionStateContext';
-import './Tables.css';
+// import './Tables.css';
 
 const SuiteTable = function (props) {
   const {

@@ -1,7 +1,7 @@
 import React from 'react';
 import Alert from 'react-bootstrap/Alert';
-import 'react-multi-carousel/lib/styles.css';
-import './Default.css';
+// import 'react-multi-carousel/lib/styles.css';
+// import './Default.css';
 
 const NotFoundPage = function () {
   return (

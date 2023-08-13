@@ -11,7 +11,6 @@
     "url": "https://github.com/AnglesHQ/angles-ui/issues"
   },
   "dependencies": {
-    "rsuite": "^5.28.0",
     "@rsuite/charts": "5.2.0",
     "@rsuite/icons": "^1.0.2",
     "@types/react": "^18.0.28",
@@ -29,9 +28,9 @@
     "prop-types": "^15.8.1",
     "query-string": "^7.1.1",
     "react": "^18.2.0",
+    "react-apexcharts": "^1.4.0",
     "react-app-rewired": "^2.2.1",
     "react-bootstrap": "^2.7.2",
-    "react-burger-menu": "^3.0.9",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
     "react-moment": "^1.1.2",
@@ -41,7 +40,8 @@
     "react-region-select": "^2.3.0",
     "react-router-dom": "^6.8.1",
     "react-scripts": "^5.0.1",
-    "redux": "^4.2.0"
+    "redux": "^4.2.0",
+    "rsuite": "^5.28.0"
   },
   "devDependencies": {
     "@babel/core": "^7.18.10",
@@ -56,7 +56,9 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jsx-a11y": "^6.6.1",
     "eslint-plugin-react": "^7.30.1",
-    "eslint-plugin-react-hooks": "^4.6.0"
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "less": "^4.1.3",
+    "less-loader": "^11.1.3"
   },
   "scripts": {
     "start": "react-app-rewired start",

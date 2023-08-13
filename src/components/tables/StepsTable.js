@@ -3,7 +3,7 @@ import React from 'react';
 import Moment from 'react-moment';
 import parse from 'html-react-parser';
 import { useNavigate } from 'react-router-dom';
-import '../pages/Default.css';
+// import '../pages/Default.css';
 
 const StepsTable = function (props) {
   const {

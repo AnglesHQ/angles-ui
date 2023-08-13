@@ -3,6 +3,7 @@ import Moment from 'react-moment';
 import Popover from 'react-bootstrap/Popover';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
+import HistoryIcon from '@rsuite/icons/History';
 import TestDetailsTable from './TestDetailsTable';
 
 const MatrixTable = function (props) {
@@ -181,7 +182,7 @@ const MatrixTable = function (props) {
               <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{`See execution history for ${testName}`}</Tooltip>}>
                 <span className="d-inline-block">
                   <a className="test-history-link" title={`See execution history for ${testName}`} href={`/history?executionId=${firstExecution._id}`}>
-                    <span><i className="fa fa-history" aria-hidden="true">history</i></span>
+                    <span><HistoryIcon /></span>
                   </a>
                 </span>
               </OverlayTrigger>
