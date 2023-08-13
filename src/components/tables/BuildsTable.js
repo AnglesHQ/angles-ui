@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Moment from 'react-moment';
-// import { TagPicker } from 'rsuite';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import TimeIcon from '@rsuite/icons/Time';
 import TreeIcon from '@rsuite/icons/Tree';
-import FunnelIcon from '@rsuite/icons/Funnel';
 import TagLockIcon from '@rsuite/icons/TagLock';
 import {
   Badge,
@@ -13,7 +11,6 @@ import {
   Table,
   Popover,
   Whisper,
-  MultiCascader,
 } from 'rsuite';
 import { getDuration } from '../../utility/TimeUtilities';
 import ArtifactsDetailsTable from './ArtifactsDetailsTable';
@@ -123,122 +120,13 @@ const ResultCell = function (props) {
   );
 };
 
-const generateData = function (environments, components) {
-  const data = [];
-  data.push({
-    label: 'Environments',
-    value: 1,
-    children: environments,
-  });
-  data.push({
-    label: 'Components',
-    value: 2,
-    children: components,
-  });
-  return data;
-};
-
-const FilterMenu = function (props) {
-  const {
-    data,
-    setFilteredComponents,
-    setFilteredEnvironments,
-    environments,
-    components,
-    filteredValues,
-    setFilteredValues,
-  } = props;
-  return (
-    <MultiCascader
-      style={{ width: 50 }}
-      uncheckableItemValues={[1, 2]}
-      placeholder={(
-        <span>
-          <FunnelIcon />
-        </span>
-      )}
-      renderValue={(value, selectedItems) => (
-        <span>
-          <span style={{ color: '#575757' }}>
-            <Badge content={selectedItems.length}>
-              <FunnelIcon />
-            </Badge>
-          </span>
-        </span>
-      )}
-      data={data}
-      menuWidth={220}
-      onChange={
-        (value) => {
-          setFilteredValues(value);
-          setFilteredComponents(components.filter((component) => value
-            .includes(component.value)).map((component) => component.value));
-          setFilteredEnvironments(environments.filter((environment) => value
-            .includes(environment.value)).map((environment) => environment.value));
-        }
-      }
-      value={filteredValues}
-    />
-  );
-};
-
 const BuildsTable = function (props) {
-  const [environments, setEnvironments] = useState([]);
-  const [components, setComponents] = useState([]);
-  const [, setSelectedEnvironments] = useState([]);
-  const [, setSelectedComponents] = useState([]);
-  const [filteredValues, setFilteredValues] = useState([]);
   const {
     builds,
-    team,
-    availableEnvironments,
     selectedBuilds,
     retrieveSelectedBuilds,
-    setFilteredEnvironments,
-    setFilteredComponents,
     toggleSelectedBuild,
   } = props;
-
-  const resetEnvironmentsForTableFilter = (allEnvironments) => {
-    const uniqueEnvironments = {};
-    allEnvironments.forEach((environment) => {
-      uniqueEnvironments[environment._id] = environment.name;
-    });
-    const environmentsToSet = [];
-    Object.keys(uniqueEnvironments).forEach((key) => {
-      environmentsToSet.push({ label: uniqueEnvironments[key], value: key });
-    });
-    environmentsToSet.sort((a, b) => ((a.label > b.label) ? 1 : -1));
-    setEnvironments(environmentsToSet);
-    setSelectedEnvironments([]);
-  };
-
-  const resetComponentsForTableFilter = (teamWithComponents) => {
-    const uniqueComponents = {};
-    teamWithComponents.components.forEach((component) => {
-      uniqueComponents[component._id] = component.name;
-    });
-    const componentsToSet = [];
-    Object.keys(uniqueComponents).forEach((key) => {
-      componentsToSet.push({ label: uniqueComponents[key], value: key });
-    });
-    componentsToSet.sort((a, b) => ((a.label > b.label) ? 1 : -1));
-    setComponents(componentsToSet);
-    setSelectedComponents([]);
-  };
-
-  useEffect(() => {
-    resetEnvironmentsForTableFilter(availableEnvironments);
-    resetComponentsForTableFilter(team);
-  }, []);
-
-  useEffect(() => {
-    resetEnvironmentsForTableFilter(availableEnvironments);
-  }, [availableEnvironments]);
-
-  useEffect(() => {
-    resetComponentsForTableFilter(team);
-  }, [team]);
 
   const isRowSelected = (build) => selectedBuilds[build._id];
 
@@ -269,15 +157,6 @@ const BuildsTable = function (props) {
 
   return (
     <div>
-      <FilterMenu
-        data={generateData(environments, components)}
-        setFilteredComponents={setFilteredComponents}
-        setFilteredEnvironments={setFilteredEnvironments}
-        components={components}
-        environments={environments}
-        filteredValues={filteredValues}
-        setFilteredValues={setFilteredValues}
-      />
       <Table rowHeight={65} height={300} data={builds} id="table">
         <Column width={50} align="center">
           <HeaderCell style={{ padding: 0 }}>#</HeaderCell>

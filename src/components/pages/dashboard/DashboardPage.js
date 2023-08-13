@@ -10,10 +10,11 @@ import {
   Grid,
   Affix,
   Stack,
-  Panel,
+  Panel, MultiCascader, Badge,
 } from 'rsuite';
 import PieChartIcon from '@rsuite/icons/PieChart';
 import TimeIcon from '@rsuite/icons/Time';
+import FunnelIcon from '@rsuite/icons/Funnel';
 import moment from 'moment';
 import update from 'immutability-helper';
 
@@ -24,23 +25,95 @@ import BuildsTable from '../../tables/BuildsTable';
 import ExecutionBarChart from './ExecutionBarChart';
 import { getBuildDurationInSeconds } from '../../../utility/TimeUtilities';
 
+const generateData = function (environments, components) {
+  const data = [];
+  data.push({
+    label: 'Environments',
+    value: 1,
+    children: environments
+      .map((environment) => ({ value: environment._id, label: environment.name })),
+  });
+  data.push({
+    label: 'Components',
+    value: 2,
+    children: components
+      .map((component) => ({ value: component._id, label: component.name })),
+  });
+  return data;
+};
+
+const FilterMenu = function (props) {
+  const {
+    data,
+    setFilteredComponents,
+    setFilteredEnvironments,
+    environments,
+    components,
+    filteredValues,
+    setFilteredValues,
+  } = props;
+  return (
+    <MultiCascader
+      style={{ width: 50 }}
+      uncheckableItemValues={[1, 2]}
+      placeholder={(
+        <span>
+          <FunnelIcon />
+        </span>
+      )}
+      renderValue={(value, selectedItems) => (
+        <span>
+          <span style={{ color: '#575757' }}>
+            <Badge content={selectedItems.length}>
+              <FunnelIcon />
+            </Badge>
+          </span>
+        </span>
+      )}
+      data={data}
+      menuWidth={220}
+      onChange={
+        (value) => {
+          setFilteredValues(value);
+          setFilteredComponents(components.filter((component) => value
+            .includes(component._id)).map((component) => component._id));
+          setFilteredEnvironments(environments.filter((environment) => value
+            .includes(environment._id)).map((environment) => environment._id));
+        }
+      }
+      value={filteredValues}
+    />
+  );
+};
+
 const DashboardPage = function (props) {
   const location = useLocation();
   const navigate = useNavigate();
+  const buildRequests = new BuildRequests(axios);
+  const { currentTeam, teams, environments } = props;
+
+  // query values
   const query = queryString.parse(location.search);
   const { startDate: queryStartDate, endDate: queryEndDate } = query;
+
+  // page state
   const [builds, setBuilds] = useState(undefined);
-  const [selectedBuilds, setSelectedBuilds] = useState({});
-  const [filteredEnvironments, setFilteredEnvironments] = useState([]);
-  const [filteredComponents, setFilteredComponents] = useState([]);
   const [buildCount, setBuildCount] = useState(0);
   const [currentSkip, setCurrentSkip] = useState(0);
   const [limit, setLimit] = useState(15);
+
+  // date range.
   const [startDate, setStartDate] = useState(queryStartDate ? moment(queryStartDate) : moment().subtract(90, 'days'));
   const [endDate, setEndDate] = useState(queryEndDate ? moment(queryEndDate) : moment());
-  const buildRequests = new BuildRequests(axios);
-  const { currentTeam, teams, environments } = props;
   const { afterToday } = DateRangePicker;
+
+  // filtering values
+  const [selectedBuilds, setSelectedBuilds] = useState({});
+  const [filteredEnvironments, setFilteredEnvironments] = useState([]);
+  const [filteredComponents, setFilteredComponents] = useState([]);
+  const [filteredValues, setFilteredValues] = useState([]);
+
+  // pagination values
   const [activePage, setActivePage] = React.useState(1);
   const limitValues = [10, 15, 25, 50].map(
     (item) => ({ label: item, value: item }),
@@ -87,6 +160,14 @@ const DashboardPage = function (props) {
     }
   }, [currentTeam, limit, filteredEnvironments,
     filteredComponents, startDate, endDate, activePage]);
+
+  useEffect(() => {
+    setFilteredValues([]);
+  }, []);
+
+  useEffect(() => {
+    setFilteredValues([]);
+  }, [environments, currentTeam]);
 
   const toggleSelectedBuild = (build) => {
     const updatedBuilds = update(
@@ -194,6 +275,7 @@ const DashboardPage = function (props) {
     );
     return graphData;
   };
+
   return (
     // eslint-disable-next-line no-nested-ternary
     (!currentTeam || !currentTeam._id) ? (
@@ -226,6 +308,15 @@ const DashboardPage = function (props) {
                   setEndDate(moment(value[1]));
                 }}
                 shouldDisableDate={afterToday()}
+              />
+              <FilterMenu
+                data={generateData(environments, currentTeam.components)}
+                setFilteredComponents={setFilteredComponents}
+                setFilteredEnvironments={setFilteredEnvironments}
+                components={currentTeam.components}
+                environments={environments}
+                filteredValues={filteredValues}
+                setFilteredValues={setFilteredValues}
               />
             </Stack>
           </Affix>
@@ -266,8 +357,6 @@ const DashboardPage = function (props) {
             <Row gutter={30} className="dash-row">
               <Col xs={24}>
                 <BuildsTable
-                  team={currentTeam}
-                  availableEnvironments={environments}
                   builds={builds}
                   currentSkip={currentSkip}
                   selectedBuilds={selectedBuilds}
