@@ -157,16 +157,14 @@ const BuildsTable = function (props) {
 
   return (
     <div>
-      <Table rowHeight={65} height={300} data={builds} id="table">
+      <Table rowHeight={65} headerHeight={40} height={500} data={builds} id="builds-table">
         <Column width={50} align="center">
-          <HeaderCell style={{ padding: 0 }}>#</HeaderCell>
+          <HeaderCell>#</HeaderCell>
           <Cell dataKey="index" />
         </Column>
         <Column width={50}>
           <HeaderCell>
-            <div key={anyRowsSelected()}>
-              <Checkbox checked={anyRowsSelected()} />
-            </div>
+            <Checkbox className="build-table-header-checkbox" checked={anyRowsSelected()} />
           </HeaderCell>
           <CheckCell isRowSelected={isRowSelected} toggleSelectedBuild={toggleSelectedBuild} />
         </Column>

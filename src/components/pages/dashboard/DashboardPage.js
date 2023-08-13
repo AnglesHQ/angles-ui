@@ -10,7 +10,9 @@ import {
   Grid,
   Affix,
   Stack,
-  Panel, MultiCascader, Badge,
+  Panel,
+  MultiCascader,
+  Badge,
 } from 'rsuite';
 import PieChartIcon from '@rsuite/icons/PieChart';
 import TimeIcon from '@rsuite/icons/Time';
@@ -25,7 +27,7 @@ import BuildsTable from '../../tables/BuildsTable';
 import ExecutionBarChart from './ExecutionBarChart';
 import { getBuildDurationInSeconds } from '../../../utility/TimeUtilities';
 
-const generateData = function (environments, components) {
+const generateFilterMenuData = function (environments, components) {
   const data = [];
   data.push({
     label: 'Environments',
@@ -231,8 +233,8 @@ const DashboardPage = function (props) {
 
   const handleLimitChange = (newLimit) => {
     if (newLimit) {
-      console.log(JSON.stringify(newLimit));
       setLimit(newLimit);
+      setActivePage(1);
     }
   };
 
@@ -309,8 +311,9 @@ const DashboardPage = function (props) {
                 }}
                 shouldDisableDate={afterToday()}
               />
+              <SelectPicker data={limitValues} appearance="default" style={{ width: 120 }} defaultValue={limit} searchable={false} onChange={handleLimitChange} />
               <FilterMenu
-                data={generateData(environments, currentTeam.components)}
+                data={generateFilterMenuData(environments, currentTeam.components)}
                 setFilteredComponents={setFilteredComponents}
                 setFilteredEnvironments={setFilteredEnvironments}
                 components={currentTeam.components}
@@ -326,7 +329,7 @@ const DashboardPage = function (props) {
                 <Panel className="trend-box bg-gradient-red">
                   <PieChartIcon size="3x" className="chart-icon" />
                   <div className="title">Test Runs </div>
-                  <div className="value">281,358</div>
+                  <div className="value">{buildCount}</div>
                 </Panel>
               </Col>
               <Col xs={8}>
@@ -370,7 +373,6 @@ const DashboardPage = function (props) {
                     <button disabled={!multipleBuildsSelected()} onClick={() => navigateToMatrix()} type="button" className="btn btn-outline-primary">Open Matrix</button>
                     <button disabled={!anyBuildsSelected()} onClick={() => toggleBuildsToKeep()} type="button" className="btn btn-outline-primary second-button">Toggle Keep</button>
                     <button disabled={!anyBuildsSelected()} onClick={() => clearSelection()} type="button" className="btn btn-outline-primary second-button">Clear Selection</button>
-                    <SelectPicker data={limitValues} appearance="default" style={{ width: 120 }} defaultValue={limit} searchable={false} onChange={handleLimitChange} />
                   </span>
                   <span style={{ float: 'right' }}>
                     <Pagination
@@ -378,7 +380,7 @@ const DashboardPage = function (props) {
                       last
                       next
                       first
-                      layout={['total', '|', 'pager']}
+                      layout={['pager']}
                       size="md"
                       total={buildCount}
                       limit={limit}
