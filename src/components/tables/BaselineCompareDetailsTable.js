@@ -14,13 +14,13 @@ const BaselineCompareDetailsTable = function (props) {
   const navigateToTagsPage = (tag, e) => {
     const navigate = useNavigate();
     e.preventDefault();
-    navigate(`/screenshot-finder/?tag=${tag}`);
+    navigate(`/screenshot-library/?tag=${tag}`);
   };
 
   const navigateToViewsPage = (view, e) => {
     const navigate = useNavigate();
     e.preventDefault();
-    navigate(`/screenshot-finder/?view=${view}`);
+    navigate(`/screenshot-library/?view=${view}`);
   };
 
   return (

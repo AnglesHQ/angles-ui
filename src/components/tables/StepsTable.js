@@ -1,9 +1,58 @@
 /* eslint react/no-array-index-key: [0] */
 import React from 'react';
 import Moment from 'react-moment';
-import parse from 'html-react-parser';
 import { useNavigate } from 'react-router-dom';
-// import '../pages/Default.css';
+import { Table } from 'rsuite';
+
+const {
+  Column,
+  HeaderCell,
+  Cell,
+  ColumnGroup,
+} = Table;
+
+const StepDateCell = function (props) {
+  const { rowData: step } = props;
+  return (
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    <Cell {... props}>
+      { step.timestamp ? (
+        <div>
+          <span>
+            <Moment format="HH:mm:ss">
+              {step.timestamp}
+            </Moment>
+          </span>
+        </div>
+      ) : 'N/A'}
+    </Cell>
+  );
+};
+
+const ScreenshotCell = function (props) {
+  const {
+    rowData: step,
+    openModal,
+    getScreenShot,
+    ...rest
+  } = props;
+  return (
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    <Cell {...rest}>
+      { step.screenshot ? (
+        <div>
+          <img
+            src={`${getScreenShot(step.screenshot)}`}
+            alt="Thumbnail"
+            className="screenshot-thumbnail"
+            onClick={() => openModal(step.screenshot)}
+            style={{ cursor: 'pointer' }}
+          />
+        </div>
+      ) : ' - '}
+    </Cell>
+  );
+};
 
 const StepsTable = function (props) {
   const {
@@ -12,7 +61,6 @@ const StepsTable = function (props) {
     openModal,
     screenshots,
   } = props;
-
   const getScreenShot = (screenshotId) => {
     if (screenshots !== undefined && screenshotId !== undefined) {
       const image = screenshots.filter((screenshot) => screenshot._id === screenshotId)[0];
@@ -33,92 +81,51 @@ const StepsTable = function (props) {
     navigate(`/image/${imageId}`);
   };
 
-  const convertTextToLinks = (content) => {
-    const reg = /(http:\/\/|https:\/\/)((\w|=|\?|\.|\/|&|-)+)/g;
-    if (content) {
-      return content.replace(reg, "<a href='$1$2' target='_blank'>$1$2</a>");
-    }
-    return '';
-  };
+  // const convertTextToLinks = (content) => {
+  //   const reg = /(http:\/\/|https:\/\/)((\w|=|\?|\.|\/|&|-)+)/g;
+  //   if (content) {
+  //     return content.replace(reg, "<a href='$1$2' target='_blank'>$1$2</a>");
+  //   }
+  //   return '';
+  // };
 
   return [
-    <table className="steps-table" key={`steps_table_${index}`}>
-      <thead>
-        <tr>
-          <th width="3%">#</th>
-          <th width="8%">Time</th>
-          <th width="7%">Status</th>
-          <th width="20%">Step</th>
-          <th width="15%">Expected</th>
-          <th width="15%">Actual</th>
-          <th width="25%">Info</th>
-          <th width="8%">Screenshot</th>
-        </tr>
-      </thead>
-      <tbody>
-        { action.steps.map((step, stepIndex) => {
-          if (step.status === 'ERROR' || step.status === 'INFO' || step.status === 'DEBUG') {
-            return (
-              <tr key={`steps_${stepIndex}`}>
-                <td>{stepIndex + 1}</td>
-                <td><Moment format="HH:mm:ss">{step.timestamp}</Moment></td>
-                <td className={`${step.status}`}>{step.status}</td>
-                <td colSpan={4}>
-                  <pre>
-                    {parse(convertTextToLinks(step.info))}
-                  </pre>
-                </td>
-                {
-                  step.screenshot ? (
-                    <td onClick={() => openModal(step.screenshot)}>
-                      <img
-                        className="screenshot-thumbnail"
-                        src={`${getScreenShot(step.screenshot)}`}
-                        alt="Thumbnail"
-                      />
-                    </td>
-                  ) : <td />
-                }
-              </tr>
-            );
-          }
-          return (
-            <tr key={`steps_${stepIndex}`}>
-              <td>{stepIndex + 1}</td>
-              <td><Moment format="HH:mm:ss">{step.timestamp}</Moment></td>
-              <td className={`${step.status}`}>{step.status}</td>
-              <td>{step.name}</td>
-              <td>{step.expected}</td>
-              <td>{step.actual}</td>
-              <td>
-                <pre>
-                  { parse(convertTextToLinks(step.info)) }
-                </pre>
-              </td>
-              {
-                step.screenshot ? (
-                  <td onClick={() => openModal(step.screenshot)}>
-                    <img
-                      className="screenshot-thumbnail"
-                      src={`data:image/png;base64, ${getScreenShot(step.screenshot)}`}
-                      alt="Thumbnail"
-                    />
-                  </td>
-                ) : <td />
-              }
-            </tr>
-          );
-        })}
-        {
-          action.steps.length === 0 ? (
-            <tr key="no-steps">
-              <td />
-              <td colSpan={7}>No steps provided</td>
-            </tr>
-          ) : null
-        }
-      </tbody>
-    </table>,
+    <Table autoHeight width={800} headerHeight={80} data={action.steps} id="steps-table" key={`steps_table_${index}`}>
+      <Column width={30}>
+        <HeaderCell>#</HeaderCell>
+        <Cell />
+      </Column>
+      <Column width={75}>
+        <HeaderCell>Time</HeaderCell>
+        <StepDateCell />
+      </Column>
+      <Column width={100}>
+        <HeaderCell>Status</HeaderCell>
+        <Cell dataKey="status" />
+      </Column>
+      <ColumnGroup header="Step Information">
+        <Column width={200} colSpan={4}>
+          <HeaderCell>Info</HeaderCell>
+          <Cell dataKey="info" />
+        </Column>
+        <Column width={100}>
+          <HeaderCell>Step</HeaderCell>
+          <Cell dataKey="name" />
+        </Column>
+        <Column width={100}>
+          <HeaderCell>Expected</HeaderCell>
+          <Cell dataKey="expected" />
+        </Column>
+        <Column width={100}>
+          <HeaderCell>Actual</HeaderCell>
+          <Cell dataKey="actual" />
+        </Column>
+      </ColumnGroup>
+      <Column width={350}>
+        <HeaderCell>Screenshot</HeaderCell>
+        <ScreenshotCell openModal={openModal} getScreenShot={getScreenShot} />
+      </Column>
+    </Table>,
   ];
 };
 

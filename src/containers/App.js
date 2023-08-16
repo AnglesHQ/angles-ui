@@ -28,7 +28,7 @@ import DocPass from '@rsuite/icons/DocPass';
 import InfoRound from '@rsuite/icons/InfoRound';
 
 import SummaryPage from '../components/pages/dashboard';
-import BuildPage from '../components/pages/BuildPage';
+import BuildPage from '../components/pages/build';
 import MatrixPage from '../components/pages/MatrixPage';
 import ScreenshotLibraryPage from '../components/pages/screenshot-library';
 import ExecutionHistoryPage from '../components/pages/ExecutionHistoryPage';
@@ -46,6 +46,7 @@ import '../styles/index.less';
 axios.defaults.baseURL = `${process.env.REACT_APP_ANGLES_API_URL}/rest/api/v1.0`;
 
 const App = function (props) {
+  console.log('ScreenshotLibraryPage: ', ScreenshotLibraryPage);
   const location = useLocation();
   const teamRequests = new TeamRequests(axios);
   const environmentRequests = new EnvironmentRequests(axios);
@@ -154,8 +155,8 @@ const App = function (props) {
         <Sidenav expanded={expand} defaultOpenKeys={['3']} appearance="subtle">
           <Sidenav.Header>
             <div className="sidebar-header">
-              <img src="assets/angles-icon.png" alt="Angles" className="sidebar-angles-icon" />
-              <img src="assets/angles-text-logo.png" alt="Angles" className="sidebar-angles-text-icon" />
+              <img src="../assets/angles-icon.png" alt="Angles" className="sidebar-angles-icon" />
+              <img src="../assets/angles-text-logo.png" alt="Angles" className="sidebar-angles-text-icon" />
             </div>
           </Sidenav.Header>
           <Sidenav.Body>
@@ -166,7 +167,7 @@ const App = function (props) {
               <Nav.Item eventKey="2" icon={<BarChart />} href="/metrics">
                 <span>Metrics</span>
               </Nav.Item>
-              <Nav.Item eventKey="3" icon={<Image />} href="/screenshot-finder">
+              <Nav.Item eventKey="3" icon={<Image />} href="/screenshot-library">
                 <span>Screenshot Library</span>
               </Nav.Item>
               <Nav.Item eventKey="4" icon={<InfoRound />} href="/about">

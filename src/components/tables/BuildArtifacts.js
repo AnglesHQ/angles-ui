@@ -1,42 +1,28 @@
-import React, { useState } from 'react';
+import React from 'react';
+import {
+  Table,
+} from 'rsuite';
 
 const BuildArtifacts = function (props) {
-  const [expanded, setExpanded] = useState(false);
-  const { build } = props;
-
-  const changeExpandedState = () => {
-    setExpanded(!expanded);
-  };
+  const { build: { artifacts } } = props;
+  const { Column, HeaderCell, Cell } = Table;
 
   return (
-    (!build.artifacts || build.artifacts.length === 0) ? null : (
-      <table className="table">
-        <thead className="thead-dark">
-          <tr>
-            <th scope="col" colSpan="90%" onClick={changeExpandedState}>
-              <span>{`Build Artifacts [${build.artifacts.length}]`}</span>
-              <span key={expanded} className="expand-artfifacts-span">
-                <i title="Click to display/hide artifacts" className={expanded ? ('fas fa-caret-down') : 'fas fa-caret-left'} />
-              </span>
-            </th>
-          </tr>
-        </thead>
-        { expanded
-          ? (
-            <tbody>
-              {build.artifacts.map((artifact) => (
-                <tr colSpan="100%" key={`${artifact.artifactId}_${artifact.version}`}>
-                  <th scope="row">
-                    { artifact.groupId ? (`${artifact.groupId}.`) : null}
-                    {artifact.artifactId}
-                  </th>
-                  <td>{artifact.version}</td>
-                </tr>
-              ))}
-            </tbody>
-          )
-          : null }
-      </table>
+    (!artifacts || artifacts.length === 0) ? null : (
+      <Table data={artifacts} id="build-artifacts">
+        <Column>
+          <HeaderCell>Group Id</HeaderCell>
+          <Cell dataKey="groupId" />
+        </Column>
+        <Column>
+          <HeaderCell>Artifact Id</HeaderCell>
+          <Cell dataKey="artifactId" />
+        </Column>
+        <Column>
+          <HeaderCell>Version</HeaderCell>
+          <Cell dataKey="version" />
+        </Column>
+      </Table>
     )
   );
 };

@@ -7,21 +7,21 @@ import { saveAs } from 'file-saver';
 import FileDownloadIcon from '@rsuite/icons/FileDownload';
 import { BuildRequests, ScreenshotRequests } from 'angles-javascript-client';
 import { useLocation } from 'react-router-dom';
-import BuildResultsPieChart from '../charts/BuildResultsPieChart';
-import BuildFeaturePieChart from '../charts/BuildFeaturePieChart';
-import SuiteTable from '../tables/SuiteTable';
-import BuildSummary from '../tables/BuildSummary';
-import BuildArtifacts from '../tables/BuildArtifacts';
-// import '../charts/Charts.css';
-// import './Default.css';
-import ScreenshotView from './ScreenshotView';
+import {
+  Panel,
+} from 'rsuite';
+import BuildResultsPieChart from '../../charts/BuildResultsPieChart';
+import BuildFeaturePieChart from '../../charts/BuildFeaturePieChart';
+import SuiteTable from '../../tables/SuiteTable';
+import BuildArtifacts from '../../tables/BuildArtifacts';
+import ScreenshotView from '../ScreenshotView';
 import {
   clearCurrentLoaderMessage,
   storeCurrentLoaderMessage,
-} from '../../redux/notificationActions';
-import { ExecutionStateProvider } from '../../context/ExecutionStateContext';
-import { useConstructor } from '../../utility/GeneralUtilities';
-import CurrentScreenshotContext from '../../context/CurrentScreenshotContext';
+} from '../../../redux/notificationActions';
+import { ExecutionStateProvider } from '../../../context/ExecutionStateContext';
+import { useConstructor } from '../../../utility/GeneralUtilities';
+import CurrentScreenshotContext from '../../../context/CurrentScreenshotContext';
 
 const BuildPage = function (props) {
   const location = useLocation();
@@ -147,20 +147,27 @@ const BuildPage = function (props) {
         </div>
       ) : (
         <div>
-          <h1>
-            <span>
-              { `Build: ${currentBuild.name}`}
-            </span>
-            <button
-              id="report-download"
-              type="button"
-              disabled={!downloadReportButtonEnabled}
-              onClick={() => { downloadReport(currentBuild._id); }}
-            >
-              <FileDownloadIcon />
-            </button>
-          </h1>
-          <BuildSummary build={currentBuild} screenshots={screenshots} openModal={openModal} />
+          <Panel
+            bordered
+            header={(
+              <span>Build Details</span>
+            )}
+          >
+            <div>
+              <span>{ `Name: ${currentBuild.name}` }</span>
+              <button
+                id="report-download"
+                type="button"
+                disabled={!downloadReportButtonEnabled}
+                onClick={() => { downloadReport(currentBuild._id); }}
+              >
+                <FileDownloadIcon />
+              </button>
+            </div>
+            <div>{ `Component: ${currentBuild.component}` }</div>
+            <div>{ `PASS: ${currentBuild.result.PASS}` }</div>
+            <div>{ `FAIL: ${currentBuild.result.FAIL}` }</div>
+          </Panel>
           <BuildArtifacts build={currentBuild} />
           <div className="graphContainerParent">
             <BuildResultsPieChart build={currentBuild} filterBuilds={filterBuilds} />

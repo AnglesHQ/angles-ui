@@ -13,8 +13,15 @@ import {
   Panel,
   MultiCascader,
   Badge,
+  Dropdown,
+  IconButton,
 } from 'rsuite';
+import TagLockIcon from '@rsuite/icons/TagLock';
+import TableColumnIcon from '@rsuite/icons/TableColumn';
+import MenuIcon from '@rsuite/icons/Menu';
+import ReloadIcon from '@rsuite/icons/Reload';
 import PieChartIcon from '@rsuite/icons/PieChart';
+import RemindFillIcon from '@rsuite/icons/RemindFill';
 import TimeIcon from '@rsuite/icons/Time';
 import FunnelIcon from '@rsuite/icons/Funnel';
 import moment from 'moment';
@@ -108,6 +115,7 @@ const DashboardPage = function (props) {
   const [startDate, setStartDate] = useState(queryStartDate ? moment(queryStartDate) : moment().subtract(90, 'days'));
   const [endDate, setEndDate] = useState(queryEndDate ? moment(queryEndDate) : moment());
   const { afterToday } = DateRangePicker;
+  const [selectedTeamId, setSelectedTeamId] = useState(undefined);
 
   // filtering values
   const [selectedBuilds, setSelectedBuilds] = useState({});
@@ -162,6 +170,12 @@ const DashboardPage = function (props) {
     }
   }, [currentTeam, limit, filteredEnvironments,
     filteredComponents, startDate, endDate, activePage]);
+
+  useEffect(() => {
+    if (currentTeam) {
+      setSelectedTeamId(currentTeam._id);
+    }
+  }, [currentTeam]);
 
   useEffect(() => {
     setFilteredValues([]);
@@ -226,10 +240,10 @@ const DashboardPage = function (props) {
     setSelectedBuilds({});
   };
 
-  // const handleTeamChange = (event) => {
-  //   const { changeCurrentTeam } = props;
-  //   changeCurrentTeam(event.target.value);
-  // };
+  const handleTeamChange = (teamId) => {
+    const { changeCurrentTeam } = props;
+    changeCurrentTeam(teamId);
+  };
 
   const handleLimitChange = (newLimit) => {
     if (newLimit) {
@@ -278,6 +292,22 @@ const DashboardPage = function (props) {
     return graphData;
   };
 
+  // eslint-disable-next-line no-shadow
+  const renderIconButton = (props, ref) => (
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    <IconButton {...props} ref={ref} icon={<MenuIcon />} />
+  );
+
+  const selectedBuildCount = () => {
+    let selectedBuildCountValue = 0;
+    Object.keys(selectedBuilds).forEach((key) => {
+      if (selectedBuilds[key] === true) {
+        selectedBuildCountValue += 1;
+      }
+    });
+    return selectedBuildCountValue;
+  };
+
   return (
     // eslint-disable-next-line no-nested-ternary
     (!currentTeam || !currentTeam._id) ? (
@@ -297,9 +327,15 @@ const DashboardPage = function (props) {
             <Stack className="rg-stack" spacing={10}>
               <SelectPicker
                 cleanable={false}
-                searchable={false}
+                // searchable={false}
                 appearance="subtle"
                 data={teams.map((team) => ({ label: team.name, value: team._id }))}
+                value={selectedTeamId}
+                onChange={(value) => {
+                  if (value) {
+                    handleTeamChange(value);
+                  }
+                }}
               />
               <DateRangePicker
                 value={[startDate.toDate(), endDate.toDate()]}
@@ -310,8 +346,17 @@ const DashboardPage = function (props) {
                   setEndDate(moment(value[1]));
                 }}
                 shouldDisableDate={afterToday()}
+                cleanable={false}
               />
-              <SelectPicker data={limitValues} appearance="default" style={{ width: 120 }} defaultValue={limit} searchable={false} onChange={handleLimitChange} />
+              <SelectPicker
+                data={limitValues}
+                appearance="default"
+                cleanable={false}
+                style={{ width: 120 }}
+                defaultValue={limit}
+                searchable={false}
+                onChange={handleLimitChange}
+              />
               <FilterMenu
                 data={generateFilterMenuData(environments, currentTeam.components)}
                 setFilteredComponents={setFilteredComponents}
@@ -368,11 +413,49 @@ const DashboardPage = function (props) {
                   setFilteredEnvironments={setFilteredEnvironments}
                   setFilteredComponents={setFilteredComponents}
                 />
-                <div>
+                <div className="builds-table-menu">
                   <span style={{ float: 'left' }}>
-                    <button disabled={!multipleBuildsSelected()} onClick={() => navigateToMatrix()} type="button" className="btn btn-outline-primary">Open Matrix</button>
-                    <button disabled={!anyBuildsSelected()} onClick={() => toggleBuildsToKeep()} type="button" className="btn btn-outline-primary second-button">Toggle Keep</button>
-                    <button disabled={!anyBuildsSelected()} onClick={() => clearSelection()} type="button" className="btn btn-outline-primary second-button">Clear Selection</button>
+                    <Badge color="blue" className="build-table-menu-badge" content={selectedBuildCount()}>
+                      <Dropdown
+                        renderToggle={renderIconButton}
+                        placement="topStart"
+                      >
+                        {
+                          selectedBuildCount() > 0 ? (
+                            <>
+                              <Dropdown.Item
+                                icon={<TableColumnIcon />}
+                                disabled={!multipleBuildsSelected()}
+                                onClick={() => navigateToMatrix()}
+                              >
+                                Matrix
+                              </Dropdown.Item>
+                              <Dropdown.Item
+                                icon={<TagLockIcon />}
+                                disabled={!anyBuildsSelected()}
+                                onClick={() => toggleBuildsToKeep()}
+                              >
+                                Toggle Keep
+                              </Dropdown.Item>
+                              <Dropdown.Item
+                                icon={<ReloadIcon />}
+                                disabled={!anyBuildsSelected()}
+                                onClick={() => clearSelection()}
+                              >
+                                Clear Selection
+                              </Dropdown.Item>
+                            </>
+                          ) : (
+                            <Dropdown.Item
+                              icon={<RemindFillIcon />}
+                              disabled
+                            >
+                              Please select at least one test run
+                            </Dropdown.Item>
+                          )
+                        }
+                      </Dropdown>
+                    </Badge>
                   </span>
                   <span style={{ float: 'right' }}>
                     <Pagination

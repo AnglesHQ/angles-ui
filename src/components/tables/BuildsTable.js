@@ -18,7 +18,7 @@ import ArtifactsDetailsTable from './ArtifactsDetailsTable';
 const { Column, HeaderCell, Cell } = Table;
 
 const componentDetailsSpeaker = (build) => (
-  <Popover title="Artifacts">
+  <Popover title="Artifacts" style={{ width: '350px' }}>
     <ArtifactsDetailsTable artifacts={build.artifacts} />
   </Popover>
 );
@@ -63,14 +63,21 @@ const BuildDetailsCell = function (props) {
 };
 
 const CheckCell = function (props) {
-  const { rowData: build, toggleSelectedBuild, isRowSelected } = props;
+  const {
+    rowData: build,
+    toggleSelectedBuild,
+    isRowSelected,
+    ...rest
+  } = props;
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading
-    <Cell {... props}>
+    <Cell {...rest}>
       <Checkbox
+        key={`${build._id}-${isRowSelected(build)}`}
         value={build._id}
         onClick={() => toggleSelectedBuild(build)}
         checked={isRowSelected(build)}
+        inline={false}
       />
     </Cell>
   );
@@ -109,10 +116,10 @@ const DateCell = function (props) {
 };
 
 const ResultCell = function (props) {
-  const { rowData: build, generateResultBar } = props;
+  const { rowData: build, generateResultBar, ...rest } = props;
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading
-    <Cell {... props}>
+    <Cell {...rest}>
       <div>
         { generateResultBar(build.result) }
       </div>
@@ -164,7 +171,7 @@ const BuildsTable = function (props) {
         </Column>
         <Column width={50}>
           <HeaderCell>
-            <Checkbox className="build-table-header-checkbox" checked={anyRowsSelected()} />
+            <Checkbox className="build-table-header-checkbox" checked={anyRowsSelected()} inline />
           </HeaderCell>
           <CheckCell isRowSelected={isRowSelected} toggleSelectedBuild={toggleSelectedBuild} />
         </Column>
