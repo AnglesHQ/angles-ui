@@ -20,10 +20,11 @@ import TagLockIcon from '@rsuite/icons/TagLock';
 import TableColumnIcon from '@rsuite/icons/TableColumn';
 import MenuIcon from '@rsuite/icons/Menu';
 import ReloadIcon from '@rsuite/icons/Reload';
-import PieChartIcon from '@rsuite/icons/PieChart';
 import RemindFillIcon from '@rsuite/icons/RemindFill';
-import TimeIcon from '@rsuite/icons/Time';
 import FunnelIcon from '@rsuite/icons/Funnel';
+import WaitIcon from '@rsuite/icons/Wait';
+import ReviewPassIcon from '@rsuite/icons/ReviewPass';
+import DocPassIcon from '@rsuite/icons/DocPass';
 import moment from 'moment';
 import update from 'immutability-helper';
 
@@ -32,7 +33,8 @@ import { connect } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import BuildsTable from '../../tables/BuildsTable';
 import ExecutionBarChart from './ExecutionBarChart';
-import { getBuildDurationInSeconds } from '../../../utility/TimeUtilities';
+import ExecutionPieChart from './ExecutionPieChart';
+import { getBuildDurationInSeconds, getDurationAsString } from '../../../utility/TimeUtilities';
 
 const generateFilterMenuData = function (environments, components) {
   const data = [];
@@ -107,9 +109,14 @@ const DashboardPage = function (props) {
 
   // page state
   const [builds, setBuilds] = useState(undefined);
-  const [buildCount, setBuildCount] = useState(0);
   const [currentSkip, setCurrentSkip] = useState(0);
   const [limit, setLimit] = useState(15);
+
+  const [testRunMetrics, setTestRunMetrics] = useState({});
+  // { totalTestRuns, totalExecutions, totalTimeMs }
+  // const [buildCount, setBuildCount] = useState(0);
+  // const [totalTestExecutions, setTotalTestExecutions] = useState(0);
+  // const [totalTestExecutionTime, setTotalTestExecutionTime] = useState(0);
 
   // date range.
   const [startDate, setStartDate] = useState(queryStartDate ? moment(queryStartDate) : moment().subtract(90, 'days'));
@@ -149,9 +156,15 @@ const DashboardPage = function (props) {
       startDate,
       endDate,
     )
-      .then(({ builds: retrievedBuilds, count }) => {
+      .then(({
+        builds: retrievedBuilds,
+        metrics,
+      }) => {
         setBuilds(addIndexToBuilds(retrievedBuilds, skip));
-        setBuildCount(count);
+        setTestRunMetrics(metrics);
+        // setBuildCount(totalTestRuns);
+        // setTotalTestExecutions(totalExecutions);
+        // setTotalTestExecutionTime(totalTimeMs);
         setCurrentSkip(skip);
       });
   };
@@ -252,10 +265,6 @@ const DashboardPage = function (props) {
     }
   };
 
-  // const handleDatesChange = ({ selectedStartDate, selectedEndDate }) => {
-  //   setStartDate(selectedStartDate);
-  //   setEndDate(selectedEndDate);
-  // };
   const generateBuildData = () => {
     const graphData = {
       data: [],
@@ -292,6 +301,20 @@ const DashboardPage = function (props) {
     return graphData;
   };
 
+  const generatePieChartData = () => {
+    const {
+      pass,
+      fail,
+      skipped,
+      error,
+    } = testRunMetrics;
+    const graphData = {
+      data: [pass, skipped, error, fail],
+      labels: ['Pass', 'Skipped', 'Error', 'Fail'],
+    };
+    return graphData;
+  };
+
   // eslint-disable-next-line no-shadow
   const renderIconButton = (props, ref) => (
     // eslint-disable-next-line react/jsx-props-no-spreading
@@ -307,6 +330,8 @@ const DashboardPage = function (props) {
     });
     return selectedBuildCountValue;
   };
+
+  const { totalTestRuns, totalExecutions, totalTimeMs } = testRunMetrics;
 
   return (
     // eslint-disable-next-line no-nested-ternary
@@ -372,23 +397,23 @@ const DashboardPage = function (props) {
             <Row gutter={30} className="dashboard-header">
               <Col xs={8}>
                 <Panel className="trend-box bg-gradient-red">
-                  <PieChartIcon size="3x" className="chart-icon" />
-                  <div className="title">Test Runs </div>
-                  <div className="value">{buildCount}</div>
+                  <DocPassIcon size="3x" className="chart-icon" />
+                  <div className="title">Total Test Runs </div>
+                  <div className="value">{totalTestRuns}</div>
                 </Panel>
               </Col>
               <Col xs={8}>
                 <Panel className="trend-box bg-gradient-green">
-                  <PieChartIcon size="3x" className="chart-icon" />
-                  <div className="title">Executions </div>
-                  <div className="value">251,901</div>
+                  <ReviewPassIcon size="3x" className="chart-icon" />
+                  <div className="title">Total Test Executions </div>
+                  <div className="value">{totalExecutions}</div>
                 </Panel>
               </Col>
               <Col xs={8}>
                 <Panel className="trend-box bg-gradient-blue">
-                  <TimeIcon size="3x" className="chart-icon" />
+                  <WaitIcon size="3x" className="chart-icon" />
                   <div className="title">Total Execution Time</div>
-                  <div className="value">25,135</div>
+                  <div className="value">{getDurationAsString(moment.duration(totalTimeMs))}</div>
                 </Panel>
               </Col>
             </Row>
@@ -398,7 +423,7 @@ const DashboardPage = function (props) {
               </Col>
               <Col xs={8}>
                 <div className="card">
-                  <ExecutionBarChart title="Test Runs" graphData={generateBuildData()} />
+                  <ExecutionPieChart title="Overall Execution Metrics" graphData={generatePieChartData()} />
                 </div>
               </Col>
             </Row>
@@ -428,14 +453,14 @@ const DashboardPage = function (props) {
                                 disabled={!multipleBuildsSelected()}
                                 onClick={() => navigateToMatrix()}
                               >
-                                Matrix
+                                Compare Test Runs
                               </Dropdown.Item>
                               <Dropdown.Item
                                 icon={<TagLockIcon />}
                                 disabled={!anyBuildsSelected()}
                                 onClick={() => toggleBuildsToKeep()}
                               >
-                                Toggle Keep
+                                Toggle Keep Flag
                               </Dropdown.Item>
                               <Dropdown.Item
                                 icon={<ReloadIcon />}
@@ -465,7 +490,7 @@ const DashboardPage = function (props) {
                       first
                       layout={['pager']}
                       size="md"
-                      total={buildCount}
+                      total={totalTestRuns}
                       limit={limit}
                       activePage={activePage}
                       onChangePage={setActivePage}
