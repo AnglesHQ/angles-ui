@@ -23,7 +23,7 @@ import { ExecutionStateProvider } from '../../../context/ExecutionStateContext';
 import { useConstructor } from '../../../utility/GeneralUtilities';
 import CurrentScreenshotContext from '../../../context/CurrentScreenshotContext';
 
-const BuildPage = function (props) {
+const TestRunDetailsPage = function (props) {
   const location = useLocation();
   const [showModal, setShowModal] = useState(false);
   const [screenshots, setScreenshots] = useState(null);
@@ -216,4 +216,4 @@ const mapDispatchToProps = (dispatch) => ({
   clearLoaderMessage: () => dispatch(clearCurrentLoaderMessage()),
 });
 
-export default connect(null, mapDispatchToProps)(BuildPage);
+export default connect(null, mapDispatchToProps)(TestRunDetailsPage);

@@ -1,11 +1,11 @@
 import React from 'react';
 import { Panel } from 'rsuite';
-import BuildPage from './BuildPage';
+import MetricsPage from './MetricsPage';
 
 const Page = function () {
   return (
-    <Panel header={<h3 className="title">Build</h3>}>
-      <BuildPage />
+    <Panel header={<h3 className="title">Metrics</h3>}>
+      <MetricsPage />
     </Panel>
   );
 };

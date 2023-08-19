@@ -4,18 +4,43 @@ import Popover from 'react-bootstrap/Popover';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import HistoryIcon from '@rsuite/icons/History';
-import TestDetailsTable from './TestDetailsTable';
+import {
+  Table,
+} from 'rsuite';
+import TestDetailsTable from '../../tables/TestDetailsTable';
+
+const { Column, HeaderCell, Cell } = Table;
+
+const TestDetailsCell = function (props) {
+  const { rowData: test } = props;
+  return (
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    <Cell {... props}>
+      { test.testName }
+      <span className="d-inline-block">
+        <a className="test-history-link" title={`See execution history for ${test.testName}`} href={`/history?executionId=${test.executionIdForHistory}`}>
+          <span><HistoryIcon /></span>
+        </a>
+      </span>
+      {
+        test.multipleExecutions ? (
+          <span style={{ color: 'red' }}> - multiple executions</span>
+        ) : null
+      }
+    </Cell>
+  );
+};
 
 const MatrixTable = function (props) {
   const [headers, setHeaders] = React.useState([]);
   const [matrixSuites, setMatrixSuites] = React.useState({});
   const [artifacts, setArtifacts] = React.useState({});
+  const { matrixBuilds } = props;
 
   const reorganiseSuitsForMatrix = () => {
     const headerValues = [];
     const matrixSuitesValues = {};
     const artifactValues = {};
-    const { matrixBuilds } = props;
     matrixBuilds.forEach((build) => {
       // populate the header for each build
       headerValues.push(build);
@@ -48,12 +73,74 @@ const MatrixTable = function (props) {
           }
           // set the results for each build.
           matrixSuitesValues[suite.name][execution.title][build._id] = execution;
+
+          // Header: Suite, Test, date build 1, date build 2
+          // Values: suitename, testname, build 1 result, build 2 result
         });
       });
     });
     setHeaders(headerValues);
     setArtifacts(artifactValues);
     setMatrixSuites(matrixSuitesValues);
+  };
+
+  const generateTestRunCompare = () => {
+    const suites = matrixBuilds
+      .map((testBuild) => testBuild.suites)
+      .reduce((a, c) => a.concat(c), []);
+    const executions = suites
+      .map((testSuite) => testSuite.executions)
+      .reduce((a, c) => a.concat(c), []);
+
+    const testRunCompare = {};
+    let counter = 0;
+    executions.forEach((execution) => {
+      const { title, suite } = execution;
+      if (!testRunCompare[suite]) {
+        testRunCompare[suite] = {};
+      }
+      if (!testRunCompare[suite][title]) {
+        testRunCompare[suite][title] = {};
+      }
+      if (!testRunCompare[suite][title][execution.build]) {
+        testRunCompare[suite][title][execution.build] = {
+          executions: [],
+        };
+      }
+      testRunCompare[suite][title][execution.build].executions.push(execution);
+    });
+    const testRunCompareArray = [];
+    Object.keys(testRunCompare).forEach((suiteName) => {
+      const suiteRowSpan = Object.keys(testRunCompare[suiteName]).length;
+      Object.keys(testRunCompare[suiteName]).forEach((testName, index) => {
+        counter += 1;
+        let singleRow = {
+          id: counter,
+          suiteName,
+          testName,
+        };
+        if (index === 0) {
+          singleRow = {
+            ...singleRow,
+            suiteRowSpan,
+          };
+        }
+        Object.keys(testRunCompare[suiteName][testName]).forEach((buildId, buildIndex) => {
+          singleRow[buildId] = testRunCompare[suiteName][testName][buildId].executions[0].status;
+          if (buildIndex === 0) {
+            singleRow.executionIdForHistory = testRunCompare[suiteName][testName][buildId]
+              .executions[0]._id;
+          }
+          if (testRunCompare[suiteName][testName][buildId].executions.length > 1) {
+            // to be used for a warning (e.g. for compare suite and test name combination
+            // have to be unique).
+            singleRow.multipleExecutions = true;
+          }
+        });
+        testRunCompareArray.push(singleRow);
+      });
+    });
+    return testRunCompareArray;
   };
 
   useEffect(() => {
@@ -196,19 +283,58 @@ const MatrixTable = function (props) {
   };
 
   return (
-    <table className="table table-hover matrix-table">
-      <thead className="thead-dark">
-        <tr>
-          <th scope="col">Matrix</th>
-          {
-            headers.map((build) => <th key={build._id} scope="col"><div>{build.name}</div></th>)
-          }
-        </tr>
-      </thead>
-      <tbody>
-        {generateMatrixRows()}
-      </tbody>
-    </table>
+    <div>
+      <Table
+        data={generateTestRunCompare()}
+        height={500}
+        wordWrap="break-word"
+        bordered
+        cellBordered
+        headerHeight={80}
+      >
+        <Column width={40}>
+          <HeaderCell>#</HeaderCell>
+          <Cell
+            dataKey="id"
+          />
+        </Column>
+        <Column
+          flexGrow={2}
+          rowSpan={(rowData) => rowData.suiteRowSpan}
+        >
+          <HeaderCell>Suite Name</HeaderCell>
+          <Cell dataKey="suiteName" />
+        </Column>
+        <Column flexGrow={3}>
+          <HeaderCell>Test Name</HeaderCell>
+          <TestDetailsCell />
+        </Column>
+        {
+          matrixBuilds.map((matrixBuild) => (
+            <Column width={200} flexGrow={1}>
+              <HeaderCell>
+                <div>{matrixBuild.name}</div>
+                <div><Moment format="DD-MM-YYYY HH:mm">{matrixBuild.start}</Moment></div>
+              </HeaderCell>
+              <Cell dataKey={`${matrixBuild._id}`} />
+            </Column>
+          ))
+        }
+      </Table>
+      <table className="table table-hover matrix-table">
+        <thead className="thead-dark">
+          <tr>
+            <th scope="col">Matrix</th>
+            {
+              headers.map((build) => <th key={build._id} scope="col"><div>{build.name}</div></th>)
+            }
+          </tr>
+        </thead>
+        <tbody>
+          {generateMatrixRows()}
+        </tbody>
+      </table>
+    </div>
   );
 };
 

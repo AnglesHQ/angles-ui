@@ -31,7 +31,7 @@ import update from 'immutability-helper';
 import queryString from 'query-string';
 import { connect } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-import BuildsTable from '../../tables/BuildsTable';
+import BuildsTable from './BuildsTable';
 import ExecutionBarChart from './ExecutionBarChart';
 import ExecutionPieChart from './ExecutionPieChart';
 import { getBuildDurationInSeconds, getDurationAsString } from '../../../utility/TimeUtilities';
@@ -224,7 +224,7 @@ const DashboardPage = function (props) {
 
   const navigateToMatrix = () => {
     const selectedBuildIds = retrieveSelectedBuilds();
-    navigate(`/matrix/?buildIds=${selectedBuildIds.join(',')}`);
+    navigate(`/test-runs-compare/?buildIds=${selectedBuildIds.join(',')}`);
   };
 
   const updateBuildWithKeep = (buildId, keep) => buildRequests.setKeep(buildId, keep);
@@ -489,7 +489,6 @@ const DashboardPage = function (props) {
                       next
                       first
                       layout={['pager']}
-                      size="md"
                       total={totalTestRuns}
                       limit={limit}
                       activePage={activePage}

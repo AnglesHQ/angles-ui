@@ -28,14 +28,14 @@ import DocPass from '@rsuite/icons/DocPass';
 import InfoRound from '@rsuite/icons/InfoRound';
 
 import SummaryPage from '../components/pages/dashboard';
-import BuildPage from '../components/pages/build';
-import MatrixPage from '../components/pages/MatrixPage';
+import TestRunDetailsPage from '../components/pages/test-run';
+import TestRunsComparePage from '../components/pages/test-run-compare';
 import ScreenshotLibraryPage from '../components/pages/screenshot-library';
-import ExecutionHistoryPage from '../components/pages/ExecutionHistoryPage';
+import ExecutionHistoryPage from '../components/pages/test-execution-history';
 import AboutPage from '../components/pages/about';
 import NotFoundPage from '../components/pages/NotFoundPage';
 
-import MetricsPage from '../components/pages/MetricsPage';
+import MetricsPage from '../components/pages/metrics/MetricsPage';
 import { storeCurrentTeam, storeTeams, storeTeamsError } from '../redux/teamActions';
 import { storeEnvironments } from '../redux/environmentActions';
 import { clearCurrentErrorMessage, clearCurrentInfoMessage, clearCurrentLoaderMessage } from '../redux/notificationActions';
@@ -46,7 +46,6 @@ import '../styles/index.less';
 axios.defaults.baseURL = `${process.env.REACT_APP_ANGLES_API_URL}/rest/api/v1.0`;
 
 const App = function (props) {
-  console.log('ScreenshotLibraryPage: ', ScreenshotLibraryPage);
   const location = useLocation();
   const teamRequests = new TeamRequests(axios);
   const environmentRequests = new EnvironmentRequests(axios);
@@ -300,20 +299,20 @@ const App = function (props) {
                   )
                 }
               />
-              <Route path="/build/" element={<CurrentScreenshotProvider><BuildPage /></CurrentScreenshotProvider>} exact />
+              <Route path="/test-run/" element={<CurrentScreenshotProvider><TestRunDetailsPage /></CurrentScreenshotProvider>} exact />
               <Route
                 exact
-                path="/matrix/"
+                path="/test-runs-compare/"
                 element={
                   (!currentTeam || !currentTeam._id) ? (
                     null
                   ) : (
-                    <MatrixPage currentTeam={currentTeam} />
+                    <TestRunsComparePage currentTeam={currentTeam} />
                   )
                 }
               />
               <Route exact path="/screenshot-library/" element={<ScreenshotLibraryPage />} />
-              <Route exact path="/history/" element={<ExecutionHistoryPage />} />
+              <Route exact path="/test-execution-history/" element={<ExecutionHistoryPage />} />
               <Route exact path="/about/" element={<AboutPage />} />
               <Route
                 exact

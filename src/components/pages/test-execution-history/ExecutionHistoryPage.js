@@ -4,13 +4,13 @@ import queryString from 'query-string';
 import Modal from 'react-bootstrap/Modal';
 import { useLocation } from 'react-router-dom';
 import { ExecutionRequests, ScreenshotRequests } from 'angles-javascript-client';
-import ExecutionsResultsPieChart from '../charts/ExecutionsResultsPieChart';
-import ExecutionsTimeLineChart from '../charts/ExecutionsTimeLineChart';
-import ScreenshotView from './ScreenshotView';
+import ExecutionsResultsPieChart from '../../charts/ExecutionsResultsPieChart';
+import ExecutionsTimeLineChart from '../../charts/ExecutionsTimeLineChart';
+import ScreenshotView from '../ScreenshotView';
 // import '../charts/Charts.css';
-import SuiteTable from '../tables/SuiteTable';
-import { ExecutionStateProvider } from '../../context/ExecutionStateContext';
-import { useConstructor } from '../../utility/GeneralUtilities';
+import SuiteTable from '../../tables/SuiteTable';
+import { ExecutionStateProvider } from '../../../context/ExecutionStateContext';
+import { useConstructor } from '../../../utility/GeneralUtilities';
 
 const SummaryPage = function () {
   const location = useLocation();

@@ -46,7 +46,7 @@ const ScreenshotCell = function (props) {
             alt="Thumbnail"
             className="screenshot-thumbnail"
             onClick={() => openModal(step.screenshot)}
-            style={{ cursor: 'pointer' }}
+            style={{ cursor: 'pointer', height: '120px' }}
           />
         </div>
       ) : ' - '}
@@ -90,7 +90,20 @@ const StepsTable = function (props) {
   // };
 
   return [
-    <Table autoHeight width={800} headerHeight={80} data={action.steps} id="steps-table" key={`steps_table_${index}`}>
+    <Table
+      autoHeight
+      width={800}
+      headerHeight={80}
+      rowHeight={(rowData) => {
+        if (rowData?.screenshot) {
+          return 120;
+        }
+        return 40;
+      }}
+      data={action.steps}
+      id="steps-table"
+      key={`steps_table_${index}`}
+    >
       <Column width={30}>
         <HeaderCell>#</HeaderCell>
         <Cell />

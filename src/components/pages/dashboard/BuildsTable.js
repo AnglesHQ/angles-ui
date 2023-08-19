@@ -12,8 +12,8 @@ import {
   Popover,
   Whisper,
 } from 'rsuite';
-import { getDuration } from '../../utility/TimeUtilities';
-import ArtifactsDetailsTable from './ArtifactsDetailsTable';
+import { getDuration } from '../../../utility/TimeUtilities';
+import ArtifactsDetailsTable from '../../tables/ArtifactsDetailsTable';
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -38,7 +38,7 @@ const BuildDetailsCell = function (props) {
         </FlexboxGrid.Item>
         <FlexboxGrid.Item colspan={16}>
           <div>
-            <a href={`/build/?buildId=${build._id}`} target="_self">
+            <a href={`/test-run/?buildId=${build._id}`} target="_self">
               {build.name}
             </a>
           </div>
@@ -164,7 +164,7 @@ const BuildsTable = function (props) {
 
   return (
     <div>
-      <Table rowHeight={65} headerHeight={40} height={500} data={builds} id="builds-table">
+      <Table affixHeader rowHeight={65} headerHeight={40} height={500} data={builds} id="builds-table">
         <Column width={50} align="center">
           <HeaderCell>#</HeaderCell>
           <Cell dataKey="index" />
@@ -175,15 +175,15 @@ const BuildsTable = function (props) {
           </HeaderCell>
           <CheckCell isRowSelected={isRowSelected} toggleSelectedBuild={toggleSelectedBuild} />
         </Column>
-        <Column width={250}>
+        <Column flexGrow={4}>
           <HeaderCell>Build Details</HeaderCell>
           <BuildDetailsCell />
         </Column>
-        <Column width={150}>
+        <Column flexGrow={2}>
           <HeaderCell>Date/Time</HeaderCell>
           <DateCell />
         </Column>
-        <Column width={150}>
+        <Column flexGrow={2}>
           <HeaderCell>Component</HeaderCell>
           <Cell>
             {
@@ -191,11 +191,11 @@ const BuildsTable = function (props) {
             }
           </Cell>
         </Column>
-        <Column width={150}>
+        <Column flexGrow={2}>
           <HeaderCell>Environment</HeaderCell>
           <Cell dataKey="environment.name" />
         </Column>
-        <Column width={150}>
+        <Column flexGrow={3}>
           <HeaderCell>
             <span>Result</span>
           </HeaderCell>

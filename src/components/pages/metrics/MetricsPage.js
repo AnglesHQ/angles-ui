@@ -12,14 +12,14 @@ import Button from 'react-bootstrap/Button';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import { DateRangePicker } from 'rsuite';
-import MetricsResultChart from '../charts/MetricsResultChart';
-import TestPhasesChart from '../charts/TestPhasesChart';
-import PlatformDistributionChart from '../charts/PlatformDistributionChart';
-import ExecutionMetricsSummary from '../tables/ExecutionMetricsSummary';
-import PlatformDistributionPieChart from '../charts/PlatformDistributionPieChart';
+import MetricsResultChart from '../../charts/MetricsResultChart';
+import TestPhasesChart from '../../charts/TestPhasesChart';
+import PlatformDistributionChart from '../../charts/PlatformDistributionChart';
+import ExecutionMetricsSummary from '../../tables/ExecutionMetricsSummary';
+import PlatformDistributionPieChart from '../../charts/PlatformDistributionPieChart';
 // import './Default.css';
-import PlatformMetricsSummary from '../tables/PlatformMetricsSummary';
-import { getRandomColor } from '../../utility/ChartUtilities';
+import PlatformMetricsSummary from '../../tables/PlatformMetricsSummary';
+import { getRandomColor } from '../../../utility/ChartUtilities';
 
 const MetricsPage = function (props) {
   const location = useLocation();

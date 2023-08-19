@@ -3,10 +3,9 @@ import { useLocation } from 'react-router-dom';
 import queryString from 'query-string';
 import axios from 'axios';
 import { BuildRequests } from 'angles-javascript-client';
-import MatrixTable from '../tables/MatrixTable';
-// import '../charts/Charts.css';
+import MatrixTable from './MatrixTable';
 
-const MatrixPage = function (props) {
+const TestRunsComparePage = function (props) {
   const location = useLocation();
   const [query] = useState(queryString.parse(location.search));
   const [matrixBuilds, setMatrixBuilds] = useState([]);
@@ -34,12 +33,9 @@ const MatrixPage = function (props) {
         </span>
       </div>
     ) : (
-      <div>
-        <h1>Matrix</h1>
-        <MatrixTable matrixBuilds={matrixBuilds.reverse()} />
-      </div>
+      <MatrixTable matrixBuilds={matrixBuilds.reverse()} />
     )
   );
 };
 
-export default MatrixPage;
+export default TestRunsComparePage;
