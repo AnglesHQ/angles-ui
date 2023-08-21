@@ -11,8 +11,12 @@ import TestDetailsTable from '../../tables/TestDetailsTable';
 const { Column, HeaderCell, Cell } = Table;
 
 const testDetailsSpeaker = (execution) => (
-  <Popover title="Test Details" style={{ width: '350px' }}>
-    <TestDetailsTable execution={execution} />
+  <Popover
+    arrow
+  >
+    <div>
+      <TestDetailsTable execution={execution} />
+    </div>
   </Popover>
 );
 
@@ -55,7 +59,12 @@ const TestResultsCell = function (props) {
         (test.multipleExecutions[buildId] && test.multipleExecutions[buildId] === true)
           ? (<span> - Multiple Executions</span>) : null
       }
-      <Whisper placement="left" trigger="click" controlId="control-id-click" speaker={testDetailsSpeaker(test[buildId])}>
+      <Whisper
+        placement="left"
+        trigger="click"
+        controlId="control-id-click"
+        speaker={testDetailsSpeaker(test[buildId])}
+      >
         <InfoOutlineIcon />
       </Whisper>
     </Cell>

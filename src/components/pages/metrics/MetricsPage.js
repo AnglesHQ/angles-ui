@@ -4,14 +4,16 @@ import moment from 'moment';
 import queryString from 'query-string';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { MetricRequests } from 'angles-javascript-client';
-// import { DateRangePicker } from 'rsuite';
-import Form from 'react-bootstrap/Form';
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
-import Button from 'react-bootstrap/Button';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
-import { DateRangePicker } from 'rsuite';
+import {
+  Affix,
+  DateRangePicker,
+  SelectPicker,
+  Stack,
+  Form,
+  Button,
+} from 'rsuite';
 import MetricsResultChart from '../../charts/MetricsResultChart';
 import TestPhasesChart from '../../charts/TestPhasesChart';
 import PlatformDistributionChart from '../../charts/PlatformDistributionChart';
@@ -22,6 +24,7 @@ import PlatformMetricsSummary from '../../tables/PlatformMetricsSummary';
 import { getRandomColor } from '../../../utility/ChartUtilities';
 
 const MetricsPage = function (props) {
+  const navigate = useNavigate();
   const location = useLocation();
   const query = queryString.parse(location.search);
   const { teams, currentTeam } = props;
@@ -96,19 +99,19 @@ const MetricsPage = function (props) {
   //   setEndDate(endDate);
   // };
 
-  const handleGroupingChange = (event) => {
-    setGroupingPeriod(event.target.value);
+  const handleGroupingChange = (groupingValue) => {
+    setGroupingPeriod(groupingValue);
   };
 
-  const handleTeamChange = (event) => {
+  const handleTeamChange = (teamId) => {
     const { changeCurrentTeam } = props;
-    changeCurrentTeam(event.target.value);
-    setSelectedTeam(event.target.value);
+    changeCurrentTeam(teamId);
+    setSelectedTeam(teamId);
     setSelectedComponent('any');
   };
 
-  const handleComponentChange = (event) => {
-    setSelectedComponent(event.target.value);
+  const handleComponentChange = (componentId) => {
+    setSelectedComponent(componentId);
   };
 
   const handleSelect = (value) => {
@@ -129,7 +132,6 @@ const MetricsPage = function (props) {
       startDate: startDate.format('YYYY-MM-DD'),
       endDate: endDate.format('YYYY-MM-DD'),
     };
-    const navigate = useNavigate();
     // setting the url so people can copy it.
     navigate({
       pathname: '/metrics',
@@ -145,64 +147,70 @@ const MetricsPage = function (props) {
 
   return (
     <div>
-      <h1>Metrics</h1>
-      <div className="metrics-form-container">
-        <Form>
-          <Row>
-            <Form.Group as={Col} className="metrics-form-group">
-              <Form.Label htmlFor="teamId"><b>Team</b></Form.Label>
-              <Form.Control id="teamId" as="select" value={selectedTeam} onChange={handleTeamChange} className="metrics-grouping-period-select">
-                {
-                  teams.map((team) => (
-                    <option key={team._id} value={team._id}>
-                      {team.name}
-                    </option>
-                  ))
+      <Affix>
+        <Stack className="rg-stack" spacing={10}>
+          <Form>
+            <SelectPicker
+              cleanable={false}
+              // searchable={false}
+              appearance="subtle"
+              data={teams.map((team) => ({ label: team.name, value: team._id }))}
+              value={selectedTeam}
+              onChange={(value) => {
+                if (value) {
+                  handleTeamChange(value);
                 }
-              </Form.Control>
-            </Form.Group>
-            <Form.Group as={Col} className="metrics-form-group">
-              <Form.Label htmlFor="component"><b>Component</b></Form.Label>
-              <Form.Control id="component" as="select" value={selectedComponent} onChange={handleComponentChange} className="metrics-grouping-period-select">
-                <option value="any">Any</option>
-                {
-                  getComponents(selectedTeam).map((componentToDisplay) => (
-                    <option key={componentToDisplay._id} value={componentToDisplay._id}>
-                      {componentToDisplay.name}
-                    </option>
-                  ))
+              }}
+            />
+            <SelectPicker
+              cleanable
+              // searchable={false}
+              appearance="subtle"
+              data={getComponents(selectedTeam)
+                .map((teamComponent) => ({ label: teamComponent.name, value: teamComponent._id }))}
+              value={selectedComponent}
+              onChange={(value) => {
+                if (value) {
+                  handleComponentChange(value);
                 }
-              </Form.Control>
-            </Form.Group>
-            <Form.Group as={Col} className="metrics-form-group-period">
-              <Form.Label htmlFor="periodSelect"><b>Period</b></Form.Label>
-              <Form.Group>
-                <DateRangePicker
-                  value={[startDate.toDate(), endDate.toDate()]}
-                  onChange={(value) => {
-                    setStartDate(moment(value[0]));
-                    setEndDate(moment(value[1]));
-                  }}
-                  disabledDate={afterToday()}
-                />
-              </Form.Group>
-            </Form.Group>
-            <Form.Group as={Col} className="metrics-form-group">
-              <Form.Label htmlFor="grouping"><b>Grouping</b></Form.Label>
-              <Form.Control id="grouping" as="select" value={groupingPeriod} onChange={handleGroupingChange} className="metrics-grouping-period-select">
-                <option value="day">Day</option>
-                <option value="week">Week</option>
-                <option value="fortnight">Fortnight</option>
-                <option value="month">Month</option>
-                <option value="year">Year</option>
-              </Form.Control>
-            </Form.Group>
-            <Form.Group as={Col} className="metrics-form-group">
-              <Button variant="primary" type="button" className="metrics-button" onClick={() => { onSubmit(); }}>Retrieve Metrics</Button>
-            </Form.Group>
-          </Row>
-        </Form>
-      </div>
+              }}
+              onClean={() => {
+                setSelectedComponent(undefined);
+              }}
+            />
+            <DateRangePicker
+              value={[startDate.toDate(), endDate.toDate()]}
+              format="dd-MMM-yyyy"
+              character=" - "
+              onChange={(value) => {
+                setStartDate(moment(value[0]));
+                setEndDate(moment(value[1]));
+              }}
+              shouldDisableDate={afterToday()}
+              cleanable={false}
+            />
+            <SelectPicker
+              cleanable={false}
+              // searchable={false}
+              appearance="subtle"
+              data={[
+                { label: 'Day', value: 'day' },
+                { label: 'Week', value: 'week' },
+                { label: 'Fortnight', value: 'fortnight' },
+                { label: 'Month', value: 'month' },
+                { label: 'Year', value: 'year' },
+              ]}
+              value={groupingPeriod}
+              onChange={(value) => {
+                if (value) {
+                  handleGroupingChange(value);
+                }
+              }}
+            />
+            <Button variant="primary" type="button" className="metrics-button" onClick={() => { onSubmit(); }}>Retrieve Metrics</Button>
+          </Form>
+        </Stack>
+      </Affix>
       <div className="metrics-data-container">
         <Tabs id="execution-metrics-tabs" activeKey={key} defaultActiveKey="execution" onSelect={(tabKey, evt) => setTab(tabKey, evt)}>
           <Tab eventKey="execution" title="Execution Metrics">

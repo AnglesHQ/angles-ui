@@ -5,7 +5,7 @@ import DashboardPage from './DashboardPage';
 const Page = function (props) {
   const { changeCurrentTeam } = props;
   return (
-    <Panel header={<h3 className="title">Dashboard</h3>}>
+    <Panel>
       <DashboardPage changeCurrentTeam={changeCurrentTeam} />
     </Panel>
   );

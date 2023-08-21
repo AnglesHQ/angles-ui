@@ -1,11 +1,20 @@
 import React from 'react';
-import { Panel } from 'rsuite';
+import { Breadcrumb, Panel } from 'rsuite';
 import MetricsPage from './MetricsPage';
 
-const Page = function () {
+const Page = function (props) {
+  const { teams, currentTeam, changeCurrentTeam } = props;
   return (
-    <Panel header={<h3 className="title">Metrics</h3>}>
-      <MetricsPage />
+    <Panel>
+      <Breadcrumb>
+        <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
+        <Breadcrumb.Item>Metrics</Breadcrumb.Item>
+      </Breadcrumb>
+      <MetricsPage
+        currentTeam={currentTeam}
+        teams={teams}
+        changeCurrentTeam={changeCurrentTeam}
+      />
     </Panel>
   );
 };

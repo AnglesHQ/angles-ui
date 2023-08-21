@@ -1,11 +1,15 @@
 import React from 'react';
-import { Panel } from 'rsuite';
+import { Breadcrumb, Panel } from 'rsuite';
 import AboutPage from './AboutPage';
 import AboutTable from './AboutTable';
 
 const Page = function () {
   return (
-    <Panel header={<h3 className="title">About Angles</h3>}>
+    <Panel>
+      <Breadcrumb>
+        <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
+        <Breadcrumb.Item>About</Breadcrumb.Item>
+      </Breadcrumb>
       <AboutPage />
       <AboutTable />
     </Panel>

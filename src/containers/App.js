@@ -35,7 +35,7 @@ import ExecutionHistoryPage from '../components/pages/test-execution-history';
 import AboutPage from '../components/pages/about';
 import NotFoundPage from '../components/pages/NotFoundPage';
 
-import MetricsPage from '../components/pages/metrics/MetricsPage';
+import MetricsPage from '../components/pages/metrics';
 import { storeCurrentTeam, storeTeams, storeTeamsError } from '../redux/teamActions';
 import { storeEnvironments } from '../redux/environmentActions';
 import { clearCurrentErrorMessage, clearCurrentInfoMessage, clearCurrentLoaderMessage } from '../redux/notificationActions';

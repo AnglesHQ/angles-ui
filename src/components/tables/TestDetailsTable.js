@@ -59,12 +59,12 @@ const TestDetailsTable = function (props) {
   };
 
   return (
-    <Table data={generateTestDetailsData(execution)} height={300} width={400} id="test-details">
-      <Column width={200}>
+    <Table data={generateTestDetailsData(execution)} width={250} id="test-details">
+      <Column width={80}>
         <HeaderCell>Property</HeaderCell>
         <Cell dataKey="property" />
       </Column>
-      <Column width={200}>
+      <Column width={190}>
         <HeaderCell>Value</HeaderCell>
         <Cell dataKey="value" />
       </Column>

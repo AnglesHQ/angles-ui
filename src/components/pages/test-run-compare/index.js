@@ -1,11 +1,15 @@
 import React from 'react';
-import { Panel } from 'rsuite';
+import { Breadcrumb, Panel } from 'rsuite';
 import TestRunsComparePage from './TestRunsComparePage';
 
 const Page = function (props) {
   const { currentTeam } = props;
   return (
-    <Panel header={<h3 className="title">Test Runs Compare</h3>}>
+    <Panel>
+      <Breadcrumb>
+        <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
+        <Breadcrumb.Item>Test Run Compare</Breadcrumb.Item>
+      </Breadcrumb>
       <TestRunsComparePage currentTeam={currentTeam} />
     </Panel>
   );
