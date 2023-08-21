@@ -1,10 +1,12 @@
 import React from 'react';
-import Table from 'react-bootstrap/Table';
+import { Table } from 'rsuite';
 // import '../pages/Default.css';
 import { getDuration } from '../../utility/TimeUtilities';
 
 const TestDetailsTable = function (props) {
   const { execution } = props;
+  const { Column, HeaderCell, Cell } = Table;
+
   const getFirstTestStepByStatus = (executionWithSteps, status) => {
     /* eslint consistent-return: [0] */
     const failingActions = executionWithSteps.actions.filter((action) => action.status === status);
@@ -21,51 +23,51 @@ const TestDetailsTable = function (props) {
     return '';
   };
 
-  return (
-    <Table className="table-test-details" size="sm">
-      <tbody>
-        <tr className={execution.status}>
-          <td><strong>Status</strong></td>
-          <td>{execution.status}</td>
-        </tr>
-        <tr>
-          <td><strong>Duration</strong></td>
-          <td>
-            { getDuration(execution) }
-          </td>
-        </tr>
-        {
-          execution.platforms && execution.platforms.length > 0 ? (
-            execution.platforms.map((platform) => (
-              <tr key={`platform_${platform.platformName}`}>
-                <td><strong>Platform</strong></td>
-                <td>
-                  {
-                    platform.deviceName ? (
-                      `${platform.deviceName} (${platform.platformName})`
-                    )
-                      : `${platform.browserName} ${platform.browserVersion} (${platform.platformName})`
-                  }
-                </td>
-              </tr>
-            ))
-          ) : null
+  const generateTestDetailsData = (currentExecution) => {
+    const dataArray = [];
+    const { platforms, status } = currentExecution;
+    dataArray.push({
+      property: 'Status',
+      value: status,
+    });
+    dataArray.push({
+      property: 'Duration',
+      value: getDuration(currentExecution),
+    });
+
+    if (platforms && platforms.length > 0) {
+      let platformIdentifier = '';
+      platforms.forEach((platform) => {
+        if (platform.deviceName) {
+          platformIdentifier = `${platform.deviceName} (${platform.platformName})`;
+        } else {
+          platformIdentifier = `${platform.browserName} ${platform.browserVersion} (${platform.platformName})`;
         }
-        {
-         execution.status === 'ERROR' || execution.status === 'FAIL' ? (
-           <tr>
-             <td><strong>Failing Step</strong></td>
-             <div className="test-details-error">
-               <td>
-                 {
-                    getFirstTestStepByStatus(execution, execution.status)
-                 }
-               </td>
-             </div>
-           </tr>
-         ) : null
-       }
-      </tbody>
+      });
+      dataArray.push({
+        property: 'Platform',
+        value: platformIdentifier,
+      });
+    }
+    if (status && (status === 'ERROR' || status === 'FAIL')) {
+      dataArray.push({
+        property: 'Failing Step',
+        value: getFirstTestStepByStatus(currentExecution, status),
+      });
+    }
+    return dataArray;
+  };
+
+  return (
+    <Table data={generateTestDetailsData(execution)} height={300} width={400} id="test-details">
+      <Column width={200}>
+        <HeaderCell>Property</HeaderCell>
+        <Cell dataKey="property" />
+      </Column>
+      <Column width={200}>
+        <HeaderCell>Value</HeaderCell>
+        <Cell dataKey="value" />
+      </Column>
     </Table>
   );
 };

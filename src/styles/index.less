@@ -1,6 +1,7 @@
 @import '../components/pages/about/styles.less';
 @import '../components/pages/dashboard/styles.less';
 @import '../components/pages/test-run/styles.less';
+@import '../components/pages/test-run-compare/styles.less';
 
 :root {
     --body-background: #f5f8fa;
@@ -12,11 +13,15 @@
 
     --font-color-1: black;
     --font-color-2: grey;
+    --font-color-3: white;
 
-    --pass-color: #98dc79;
-    --fail-color: #c61410;
+    --pass-color: #c3e6cb;
+    --fail-color: #f69ea6;
     --skipped-color: #2485C1;
-    --error-color: #ff8000;
+    --error-color: #f5b83f;
+
+    --link-color-1: #ee8308;
+    --link-color-2: #f1b87f;
 }
 
 
@@ -73,6 +78,59 @@ body {
     .rs-sidenav-item {
         color: var(--font-color-1);
     }
+}
+
+// modifying the default rsuite table
+.rs-table {
+    background-color: transparent;
+
+    .rs-table-row-header {
+        background-color: transparent;
+
+        .rs-table-cell-content {
+            background-color: var(--master-color-1);
+            color: var(--font-color-3);
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .rs-table-cell-first {
+            border-top-left-radius: 7px;
+        }
+        .rs-table-cell-last {
+            border-top-right-radius: 7px;
+        }
+    }
+
+    .rs-table-body-row-wrapper {
+
+        .rs-table-row:last-child {
+            .rs-table-cell-first {
+                border-bottom-left-radius: 7px;
+            }
+
+            .rs-table-cell-last {
+                border-bottom-right-radius: 7px;
+            }
+        }
+    }
+}
+
+// change the default rsuite link
+a {
+    color: var(--link-color-1);
+    text-decoration: none;
+}
+
+a:hover, a:focus {
+    color: var(--link-color-2);
+    text-decoration: none;
+}
+a:visited {
+    text-decoration: none;
+}
+a:active {
+    text-decoration: none;
 }
 
 .main-content {
