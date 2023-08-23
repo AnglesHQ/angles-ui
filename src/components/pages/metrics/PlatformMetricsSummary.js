@@ -1,9 +1,13 @@
 import React from 'react';
 import moment from 'moment';
-import { getDurationAsString } from '../../utility/TimeUtilities';
+import { Table } from 'rsuite';
+import { getDurationAsString } from '../../../utility/TimeUtilities';
 
 const PlatformMetricsSummary = function (props) {
-  const generateDeviceMetrics = (metrics) => {
+  const { metrics } = props; // platformColors
+  const { Column, HeaderCell, Cell } = Table;
+
+  const generateDeviceMetrics = () => {
     const deviceMetrics = {};
     metrics.periods.forEach((period) => {
       period.phases.forEach((phase) => {
@@ -54,7 +58,21 @@ const PlatformMetricsSummary = function (props) {
     return deviceMetrics;
   };
 
-  const platformBackgroundColor = (platform, platformColors) => {
+  const generateTableData = () => {
+    const tableArray = [];
+    const deviceMetrics = generateDeviceMetrics();
+    Object.keys(deviceMetrics).forEach((deviceId, index) => {
+      tableArray.push({
+        index: index + 1,
+        deviceId,
+        ...deviceMetrics[deviceId],
+      });
+    });
+    console.log(JSON.stringify(tableArray));
+    return tableArray;
+  };
+
+  /* const platformBackgroundColor = (platform) => {
     const hex = platformColors[platform.platformName].color;
     hex.replace('#', '');
     let r = 0; let g = 0; let b = 0;
@@ -68,64 +86,59 @@ const PlatformMetricsSummary = function (props) {
       b = `0x${hex[5]}${hex[6]}`;
     }
     return `rgb(${+r},${+g},${+b}, 0.4)`;
-  };
-
-  const generateDeviceRows = () => {
-    const { metrics, platformColors } = props;
-    const deviceRows = [];
-    const deviceMetrics = generateDeviceMetrics(metrics);
-    Object.keys(deviceMetrics).forEach((deviceId, index) => {
-      const { platform, result, duration } = deviceMetrics[deviceId];
-      if (platform) {
-        deviceRows.push(
-          <tr
-            key={deviceId}
-            style={
-              {
-                fontWeight: 'bold',
-                backgroundColor: platformBackgroundColor(platform, platformColors),
-              }
-            }
-          >
-            <th scope="row">{index + 1}</th>
-            <td>{ platform.platformName }</td>
-            <td>{ platform.platformVersion }</td>
-            <td>{ platform.deviceName }</td>
-            <td>{ getDurationAsString(moment.duration(duration)) }</td>
-            <td>{result.PASS}</td>
-            <td>{result.FAIL}</td>
-            <td>{result.ERROR}</td>
-            <td>{result.SKIPPED}</td>
-            <td>{result.TOTAL}</td>
-          </tr>,
-        );
-      }
-    });
-  };
-
+  }; */
   return (
     <div className="metrics-table-wrapper">
-      <table className="table fixed-header">
-        <thead className="thead-dark metrics-table-head">
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Platform</th>
-            <th scope="col">Platform Version</th>
-            <th scope="col">Device</th>
-            <th scope="col">Duration</th>
-            <th scope="col">Pass</th>
-            <th scope="col">Fail</th>
-            <th scope="col">Error</th>
-            <th scope="col">Skipped</th>
-            <th scope="col">Total</th>
-          </tr>
-        </thead>
-        <tbody className="metrics-table-body">
-          {
-            generateDeviceRows()
-          }
-        </tbody>
-      </table>
+      <Table
+        data={generateTableData()}
+        autoHeight
+        id="platform-metrics-table"
+      >
+        <Column width={40}>
+          <HeaderCell>#</HeaderCell>
+          <Cell dataKey="index" />
+        </Column>
+        <Column flexGrow={4}>
+          <HeaderCell>Platform</HeaderCell>
+          <Cell dataKey="platform.platformName" />
+        </Column>
+        <Column flexGrow={2}>
+          <HeaderCell>Version</HeaderCell>
+          <Cell dataKey="platform.platformVersion" />
+        </Column>
+        <Column flexGrow={4}>
+          <HeaderCell>Device</HeaderCell>
+          <Cell dataKey="platform.deviceName" />
+        </Column>
+        <Column flexGrow={2}>
+          <HeaderCell>Duration</HeaderCell>
+          <Cell>
+            {
+              (rowData) => getDurationAsString(moment.duration(rowData.duration))
+            }
+          </Cell>
+        </Column>
+        <Column flexGrow={1}>
+          <HeaderCell>Pass</HeaderCell>
+          <Cell dataKey="result.PASS" />
+        </Column>
+        <Column flexGrow={1}>
+          <HeaderCell>Fail</HeaderCell>
+          <Cell dataKey="result.FAIL" />
+        </Column>
+        <Column flexGrow={1}>
+          <HeaderCell>Error</HeaderCell>
+          <Cell dataKey="result.ERROR" />
+        </Column>
+        <Column flexGrow={1}>
+          <HeaderCell>Skipped</HeaderCell>
+          <Cell dataKey="result.SKIPPED" />
+        </Column>
+        <Column flexGrow={1}>
+          <HeaderCell>Total</HeaderCell>
+          <Cell dataKey="result.TOTAL" />
+        </Column>
+      </Table>
     </div>
   );
 };

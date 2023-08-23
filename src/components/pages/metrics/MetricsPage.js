@@ -13,14 +13,17 @@ import {
   Stack,
   Form,
   Button,
+  Panel,
+  Col,
+  Row,
+  Grid,
 } from 'rsuite';
 import MetricsResultChart from '../../charts/MetricsResultChart';
 import TestPhasesChart from '../../charts/TestPhasesChart';
 import PlatformDistributionChart from '../../charts/PlatformDistributionChart';
-import ExecutionMetricsSummary from '../../tables/ExecutionMetricsSummary';
+import ExecutionMetricsSummary from './ExecutionMetricsSummary';
 import PlatformDistributionPieChart from '../../charts/PlatformDistributionPieChart';
-// import './Default.css';
-import PlatformMetricsSummary from '../../tables/PlatformMetricsSummary';
+import PlatformMetricsSummary from './PlatformMetricsSummary';
 import { getRandomColor } from '../../../utility/ChartUtilities';
 
 const MetricsPage = function (props) {
@@ -214,7 +217,9 @@ const MetricsPage = function (props) {
       <div className="metrics-data-container">
         <Tabs id="execution-metrics-tabs" activeKey={key} defaultActiveKey="execution" onSelect={(tabKey, evt) => setTab(tabKey, evt)}>
           <Tab eventKey="execution" title="Execution Metrics">
-            <div className="metrics-surround">
+            <Panel
+              bordered
+            >
               <div style={{ display: !metrics ? 'block' : 'none' }} className="alert alert-primary" role="alert">
                 <span>
                   <i className="fas fa-spinner fa-pulse fa-2x" />
@@ -227,20 +232,30 @@ const MetricsPage = function (props) {
               {
                 metrics && Object.keys(metrics).length > 0 ? (
                   <div style={{ display: (metrics && Object.keys(metrics).length > 0) ? 'block' : 'none' }}>
-                    <div className="metrics-table-div">
-                      <ExecutionMetricsSummary metrics={metrics} />
-                    </div>
-                    <div className="graphContainerParent">
-                      <MetricsResultChart metrics={metrics} />
-                      <TestPhasesChart metrics={metrics} />
-                    </div>
+                    <Grid fluid>
+                      <Row gutter={30} className="dash-row">
+                        <Col xs={24}>
+                          <ExecutionMetricsSummary metrics={metrics} />
+                        </Col>
+                      </Row>
+                      <Row gutter={30} className="dash-row">
+                        <Col xs={12}>
+                          <MetricsResultChart metrics={metrics} />
+                        </Col>
+                        <Col xs={12}>
+                          <TestPhasesChart metrics={metrics} />
+                        </Col>
+                      </Row>
+                    </Grid>
                   </div>
                 ) : null
               }
-            </div>
+            </Panel>
           </Tab>
           <Tab eventKey="platform" title="Platform Metrics">
-            <div className="metrics-surround">
+            <Panel
+              bordered
+            >
               <div style={{ display: !metrics ? 'block' : 'none' }} className="alert alert-primary" role="alert">
                 <span>
                   <i className="fas fa-spinner fa-pulse fa-2x" />
@@ -253,23 +268,34 @@ const MetricsPage = function (props) {
               {
                 metrics && Object.keys(metrics).length > 0 ? (
                   <div style={{ display: (metrics && Object.keys(metrics).length > 0) ? 'block' : 'none' }}>
-                    <div className="metrics-table-div">
-                      <PlatformMetricsSummary metrics={metrics} platformColors={platformColors} />
-                    </div>
-                    <div className="graphContainerParent">
-                      <PlatformDistributionPieChart
-                        metrics={metrics}
-                        platformColors={platformColors}
-                      />
-                      <PlatformDistributionChart
-                        metrics={metrics}
-                        platformColors={platformColors}
-                      />
-                    </div>
+                    <Grid fluid>
+                      <Row gutter={30} className="dash-row">
+                        <Col xs={24}>
+                          <PlatformMetricsSummary
+                            metrics={metrics}
+                            platformColors={platformColors}
+                          />
+                        </Col>
+                      </Row>
+                      <Row gutter={30} className="dash-row">
+                        <Col xs={12}>
+                          <PlatformDistributionPieChart
+                            metrics={metrics}
+                            platformColors={platformColors}
+                          />
+                        </Col>
+                        <Col xs={12}>
+                          <PlatformDistributionChart
+                            metrics={metrics}
+                            platformColors={platformColors}
+                          />
+                        </Col>
+                      </Row>
+                    </Grid>
                   </div>
                 ) : null
               }
-            </div>
+            </Panel>
           </Tab>
         </Tabs>
       </div>

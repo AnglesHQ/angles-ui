@@ -1,6 +1,5 @@
 import React from 'react';
 import Table from 'react-bootstrap/Table';
-// import '../pages/Default.css';
 
 const MetricsTestsTable = function (props) {
   const generateTableRows = () => {

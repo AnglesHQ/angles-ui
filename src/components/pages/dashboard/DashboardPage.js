@@ -113,10 +113,6 @@ const DashboardPage = function (props) {
   const [limit, setLimit] = useState(15);
 
   const [testRunMetrics, setTestRunMetrics] = useState({});
-  // { totalTestRuns, totalExecutions, totalTimeMs }
-  // const [buildCount, setBuildCount] = useState(0);
-  // const [totalTestExecutions, setTotalTestExecutions] = useState(0);
-  // const [totalTestExecutionTime, setTotalTestExecutionTime] = useState(0);
 
   // date range.
   const [startDate, setStartDate] = useState(queryStartDate ? moment(queryStartDate) : moment().subtract(90, 'days'));
@@ -162,9 +158,6 @@ const DashboardPage = function (props) {
       }) => {
         setBuilds(addIndexToBuilds(retrievedBuilds, skip));
         setTestRunMetrics(metrics);
-        // setBuildCount(totalTestRuns);
-        // setTotalTestExecutions(totalExecutions);
-        // setTotalTestExecutionTime(totalTimeMs);
         setCurrentSkip(skip);
       });
   };
@@ -308,6 +301,7 @@ const DashboardPage = function (props) {
       skipped,
       error,
     } = testRunMetrics;
+    console.log(JSON.stringify(testRunMetrics));
     const graphData = {
       data: [pass, skipped, error, fail],
       labels: ['Pass', 'Skipped', 'Error', 'Fail'],
@@ -422,9 +416,7 @@ const DashboardPage = function (props) {
                 <ExecutionBarChart title="Test Runs" graphData={generateBuildData()} />
               </Col>
               <Col xs={8}>
-                <div className="card">
-                  <ExecutionPieChart title="Overall Execution Metrics" graphData={generatePieChartData()} />
-                </div>
+                <ExecutionPieChart title="Overall Execution Metrics" graphData={generatePieChartData()} />
               </Col>
             </Row>
             <Row gutter={30} className="dash-row">
