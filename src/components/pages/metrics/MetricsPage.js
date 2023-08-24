@@ -156,6 +156,7 @@ const MetricsPage = function (props) {
             <SelectPicker
               cleanable={false}
               // searchable={false}
+              label="Team"
               appearance="subtle"
               data={teams.map((team) => ({ label: team.name, value: team._id }))}
               value={selectedTeam}
@@ -169,6 +170,7 @@ const MetricsPage = function (props) {
               cleanable
               // searchable={false}
               appearance="subtle"
+              label="Component"
               data={getComponents(selectedTeam)
                 .map((teamComponent) => ({ label: teamComponent.name, value: teamComponent._id }))}
               value={selectedComponent}
@@ -182,6 +184,7 @@ const MetricsPage = function (props) {
               }}
             />
             <DateRangePicker
+              label="Date Range"
               value={[startDate.toDate(), endDate.toDate()]}
               format="dd-MMM-yyyy"
               character=" - "
@@ -193,6 +196,7 @@ const MetricsPage = function (props) {
               cleanable={false}
             />
             <SelectPicker
+              label="Group By Period"
               cleanable={false}
               // searchable={false}
               appearance="subtle"

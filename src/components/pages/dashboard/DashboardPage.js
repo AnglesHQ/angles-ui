@@ -345,8 +345,8 @@ const DashboardPage = function (props) {
           <Affix>
             <Stack className="rg-stack" spacing={10}>
               <SelectPicker
+                label="Team"
                 cleanable={false}
-                // searchable={false}
                 appearance="subtle"
                 data={teams.map((team) => ({ label: team.name, value: team._id }))}
                 value={selectedTeamId}
@@ -357,6 +357,7 @@ const DashboardPage = function (props) {
                 }}
               />
               <DateRangePicker
+                label="Date Range"
                 value={[startDate.toDate(), endDate.toDate()]}
                 format="dd-MMM-yyyy"
                 character=" - "
@@ -368,10 +369,11 @@ const DashboardPage = function (props) {
                 cleanable={false}
               />
               <SelectPicker
+                label="Display Limit"
                 data={limitValues}
                 appearance="default"
                 cleanable={false}
-                style={{ width: 120 }}
+                style={{ width: 150 }}
                 defaultValue={limit}
                 searchable={false}
                 onChange={handleLimitChange}
@@ -480,6 +482,7 @@ const DashboardPage = function (props) {
                       last
                       next
                       first
+                      size="md"
                       layout={['pager']}
                       total={totalTestRuns}
                       limit={limit}
