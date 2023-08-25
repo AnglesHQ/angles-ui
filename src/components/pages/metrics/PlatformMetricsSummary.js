@@ -93,6 +93,7 @@ const PlatformMetricsSummary = function (props) {
         data={generateTableData()}
         autoHeight
         id="platform-metrics-table"
+        bordered
       >
         <Column width={40}>
           <HeaderCell>#</HeaderCell>

@@ -56,7 +56,12 @@ const ExecutionMetricsSummary = function (props) {
 
   return (
     <div className="metrics-table-wrapper">
-      <Table data={periods} autoHeight id="build-artifacts">
+      <Table
+        data={periods}
+        autoHeight
+        id="build-artifacts"
+        bordered
+      >
         <Column width={200}>
           <HeaderCell>Period</HeaderCell>
           <Cell>

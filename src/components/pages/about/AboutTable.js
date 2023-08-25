@@ -34,7 +34,13 @@ const AboutTable = function (props) {
       },
     ];
     return (
-      <Table data={versionsToDisplay} height={300} width={400} id="build-artifacts">
+      <Table
+        data={versionsToDisplay}
+        autoHeight
+        width={400}
+        id="build-artifacts"
+        bordered
+      >
         <Column width={200}>
           <HeaderCell>Component</HeaderCell>
           <Cell dataKey="component" />

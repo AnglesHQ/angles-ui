@@ -145,7 +145,14 @@ const BuildsTable = function (props) {
 
   return (
     <div>
-      <Table affixHeader rowHeight={65} headerHeight={40} height={500} data={builds} id="builds-table">
+      <Table
+        affixHeader
+        rowHeight={65}
+        headerHeight={40}
+        height={500}
+        data={builds}
+        id="builds-table"
+      >
         <Column width={50} align="center">
           <HeaderCell>#</HeaderCell>
           <Cell dataKey="index" />
