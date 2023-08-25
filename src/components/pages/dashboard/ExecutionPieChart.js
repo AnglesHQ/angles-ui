@@ -15,7 +15,7 @@ const defaultOptions = {
       show: true,
     },
   },
-  colors: ['#98dc79', '#c1a224', '#ff8000', '#c61410'],
+  colors: ['var(--pass-color)', 'var(--skipped-color)', 'var(--error-color)', 'var(--fail-color)'],
   legend: { show: false },
 };
 

@@ -4,6 +4,7 @@ import InfoOutlineIcon from '@rsuite/icons/InfoOutline';
 import { Table, Whisper, Popover } from 'rsuite';
 import { getDurationAsString } from '../../../utility/TimeUtilities';
 import MetricsTestsTable from './MetricsTestsTable';
+import ExecutionsResultsBar from '../../common/ExecutionsResultsBar';
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -53,15 +54,6 @@ const ExecutionMetricsSummary = function (props) {
     return getDurationAsString(moment.duration(totalTime));
   };
 
-  const getPassRate = (period) => {
-    if (period.result.TOTAL > 0) {
-      const percentage = ((period.result.PASS / period.result.TOTAL) * 100)
-        .toLocaleString(undefined, { maximumFractionDigits: 2 });
-      return `${percentage}%`;
-    }
-    return 'NA';
-  };
-
   return (
     <div className="metrics-table-wrapper">
       <Table data={periods} autoHeight id="build-artifacts">
@@ -85,15 +77,15 @@ const ExecutionMetricsSummary = function (props) {
           <HeaderCell>Executions</HeaderCell>
           <Cell dataKey="result.TOTAL" />
         </Column>
-        <Column flexGrow={2}>
+        <Column flexGrow={3}>
           <HeaderCell>Pass Rate</HeaderCell>
           <Cell>
             {
-              (rowData) => getPassRate(rowData)
+              (rowData) => <ExecutionsResultsBar result={rowData.result} />
             }
           </Cell>
         </Column>
-        <Column flexGrow={3}>
+        <Column flexGrow={2}>
           <HeaderCell>Duration</HeaderCell>
           <Cell>
             {

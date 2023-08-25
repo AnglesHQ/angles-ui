@@ -219,10 +219,11 @@ const MetricsPage = function (props) {
         </Stack>
       </Affix>
       <div className="metrics-data-container">
-        <Tabs id="execution-metrics-tabs" activeKey={key} defaultActiveKey="execution" onSelect={(tabKey, evt) => setTab(tabKey, evt)}>
+        <Tabs className="execution-metrics-tabs" id="execution-metrics-tabs" activeKey={key} defaultActiveKey="execution" onSelect={(tabKey, evt) => setTab(tabKey, evt)}>
           <Tab eventKey="execution" title="Execution Metrics">
             <Panel
               bordered
+              className="execution-metrics-panel"
             >
               <div style={{ display: !metrics ? 'block' : 'none' }} className="alert alert-primary" role="alert">
                 <span>
@@ -259,6 +260,7 @@ const MetricsPage = function (props) {
           <Tab eventKey="platform" title="Platform Metrics">
             <Panel
               bordered
+              className="execution-metrics-panel"
             >
               <div style={{ display: !metrics ? 'block' : 'none' }} className="alert alert-primary" role="alert">
                 <span>

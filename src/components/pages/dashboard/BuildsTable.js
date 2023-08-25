@@ -1,6 +1,5 @@
 import React from 'react';
 import Moment from 'react-moment';
-import ProgressBar from 'react-bootstrap/ProgressBar';
 import TimeIcon from '@rsuite/icons/Time';
 import TreeIcon from '@rsuite/icons/Tree';
 import TagLockIcon from '@rsuite/icons/TagLock';
@@ -14,6 +13,7 @@ import {
 } from 'rsuite';
 import { getDuration } from '../../../utility/TimeUtilities';
 import ArtifactsDetailsTable from '../../tables/ArtifactsDetailsTable';
+import ExecutionsResultsBar from '../../common/ExecutionsResultsBar';
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -116,13 +116,11 @@ const DateCell = function (props) {
 };
 
 const ResultCell = function (props) {
-  const { rowData: build, generateResultBar, ...rest } = props;
+  const { rowData: build } = props;
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading
-    <Cell {...rest}>
-      <div>
-        { generateResultBar(build.result) }
-      </div>
+    <Cell {...props}>
+      <ExecutionsResultsBar result={build.result} />
     </Cell>
   );
 };
@@ -144,23 +142,6 @@ const BuildsTable = function (props) {
 
   const getComponentName = (build) => build.team.components
     .find((component) => component._id === build.component);
-
-  const getPercentageString = (resultState, result) => {
-    let total = 0;
-    Object.keys(result).forEach((key) => {
-      total += result[key];
-    });
-    return Math.round(((result[resultState] / total) * 100));
-  };
-
-  const generateResultBar = (result) => (
-    <ProgressBar style={{ height: '2em' }}>
-      <ProgressBar label={`${getPercentageString('PASS', result)}%`} variant="success" now={getPercentageString('PASS', result)} key={1} />
-      <ProgressBar label={`${getPercentageString('SKIPPED', result)}%`} variant="info" now={getPercentageString('SKIPPED', result)} key={2} />
-      <ProgressBar label={`${getPercentageString('ERROR', result)}%`} variant="warning" now={getPercentageString('ERROR', result)} key={3} />
-      <ProgressBar label={`${getPercentageString('FAIL', result)}%`} variant="danger" now={getPercentageString('FAIL', result)} key={4} />
-    </ProgressBar>
-  );
 
   return (
     <div>
@@ -199,7 +180,7 @@ const BuildsTable = function (props) {
           <HeaderCell>
             <span>Result</span>
           </HeaderCell>
-          <ResultCell generateResultBar={generateResultBar} />
+          <ResultCell />
         </Column>
       </Table>
     </div>

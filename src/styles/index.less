@@ -2,10 +2,12 @@
 @import '../components/pages/dashboard/styles.less';
 @import '../components/pages/test-run/styles.less';
 @import '../components/pages/test-run-compare/styles.less';
+@import '../components/pages/metrics/styles.less';
 
 :root {
     --body-background: #f5f8fa;
     --nav-background: white;
+    --panel-background: white;
     --master-color-1: #FDBC6C;
     --master-color-2: #FFA538;
     --master-color-3: #9F9F9F;
@@ -16,8 +18,8 @@
     --font-color-3: white;
     --font-color-4: #ee8308;
 
-    --pass-color: #c3e6cb;
-    --fail-color: #f69ea6;
+    --pass-color: #5fad6f;
+    --fail-color: #fc6571;
     --skipped-color: #2485C1;
     --error-color: #f5b83f;
 
@@ -155,3 +157,19 @@ a:active {
 
 }
 
+.test-results-progress-bar {
+    height: 2em;
+
+    .test-result-success {
+        background-color: var(--pass-color);
+    }
+    .test-result-failure {
+        background-color: var(--fail-color);
+    }
+    .test-result-error {
+        background-color: var(--error-color);
+    }
+    .test-result-skipped {
+        background-color: var(--skipped-color);
+    }
+}

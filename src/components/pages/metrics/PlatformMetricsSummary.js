@@ -2,6 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import { Table } from 'rsuite';
 import { getDurationAsString } from '../../../utility/TimeUtilities';
+import ExecutionsResultsBar from '../../common/ExecutionsResultsBar';
 
 const PlatformMetricsSummary = function (props) {
   const { metrics } = props; // platformColors
@@ -68,7 +69,6 @@ const PlatformMetricsSummary = function (props) {
         ...deviceMetrics[deviceId],
       });
     });
-    console.log(JSON.stringify(tableArray));
     return tableArray;
   };
 
@@ -110,6 +110,22 @@ const PlatformMetricsSummary = function (props) {
           <HeaderCell>Device</HeaderCell>
           <Cell dataKey="platform.deviceName" />
         </Column>
+        <Column flexGrow={1}>
+          <HeaderCell>Total</HeaderCell>
+          <Cell>
+            {
+              (rowData) => rowData.result.TOTAL
+            }
+          </Cell>
+        </Column>
+        <Column flexGrow={4}>
+          <HeaderCell>Result</HeaderCell>
+          <Cell>
+            {
+              (rowData) => <ExecutionsResultsBar result={rowData.result} />
+            }
+          </Cell>
+        </Column>
         <Column flexGrow={2}>
           <HeaderCell>Duration</HeaderCell>
           <Cell>
@@ -117,26 +133,6 @@ const PlatformMetricsSummary = function (props) {
               (rowData) => getDurationAsString(moment.duration(rowData.duration))
             }
           </Cell>
-        </Column>
-        <Column flexGrow={1}>
-          <HeaderCell>Pass</HeaderCell>
-          <Cell dataKey="result.PASS" />
-        </Column>
-        <Column flexGrow={1}>
-          <HeaderCell>Fail</HeaderCell>
-          <Cell dataKey="result.FAIL" />
-        </Column>
-        <Column flexGrow={1}>
-          <HeaderCell>Error</HeaderCell>
-          <Cell dataKey="result.ERROR" />
-        </Column>
-        <Column flexGrow={1}>
-          <HeaderCell>Skipped</HeaderCell>
-          <Cell dataKey="result.SKIPPED" />
-        </Column>
-        <Column flexGrow={1}>
-          <HeaderCell>Total</HeaderCell>
-          <Cell dataKey="result.TOTAL" />
         </Column>
       </Table>
     </div>

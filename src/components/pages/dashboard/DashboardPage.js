@@ -301,7 +301,6 @@ const DashboardPage = function (props) {
       skipped,
       error,
     } = testRunMetrics;
-    console.log(JSON.stringify(testRunMetrics));
     const graphData = {
       data: [pass, skipped, error, fail],
       labels: ['Pass', 'Skipped', 'Error', 'Fail'],
