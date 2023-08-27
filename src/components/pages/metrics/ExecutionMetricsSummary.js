@@ -83,7 +83,7 @@ const ExecutionMetricsSummary = function (props) {
           <Cell dataKey="result.TOTAL" />
         </Column>
         <Column flexGrow={3}>
-          <HeaderCell>Pass Rate</HeaderCell>
+          <HeaderCell>Result</HeaderCell>
           <Cell>
             {
               (rowData) => <ExecutionsResultsBar result={rowData.result} />

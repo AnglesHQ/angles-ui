@@ -39,3 +39,26 @@ export const getBuildDurationInSeconds = (build) => {
   }
   return 0;
 };
+
+export const getDateRangesPicker = () => [
+  {
+    label: 'Last 7 days',
+    value: [moment(new Date()).subtract(6, 'days').toDate(), moment(new Date()).toDate()],
+    placement: 'bottom',
+  },
+  {
+    label: 'Last 14 days',
+    value: [moment(new Date()).subtract(13, 'days').toDate(), moment(new Date()).toDate()],
+    placement: 'bottom',
+  },
+  {
+    label: 'Last 30 days',
+    value: [moment(new Date()).subtract(29, 'days').toDate(), moment(new Date()).toDate()],
+    placement: 'bottom',
+  },
+  {
+    label: 'Last 90 days',
+    value: [moment(new Date()).subtract(89, 'days').toDate(), moment(new Date()).toDate()],
+    placement: 'bottom',
+  },
+];

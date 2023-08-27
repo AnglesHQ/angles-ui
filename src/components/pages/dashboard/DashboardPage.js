@@ -34,7 +34,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import BuildsTable from './BuildsTable';
 import ExecutionBarChart from './ExecutionBarChart';
 import ExecutionPieChart from './ExecutionPieChart';
-import { getBuildDurationInSeconds, getDurationAsString } from '../../../utility/TimeUtilities';
+import { getDateRangesPicker, getDurationAsString } from '../../../utility/TimeUtilities';
+import { generateResultsData } from '../../../utility/ChartUtilities';
 
 const generateFilterMenuData = function (environments, components) {
   const data = [];
@@ -258,42 +259,6 @@ const DashboardPage = function (props) {
     }
   };
 
-  const generateBuildData = () => {
-    const graphData = {
-      data: [],
-      labels: [],
-    };
-    const results = {
-      PASS: [],
-      SKIPPED: [],
-      ERROR: [],
-      FAIL: [],
-      executionTimes: [],
-    };
-    builds.forEach((build) => {
-      const {
-        PASS,
-        SKIPPED,
-        ERROR,
-        FAIL,
-      } = build.result;
-      results.PASS.push(PASS);
-      results.SKIPPED.push(SKIPPED);
-      results.ERROR.push(ERROR);
-      results.FAIL.push(FAIL);
-      results.executionTimes.push(getBuildDurationInSeconds(build));
-      graphData.labels.push(moment(build.start).format('YYYY-MM-DD hh:mm:ss'));
-    });
-    graphData.data.push(
-      { name: 'Pass', data: results.PASS, type: 'column' },
-      { name: 'Skipped', data: results.SKIPPED, type: 'column' },
-      { name: 'Error', data: results.ERROR, type: 'column' },
-      { name: 'Fail', data: results.FAIL, type: 'column' },
-      { name: 'ExecutionTime', data: results.executionTimes, type: 'line' },
-    );
-    return graphData;
-  };
-
   const generatePieChartData = () => {
     const {
       pass,
@@ -361,18 +326,20 @@ const DashboardPage = function (props) {
                 format="dd-MMM-yyyy"
                 character=" - "
                 onChange={(value) => {
+                  console.log(JSON.stringify(value));
                   setStartDate(moment(value[0]));
                   setEndDate(moment(value[1]));
                 }}
                 shouldDisableDate={afterToday()}
                 cleanable={false}
+                ranges={getDateRangesPicker()}
               />
               <SelectPicker
                 label="Display Limit"
                 data={limitValues}
                 appearance="default"
                 cleanable={false}
-                style={{ width: 150 }}
+                style={{ width: 170 }}
                 defaultValue={limit}
                 searchable={false}
                 onChange={handleLimitChange}
@@ -414,7 +381,7 @@ const DashboardPage = function (props) {
             </Row>
             <Row gutter={30} className="dash-row">
               <Col xs={16}>
-                <ExecutionBarChart title="Test Runs" graphData={generateBuildData()} />
+                <ExecutionBarChart title="Test Runs" graphData={generateResultsData(builds)} />
               </Col>
               <Col xs={8}>
                 <ExecutionPieChart title="Overall Execution Metrics" graphData={generatePieChartData()} />

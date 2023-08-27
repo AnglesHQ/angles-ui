@@ -3,20 +3,23 @@
 @import '../components/pages/test-run/styles.less';
 @import '../components/pages/test-run-compare/styles.less';
 @import '../components/pages/metrics/styles.less';
+@import '../components/pages/not-found/styles.less';
+@import '../components/pages/test-execution-history/styles.less';
 
 :root {
     --body-background: #f5f8fa;
     --nav-background: white;
     --panel-background: white;
-    --master-color-1: #FDBC6C;
+    --master-color-1: #F88017;
     --master-color-2: #FFA538;
     --master-color-3: #9F9F9F;
     --master-color-4: #CDCDCD;
+    --master-color-5: white;
 
     --font-color-1: black;
     --font-color-2: grey;
     --font-color-3: white;
-    --font-color-4: #ee8308;
+    --font-color-4: #F88017;
 
     --pass-color: #5fad6f;
     --fail-color: #fc6571;
@@ -27,25 +30,31 @@
     --link-color-2: #f1b87f;
 }
 
+// TODO: add dark mode colors
+@media (prefers-color-scheme: dark) {
+    :root {
+        --body-background: #f5f8fa;
+        --nav-background: white;
+        --panel-background: white;
+        --master-color-1: #F88017;
+        --master-color-2: #FFA538;
+        --master-color-3: #9F9F9F;
+        --master-color-4: #CDCDCD;
 
-//@media (prefers-color-scheme: dark) {
-//    :root {
-//        --body-background: #484848;
-//        --nav-background: black;
-//        --master-color-1: #FDBC6C;
-//        --master-color-2: #FFA538;
-//        --master-color-3: #9F9F9F;
-//        --master-color-4: #CDCDCD;
-//
-//        --font-color-1: white;
-//        --font-color-2: grey;
-//
-//        --pass-color: #98dc79;
-//        --fail-color: #c61410;
-//        --skipped-color: #2485C1;
-//        --error-color: #ff8000;
-//    }
-//}
+        --font-color-1: black;
+        --font-color-2: grey;
+        --font-color-3: white;
+        --font-color-4: #ee8308;
+
+        --pass-color: #5fad6f;
+        --fail-color: #fc6571;
+        --skipped-color: #2485C1;
+        --error-color: #f5b83f;
+
+        --link-color-1: #ee8308;
+        --link-color-2: #f1b87f;
+    }
+}
 
 body {
     background: var(--body-background);
@@ -78,8 +87,11 @@ body {
         }
     }
 
-    .rs-sidenav-item {
-        color: var(--font-color-1);
+    .rs-sidenav-item:hover {
+        color: var(--font-color-2);
+    }
+    .rs-sidenav-item:hover {
+        color: var(--font-color-4);
     }
 }
 
@@ -92,7 +104,8 @@ body {
 
         .rs-table-cell-content {
             background-color: var(--master-color-1);
-            color: var(--font-color-3);
+            color: var(--font-color-1);
+            opacity: 0.8;
             font-weight: bold;
             font-size: 1.1em;
         }
@@ -107,6 +120,9 @@ body {
 
     .rs-table-body-row-wrapper {
 
+        .rs-table-cell-content {
+            background-color: var(--master-color-5);
+        }
         .rs-table-row:last-child {
             .rs-table-cell-first {
                 border-bottom-left-radius: 7px;

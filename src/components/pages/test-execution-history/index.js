@@ -2,7 +2,7 @@ import React from 'react';
 import { Panel } from 'rsuite';
 import ExecutionHistoryPage from './ExecutionHistoryPage';
 
-const Page = function (props) {
+const Page = function () {
   return (
     <Panel header={<h3 className="title">Test Execution History</h3>}>
       <ExecutionHistoryPage />

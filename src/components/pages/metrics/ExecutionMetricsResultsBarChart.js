@@ -4,8 +4,6 @@ import { Panel, Stack } from 'rsuite';
 
 const defaultOptions = {
   chart: {
-    // fontFamily: 'inherit',
-    // parentHeightOffset: 0,
     toolbar: { show: false },
     animations: { enabled: false },
     stacked: true,
@@ -51,19 +49,12 @@ const defaultOptions = {
       seriesName: 'Skipped',
       show: false,
     },
-    {
-      seriesName: 'ExecutionTime',
-      opposite: true,
-      title: {
-        text: 'Execution Time (seconds)',
-      },
-    },
   ],
-  colors: ['var(--pass-color)', 'var(--skipped-color)', 'var(--error-color)', 'var(--fail-color)', '#2485C1'],
+  colors: ['var(--pass-color)', 'var(--skipped-color)', 'var(--error-color)', 'var(--fail-color)'],
   legend: { show: true },
 };
 
-const ExecutionBarChart = function (props) {
+const ExecutionMetricsResultsBarChart = function (props) {
   const {
     title,
     actions,
@@ -91,4 +82,4 @@ const ExecutionBarChart = function (props) {
   );
 };
 
-export default ExecutionBarChart;
+export default ExecutionMetricsResultsBarChart;

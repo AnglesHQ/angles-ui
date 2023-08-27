@@ -18,13 +18,14 @@ import {
   Row,
   Grid,
 } from 'rsuite';
-import MetricsResultChart from '../../charts/MetricsResultChart';
 import TestPhasesChart from '../../charts/TestPhasesChart';
 import PlatformDistributionChart from '../../charts/PlatformDistributionChart';
 import ExecutionMetricsSummary from './ExecutionMetricsSummary';
 import PlatformDistributionPieChart from '../../charts/PlatformDistributionPieChart';
 import PlatformMetricsSummary from './PlatformMetricsSummary';
 import { getRandomColor } from '../../../utility/ChartUtilities';
+import MetricsResultChart from '../../charts/MetricsResultChart';
+import { getDateRangesPicker } from '../../../utility/TimeUtilities';
 
 const MetricsPage = function (props) {
   const navigate = useNavigate();
@@ -96,11 +97,6 @@ const MetricsPage = function (props) {
   useEffect(() => {
     retrieveMetrics();
   }, []);
-
-  // const handleDatesChange = ({ startDate, endDate }) => {
-  //   setStartDate(startDate);
-  //   setEndDate(endDate);
-  // };
 
   const handleGroupingChange = (groupingValue) => {
     setGroupingPeriod(groupingValue);
@@ -194,6 +190,7 @@ const MetricsPage = function (props) {
               }}
               shouldDisableDate={afterToday()}
               cleanable={false}
+              ranges={getDateRangesPicker()}
             />
             <SelectPicker
               label="Group By Period"

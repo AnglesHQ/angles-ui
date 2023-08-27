@@ -33,7 +33,7 @@ import TestRunsComparePage from '../components/pages/test-run-compare';
 import ScreenshotLibraryPage from '../components/pages/screenshot-library';
 import ExecutionHistoryPage from '../components/pages/test-execution-history';
 import AboutPage from '../components/pages/about';
-import NotFoundPage from '../components/pages/NotFoundPage';
+import NotFoundPage from '../components/pages/not-found';
 
 import MetricsPage from '../components/pages/metrics';
 import { storeCurrentTeam, storeTeams, storeTeamsError } from '../redux/teamActions';
@@ -329,7 +329,7 @@ const App = function (props) {
                   )
                 }
               />
-              <Route render={() => <NotFoundPage />} />
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </main>
         </Content>
