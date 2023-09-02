@@ -299,7 +299,15 @@ const App = function (props) {
                   )
                 }
               />
-              <Route path="/test-run/" element={<CurrentScreenshotProvider><TestRunDetailsPage /></CurrentScreenshotProvider>} exact />
+              <Route
+                exact
+                path="/test-run/"
+                element={(
+                  <CurrentScreenshotProvider>
+                    <TestRunDetailsPage />
+                  </CurrentScreenshotProvider>
+                )}
+              />
               <Route
                 exact
                 path="/test-runs-compare/"
@@ -311,8 +319,24 @@ const App = function (props) {
                   )
                 }
               />
-              <Route exact path="/screenshot-library/" element={<ScreenshotLibraryPage />} />
-              <Route exact path="/test-execution-history/" element={<ExecutionHistoryPage />} />
+              <Route
+                exact
+                path="/screenshot-library/"
+                element={(
+                  <CurrentScreenshotProvider>
+                    <ScreenshotLibraryPage />
+                  </CurrentScreenshotProvider>
+                )}
+              />
+              <Route
+                exact
+                path="/test-execution-history/"
+                element={(
+                  <CurrentScreenshotProvider>
+                    <ExecutionHistoryPage />
+                  </CurrentScreenshotProvider>
+                )}
+              />
               <Route exact path="/about/" element={<AboutPage />} />
               <Route
                 exact

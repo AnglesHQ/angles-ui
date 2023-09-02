@@ -109,7 +109,7 @@ const ScreenshotLibraryPage = function () {
 
   const filterByPlatform = (event) => {
     const filteredScreenshotsToStore = groupedScreenshots
-      .filter((screenshot) => screenshot.platformId === event.target.value);
+      .filter((screenshot) => screenshot.platformId === event);
     setFilteredScreenshots(filteredScreenshotsToStore);
   };
 
