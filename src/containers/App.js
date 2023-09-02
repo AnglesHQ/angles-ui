@@ -18,7 +18,7 @@ import {
   Sidenav,
   Content,
   Navbar,
-  Nav,
+  Nav, Affix,
 } from 'rsuite';
 import AngleLeftIcon from '@rsuite/icons/legacy/AngleLeft';
 import AngleRightIcon from '@rsuite/icons/legacy/AngleRight';
@@ -148,40 +148,42 @@ const App = function (props) {
     <Container>
       <Sidebar
         className="main-sidebar"
-        width={expand ? 260 : 56}
+        width={expand ? 240 : 56}
         collapsible
       >
-        <Sidenav expanded={expand} defaultOpenKeys={['3']} appearance="subtle">
-          <Sidenav.Header>
-            <div className="sidebar-header">
-              <img src="../assets/angles-icon.png" alt="Angles" className="sidebar-angles-icon" />
-              <img src="../assets/angles-text-logo.png" alt="Angles" className="sidebar-angles-text-icon" />
-            </div>
-          </Sidenav.Header>
-          <Sidenav.Body>
-            <Nav>
-              <Nav.Item eventKey="1" icon={<DocPass />} href="/">
-                <span>Dashboard</span>
-              </Nav.Item>
-              <Nav.Item eventKey="2" icon={<BarChart />} href="/metrics">
-                <span>Metrics</span>
-              </Nav.Item>
-              <Nav.Item eventKey="3" icon={<Image />} href="/screenshot-library">
-                <span>Screenshot Library</span>
-              </Nav.Item>
-              <Nav.Item eventKey="4" icon={<InfoRound />} href="/about">
-                <span>About Angles</span>
-              </Nav.Item>
-            </Nav>
-          </Sidenav.Body>
-          <Navbar appearance="subtle" className="nav-toggle">
-            <Nav pullRight>
-              <Nav.Item style={{ width: 56, textAlign: 'center' }} onClick={() => setExpand(!expand)}>
-                {expand ? <AngleLeftIcon /> : <AngleRightIcon />}
-              </Nav.Item>
-            </Nav>
-          </Navbar>
-        </Sidenav>
+        <Affix>
+          <Sidenav expanded={expand} defaultOpenKeys={['3']} appearance="subtle">
+            <Sidenav.Header>
+              <div className="sidebar-header">
+                <img src="../assets/angles-icon.png" alt="Angles" className="sidebar-angles-icon" />
+                <img src="../assets/angles-text-logo.png" alt="Angles" className="sidebar-angles-text-icon" />
+              </div>
+            </Sidenav.Header>
+            <Sidenav.Body>
+              <Nav>
+                <Nav.Item eventKey="1" icon={<DocPass />} href="/">
+                  <span>Dashboard</span>
+                </Nav.Item>
+                <Nav.Item eventKey="2" icon={<BarChart />} href="/metrics">
+                  <span>Execution Metrics</span>
+                </Nav.Item>
+                <Nav.Item eventKey="3" icon={<Image />} href="/screenshot-library">
+                  <span>Screenshot Library</span>
+                </Nav.Item>
+                <Nav.Item eventKey="4" icon={<InfoRound />} href="/about">
+                  <span>About Angles</span>
+                </Nav.Item>
+              </Nav>
+            </Sidenav.Body>
+            <Navbar appearance="subtle" className="nav-toggle">
+              <Nav pullRight>
+                <Nav.Item style={{ width: 56, textAlign: 'center' }} onClick={() => setExpand(!expand)}>
+                  {expand ? <AngleLeftIcon /> : <AngleRightIcon />}
+                </Nav.Item>
+              </Nav>
+            </Navbar>
+          </Sidenav>
+        </Affix>
       </Sidebar>
       <Container>
         <Content className="main-content">

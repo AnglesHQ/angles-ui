@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
+import { Panel } from 'rsuite';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import Alert from 'react-bootstrap/Alert';
@@ -173,7 +174,7 @@ const ScreenshotView = function (props) {
         </span>
       </div>
     ) : (
-      <div>
+      <Panel>
         <ImageCarousel
           screenshots={buildScreenshots}
           selectedScreenshotDetails={currentScreenshotDetails}
@@ -219,7 +220,7 @@ const ScreenshotView = function (props) {
             </div>
           </Tab>
         </Tabs>
-      </div>
+      </Panel>
     )
   );
 };

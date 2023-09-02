@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import queryString from 'query-string';
@@ -6,9 +6,14 @@ import { ScreenshotRequests } from 'angles-javascript-client';
 import {
   Form,
   Button,
-  ButtonToolbar, SelectPicker,
+  ButtonToolbar,
+  SelectPicker,
+  Panel,
+  Divider,
+  FlexboxGrid,
 } from 'rsuite';
 import ScreenshotView from '../ScreenshotView';
+import CurrentScreenshotContext from '../../../context/CurrentScreenshotContext';
 
 const ScreenshotLibraryPage = function () {
   const location = useLocation();
@@ -23,7 +28,9 @@ const ScreenshotLibraryPage = function () {
   const [tag, setTag] = useState('');
   const [numberOfDays, setNumberOfDays] = useState(14);
   const screenshotRequests = new ScreenshotRequests(axios);
-
+  const {
+    setCurrentScreenshotId,
+  } = useContext(CurrentScreenshotContext);
   const getGroupedScreenshotByPlatform = (viewValue, numberOfDaysValue) => {
     setRetrievingScreenshots(true);
     setFilteredScreenshots(null);
@@ -36,6 +43,7 @@ const ScreenshotLibraryPage = function () {
         setGroupedScreenshots(retrievedGroupedScreenshots);
         setFilteredScreenshots(retrievedGroupedScreenshots);
         setRetrievingScreenshots(false);
+        setCurrentScreenshotId(retrievedGroupedScreenshots[0]._id);
       })
       .catch(() => {
         setRetrievingScreenshots(false);
@@ -61,6 +69,7 @@ const ScreenshotLibraryPage = function () {
         setGroupType('tag');
         setGroupedScreenshots(retrievedGroupedScreenshots);
         setFilteredScreenshots(filteredScreenshotsToStore);
+        setCurrentScreenshotId(filteredScreenshotsToStore[0]._id);
         setRetrievingScreenshots(false);
         setPlatforms(uniquePlatforms);
       })
@@ -128,47 +137,67 @@ const ScreenshotLibraryPage = function () {
 
   return (
     <div>
-      <div>
-        <Form onSubmit={submitScreenshotSearch}>
-          <Form.Group controlId="view">
-            <Form.ControlLabel>View</Form.ControlLabel>
-            <Form.Control name="view" value={view} onChange={handleViewChange} />
-            <Form.HelpText>Please provide a view or tag</Form.HelpText>
-          </Form.Group>
-          <Form.Group controlId="tag">
-            <Form.ControlLabel>Tag</Form.ControlLabel>
-            <Form.Control name="tag" value={tag} onChange={handleTagChange} />
-          </Form.Group>
-          <Form.Group controlId="numberOfDays">
-            <Form.ControlLabel>Number of days</Form.ControlLabel>
-            <SelectPicker
-              name="numberOfDays"
-              data={getNumberOfDaysData()}
-              value={numberOfDays}
-              onChange={handleNumberOfDaysChange}
-              cleanable={false}
-            />
-          </Form.Group>
-          {
-            groupType === 'tag' && platforms && platforms.length > 0 ? (
-              <Form.Group controlId="platformSelect">
-                <Form.ControlLabel>Platform</Form.ControlLabel>
+      <Panel className="screenshot-library-panel">
+        <Form onSubmit={submitScreenshotSearch} className="screenshot-library-form">
+          <FlexboxGrid>
+            <FlexboxGrid.Item colspan={11}>
+              <Form.Group controlId="view">
+                <Form.ControlLabel>View</Form.ControlLabel>
+                <Form.Control name="view" value={view} onChange={handleViewChange} />
+                <Form.HelpText>Please provide either a view or tag.</Form.HelpText>
+              </Form.Group>
+            </FlexboxGrid.Item>
+            <FlexboxGrid.Item colspan={2} className="screenshot-library-form-or">
+              <span>OR</span>
+            </FlexboxGrid.Item>
+            <FlexboxGrid.Item colspan={11}>
+              <Form.Group controlId="tag">
+                <Form.ControlLabel>Tag</Form.ControlLabel>
+                <Form.Control name="tag" value={tag} onChange={handleTagChange} />
+              </Form.Group>
+            </FlexboxGrid.Item>
+          </FlexboxGrid>
+          <FlexboxGrid className="screenshot-form-second-row">
+            <FlexboxGrid.Item colspan={11}>
+              <Form.Group controlId="numberOfDays">
+                <Form.ControlLabel>Number of days</Form.ControlLabel>
                 <SelectPicker
-                  name="platformSelect"
-                  data={getPlatformData()}
+                  className="number-of-days-picker"
+                  name="numberOfDays"
+                  data={getNumberOfDaysData()}
                   value={numberOfDays}
-                  onChange={filterByPlatform}
+                  onChange={handleNumberOfDaysChange}
+                  cleanable={false}
+                  searchable={false}
                 />
               </Form.Group>
-            ) : null
-          }
+            </FlexboxGrid.Item>
+            <FlexboxGrid.Item colspan={2} />
+            <FlexboxGrid.Item colspan={11}>
+              {
+                groupType === 'tag' && platforms && platforms.length > 0 ? (
+                  <Form.Group controlId="platformSelect">
+                    <Form.ControlLabel>Platform</Form.ControlLabel>
+                    <SelectPicker
+                      className="platform-picker"
+                      name="platformSelect"
+                      data={getPlatformData()}
+                      value={numberOfDays}
+                      onChange={filterByPlatform}
+                    />
+                  </Form.Group>
+                ) : null
+              }
+            </FlexboxGrid.Item>
+          </FlexboxGrid>
+          <Divider />
           <Form.Group>
             <ButtonToolbar>
               <Button disabled={view === '' && tag === ''} appearance="primary" type="submit">Search Screenshots</Button>
             </ButtonToolbar>
           </Form.Group>
         </Form>
-      </div>
+      </Panel>
       <div className="screenshot-viewer-surround">
         {
           retrievingScreenshots ? (
