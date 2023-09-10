@@ -12,10 +12,19 @@ const defaultOptions = {
     animations: { enabled: false },
     stacked: true,
     stackType: 'normal',
+    background: 'var(--panel-background)',
+    foreColor: 'var(--font-color-2)',
+    // TODO: could look at adding some click events for filtering etc
+    // events:
+    //   {
+    //     click: (event, chartContext, config) => {
+    //       console.log(event, chartContext, config);
+    //     },
+    //   },
   },
   plotOptions: {
     bar: {
-      columnWidth: '60%',
+      // columnWidth: '60%',
       // horizontal: false,
     },
   },
@@ -30,36 +39,20 @@ const defaultOptions = {
     tooltip: {
       enabled: true,
     },
-    axisBorder: {
-      show: true,
-    },
   },
   yaxis: [
     {
-      seriesName: 'Pass',
       title: {
         text: 'Number of Tests',
       },
     },
-    {
-      seriesName: 'Fail',
-      show: false,
-    },
-    {
-      seriesName: 'Error',
-      show: false,
-    },
-    {
-      seriesName: 'Skipped',
-      show: false,
-    },
-    {
-      seriesName: 'ExecutionTime',
-      opposite: true,
-      title: {
-        text: 'Execution Time (seconds)',
-      },
-    },
+    // TODO: causes the graph to not display correctly
+    // {
+    //   opposite: true,
+    //   title: {
+    //     text: 'Execution Time (seconds)',
+    //   },
+    // },
   ],
   colors: ['var(--pass-color)', 'var(--skipped-color)', 'var(--error-color)', 'var(--fail-color)', '#2485C1'],
   legend: { show: true },
@@ -84,10 +77,10 @@ const generateResultsData = (builds) => {
       ERROR,
       FAIL,
     } = build.result;
-    results.PASS.push(PASS);
-    results.SKIPPED.push(SKIPPED);
-    results.ERROR.push(ERROR);
-    results.FAIL.push(FAIL);
+    results.PASS.push(PASS || 0);
+    results.SKIPPED.push(SKIPPED || 0);
+    results.ERROR.push(ERROR || 0);
+    results.FAIL.push(FAIL || 0);
     results.executionTimes.push(getBuildDurationInSeconds(build));
     graphData.labels.push(moment(build.start).format('YYYY-MM-DD hh:mm:ss'));
   });
@@ -96,7 +89,7 @@ const generateResultsData = (builds) => {
     { name: 'Skipped', data: results.SKIPPED, type: 'column' },
     { name: 'Error', data: results.ERROR, type: 'column' },
     { name: 'Fail', data: results.FAIL, type: 'column' },
-    { name: 'ExecutionTime', data: results.executionTimes, type: 'line' },
+    { name: 'ExecutionTime (Seconds)', data: results.executionTimes, type: 'line' },
   );
   return graphData;
 };
@@ -108,7 +101,7 @@ const ExecutionBarChart = function (props) {
   const { data, labels } = graphData;
   return (
     <Panel
-      className="card"
+      className="chart-panel"
       header={(
         <Stack justifyContent="space-between">
           {title}

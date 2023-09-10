@@ -9,6 +9,8 @@ const defaultOptions = {
     animations: { enabled: false },
     stacked: true,
     stackType: 'normal',
+    background: 'var(--panel-background)',
+    foreColor: 'var(--font-color-2)',
   },
   plotOptions: {
     bar: {
@@ -33,22 +35,9 @@ const defaultOptions = {
   },
   yaxis: [
     {
-      seriesName: 'Pass',
       title: {
-        text: 'Number of Tests',
+        text: 'Number of Executions',
       },
-    },
-    {
-      seriesName: 'Fail',
-      show: false,
-    },
-    {
-      seriesName: 'Error',
-      show: false,
-    },
-    {
-      seriesName: 'Skipped',
-      show: false,
     },
   ],
   colors: ['var(--pass-color)', 'var(--skipped-color)', 'var(--error-color)', 'var(--fail-color)'],
@@ -91,11 +80,10 @@ const generateMetricsResultsData = (metrics) => {
 const ExecutionMetricsResultsBarChart = function (props) {
   const title = 'Executions grouped by result';
   const { metrics } = props;
-  const graphData = generateMetricsResultsData(metrics);
-  const { data, labels } = graphData;
+  const { data, labels } = generateMetricsResultsData(metrics);
   return (
     <Panel
-      className="card"
+      className="chart-panel"
       header={(
         <Stack justifyContent="space-between">
           {title}
@@ -104,7 +92,7 @@ const ExecutionMetricsResultsBarChart = function (props) {
     >
       <Chart
         series={data}
-        type="bar"
+        type="line"
         height={350}
         max-width={500}
         /* eslint-disable-next-line prefer-object-spread */

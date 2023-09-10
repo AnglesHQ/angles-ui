@@ -35,16 +35,17 @@
 // TODO: add dark mode colors
 @media (prefers-color-scheme: dark) {
     :root {
-        --body-background: #f5f8fa;
-        --nav-background: white;
-        --panel-background: white;
+        --body-background: #343e59;
+        --nav-background: #2c2e3e;
+        --panel-background: #2c2e3e;
         --master-color-1: #F88017;
         --master-color-2: #FFA538;
         --master-color-3: #9F9F9F;
         --master-color-4: #CDCDCD;
+        --master-color-5: #2c2e3e;
 
         --font-color-1: black;
-        --font-color-2: grey;
+        --font-color-2: #c5c5c5;
         --font-color-3: white;
         --font-color-4: #ee8308;
 
@@ -101,6 +102,9 @@ body {
 .rs-table {
     background-color: transparent;
 
+    .rs-table-scrollbar {
+        background-color: var(--master-color-1);
+    }
     .rs-table-row-header {
         background-color: transparent;
 
@@ -120,7 +124,14 @@ body {
         }
     }
 
+    .rs-table-row {
+        background-color: var(--master-color-5);
+    }
+
     .rs-table-body-row-wrapper {
+
+        color: var(--font-color-2);
+        background-color: var(--master-color-5);
 
         .rs-table-cell-content {
             background-color: var(--master-color-5);
@@ -135,6 +146,10 @@ body {
             }
         }
     }
+}
+
+.rg-stack {
+    background-color: var(--panel-background);
 }
 
 .rs-picker {
@@ -171,8 +186,8 @@ a:active {
     text-decoration: none;
 }
 
-.main-content {
-
+.chart-panel {
+    background-color: var(--panel-background);
 }
 
 .test-results-progress-bar {

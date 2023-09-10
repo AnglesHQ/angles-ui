@@ -6,6 +6,8 @@ const defaultOptions = {
   chart: {
     toolbar: { show: false },
     animations: { enabled: false },
+    background: 'var(--panel-background)',
+    foreColor: 'var(--font-color-2)',
   },
   xaxis: {
     tooltip: {
@@ -16,7 +18,7 @@ const defaultOptions = {
     },
   },
   colors: ['var(--pass-color)', 'var(--skipped-color)', 'var(--error-color)', 'var(--fail-color)'],
-  legend: { show: false },
+  legend: { show: true },
 };
 
 const generatePieChartData = (testRunMetrics) => {
@@ -41,7 +43,7 @@ const ExecutionPieChart = function (props) {
   const { data, labels } = generatePieChartData(testRunMetrics);
   return (
     <Panel
-      className="card"
+      className="chart-panel"
       header={(
         <Stack justifyContent="space-between">
           {title}

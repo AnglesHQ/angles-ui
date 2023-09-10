@@ -9,6 +9,8 @@ const defaultOptions = {
     animations: { enabled: false },
     stacked: true,
     stackType: 'normal',
+    background: 'var(--panel-background)',
+    foreColor: 'var(--font-color-2)',
   },
   plotOptions: {
     bar: {
@@ -33,9 +35,8 @@ const defaultOptions = {
   },
   yaxis: [
     {
-      seriesName: 'Executions',
       title: {
-        text: 'Number of Tests',
+        text: 'Number of Executions',
       },
     },
   ],
@@ -80,7 +81,7 @@ const PhaseMetricsResultsBarChart = function (props) {
   const { data, labels } = graphData;
   return (
     <Panel
-      className="card"
+      className="chart-panel"
       header={(
         <Stack justifyContent="space-between">
           {title}

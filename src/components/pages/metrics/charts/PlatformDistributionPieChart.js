@@ -36,6 +36,8 @@ const PlatformDistributionPieChart = function (props) {
     chart: {
       toolbar: { show: false },
       animations: { enabled: false },
+      background: 'var(--panel-background)',
+      foreColor: 'var(--font-color-2)',
     },
     xaxis: {
       tooltip: {
@@ -50,7 +52,7 @@ const PlatformDistributionPieChart = function (props) {
   };
   return (
     <Panel
-      className="card"
+      className="chart-panel"
       header={(
         <Stack justifyContent="space-between">
           {title}
