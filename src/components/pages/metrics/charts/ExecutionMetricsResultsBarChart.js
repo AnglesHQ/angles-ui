@@ -1,6 +1,7 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
 import { Panel, Stack } from 'rsuite';
+import moment from 'moment/moment';
 
 const defaultOptions = {
   chart: {
@@ -54,25 +55,56 @@ const defaultOptions = {
   legend: { show: true },
 };
 
+const generateMetricsResultsData = (metrics) => {
+  const graphData = {
+    data: [],
+    labels: [],
+  };
+  const results = {
+    PASS: [],
+    SKIPPED: [],
+    ERROR: [],
+    FAIL: [],
+  };
+  metrics.periods.forEach((metricPeriod) => {
+    const {
+      PASS,
+      SKIPPED,
+      ERROR,
+      FAIL,
+    } = metricPeriod.result;
+    results.PASS.push(PASS || 0);
+    results.SKIPPED.push(SKIPPED || 0);
+    results.ERROR.push(ERROR || 0);
+    results.FAIL.push(FAIL || 0);
+    graphData.labels.push(`${moment.utc(moment(metricPeriod.start)).format('DD-MM-YYYY')} - ${moment.utc(moment(metricPeriod.end)).format('DD-MM-YYYY')}`);
+  });
+  graphData.data.push(
+    { name: 'Pass', data: results.PASS, type: 'column' },
+    { name: 'Skipped', data: results.SKIPPED, type: 'column' },
+    { name: 'Error', data: results.ERROR, type: 'column' },
+    { name: 'Fail', data: results.FAIL, type: 'column' },
+  );
+  return graphData;
+};
+
 const ExecutionMetricsResultsBarChart = function (props) {
-  const {
-    title,
-    actions,
-    graphData: { data, labels },
-  } = props;
+  const title = 'Executions grouped by result';
+  const { metrics } = props;
+  const graphData = generateMetricsResultsData(metrics);
+  const { data, labels } = graphData;
   return (
     <Panel
       className="card"
       header={(
         <Stack justifyContent="space-between">
           {title}
-          {actions}
         </Stack>
       )}
     >
       <Chart
         series={data}
-        type="line"
+        type="bar"
         height={350}
         max-width={500}
         /* eslint-disable-next-line prefer-object-spread */

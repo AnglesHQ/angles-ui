@@ -1,5 +1,5 @@
 import React from 'react';
-import StepsTable from './StepsTable';
+import StepsTimeline from '../common/execution-timeline';
 import ExecutionStateContext from '../../context/ExecutionStateContext';
 
 const ActionComponent = function (props) {
@@ -24,7 +24,7 @@ const ActionComponent = function (props) {
       <tr key={`steps_tables_${actionIndex}`}>
         { isActionExpanded(execution._id, actionIndex) ? (
           <td className="action-steps" key={Math.random().toString(36).substring(7)}>
-            <StepsTable key={`step_tables_tr_${index}`} index={index} action={action} screenshots={screenshots} openModal={openModal} />
+            <StepsTimeline key={`step_tables_tr_${index}`} index={index} action={action} screenshots={screenshots} openModal={openModal} />
           </td>
         ) : null }
       </tr>

@@ -74,7 +74,7 @@ const ExecutionTable = function (props) {
               <span className="history-link-execution">
                 <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{`See execution history for ${execution.title}`}</Tooltip>}>
                   <span className="d-inline-block">
-                    <a className="test-history-link" title={`See execution history for ${execution.title}`} href={`/history?executionId=${execution._id}`}>
+                    <a className="test-history-link" title={`See execution history for ${execution.title}`} href={`/test-execution-history?executionId=${execution._id}`}>
                       <span>
                         <HistoryIcon />
                       </span>

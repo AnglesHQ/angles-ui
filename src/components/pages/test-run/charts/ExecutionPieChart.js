@@ -19,11 +19,31 @@ const defaultOptions = {
   legend: { show: false },
 };
 
+const generateExecutionMetricsPieChartData = (currentBuild) => {
+  if (currentBuild) {
+    const {
+      PASS,
+      FAIL,
+      SKIPPED,
+      ERROR,
+    } = currentBuild.result;
+    const data = [PASS, SKIPPED, ERROR, FAIL];
+    const graphData = {
+      data,
+      labels: ['PASS', 'SKIPPED', 'ERROR', 'FAIL'],
+      colors: ['var(--pass-color)', 'var(--skipped-color)', 'var(--error-color)', 'var(--fail-color)'],
+    };
+    return graphData;
+  }
+  return null;
+};
+
 const ExecutionPieChart = function (props) {
+  const title = 'Overall Execution Metrics';
   const {
-    title,
-    graphData: { data, labels },
+    currentBuild,
   } = props;
+  const { data, labels } = generateExecutionMetricsPieChartData(currentBuild);
   return (
     <Panel
       className="card"

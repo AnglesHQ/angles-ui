@@ -32,10 +32,9 @@ import queryString from 'query-string';
 import { connect } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import BuildsTable from './BuildsTable';
-import ExecutionBarChart from './ExecutionBarChart';
-import ExecutionPieChart from './ExecutionPieChart';
 import { getDateRangesPicker, getDurationAsString } from '../../../utility/TimeUtilities';
-import { generateResultsData } from '../../../utility/ChartUtilities';
+import ExecutionBarChart from './charts/ExecutionBarChart';
+import ExecutionPieChart from './charts/ExecutionPieChart';
 
 const generateFilterMenuData = function (environments, components) {
   const data = [];
@@ -259,20 +258,6 @@ const DashboardPage = function (props) {
     }
   };
 
-  const generatePieChartData = () => {
-    const {
-      pass,
-      fail,
-      skipped,
-      error,
-    } = testRunMetrics;
-    const graphData = {
-      data: [pass, skipped, error, fail],
-      labels: ['Pass', 'Skipped', 'Error', 'Fail'],
-    };
-    return graphData;
-  };
-
   // eslint-disable-next-line no-shadow
   const renderIconButton = (props, ref) => (
     // eslint-disable-next-line react/jsx-props-no-spreading
@@ -381,10 +366,14 @@ const DashboardPage = function (props) {
             </Row>
             <Row gutter={30} className="dash-row">
               <Col xs={16}>
-                <ExecutionBarChart title="Test Runs" graphData={generateResultsData(builds)} />
+                <ExecutionBarChart
+                  builds={builds}
+                />
               </Col>
               <Col xs={8}>
-                <ExecutionPieChart title="Overall Execution Metrics" graphData={generatePieChartData()} />
+                <ExecutionPieChart
+                  testRunMetrics={testRunMetrics}
+                />
               </Col>
             </Row>
             <Row gutter={30} className="dash-row">

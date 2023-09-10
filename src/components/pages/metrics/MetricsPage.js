@@ -18,14 +18,14 @@ import {
   Row,
   Grid,
 } from 'rsuite';
-import TestPhasesChart from '../../charts/TestPhasesChart';
-import PlatformDistributionChart from '../../charts/PlatformDistributionChart';
 import ExecutionMetricsSummary from './ExecutionMetricsSummary';
-import PlatformDistributionPieChart from '../../charts/PlatformDistributionPieChart';
+import PlatformDistributionPieChart from './charts/PlatformDistributionPieChart';
+import PlatformDistributionBarChart from './charts/PlatformDistributionBarChart';
 import PlatformMetricsSummary from './PlatformMetricsSummary';
 import { getRandomColor } from '../../../utility/ChartUtilities';
-import MetricsResultChart from '../../charts/MetricsResultChart';
 import { getDateRangesPicker } from '../../../utility/TimeUtilities';
+import ExecutionMetricsResultsBarChart from './charts/ExecutionMetricsResultsBarChart';
+import PhaseMetricsResultsBarChart from './charts/PhaseMetricsResultsBarChart';
 
 const MetricsPage = function (props) {
   const navigate = useNavigate();
@@ -242,10 +242,14 @@ const MetricsPage = function (props) {
                       </Row>
                       <Row gutter={30} className="dash-row">
                         <Col xs={12}>
-                          <MetricsResultChart metrics={metrics} />
+                          <ExecutionMetricsResultsBarChart
+                            metrics={metrics}
+                          />
                         </Col>
                         <Col xs={12}>
-                          <TestPhasesChart metrics={metrics} />
+                          <PhaseMetricsResultsBarChart
+                            metrics={metrics}
+                          />
                         </Col>
                       </Row>
                     </Grid>
@@ -288,7 +292,7 @@ const MetricsPage = function (props) {
                           />
                         </Col>
                         <Col xs={12}>
-                          <PlatformDistributionChart
+                          <PlatformDistributionBarChart
                             metrics={metrics}
                             platformColors={platformColors}
                           />

@@ -1,10 +1,14 @@
 import React from 'react';
-import { Panel } from 'rsuite';
+import { Breadcrumb, Panel } from 'rsuite';
 import TestRunDetailsPage from './TestRunDetailsPage';
 
 const Page = function () {
   return (
-    <Panel header={<h3 className="title">Test Run Details</h3>}>
+    <Panel>
+      <Breadcrumb>
+        <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
+        <Breadcrumb.Item>Test Run</Breadcrumb.Item>
+      </Breadcrumb>
       <TestRunDetailsPage />
     </Panel>
   );
