@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { FormattedMessage } from 'react-intl';
 import {
   Routes,
   Route,
@@ -165,10 +166,18 @@ const App = function (props) {
                   <span>Dashboard</span>
                 </Nav.Item>
                 <Nav.Item eventKey="2" icon={<BarChart />} href="/metrics">
-                  <span>Execution Metrics</span>
+                  <span>
+                    <FormattedMessage
+                      id="nav.execution-metrics"
+                    />
+                  </span>
                 </Nav.Item>
                 <Nav.Item eventKey="3" icon={<Image />} href="/screenshot-library">
-                  <span>Screenshot Library</span>
+                  <span>
+                    <FormattedMessage
+                      id="nav.screenshot-library"
+                    />
+                  </span>
                 </Nav.Item>
                 <Nav.Item eventKey="4" icon={<InfoRound />} href="/about">
                   <span>About Angles</span>
