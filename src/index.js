@@ -3,7 +3,7 @@ import { IntlProvider } from 'react-intl';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import messagesENGB from './translations/en-GB.json';
+import messagesEN from './translations/en.json';
 import messagesNL from './translations/nl.json';
 
 import App from './containers/App';
@@ -14,10 +14,11 @@ const domNode = document.getElementById('root');
 const root = createRoot(domNode);
 
 const messages = {
-  en: messagesENGB,
+  en: messagesEN,
   nl: messagesNL,
 };
-let language = navigator.language.split(/[-_]/)[0];
+// let language = navigator.language.split(/[-_]/)[0];
+let language = 'nl';
 language = language in messages ? language : 'en';
 
 root.render(

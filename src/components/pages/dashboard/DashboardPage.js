@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { FormattedMessage } from 'react-intl';
 import { BuildRequests } from 'angles-javascript-client';
 import {
   DateRangePicker,
@@ -286,7 +287,12 @@ const DashboardPage = function (props) {
         <div className="alert alert-primary" role="alert">
           <span>
             <i className="fas fa-spinner fa-pulse fa-2x" />
-            <span>{` Retrieving builds for ${currentTeam.name}`}</span>
+            <span>
+              <FormattedMessage
+                id="page.dashboard.message.retrieving-builds"
+                values={{ teamName: currentTeam.name }}
+              />
+            </span>
           </span>
         </div>
       ) : (
@@ -294,7 +300,11 @@ const DashboardPage = function (props) {
           <Affix>
             <Stack className="rg-stack" spacing={10}>
               <SelectPicker
-                label="Team"
+                label={(
+                  <FormattedMessage
+                    id="page.dashboard.filters.label.team"
+                  />
+                )}
                 cleanable={false}
                 appearance="subtle"
                 data={teams.map((team) => ({ label: team.name, value: team._id }))}
@@ -306,7 +316,11 @@ const DashboardPage = function (props) {
                 }}
               />
               <DateRangePicker
-                label="Date Range"
+                label={(
+                  <FormattedMessage
+                    id="page.dashboard.filters.label.period"
+                  />
+                )}
                 value={[startDate.toDate(), endDate.toDate()]}
                 format="dd-MMM-yyyy"
                 character=" - "
@@ -320,11 +334,15 @@ const DashboardPage = function (props) {
                 ranges={getDateRangesPicker()}
               />
               <SelectPicker
-                label="Display Limit"
+                label={(
+                  <FormattedMessage
+                    id="page.dashboard.filters.label.display-limit"
+                  />
+                )}
                 data={limitValues}
                 appearance="default"
                 cleanable={false}
-                style={{ width: 170 }}
+                style={{ width: 190 }}
                 defaultValue={limit}
                 searchable={false}
                 onChange={handleLimitChange}
@@ -345,21 +363,33 @@ const DashboardPage = function (props) {
               <Col xs={8}>
                 <Panel className="trend-box bg-gradient-red">
                   <ReviewPassIcon size="3x" className="chart-icon" />
-                  <div className="title">Total Test Runs </div>
+                  <div className="title">
+                    <FormattedMessage
+                      id="page.dashboard.panel.total-test-runs"
+                    />
+                  </div>
                   <div className="value">{totalTestRuns}</div>
                 </Panel>
               </Col>
               <Col xs={8}>
                 <Panel className="trend-box bg-gradient-green">
                   <DocPassIcon size="3x" className="chart-icon" />
-                  <div className="title">Total Test Executions </div>
+                  <div className="title">
+                    <FormattedMessage
+                      id="page.dashboard.panel.total-test-executions"
+                    />
+                  </div>
                   <div className="value">{totalExecutions}</div>
                 </Panel>
               </Col>
               <Col xs={8}>
                 <Panel className="trend-box bg-gradient-blue">
                   <WaitIcon size="3x" className="chart-icon" />
-                  <div className="title">Total Execution Time</div>
+                  <div className="title">
+                    <FormattedMessage
+                      id="page.dashboard.panel.total-execution-time"
+                    />
+                  </div>
                   <div className="value">{getDurationAsString(moment.duration(totalTimeMs))}</div>
                 </Panel>
               </Col>
@@ -402,21 +432,27 @@ const DashboardPage = function (props) {
                                 disabled={!multipleBuildsSelected()}
                                 onClick={() => navigateToMatrix()}
                               >
-                                Compare Test Runs
+                                <FormattedMessage
+                                  id="page.dashboard.menu.compare-test-runs"
+                                />
                               </Dropdown.Item>
                               <Dropdown.Item
                                 icon={<TagLockIcon />}
                                 disabled={!anyBuildsSelected()}
                                 onClick={() => toggleBuildsToKeep()}
                               >
-                                Toggle Keep Flag
+                                <FormattedMessage
+                                  id="page.dashboard.menu.toggle-keep-flag"
+                                />
                               </Dropdown.Item>
                               <Dropdown.Item
                                 icon={<ReloadIcon />}
                                 disabled={!anyBuildsSelected()}
                                 onClick={() => clearSelection()}
                               >
-                                Clear Selection
+                                <FormattedMessage
+                                  id="page.dashboard.menu.clear-selection"
+                                />
                               </Dropdown.Item>
                             </>
                           ) : (
@@ -424,7 +460,9 @@ const DashboardPage = function (props) {
                               icon={<RemindFillIcon />}
                               disabled
                             >
-                              Please select at least one test run
+                              <FormattedMessage
+                                id="page.dashboard.menu.one-select-message"
+                              />
                             </Dropdown.Item>
                           )
                         }

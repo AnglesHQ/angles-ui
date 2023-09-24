@@ -1,0 +1,45 @@
+{
+  "nav.dashboard": "Dashboard",
+  "nav.execution-metrics": "Execution Metrics",
+  "nav.screenshot-library": "Screenshot Library",
+  "nav.about": "About Angles",
+
+  "app.utils.duration.seconds": "{seconds} seconds",
+  "app.utils.duration.minutes": "{minutes} minutes",
+  "app.utils.duration.hours": "{hours} hours",
+  "app.utils.duration.not-started": "Not started",
+  "app.utils.date-range-picker.number-of-days": "Last {days} days",
+
+  "app.retrieving-teams": "Retrieving teams...",
+  "app.retrieving-teams-error": "Something went wrong [{teamsError}]",
+
+  "app.result.pass": "Pass",
+  "app.result.fail": "Fail",
+  "app.result.skipped": "Skipped",
+  "app.result.error": "Error",
+  "app.result.total": "Total",
+
+  "page.dashboard.message.retrieving-builds": "Retrieving builds for {teamName}...",
+  "page.dashboard.filters.label.team": "Team",
+  "page.dashboard.filters.label.period": "Period",
+  "page.dashboard.filters.label.display-limit": "Display Limit",
+
+  "page.dashboard.panel.total-test-runs": "Total Test Runs",
+  "page.dashboard.panel.total-test-executions": "Total Test Executions",
+  "page.dashboard.panel.total-execution-time": "Total Execution Time",
+
+  "page.dashboard.builds-table.header.build-details": "Build Details",
+  "page.dashboard.builds-table.header.date-time": "Date/Time",
+  "page.dashboard.builds-table.header.component": "Component",
+  "page.dashboard.builds-table.header.environment": "Environment",
+  "page.dashboard.builds-table.header.result": "Result",
+
+  "page.dashboard.menu.compare-test-runs": "Compare Test Runs",
+  "page.dashboard.menu.toggle-keep-flag": "Toggle Keep Flag",
+  "page.dashboard.menu.clear-selection": "Clear Selection",
+  "page.dashboard.menu.one-select-message": "Please select at least one test run",
+
+  "page.dashboard.execution-barchart.execution-time-seconds": "ExecutionTime (Seconds)"
+
+
+}

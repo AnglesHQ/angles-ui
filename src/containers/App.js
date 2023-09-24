@@ -163,7 +163,11 @@ const App = function (props) {
             <Sidenav.Body>
               <Nav>
                 <Nav.Item eventKey="1" icon={<DocPass />} href="/">
-                  <span>Dashboard</span>
+                  <span>
+                    <FormattedMessage
+                      id="nav.dashboard"
+                    />
+                  </span>
                 </Nav.Item>
                 <Nav.Item eventKey="2" icon={<BarChart />} href="/metrics">
                   <span>
@@ -180,7 +184,11 @@ const App = function (props) {
                   </span>
                 </Nav.Item>
                 <Nav.Item eventKey="4" icon={<InfoRound />} href="/about">
-                  <span>About Angles</span>
+                  <span>
+                    <FormattedMessage
+                      id="nav.about"
+                    />
+                  </span>
                 </Nav.Item>
               </Nav>
             </Sidenav.Body>
@@ -292,7 +300,10 @@ const App = function (props) {
                       <span>
                         <i className="fas fa-exclamation" />
                         <span className="teams-error-message">
-                          {`Something went wrong [${teamsError}]`}
+                          <FormattedMessage
+                            id="app.retrieving-teams-error"
+                            values={{ teamsError }}
+                          />
                         </span>
                       </span>
                     </div>
@@ -301,7 +312,11 @@ const App = function (props) {
                       <div key="retrieving-teams" className="alert alert-primary" role="alert">
                         <span>
                           <i className="fas fa-spinner fa-pulse fa-2x" />
-                          <span>Retrieving teams</span>
+                          <span>
+                            <FormattedMessage
+                              id="app.retrieving-teams"
+                            />
+                          </span>
                         </span>
                       </div>
                     ) : (

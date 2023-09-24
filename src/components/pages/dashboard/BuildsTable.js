@@ -1,5 +1,6 @@
 import React from 'react';
 import Moment from 'react-moment';
+import { FormattedMessage } from 'react-intl';
 import TimeIcon from '@rsuite/icons/Time';
 import TreeIcon from '@rsuite/icons/Tree';
 import TagLockIcon from '@rsuite/icons/TagLock';
@@ -165,15 +166,27 @@ const BuildsTable = function (props) {
           <CheckCell isRowSelected={isRowSelected} toggleSelectedBuild={toggleSelectedBuild} />
         </Column>
         <Column flexGrow={4}>
-          <HeaderCell>Build Details</HeaderCell>
+          <HeaderCell>
+            <FormattedMessage
+              id="page.dashboard.builds-table.header.build-details"
+            />
+          </HeaderCell>
           <BuildDetailsCell />
         </Column>
         <Column flexGrow={2}>
-          <HeaderCell>Date/Time</HeaderCell>
+          <HeaderCell>
+            <FormattedMessage
+              id="page.dashboard.builds-table.header.date-time"
+            />
+          </HeaderCell>
           <DateCell />
         </Column>
         <Column flexGrow={2}>
-          <HeaderCell>Component</HeaderCell>
+          <HeaderCell>
+            <FormattedMessage
+              id="page.dashboard.builds-table.header.component"
+            />
+          </HeaderCell>
           <Cell>
             {
               (rowData) => getComponentName(rowData).name
@@ -181,12 +194,18 @@ const BuildsTable = function (props) {
           </Cell>
         </Column>
         <Column flexGrow={2}>
-          <HeaderCell>Environment</HeaderCell>
+          <HeaderCell>
+            <FormattedMessage
+              id="page.dashboard.builds-table.header.environment"
+            />
+          </HeaderCell>
           <Cell dataKey="environment.name" />
         </Column>
         <Column flexGrow={3}>
           <HeaderCell>
-            <span>Result</span>
+            <FormattedMessage
+              id="page.dashboard.builds-table.header.result"
+            />
           </HeaderCell>
           <ResultCell />
         </Column>

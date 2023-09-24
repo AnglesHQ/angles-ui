@@ -1,4 +1,43 @@
 {
+  "nav.dashboard": "Dashboard",
   "nav.execution-metrics": "Test Statistieken ",
-  "nav.screenshot-library": "Screenshot Bibliotheek"
+  "nav.screenshot-library": "Screenshot Bibliotheek",
+  "nav.about": "Over Angles",
+
+  "app.utils.duration.seconds": "{seconds} seconden",
+  "app.utils.duration.minutes": "{minutes} minuten",
+  "app.utils.duration.hours": "{hours} uren",
+  "app.utils.duration.not-started": "Nog niet begonnen",
+  "app.utils.date-range-picker.number-of-days": "Laatste {days} dagen",
+
+  "app.retrieving-teams": "Teams aan het ophalen...",
+  "app.retrieving-teams-error": "Er is iets misgegaan [{teamsError}]",
+
+  "app.result.pass": "Geslaagd",
+  "app.result.fail": "Mislukt",
+  "app.result.skipped": "Overgeslagen",
+  "app.result.error": "Fout",
+  "app.result.total": "Totaal",
+
+  "page.dashboard.message.retrieving-builds": "Test runs aan het ophalen voor {teamName}...",
+  "page.dashboard.filters.label.team": "Team",
+  "page.dashboard.filters.label.period": "Periode",
+  "page.dashboard.filters.label.display-limit": "Weergave Limiet",
+
+  "page.dashboard.panel.total-test-runs": "Totaal Aantal Test Runs",
+  "page.dashboard.panel.total-test-executions": "Totaal Aantal Tests",
+  "page.dashboard.panel.total-execution-time": "Totale Uitvoertijd",
+
+  "page.dashboard.builds-table.header.build-details": "Test Run Details",
+  "page.dashboard.builds-table.header.date-time": "Datum/Tijd",
+  "page.dashboard.builds-table.header.component": "Component",
+  "page.dashboard.builds-table.header.environment": "Omgeving",
+  "page.dashboard.builds-table.header.result": "Resultaat",
+
+  "page.dashboard.menu.compare-test-runs": "Vergelijk test runs",
+  "page.dashboard.menu.toggle-keep-flag": "Schakel houd vlag om",
+  "page.dashboard.menu.clear-selection": "Verwijder selectie",
+  "page.dashboard.menu.one-select-message": "Selecteer tenminste 1 test run",
+
+  "page.dashboard.execution-barchart.execution-time-seconds": "Uitvoertijd (Seconden)"
 }
