@@ -1,4 +1,10 @@
 import React, { useContext, useEffect } from 'react';
+import {
+  Row,
+  Grid,
+  Col,
+  Panel,
+} from 'rsuite';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import ExpandOutlineIcon from '@rsuite/icons/ExpandOutline';
@@ -7,7 +13,7 @@ import PlusRoundIcon from '@rsuite/icons/PlusRound';
 import { getDuration } from '../../utility/TimeUtilities';
 import ExecutionTable from './ExecutionTable';
 import ExecutionStateContext from '../../context/ExecutionStateContext';
-// import './Tables.css';
+import ExecutionsResultsBar from '../common/ExecutionsResultsBar';
 
 const SuiteTable = function (props) {
   const {
@@ -17,7 +23,12 @@ const SuiteTable = function (props) {
     setDefaultStates,
     isSuiteExpanded,
   } = useContext(ExecutionStateContext);
-  const { suite, screenshots, openModal } = props;
+  const {
+    suite,
+    index: suiteIndex,
+    screenshots,
+    openModal,
+  } = props;
 
   const sum = (result) => {
     if (result === null || result === undefined) {
@@ -45,65 +56,55 @@ const SuiteTable = function (props) {
   };
 
   return (
-    <table className="suite-table">
-      <thead>
-        <tr>
-          <th scope="col">{`Suite: ${suite.name}`}</th>
-          <td>
-            <span className="suite-header">Status: </span>
-            <span className={`suite-result-${suite.status}`}>
-              {suite.status}
-            </span>
-          </td>
-          <td>
-            <span className="suite-header">Duration: </span>
-            {getDuration(suite)}
-          </td>
-          <td>
-            <span className="suite-header">Total: </span>
-            {sum(suite.result)}
-          </td>
-          <td>
-            <span className="suite-header">Pass: </span>
-            {suite.result ? suite.result.PASS : '-'}
-          </td>
-          <td>
-            <span className="suite-header">Fail: </span>
-            {suite.result ? suite.result.FAIL : '-'}
-          </td>
-          <td>
-            <span className="suite-header">Error: </span>
-            {suite.result ? suite.result.ERROR : '-'}
-          </td>
-          <td>
-            <span className="suite-header">Skipped: </span>
-            {suite.result ? suite.result.SKIPPED : '-'}
-          </td>
-          <td>
-            <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{`Expand all test cases and actions for suite ${suite.name}`}</Tooltip>}>
-              <span className="expand-icons" onClick={() => expandAll()}>
-                <PlusRoundIcon />
-              </span>
-            </OverlayTrigger>
-            {
-              isSuiteExpanded(suite) ? (
-                <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{`Collapse all test cases and actions for suite ${suite.name}`}</Tooltip>}>
-                  <span className="expand-icons" onClick={() => collapseAll()}>
-                    <CollaspedOutlineIcon />
-                  </span>
-                </OverlayTrigger>
-              ) : (
-                <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{`Expand all test cases for suite ${suite.name}`}</Tooltip>}>
-                  <span className="expand-icons" onClick={() => expandExecutions()}>
-                    <ExpandOutlineIcon />
-                  </span>
-                </OverlayTrigger>
-              )
-            }
-          </td>
-        </tr>
-      </thead>
-      <tbody>
+    <>
+      <div key={suite.name} className="test-suite-header">
+        <Grid fluid>
+          <Row className="show-grid">
+            <Col xs={1}>
+              <span>{suiteIndex + 1}</span>
+            </Col>
+            <Col xs={15}>
+              <div>
+                <span className="field-label">Suite: </span>
+                {suite.name}
+              </div>
+              <div>
+                <span className="field-label">Duration: </span>
+                {getDuration(suite)}
+              </div>
+            </Col>
+            <Col xs={2}>
+              {`Total: ${sum(suite.result)}`}
+            </Col>
+            <Col xs={4}>
+              <ExecutionsResultsBar result={suite.result} />
+            </Col>
+            <Col xs={2} className="suite-menu-div">
+              <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{`Expand all test cases and actions for suite ${suite.name}`}</Tooltip>}>
+                <span className="expand-icons" onClick={() => expandAll()}>
+                  <PlusRoundIcon />
+                </span>
+              </OverlayTrigger>
+              {
+                isSuiteExpanded(suite) ? (
+                  <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{`Collapse all test cases and actions for suite ${suite.name}`}</Tooltip>}>
+                    <span className="expand-icons" onClick={() => collapseAll()}>
+                      <CollaspedOutlineIcon />
+                    </span>
+                  </OverlayTrigger>
+                ) : (
+                  <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{`Expand all test cases for suite ${suite.name}`}</Tooltip>}>
+                    <span className="expand-icons" onClick={() => expandExecutions()}>
+                      <ExpandOutlineIcon />
+                    </span>
+                  </OverlayTrigger>
+                )
+              }
+            </Col>
+          </Row>
+        </Grid>
+      </div>
+      <Panel>
         {
           suite.executions.map((execution) => [
             <ExecutionTable
@@ -114,9 +115,9 @@ const SuiteTable = function (props) {
               openModal={openModal}
             />,
           ])
-      }
-      </tbody>
-    </table>
+        }
+      </Panel>
+    </>
   );
 };
 

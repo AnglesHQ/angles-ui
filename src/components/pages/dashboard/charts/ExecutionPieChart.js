@@ -43,6 +43,7 @@ const ExecutionPieChart = function (props) {
   const { data, labels } = generatePieChartData(testRunMetrics);
   return (
     <Panel
+      style={{ height: '500px' }}
       className="chart-panel"
       header={(
         <Stack justifyContent="space-between">
@@ -53,8 +54,7 @@ const ExecutionPieChart = function (props) {
       <Chart
         series={data}
         type="pie"
-        height={350}
-        max-width={500}
+        height={400}
         /* eslint-disable-next-line prefer-object-spread */
         options={Object.assign({}, defaultOptions, { labels })}
       />

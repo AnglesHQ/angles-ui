@@ -70,7 +70,9 @@ const generateResultsData = (builds) => {
     FAIL: [],
     executionTimes: [],
   };
-  builds.forEach((build) => {
+
+  const buildsToReverse = [...builds];
+  buildsToReverse.reverse().forEach((build) => {
     const {
       PASS,
       SKIPPED,
@@ -101,6 +103,7 @@ const ExecutionBarChart = function (props) {
   const { data, labels } = graphData;
   return (
     <Panel
+      style={{ height: '500px' }}
       className="chart-panel"
       header={(
         <Stack justifyContent="space-between">
@@ -111,8 +114,7 @@ const ExecutionBarChart = function (props) {
       <Chart
         series={data}
         type="line"
-        height={350}
-        max-width={500}
+        height={425}
         /* eslint-disable-next-line prefer-object-spread */
         options={Object.assign({}, defaultOptions, undefined, { labels })}
       />

@@ -12,7 +12,16 @@
         top: 1px;
     }
 
-    button:focus {
+    .nav-link {
+        background-color: nav(--panel-background);
+    }
+
+    .nav-link:active {
+        background-color: nav(--panel-background);
+        color: var(--font-color-4);
+    }
+    .nav-link:focus {
         outline: none;
+        background-color: nav(--panel-background);
     }
 }

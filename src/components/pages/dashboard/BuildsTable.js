@@ -151,6 +151,7 @@ const BuildsTable = function (props) {
         headerHeight={40}
         height={500}
         data={builds}
+        hover={false}
         id="builds-table"
       >
         <Column width={50} align="center">

@@ -6,6 +6,12 @@ import moment from 'moment/moment';
 import { connect } from 'react-redux';
 import { saveAs } from 'file-saver';
 import FileDownloadIcon from '@rsuite/icons/FileDownload';
+import TagLockIcon from '@rsuite/icons/TagLock';
+import MenuIcon from '@rsuite/icons/Menu';
+import TimeIcon from '@rsuite/icons/Time';
+import ReviewPassIcon from '@rsuite/icons/ReviewPass';
+import ReviewRefuseIcon from '@rsuite/icons/ReviewRefuse';
+import InfoRoundIcon from '@rsuite/icons/InfoRound';
 import { BuildRequests, ScreenshotRequests } from 'angles-javascript-client';
 import { useLocation } from 'react-router-dom';
 import {
@@ -14,6 +20,11 @@ import {
   Col,
   Grid,
   Steps,
+  Dropdown,
+  IconButton,
+  FlexboxGrid,
+  Whisper,
+  Tooltip,
 } from 'rsuite';
 import SuiteTable from '../../tables/SuiteTable';
 import BuildArtifacts from '../../tables/BuildArtifacts';
@@ -133,6 +144,33 @@ const TestRunDetailsPage = function (props) {
   const getComponentName = (build) => build.team.components
     .find((component) => component._id === build.component);
 
+  // eslint-disable-next-line no-shadow
+  const renderIconButton = (props, ref) => (
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    <IconButton {...props} ref={ref} icon={<MenuIcon />} />
+  );
+
+  const toggleKeep = (build) => {
+    const { _id: buildId, keep } = build;
+    buildRequests.setKeep(buildId, !keep)
+      .then(() => {
+        setCurrentBuild({ ...build, keep: !keep });
+      });
+  };
+
+  const getTestRunEndIcon = (build) => {
+    if (build.status === 'FAIL') {
+      return <ReviewRefuseIcon className="test-run-end-icon-fail" />;
+    }
+    if (build.status === 'PASS') {
+      return <ReviewPassIcon className="test-run-end-icon-pass" />;
+    }
+    if (build.status === 'ERROR') {
+      return <ReviewRefuseIcon className="test-run-end-icon-error" />;
+    }
+    return <InfoRoundIcon className="test-run-end-icon-info" />;
+  };
+
   return (
     // eslint-disable-next-line no-nested-ternary
     (!currentBuild || !screenshots) ? (
@@ -157,42 +195,95 @@ const TestRunDetailsPage = function (props) {
       ) : (
         <div>
           <Grid fluid>
-            <Row gutter={30} className="test-run-header">
+            <Row gutter={30} className="test-run-row">
+              <div className="test-run-download-icon">
+                <Dropdown
+                  className="test-run-download-button"
+                  renderToggle={renderIconButton}
+                  placement="bottomEnd"
+                >
+                  <Dropdown.Item
+                    icon={<FileDownloadIcon />}
+                    disabled={!downloadReportButtonEnabled}
+                    onClick={() => { downloadReport(currentBuild._id); }}
+                  >
+                    Download Report as HTML file
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    icon={<TagLockIcon />}
+                    onClick={() => { toggleKeep(currentBuild); }}
+                  >
+                    {
+                      (!currentBuild.keep) ? (
+                        'Enable the Keep flag.'
+                      ) : (
+                        'Disable the Keep flag.'
+                      )
+                    }
+                  </Dropdown.Item>
+                </Dropdown>
+              </div>
               <Col xs={24}>
                 <Panel
-                  bordered
+                  className="test-run-header"
                   header={(
-                    <span>{currentBuild.name}</span>
+                    <div className="test-run-header-panel">
+                      <Whisper
+                        placement="right"
+                        controlId="control-id-hover"
+                        trigger="hover"
+                        speaker={(
+                          <Tooltip>
+                            {`Status: ${currentBuild.status}`}
+                          </Tooltip>
+                        )}
+                      >
+                        <span>{getTestRunEndIcon(currentBuild)}</span>
+                      </Whisper>
+                      { `${currentBuild.name}` }
+                    </div>
                   )}
                 >
-                  <div>
-                    <span>{ `Name: ${currentBuild.name}` }</span>
-                    <button
-                      id="report-download"
-                      type="button"
-                      disabled={!downloadReportButtonEnabled}
-                      onClick={() => { downloadReport(currentBuild._id); }}
-                    >
-                      <FileDownloadIcon />
-                    </button>
-                  </div>
-                  <div>{ `Component: ${getComponentName(currentBuild).name}` }</div>
-                  <div>
+                  <div className="test-run-steps">
                     <Steps current={3}>
-                      <Steps.Item title="Start" description={moment.utc(moment(currentBuild.start)).format('DD-MM-YYYY HH:mm:ss')} />
-                      <Steps.Item title="Duration" description={getDuration(currentBuild)} />
-                      <Steps.Item title="End" description={moment.utc(moment(currentBuild.end)).format('DD-MM-YYYY HH:mm:ss')} />
+                      <Steps.Item
+                        title="Start"
+                        description={moment.utc(moment(currentBuild.start)).format('DD MMM - HH:mm:ss')}
+                      />
+                      <Steps.Item
+                        title="Duration"
+                        description={getDuration(currentBuild)}
+                        className="test-run-duration"
+                        icon={
+                          <TimeIcon className="test-run-duration-icon" />
+                        }
+                      />
+                      <Steps.Item
+                        title="End"
+                        className="test-run-end"
+                        description={moment.utc(moment(currentBuild.end)).format('DD MMM - HH:mm:ss')}
+                      />
                     </Steps>
                   </div>
+                  <FlexboxGrid className="test-run-details-grid" justify="space-between">
+                    <FlexboxGrid.Item colspan={6} className="test-run-details-grid-item">
+                      <span>Team: </span>
+                      {currentBuild.team.name}
+                    </FlexboxGrid.Item>
+                    <FlexboxGrid.Item colspan={6} className="test-run-details-grid-item">
+                      <span>Component: </span>
+                      {getComponentName(currentBuild).name}
+                    </FlexboxGrid.Item>
+                    <FlexboxGrid.Item colspan={6} className="test-run-details-grid-item">
+                      <span>Phase: </span>
+                      {currentBuild.phase.name}
+                    </FlexboxGrid.Item>
+                  </FlexboxGrid>
+                  <BuildArtifacts build={currentBuild} />
                 </Panel>
               </Col>
             </Row>
-            <Row gutter={30} className="dashboard-header">
-              <Col xs={24}>
-                <BuildArtifacts build={currentBuild} />
-              </Col>
-            </Row>
-            <Row gutter={30} className="dashboard-header">
+            <Row gutter={30} className="test-run-row">
               <Col xs={12}>
                 <ExecutionPieChart currentBuild={currentBuild} />
               </Col>
@@ -200,15 +291,16 @@ const TestRunDetailsPage = function (props) {
                 <FeaturePieChart currentBuild={currentBuild} />
               </Col>
             </Row>
-            <Row gutter={30} className="dashboard-header">
+            <Row gutter={30} className="test-run-row">
               <Col xs={24}>
                 <div>
                   {
-                    filteredSuites.map((suite) => (
+                    filteredSuites.map((suite, index) => (
                       suite.executions.length > 0 ? (
                         <ExecutionStateProvider key={`state-provider-${suite.name}`}>
                           <SuiteTable
                             key={`${suite.name}`}
+                            index={index}
                             suite={suite}
                             screenshots={screenshots}
                             openModal={openModal}

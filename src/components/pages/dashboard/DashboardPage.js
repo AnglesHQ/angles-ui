@@ -344,14 +344,14 @@ const DashboardPage = function (props) {
             <Row gutter={30} className="dashboard-header">
               <Col xs={8}>
                 <Panel className="trend-box bg-gradient-red">
-                  <DocPassIcon size="3x" className="chart-icon" />
+                  <ReviewPassIcon size="3x" className="chart-icon" />
                   <div className="title">Total Test Runs </div>
                   <div className="value">{totalTestRuns}</div>
                 </Panel>
               </Col>
               <Col xs={8}>
                 <Panel className="trend-box bg-gradient-green">
-                  <ReviewPassIcon size="3x" className="chart-icon" />
+                  <DocPassIcon size="3x" className="chart-icon" />
                   <div className="title">Total Test Executions </div>
                   <div className="value">{totalExecutions}</div>
                 </Panel>

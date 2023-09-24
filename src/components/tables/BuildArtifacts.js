@@ -9,7 +9,11 @@ const BuildArtifacts = function (props) {
 
   return (
     (!artifacts || artifacts.length === 0) ? null : (
-      <Table data={artifacts} id="build-artifacts">
+      <Table
+        data={artifacts}
+        id="build-artifacts"
+        hover={false}
+      >
         <Column>
           <HeaderCell>Group Id</HeaderCell>
           <Cell dataKey="groupId" />

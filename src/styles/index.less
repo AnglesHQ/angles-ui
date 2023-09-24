@@ -44,7 +44,7 @@
         --master-color-4: #CDCDCD;
         --master-color-5: #2c2e3e;
 
-        --font-color-1: black;
+        --font-color-1: white;
         --font-color-2: #c5c5c5;
         --font-color-3: white;
         --font-color-4: #ee8308;
@@ -90,17 +90,22 @@ body {
         }
     }
 
-    .rs-sidenav-item:hover {
+    .rs-sidenav-item {
         color: var(--font-color-2);
     }
     .rs-sidenav-item:hover {
-        color: var(--font-color-4);
+        color: var(--font-color-1);
+        background-color: var(--master-color-1);
     }
 }
 
 // modifying the default rsuite table
 .rs-table {
     background-color: transparent;
+    border-bottom: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
 
     .rs-table-scrollbar {
         background-color: var(--master-color-1);
@@ -125,17 +130,27 @@ body {
     }
 
     .rs-table-row {
+        border-bottom: 2px solid var(--master-color-5);
         background-color: var(--master-color-5);
+
+        .rs-table-cell {
+            background-color: transparent;
+            border-bottom: none;
+        }
+
+    }
+
+    .rs-table-row:hover {
+        background-color: transparent !important;
     }
 
     .rs-table-body-row-wrapper {
-
         color: var(--font-color-2);
-        background-color: var(--master-color-5);
 
         .rs-table-cell-content {
             background-color: var(--master-color-5);
         }
+
         .rs-table-row:last-child {
             .rs-table-cell-first {
                 border-bottom-left-radius: 7px;
@@ -154,10 +169,16 @@ body {
 
 .rs-picker {
     padding-right: 5px;
-}
-.rs-picker-toggle-value {
-    color: var(--font-color-4) !important;
-    font-size: 1em;
+
+    .rs-picker-toggle:hover {
+        background-color: var(--panel-background);
+    }
+
+    .rs-picker-toggle-value {
+        color: var(--font-color-4) !important;
+        font-size: 1em;
+    }
+
 }
 
 .rs-pagination-btn {

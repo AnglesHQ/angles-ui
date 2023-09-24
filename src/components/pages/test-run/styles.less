@@ -1,3 +1,127 @@
+
+.test-run-download-icon {
+  position: relative;
+  .test-run-download-button {
+    position: absolute;
+    right: 0;
+    z-index: 2;
+  }
+}
+
+.test-run-row {
+  background-color: var(--panel-background);
+  border-radius: 5px;
+  margin: 1em;
+  padding: 1em;
+}
+
 .test-run-header {
-  color: var(--font-color-1)
+  color: var(--font-color-1);
+  background-color: var(--panel-background);
+  max-width: 1300px;
+  margin: auto;
+
+  .test-run-header-panel {
+    background-color: var(--panel-background);
+    color: var(--font-color-1);
+    font-size: 3em;
+    font-weight: bold;
+    text-align: center;
+
+    .test-run-end-icon-fail {
+      color: var(--fail-color);
+      margin-right: 10px;
+      font-size: 35px;
+    }
+    .test-run-end-icon-pass {
+      color: var(--pass-color);
+      margin-right: 10px;
+      font-size: 35px;
+    }
+    .test-run-end-icon-error {
+      color: var(--error-color);
+      margin-right: 10px;
+      font-size: 35px;
+    }
+    .test-run-end-icon-info {
+      color: var(--info-color);
+      margin-right: 10px;
+      font-size: 35px;
+    }
+  }
+
+  .test-run-steps {
+    padding-bottom: 20px;
+
+    .rs-steps-item-description {
+      color: var(--font-color-1);
+      margin-left: -40px;
+    }
+    .rs-steps-item-title {
+      color: var(--font-color-1);
+    }
+    .test-run-duration {
+      .rs-steps-item-description {
+        font-size: 1.7em;
+      }
+      .test-run-duration-icon {
+        font-size: 28px;
+      }
+    }
+  }
+
+  .test-run-details-grid {
+    padding: 20px 0  10px 0;
+    font-size: 1.3em;
+    border-top: 1px solid #8d8d8d54;
+
+    .test-run-details-grid-item > span {
+      font-weight: bold;
+    }
+    :nth-child(2) {
+      text-align: center;
+    }
+    :last-child {
+      text-align: right;
+    }
+  }
+
+  .test-run-results-panel {
+    background-color: var(--body-background);
+
+    .test-run-status-grid {
+      padding: 10px 0  0 0;
+      font-size: 1.3em;
+
+      .test-run-details-grid-item > span {
+        font-weight: bold;
+      }
+
+      :nth-child(2) {
+        text-align: center;
+      }
+
+      .test-run-lock-icon{
+        color: dodgerblue;
+        font-size: 2em;
+      }
+    }
+  }
+}
+
+.test-suite-header {
+  background: var(--master-color-1);
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+  color: var(--font-color-3);
+  margin: auto;
+  height: 4em;
+
+  .field-label {
+    font-weight: bold;
+  }
+
+  .suite-menu-div {
+    margin: auto;
+  }
 }
