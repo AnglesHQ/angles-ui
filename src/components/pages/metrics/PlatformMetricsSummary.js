@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
 import { Table } from 'rsuite';
 import { getDurationAsString } from '../../../utility/TimeUtilities';
@@ -100,19 +101,27 @@ const PlatformMetricsSummary = function (props) {
           <Cell dataKey="index" />
         </Column>
         <Column flexGrow={4}>
-          <HeaderCell>Platform</HeaderCell>
+          <HeaderCell>
+            <FormattedMessage id="page.metrics.platform-metrics-summary.label.platform" />
+          </HeaderCell>
           <Cell dataKey="platform.platformName" />
         </Column>
         <Column flexGrow={2}>
-          <HeaderCell>Version</HeaderCell>
+          <HeaderCell>
+            <FormattedMessage id="page.metrics.platform-metrics-summary.label.version" />
+          </HeaderCell>
           <Cell dataKey="platform.platformVersion" />
         </Column>
         <Column flexGrow={4}>
-          <HeaderCell>Device</HeaderCell>
+          <HeaderCell>
+            <FormattedMessage id="page.metrics.platform-metrics-summary.label.device" />
+          </HeaderCell>
           <Cell dataKey="platform.deviceName" />
         </Column>
         <Column flexGrow={1}>
-          <HeaderCell>Total</HeaderCell>
+          <HeaderCell>
+            <FormattedMessage id="page.metrics.platform-metrics-summary.label.total" />
+          </HeaderCell>
           <Cell>
             {
               (rowData) => rowData.result.TOTAL
@@ -120,7 +129,9 @@ const PlatformMetricsSummary = function (props) {
           </Cell>
         </Column>
         <Column flexGrow={4}>
-          <HeaderCell>Result</HeaderCell>
+          <HeaderCell>
+            <FormattedMessage id="page.metrics.platform-metrics-summary.label.result" />
+          </HeaderCell>
           <Cell>
             {
               (rowData) => <ExecutionsResultsBar result={rowData.result} />
@@ -128,7 +139,9 @@ const PlatformMetricsSummary = function (props) {
           </Cell>
         </Column>
         <Column flexGrow={2}>
-          <HeaderCell>Duration</HeaderCell>
+          <HeaderCell>
+            <FormattedMessage id="page.metrics.platform-metrics-summary.label.duration" />
+          </HeaderCell>
           <Cell>
             {
               (rowData) => getDurationAsString(moment.duration(rowData.duration))

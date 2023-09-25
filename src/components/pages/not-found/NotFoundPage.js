@@ -10,13 +10,11 @@ const NotFoundPage = function () {
       <Message
         type="warning"
         message={(
-          <>
-            <span>
-              Oops, we were unable to find the &quot;Angle&quot; you were looking for. Click
-            </span>
+          <span>
+            Oops, we were unable to find the &quot;Angle&quot; you were looking for. Click
             <a href="/" target="_self"> here </a>
-            <span>to go back to home page.</span>
-          </>
+            to go back to home page.
+          </span>
         )}
       />
     </Panel>

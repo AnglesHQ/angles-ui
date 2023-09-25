@@ -1,6 +1,6 @@
 {
   "nav.dashboard": "Dashboard",
-  "nav.execution-metrics": "Test Statistieken ",
+  "nav.execution-metrics": "Statistieken ",
   "nav.screenshot-library": "Screenshot Bibliotheek",
   "nav.about": "Over Angles",
 
@@ -30,7 +30,7 @@
 
   "page.dashboard.builds-table.header.build-details": "Test Run Details",
   "page.dashboard.builds-table.header.date-time": "Datum/Tijd",
-  "page.dashboard.builds-table.header.component": "Component",
+  "page.dashboard.builds-table.header.component": "Onderdeel",
   "page.dashboard.builds-table.header.environment": "Omgeving",
   "page.dashboard.builds-table.header.result": "Resultaat",
 
@@ -39,5 +39,29 @@
   "page.dashboard.menu.clear-selection": "Verwijder selectie",
   "page.dashboard.menu.one-select-message": "Selecteer tenminste 1 test run",
 
-  "page.dashboard.execution-barchart.execution-time-seconds": "Uitvoertijd (Seconden)"
+  "page.dashboard.execution-barchart.execution-time-seconds": "Uitvoertijd (Seconden)",
+
+  "page.metrics.bread-crumb": "Statistieken",
+  "page.metrics.filters.labels.team": "Team",
+  "page.metrics.filters.labels.component": "Onderdeel",
+  "page.metrics.filters.labels.period": "Periode",
+  "page.metrics.filters.labels.group-by-period": "Weergave Periode",
+  "page.metrics.filters.button.retrieve-metrics": "Statistieken Ophalen",
+  "page.metrics.tab.execution-metrics": "Executie Statistieken",
+  "page.metrics.tab.platform-metrics": "Platform Statistieken",
+
+  "page.metrics.execution-metrics-summary.label.period": "Periode",
+  "page.metrics.execution-metrics-summary.label.number-of-tests":"Aantal test gevallen",
+  "page.metrics.execution-metrics-summary.label.number-of-runs": "Aantal test runs",
+  "page.metrics.execution-metrics-summary.label.number-of-executions": "Aantal test executies",
+  "page.metrics.execution-metrics-summary.label.result": "Resultaat",
+  "page.metrics.execution-metrics-summary.label.duration": "Looptijd",
+
+  "page.metrics.platform-metrics-summary.label.platform":"Platform",
+  "page.metrics.platform-metrics-summary.label.version":"Versie",
+  "page.metrics.platform-metrics-summary.label.device":"Aparaat",
+  "page.metrics.platform-metrics-summary.label.total":"Totaal",
+  "page.metrics.platform-metrics-summary.label.result":"Resultaat",
+  "page.metrics.platform-metrics-summary.label.duration":"Looptijd"
+
 }

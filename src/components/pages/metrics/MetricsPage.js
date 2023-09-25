@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import moment from 'moment';
+import { FormattedMessage } from 'react-intl';
 import queryString from 'query-string';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { MetricRequests } from 'angles-javascript-client';
@@ -152,7 +153,7 @@ const MetricsPage = function (props) {
             <SelectPicker
               cleanable={false}
               // searchable={false}
-              label="Team"
+              label={<FormattedMessage id="page.metrics.filters.labels.team" />}
               appearance="subtle"
               data={teams.map((team) => ({ label: team.name, value: team._id }))}
               value={selectedTeam}
@@ -166,7 +167,7 @@ const MetricsPage = function (props) {
               cleanable
               // searchable={false}
               appearance="subtle"
-              label="Component"
+              label={<FormattedMessage id="page.metrics.filters.labels.component" />}
               data={getComponents(selectedTeam)
                 .map((teamComponent) => ({ label: teamComponent.name, value: teamComponent._id }))}
               value={selectedComponent}
@@ -180,7 +181,7 @@ const MetricsPage = function (props) {
               }}
             />
             <DateRangePicker
-              label="Date Range"
+              label={<FormattedMessage id="page.metrics.filters.labels.period" />}
               value={[startDate.toDate(), endDate.toDate()]}
               format="dd-MMM-yyyy"
               character=" - "
@@ -193,7 +194,7 @@ const MetricsPage = function (props) {
               ranges={getDateRangesPicker()}
             />
             <SelectPicker
-              label="Group By Period"
+              label={<FormattedMessage id="page.metrics.filters.labels.group-by-period" />}
               cleanable={false}
               // searchable={false}
               appearance="subtle"
@@ -211,13 +212,15 @@ const MetricsPage = function (props) {
                 }
               }}
             />
-            <Button variant="primary" type="button" className="metrics-button" onClick={() => { onSubmit(); }}>Retrieve Metrics</Button>
+            <Button variant="primary" type="button" className="metrics-button" onClick={() => { onSubmit(); }}>
+              <FormattedMessage id="page.metrics.filters.button.retrieve-metrics" />
+            </Button>
           </Form>
         </Stack>
       </Affix>
       <div className="metrics-data-container">
         <Tabs className="execution-metrics-tabs" id="execution-metrics-tabs" activeKey={key} defaultActiveKey="execution" onSelect={(tabKey, evt) => setTab(tabKey, evt)}>
-          <Tab eventKey="execution" title="Execution Metrics">
+          <Tab eventKey="execution" title={<FormattedMessage id="page.metrics.tab.execution-metrics" />}>
             <Panel
               bordered
               className="execution-metrics-panel"
@@ -258,7 +261,7 @@ const MetricsPage = function (props) {
               }
             </Panel>
           </Tab>
-          <Tab eventKey="platform" title="Platform Metrics">
+          <Tab eventKey="platform" title={<FormattedMessage id="page.metrics.tab.platform-metrics" />}>
             <Panel
               bordered
               className="execution-metrics-panel"

@@ -28,7 +28,7 @@ import {
 } from 'rsuite';
 import SuiteTable from '../../tables/SuiteTable';
 import BuildArtifacts from '../../tables/BuildArtifacts';
-import ScreenshotView from '../ScreenshotView';
+import ScreenshotView from '../../common/screenshot-view/ScreenshotView';
 import {
   clearCurrentLoaderMessage,
   storeCurrentLoaderMessage,
@@ -244,6 +244,20 @@ const TestRunDetailsPage = function (props) {
                     </div>
                   )}
                 >
+                  <FlexboxGrid className="test-run-details-grid" justify="space-between">
+                    <FlexboxGrid.Item colspan={6} className="test-run-details-grid-item">
+                      <span>Team: </span>
+                      {currentBuild.team.name}
+                    </FlexboxGrid.Item>
+                    <FlexboxGrid.Item colspan={6} className="test-run-details-grid-item">
+                      <span>Component: </span>
+                      {getComponentName(currentBuild).name}
+                    </FlexboxGrid.Item>
+                    <FlexboxGrid.Item colspan={6} className="test-run-details-grid-item">
+                      <span>Phase: </span>
+                      {currentBuild.phase.name}
+                    </FlexboxGrid.Item>
+                  </FlexboxGrid>
                   <div className="test-run-steps">
                     <Steps current={3}>
                       <Steps.Item
@@ -265,21 +279,10 @@ const TestRunDetailsPage = function (props) {
                       />
                     </Steps>
                   </div>
-                  <FlexboxGrid className="test-run-details-grid" justify="space-between">
-                    <FlexboxGrid.Item colspan={6} className="test-run-details-grid-item">
-                      <span>Team: </span>
-                      {currentBuild.team.name}
-                    </FlexboxGrid.Item>
-                    <FlexboxGrid.Item colspan={6} className="test-run-details-grid-item">
-                      <span>Component: </span>
-                      {getComponentName(currentBuild).name}
-                    </FlexboxGrid.Item>
-                    <FlexboxGrid.Item colspan={6} className="test-run-details-grid-item">
-                      <span>Phase: </span>
-                      {currentBuild.phase.name}
-                    </FlexboxGrid.Item>
-                  </FlexboxGrid>
-                  <BuildArtifacts build={currentBuild} />
+                  <div>
+                    <span>Components: </span>
+                    <BuildArtifacts build={currentBuild} />
+                  </div>
                 </Panel>
               </Col>
             </Row>

@@ -12,7 +12,7 @@ import {
   Divider,
   FlexboxGrid,
 } from 'rsuite';
-import ScreenshotView from '../ScreenshotView';
+import ScreenshotView from '../../common/screenshot-view/ScreenshotView';
 import CurrentScreenshotContext from '../../../context/CurrentScreenshotContext';
 
 const ScreenshotLibraryPage = function () {

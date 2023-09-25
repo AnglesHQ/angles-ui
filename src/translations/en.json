@@ -1,6 +1,6 @@
 {
   "nav.dashboard": "Dashboard",
-  "nav.execution-metrics": "Execution Metrics",
+  "nav.execution-metrics": "Metrics",
   "nav.screenshot-library": "Screenshot Library",
   "nav.about": "About Angles",
 
@@ -39,7 +39,28 @@
   "page.dashboard.menu.clear-selection": "Clear Selection",
   "page.dashboard.menu.one-select-message": "Please select at least one test run",
 
-  "page.dashboard.execution-barchart.execution-time-seconds": "ExecutionTime (Seconds)"
+  "page.dashboard.execution-barchart.execution-time-seconds": "ExecutionTime (Seconds)",
 
+  "page.metrics.bread-crumb": "Metrics",
+  "page.metrics.filters.labels.team": "Team",
+  "page.metrics.filters.labels.component": "Component",
+  "page.metrics.filters.labels.period": "Period",
+  "page.metrics.filters.labels.group-by-period": "Group by",
+  "page.metrics.filters.button.retrieve-metrics": "Retrieve Metrics",
+  "page.metrics.tab.execution-metrics": "Execution Metrics",
+  "page.metrics.tab.platform-metrics": "Platform Metrics",
 
+  "page.metrics.execution-metrics-summary.label.period": "Period",
+  "page.metrics.execution-metrics-summary.label.number-of-tests":"Number of tests",
+  "page.metrics.execution-metrics-summary.label.number-of-runs": "Number of test runs",
+  "page.metrics.execution-metrics-summary.label.number-of-executions": "Number of executions",
+  "page.metrics.execution-metrics-summary.label.result": "Result",
+  "page.metrics.execution-metrics-summary.label.duration": "Duration",
+
+  "page.metrics.platform-metrics-summary.label.platform":"Platform",
+  "page.metrics.platform-metrics-summary.label.version":"Version",
+  "page.metrics.platform-metrics-summary.label.device":"Device",
+  "page.metrics.platform-metrics-summary.label.total":"Total",
+  "page.metrics.platform-metrics-summary.label.result":"Result",
+  "page.metrics.platform-metrics-summary.label.duration":"Duration"
 }

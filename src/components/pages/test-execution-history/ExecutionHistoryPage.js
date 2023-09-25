@@ -6,7 +6,7 @@ import { useLocation } from 'react-router-dom';
 import { ExecutionRequests, ScreenshotRequests } from 'angles-javascript-client';
 import ExecutionsResultsPieChart from '../../charts/ExecutionsResultsPieChart';
 import ExecutionsTimeLineChart from '../../charts/ExecutionsTimeLineChart';
-import ScreenshotView from '../ScreenshotView';
+import ScreenshotView from '../../common/screenshot-view/ScreenshotView';
 // import '../charts/Charts.css';
 import SuiteTable from '../../tables/SuiteTable';
 import { ExecutionStateProvider } from '../../../context/ExecutionStateContext';

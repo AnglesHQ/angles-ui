@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import { FormattedMessage } from 'react-intl';
 import InfoOutlineIcon from '@rsuite/icons/InfoOutline';
 import { Table, Whisper, Popover } from 'rsuite';
 import { getDurationAsString } from '../../../utility/TimeUtilities';
@@ -63,7 +64,9 @@ const ExecutionMetricsSummary = function (props) {
         bordered
       >
         <Column width={200}>
-          <HeaderCell>Period</HeaderCell>
+          <HeaderCell>
+            <FormattedMessage id="page.metrics.execution-metrics-summary.label.period" />
+          </HeaderCell>
           <Cell>
             {
               (rowData) => `${moment.utc(moment(rowData.start)).format('DD-MM-YYYY')} - ${moment.utc(moment(rowData.end)).format('DD-MM-YYYY')}`
@@ -71,19 +74,27 @@ const ExecutionMetricsSummary = function (props) {
           </Cell>
         </Column>
         <Column flexGrow={2}>
-          <HeaderCell>Number of Tests</HeaderCell>
+          <HeaderCell>
+            <FormattedMessage id="page.metrics.execution-metrics-summary.label.number-of-tests" />
+          </HeaderCell>
           <UniqueTestsCell />
         </Column>
         <Column flexGrow={2}>
-          <HeaderCell>Builds</HeaderCell>
+          <HeaderCell>
+            <FormattedMessage id="page.metrics.execution-metrics-summary.label.number-of-runs" />
+          </HeaderCell>
           <Cell dataKey="buildCount" />
         </Column>
         <Column flexGrow={2}>
-          <HeaderCell>Executions</HeaderCell>
+          <HeaderCell>
+            <FormattedMessage id="page.metrics.execution-metrics-summary.label.number-of-executions" />
+          </HeaderCell>
           <Cell dataKey="result.TOTAL" />
         </Column>
         <Column flexGrow={3}>
-          <HeaderCell>Result</HeaderCell>
+          <HeaderCell>
+            <FormattedMessage id="page.metrics.execution-metrics-summary.label.result" />
+          </HeaderCell>
           <Cell>
             {
               (rowData) => <ExecutionsResultsBar result={rowData.result} />
@@ -91,7 +102,9 @@ const ExecutionMetricsSummary = function (props) {
           </Cell>
         </Column>
         <Column flexGrow={2}>
-          <HeaderCell>Duration</HeaderCell>
+          <HeaderCell>
+            <FormattedMessage id="page.metrics.execution-metrics-summary.label.duration" />
+          </HeaderCell>
           <Cell>
             {
               (rowData) => getTotalExecutionTime(rowData)

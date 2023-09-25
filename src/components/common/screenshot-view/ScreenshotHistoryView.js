@@ -3,7 +3,7 @@ import { Container } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 import Moment from 'react-moment';
-import CurrentScreenshotContext from '../../context/CurrentScreenshotContext';
+import CurrentScreenshotContext from '../../../context/CurrentScreenshotContext';
 
 const ScreenshotHistoryView = function (props) {
   const {

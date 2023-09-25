@@ -7,16 +7,16 @@ import Tab from 'react-bootstrap/Tab';
 import Alert from 'react-bootstrap/Alert';
 import { useNavigate } from 'react-router-dom';
 import { BaselineRequests, ScreenshotRequests } from 'angles-javascript-client';
-import ImageCarousel from '../elements/ImageCarousel';
-import CurrentImageView from '../elements/CurrentImageView';
-import BaselineImageView from '../elements/BaselineImageView';
-import ImageSideBySideView from '../elements/ImageSideBySideView';
-import ScreenshotHistoryView from '../elements/ScreenshotHistoryView';
+import ImageCarousel from './ImageCarousel';
+import CurrentImageView from './CurrentImageView';
+import BaselineImageView from './BaselineImageView';
+import ImageSideBySideView from './ImageSideBySideView';
+import ScreenshotHistoryView from './ScreenshotHistoryView';
 import 'react-multi-carousel/lib/styles.css';
 // import './Default.css';
-import { storeCurrentErrorMessage, storeCurrentInfoMessage, storeCurrentLoaderMessage } from '../../redux/notificationActions';
-import CurrentScreenshotContext from '../../context/CurrentScreenshotContext';
-import { useConstructor } from '../../utility/GeneralUtilities';
+import { storeCurrentErrorMessage, storeCurrentInfoMessage, storeCurrentLoaderMessage } from '../../../redux/notificationActions';
+import CurrentScreenshotContext from '../../../context/CurrentScreenshotContext';
+import { useConstructor } from '../../../utility/GeneralUtilities';
 
 const ScreenshotView = function (props) {
   const { buildScreenshots: propsBuildScreenshots } = props;
