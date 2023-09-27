@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { FormattedMessage } from 'react-intl';
 import queryString from 'query-string';
 import { ScreenshotRequests } from 'angles-javascript-client';
 import {
@@ -124,12 +125,12 @@ const ScreenshotLibraryPage = function () {
 
   const getNumberOfDaysData = () => {
     const numberOfDaysData = [];
-    numberOfDaysData.push({ value: 1, label: '1 Day' });
-    numberOfDaysData.push({ value: 7, label: '1 Week' });
-    numberOfDaysData.push({ value: 14, label: '2 Weeks' });
-    numberOfDaysData.push({ value: 31, label: '1 Month' });
-    numberOfDaysData.push({ value: 90, label: '3 Months' });
-    numberOfDaysData.push({ value: 180, label: '6 Months' });
+    numberOfDaysData.push({ value: 1, label: <FormattedMessage id="page.screenshot-library.search-options.dropdown.yesterday" /> });
+    numberOfDaysData.push({ value: 7, label: <FormattedMessage id="page.screenshot-library.search-options.dropdown.last-7-days" /> });
+    numberOfDaysData.push({ value: 14, label: <FormattedMessage id="page.screenshot-library.search-options.dropdown.last-14-days" /> });
+    numberOfDaysData.push({ value: 30, label: <FormattedMessage id="page.screenshot-library.search-options.dropdown.last-30-days" /> });
+    numberOfDaysData.push({ value: 90, label: <FormattedMessage id="page.screenshot-library.search-options.dropdown.last-3-months" /> });
+    numberOfDaysData.push({ value: 180, label: <FormattedMessage id="page.screenshot-library.search-options.dropdown.last-6-months" /> });
     return numberOfDaysData;
   };
 
@@ -142,17 +143,25 @@ const ScreenshotLibraryPage = function () {
           <FlexboxGrid>
             <FlexboxGrid.Item colspan={11}>
               <Form.Group controlId="view">
-                <Form.ControlLabel>View</Form.ControlLabel>
+                <Form.ControlLabel>
+                  <FormattedMessage id="page.screenshot-library.search-options.label.view" />
+                </Form.ControlLabel>
                 <Form.Control name="view" value={view} onChange={handleViewChange} />
-                <Form.HelpText>Please provide either a view or tag.</Form.HelpText>
+                <Form.HelpText>
+                  <FormattedMessage id="page.screenshot-library.search-options.label.view-or-tag" />
+                </Form.HelpText>
               </Form.Group>
             </FlexboxGrid.Item>
             <FlexboxGrid.Item colspan={2} className="screenshot-library-form-or">
-              <span>OR</span>
+              <span>
+                <FormattedMessage id="page.screenshot-library.search-options.label.or" />
+              </span>
             </FlexboxGrid.Item>
             <FlexboxGrid.Item colspan={11}>
               <Form.Group controlId="tag">
-                <Form.ControlLabel>Tag</Form.ControlLabel>
+                <Form.ControlLabel>
+                  <FormattedMessage id="page.screenshot-library.search-options.label.tag" />
+                </Form.ControlLabel>
                 <Form.Control name="tag" value={tag} onChange={handleTagChange} />
               </Form.Group>
             </FlexboxGrid.Item>
@@ -160,7 +169,9 @@ const ScreenshotLibraryPage = function () {
           <FlexboxGrid className="screenshot-form-second-row">
             <FlexboxGrid.Item colspan={11}>
               <Form.Group controlId="numberOfDays">
-                <Form.ControlLabel>Number of days</Form.ControlLabel>
+                <Form.ControlLabel>
+                  <FormattedMessage id="page.screenshot-library.search-options.label.period" />
+                </Form.ControlLabel>
                 <SelectPicker
                   className="number-of-days-picker"
                   name="numberOfDays"
@@ -177,7 +188,9 @@ const ScreenshotLibraryPage = function () {
               {
                 groupType === 'tag' && platforms && platforms.length > 0 ? (
                   <Form.Group controlId="platformSelect">
-                    <Form.ControlLabel>Platform</Form.ControlLabel>
+                    <Form.ControlLabel>
+                      <FormattedMessage id="page.screenshot-library.search-options.label.platform" />
+                    </Form.ControlLabel>
                     <SelectPicker
                       className="platform-picker"
                       name="platformSelect"
@@ -193,7 +206,9 @@ const ScreenshotLibraryPage = function () {
           <Divider />
           <Form.Group>
             <ButtonToolbar>
-              <Button disabled={view === '' && tag === ''} appearance="primary" type="submit">Search Screenshots</Button>
+              <Button disabled={view === '' && tag === ''} appearance="primary" type="submit">
+                <FormattedMessage id="page.screenshot-library.search-options.button.search-screenshots" />
+              </Button>
             </ButtonToolbar>
           </Form.Group>
         </Form>

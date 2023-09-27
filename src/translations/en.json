@@ -62,5 +62,21 @@
   "page.metrics.platform-metrics-summary.label.device":"Device",
   "page.metrics.platform-metrics-summary.label.total":"Total",
   "page.metrics.platform-metrics-summary.label.result":"Result",
-  "page.metrics.platform-metrics-summary.label.duration":"Duration"
+  "page.metrics.platform-metrics-summary.label.duration":"Duration",
+
+  "page.screenshot-library.search-options.label.view": "View",
+  "page.screenshot-library.search-options.label.tag": "Tag",
+  "page.screenshot-library.search-options.label.or": "OR",
+  "page.screenshot-library.search-options.label.view-or-tag": "Please provide either a view or tag.",
+  "page.screenshot-library.search-options.label.period": "Period",
+  "page.screenshot-library.search-options.label.platform": "Platform",
+  "page.screenshot-library.search-options.button.search-screenshots": "Search Screenshots",
+
+  "page.screenshot-library.search-options.dropdown.yesterday": "Yesterday",
+  "page.screenshot-library.search-options.dropdown.last-7-days": "Last 7 days",
+  "page.screenshot-library.search-options.dropdown.last-14-days": "Last 14 days",
+  "page.screenshot-library.search-options.dropdown.last-30-days": "Last 30 days",
+  "page.screenshot-library.search-options.dropdown.last-3-months": "Last 3 months",
+  "page.screenshot-library.search-options.dropdown.last-6-months": "Last 6 months"
+
 }

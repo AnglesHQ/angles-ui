@@ -62,6 +62,21 @@
   "page.metrics.platform-metrics-summary.label.device":"Aparaat",
   "page.metrics.platform-metrics-summary.label.total":"Totaal",
   "page.metrics.platform-metrics-summary.label.result":"Resultaat",
-  "page.metrics.platform-metrics-summary.label.duration":"Looptijd"
+  "page.metrics.platform-metrics-summary.label.duration":"Looptijd",
+
+  "page.screenshot-library.search-options.label.view": "Naam",
+  "page.screenshot-library.search-options.label.tag": "Label",
+  "page.screenshot-library.search-options.label.or": "of",
+  "page.screenshot-library.search-options.label.view-or-tag": "Vul a.u.b. of een naam of een label in.",
+  "page.screenshot-library.search-options.label.period": "Periode",
+  "page.screenshot-library.search-options.label.platform": "Platform",
+  "page.screenshot-library.search-options.button.search-screenshots": "Zoek Schermafbeeldingen",
+
+  "page.screenshot-library.search-options.dropdown.yesterday": "Gisteren",
+  "page.screenshot-library.search-options.dropdown.last-7-days": "Laatste 7 dagen",
+  "page.screenshot-library.search-options.dropdown.last-14-days": "Laatste 14 dagen",
+  "page.screenshot-library.search-options.dropdown.last-30-days": "Laatste 30 dagen",
+  "page.screenshot-library.search-options.dropdown.last-3-months": "Laatste 3 maanden",
+  "page.screenshot-library.search-options.dropdown.last-6-months": "Laatste 6 maanden"
 
 }
