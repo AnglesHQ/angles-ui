@@ -94,6 +94,7 @@ const PlatformMetricsSummary = function (props) {
         data={generateTableData()}
         autoHeight
         id="platform-metrics-table"
+        hover={false}
         bordered
       >
         <Column width={40}>

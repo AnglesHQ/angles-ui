@@ -61,6 +61,7 @@ const ExecutionMetricsSummary = function (props) {
         data={periods}
         autoHeight
         id="build-artifacts"
+        hover={false}
         bordered
       >
         <Column width={200}>

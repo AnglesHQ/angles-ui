@@ -40,6 +40,7 @@ const AboutTable = function (props) {
         width={400}
         id="build-artifacts"
         bordered
+        hover={false}
       >
         <Column width={200}>
           <HeaderCell>Component</HeaderCell>

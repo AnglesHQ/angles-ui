@@ -5,12 +5,21 @@ import queryString from 'query-string';
 import moment from 'moment/moment';
 import { connect } from 'react-redux';
 import { saveAs } from 'file-saver';
+import { AiOutlineTeam, AiOutlinePartition } from 'react-icons/ai';
+import { GiSandsOfTime, GiTrafficLightsGreen } from 'react-icons/gi';
+import { BiSolidFlagCheckered } from 'react-icons/bi';
+import {
+  BsJournalCheck,
+  BsJournalX,
+  BsLockFill,
+  BsFillUnlockFill,
+} from 'react-icons/bs';
+import { CgExtension } from 'react-icons/cg';
+import { IoImagesSharp } from 'react-icons/io5';
+import { TbTimelineEventText } from 'react-icons/tb';
 import FileDownloadIcon from '@rsuite/icons/FileDownload';
 import TagLockIcon from '@rsuite/icons/TagLock';
 import MenuIcon from '@rsuite/icons/Menu';
-import TimeIcon from '@rsuite/icons/Time';
-import ReviewPassIcon from '@rsuite/icons/ReviewPass';
-import ReviewRefuseIcon from '@rsuite/icons/ReviewRefuse';
 import InfoRoundIcon from '@rsuite/icons/InfoRound';
 import { BuildRequests, ScreenshotRequests } from 'angles-javascript-client';
 import { useLocation } from 'react-router-dom';
@@ -25,9 +34,10 @@ import {
   FlexboxGrid,
   Whisper,
   Tooltip,
+  Badge,
 } from 'rsuite';
 import SuiteTable from '../../tables/SuiteTable';
-import BuildArtifacts from '../../tables/BuildArtifacts';
+import BuildArtifacts from '../../common/tables/BuildArtifacts';
 import ScreenshotView from '../../common/screenshot-view/ScreenshotView';
 import {
   clearCurrentLoaderMessage,
@@ -41,11 +51,13 @@ import ExecutionPieChart from './charts/ExecutionPieChart';
 import FeaturePieChart from './charts/FeaturePieChart';
 
 const TestRunDetailsPage = function (props) {
+  // TODO: display number of screenshots + lock for test run
   const location = useLocation();
   const [showModal, setShowModal] = useState(false);
   const [screenshots, setScreenshots] = useState(null);
   const [query] = useState(queryString.parse(location.search));
   const [currentBuild, setCurrentBuild] = useState(null);
+  const [displayArtifacts, setDisplayArtifacts] = useState(false);
   // const [, setFilterStates] = useState([]);
   const [filteredSuites, setFilteredSuites] = useState(null);
   const [downloadReportButtonEnabled, setDownloadReportButtonEnabled] = useState(true);
@@ -160,15 +172,19 @@ const TestRunDetailsPage = function (props) {
 
   const getTestRunEndIcon = (build) => {
     if (build.status === 'FAIL') {
-      return <ReviewRefuseIcon className="test-run-end-icon-fail" />;
+      return <BsJournalX className="test-run-end-icon-fail" />;
     }
     if (build.status === 'PASS') {
-      return <ReviewPassIcon className="test-run-end-icon-pass" />;
+      return <BsJournalCheck className="test-run-end-icon-pass" />;
     }
     if (build.status === 'ERROR') {
-      return <ReviewRefuseIcon className="test-run-end-icon-error" />;
+      return <BsJournalX className="test-run-end-icon-error" />;
     }
     return <InfoRoundIcon className="test-run-end-icon-info" />;
+  };
+
+  const toggleDisplayArtifacts = () => {
+    setDisplayArtifacts(!displayArtifacts);
   };
 
   return (
@@ -229,7 +245,7 @@ const TestRunDetailsPage = function (props) {
                   header={(
                     <div className="test-run-header-panel">
                       <Whisper
-                        placement="right"
+                        placement="bottomStart"
                         controlId="control-id-hover"
                         trigger="hover"
                         speaker={(
@@ -244,46 +260,167 @@ const TestRunDetailsPage = function (props) {
                     </div>
                   )}
                 >
-                  <FlexboxGrid className="test-run-details-grid" justify="space-between">
-                    <FlexboxGrid.Item colspan={6} className="test-run-details-grid-item">
-                      <span>Team: </span>
-                      {currentBuild.team.name}
-                    </FlexboxGrid.Item>
-                    <FlexboxGrid.Item colspan={6} className="test-run-details-grid-item">
-                      <span>Component: </span>
-                      {getComponentName(currentBuild).name}
-                    </FlexboxGrid.Item>
-                    <FlexboxGrid.Item colspan={6} className="test-run-details-grid-item">
-                      <span>Phase: </span>
-                      {currentBuild.phase.name}
-                    </FlexboxGrid.Item>
-                  </FlexboxGrid>
                   <div className="test-run-steps">
                     <Steps current={3}>
                       <Steps.Item
                         title="Start"
                         description={moment.utc(moment(currentBuild.start)).format('DD MMM - HH:mm:ss')}
+                        icon={
+                          <GiTrafficLightsGreen className="test-run-step-icon" />
+                        }
                       />
                       <Steps.Item
                         title="Duration"
                         description={getDuration(currentBuild)}
                         className="test-run-duration"
                         icon={
-                          <TimeIcon className="test-run-duration-icon" />
+                          <GiSandsOfTime className="test-run-step-icon" />
                         }
                       />
                       <Steps.Item
                         title="End"
                         className="test-run-end"
                         description={moment.utc(moment(currentBuild.end)).format('DD MMM - HH:mm:ss')}
+                        icon={
+                          <BiSolidFlagCheckered className="test-run-step-icon" />
+                        }
                       />
                     </Steps>
                   </div>
-                  <div>
-                    <span>Components: </span>
-                    <BuildArtifacts build={currentBuild} />
-                  </div>
+                  <FlexboxGrid className="test-run-details-grid" justify="space-between">
+                    <Whisper
+                      placement="topStart"
+                      controlId="control-id-hover"
+                      trigger="hover"
+                      speaker={(
+                        <Tooltip>
+                          Team
+                        </Tooltip>
+                      )}
+                    >
+                      <FlexboxGrid.Item colspan={6} className="test-run-details-grid-item">
+                        <AiOutlineTeam className="test-run-details-icon" />
+                        {currentBuild.team.name}
+                      </FlexboxGrid.Item>
+                    </Whisper>
+                    <Whisper
+                      placement="topStart"
+                      controlId="control-id-hover"
+                      trigger="hover"
+                      speaker={(
+                        <Tooltip>
+                          Component
+                        </Tooltip>
+                      )}
+                    >
+                      <FlexboxGrid.Item colspan={6} className="test-run-details-grid-item">
+                        <CgExtension className="test-run-details-icon" />
+                        {getComponentName(currentBuild).name}
+                      </FlexboxGrid.Item>
+                    </Whisper>
+                    <Whisper
+                      placement="topEnd"
+                      controlId="control-id-hover"
+                      trigger="hover"
+                      speaker={(
+                        <Tooltip>
+                          Test Phase
+                        </Tooltip>
+                      )}
+                    >
+                      <FlexboxGrid.Item colspan={6} className="test-run-details-grid-item">
+                        {
+                          (currentBuild.phase) ? (
+                            <>
+                              <TbTimelineEventText className="test-run-details-icon" />
+                              {currentBuild.phase.name}
+                            </>
+                          ) : (
+                            <>
+                              <TbTimelineEventText className="test-run-details-icon-disabled" />
+                              none
+                            </>
+                          )
+                        }
+                      </FlexboxGrid.Item>
+                    </Whisper>
+                  </FlexboxGrid>
                 </Panel>
+                <FlexboxGrid className="test-run-icons-grid">
+                  <FlexboxGrid.Item colspan={8}>
+                    <Whisper
+                      placement="topStart"
+                      controlId="control-id-hover"
+                      trigger="hover"
+                      speaker={(
+                        <Tooltip>
+                          Number of artifacts associated with this test run.
+                        </Tooltip>
+                      )}
+                    >
+                      <Badge content={currentBuild.artifacts.length}>
+                        {
+                          (currentBuild.artifacts.length > 0) ? (
+                            <AiOutlinePartition className="test-run-details-icon" onClick={toggleDisplayArtifacts} />
+                          ) : (
+                            <AiOutlinePartition className="test-run-details-icon-disabled" />
+                          )
+                        }
+                      </Badge>
+                    </Whisper>
+                  </FlexboxGrid.Item>
+                  <FlexboxGrid.Item colspan={8} onClick={() => { toggleKeep(currentBuild); }}>
+                    <Whisper
+                      placement="topStart"
+                      controlId="control-id-hover"
+                      trigger="hover"
+                      speaker={(
+                        <Tooltip>
+                          When locked a test run will not be cleaned up by the nightly test run.
+                        </Tooltip>
+                      )}
+                    >
+                      <span>
+                        {
+                          currentBuild.keep ? <BsLockFill className="test-run-details-icon test-run-details-lock-icon" /> : <BsFillUnlockFill className="test-run-details-icon test-run-details-unlock-icon" />
+                        }
+                      </span>
+                    </Whisper>
+                  </FlexboxGrid.Item>
+                  <FlexboxGrid.Item colspan={8}>
+                    <Whisper
+                      placement="topStart"
+                      controlId="control-id-hover"
+                      trigger="hover"
+                      speaker={(
+                        <Tooltip>
+                          {`This test run has ${screenshots.length} screenshots`}
+                        </Tooltip>
+                      )}
+                    >
+                      <Badge content={screenshots.length}>
+                        {
+                          (screenshots.length > 0) ? (
+                            <IoImagesSharp className="test-run-details-icon" onClick={() => { openModal(screenshots[0]._id); }} />
+                          ) : (
+                            <IoImagesSharp className="test-run-details-icon-disabled" />
+                          )
+                        }
+                      </Badge>
+                    </Whisper>
+                  </FlexboxGrid.Item>
+                </FlexboxGrid>
+                <FlexboxGrid>
+                  <FlexboxGrid.Item colspan={24}>
+                    {
+                      displayArtifacts ? (
+                        <Panel className="test-run-details-artifact-panel">
+                          <BuildArtifacts build={currentBuild} />
+                        </Panel>
+                      ) : null
+                    }
+                  </FlexboxGrid.Item>
+                </FlexboxGrid>
               </Col>
             </Row>
             <Row gutter={30} className="test-run-row">

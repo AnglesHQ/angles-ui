@@ -154,6 +154,7 @@ const BuildsTable = function (props) {
         data={builds}
         hover={false}
         id="builds-table"
+        className="dashboard-builds-table"
       >
         <Column width={50} align="center">
           <HeaderCell>#</HeaderCell>

@@ -20,6 +20,15 @@
   background-color: var(--panel-background);
   max-width: 1300px;
   margin: auto;
+  padding-bottom: 0px;
+
+  .rs-panel-header {
+    padding: 0px;
+  }
+
+  .rs-panel-body {
+    padding-bottom: 0px;
+  }
 
   .test-run-header-panel {
     background-color: var(--panel-background);
@@ -48,6 +57,12 @@
       margin-right: 10px;
       font-size: 35px;
     }
+    .test-run-lock-icon {
+        position: relative;
+        right: 10px;
+        color: red;
+        top: 10px;
+    }
   }
 
   .test-run-steps {
@@ -64,12 +79,12 @@
     .rs-steps-item-title {
       color: var(--font-color-1);
     }
+    .test-run-step-icon {
+      font-size: 28px;
+    }
     .test-run-duration {
       .rs-steps-item-description {
         font-size: 1.7em;
-      }
-      .test-run-duration-icon {
-        font-size: 28px;
       }
     }
   }
@@ -77,6 +92,7 @@
   .test-run-details-grid {
     padding: 10px 0  20px 0;
     font-size: 1.3em;
+    border-bottom: 1px solid #8d8d8d54;
 
     .test-run-details-grid-item > span {
       font-weight: bold;
@@ -87,29 +103,57 @@
     :last-child {
       text-align: right;
     }
-  }
 
-  .test-run-results-panel {
-    background-color: var(--body-background);
+    .test-run-details-icon {
+      font-size: 2em;
+      margin-right: 10px;
+      color: #3498ff;
+    }
 
-    .test-run-status-grid {
-      padding: 10px 0  0 0;
-      font-size: 1.3em;
-
-      .test-run-details-grid-item > span {
-        font-weight: bold;
-      }
-
-      :nth-child(2) {
-        text-align: center;
-      }
-
-      .test-run-lock-icon{
-        color: dodgerblue;
-        font-size: 2em;
-      }
+    .test-run-details-icon-disabled {
+      font-size: 2em;
+      color: grey;
     }
   }
+
+  .test-run-details-artifact-panel {
+    background-color: var(--body-background);
+    padding: 10px 0  20px 0;
+    font-size: 1.3em;
+
+    .build-artifacts-table {
+      width: 100%;
+    }
+  }
+
+}
+
+.test-run-icons-grid {
+  padding: 15px 0 0 0;
+  width: 110px;
+
+  .test-run-details-icon {
+    font-size: 1.7em;
+    color: #3498ff;
+    cursor: pointer;
+  }
+
+  .test-run-details-icon-disabled {
+    font-size: 1.7em;
+    color: grey;
+    cursor: not-allowed;
+  }
+
+  .test-run-details-lock-icon {
+    position: relative;
+    top: -2px;
+  }
+  .test-run-details-unlock-icon {
+    position: relative;
+    top: -2px;
+    color: grey;
+  }
+
 }
 
 .test-suite-header {

@@ -13,16 +13,17 @@ const BuildArtifacts = function (props) {
         data={artifacts}
         id="build-artifacts"
         hover={false}
+        className="build-artifacts-table"
       >
-        <Column>
+        <Column flexGrow={3}>
           <HeaderCell>Group Id</HeaderCell>
           <Cell dataKey="groupId" />
         </Column>
-        <Column>
+        <Column flexGrow={4}>
           <HeaderCell>Artifact Id</HeaderCell>
           <Cell dataKey="artifactId" />
         </Column>
-        <Column>
+        <Column flexGrow={3}>
           <HeaderCell>Version</HeaderCell>
           <Cell dataKey="version" />
         </Column>
