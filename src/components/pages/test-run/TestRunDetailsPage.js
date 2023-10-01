@@ -18,7 +18,6 @@ import { CgExtension } from 'react-icons/cg';
 import { IoImagesSharp } from 'react-icons/io5';
 import { TbTimelineEventText } from 'react-icons/tb';
 import FileDownloadIcon from '@rsuite/icons/FileDownload';
-import TagLockIcon from '@rsuite/icons/TagLock';
 import MenuIcon from '@rsuite/icons/Menu';
 import InfoRoundIcon from '@rsuite/icons/InfoRound';
 import { BuildRequests, ScreenshotRequests } from 'angles-javascript-client';
@@ -226,7 +225,7 @@ const TestRunDetailsPage = function (props) {
                     Download Report as HTML file
                   </Dropdown.Item>
                   <Dropdown.Item
-                    icon={<TagLockIcon />}
+                    icon={<BsLockFill />}
                     onClick={() => { toggleKeep(currentBuild); }}
                   >
                     {
@@ -347,7 +346,7 @@ const TestRunDetailsPage = function (props) {
                   </FlexboxGrid>
                 </Panel>
                 <FlexboxGrid className="test-run-icons-grid">
-                  <FlexboxGrid.Item colspan={8}>
+                  <FlexboxGrid.Item colspan={6}>
                     <Whisper
                       placement="topStart"
                       controlId="control-id-hover"
@@ -369,7 +368,7 @@ const TestRunDetailsPage = function (props) {
                       </Badge>
                     </Whisper>
                   </FlexboxGrid.Item>
-                  <FlexboxGrid.Item colspan={8} onClick={() => { toggleKeep(currentBuild); }}>
+                  <FlexboxGrid.Item colspan={6} onClick={() => { toggleKeep(currentBuild); }}>
                     <Whisper
                       placement="topStart"
                       controlId="control-id-hover"
@@ -387,7 +386,7 @@ const TestRunDetailsPage = function (props) {
                       </span>
                     </Whisper>
                   </FlexboxGrid.Item>
-                  <FlexboxGrid.Item colspan={8}>
+                  <FlexboxGrid.Item colspan={6}>
                     <Whisper
                       placement="topStart"
                       controlId="control-id-hover"
@@ -407,6 +406,20 @@ const TestRunDetailsPage = function (props) {
                           )
                         }
                       </Badge>
+                    </Whisper>
+                  </FlexboxGrid.Item>
+                  <FlexboxGrid.Item colspan={6}>
+                    <Whisper
+                      placement="topStart"
+                      controlId="control-id-hover"
+                      trigger="hover"
+                      speaker={(
+                        <Tooltip>
+                          Download the HTML report for this test run.
+                        </Tooltip>
+                      )}
+                    >
+                      <FileDownloadIcon className="test-run-details-icon" disabled={!downloadReportButtonEnabled} onClick={() => { downloadReport(currentBuild._id); }} />
                     </Whisper>
                   </FlexboxGrid.Item>
                 </FlexboxGrid>
