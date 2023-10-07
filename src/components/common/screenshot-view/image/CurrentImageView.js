@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import Table from 'react-bootstrap/Table';
-import ScreenshotDetailsTable from '../../tables/ScreenshotDetailsTable';
-import CurrentScreenshotContext from '../../../context/CurrentScreenshotContext';
+import ScreenshotDetailsTable from '../ScreenshotDetailsTable';
+import CurrentScreenshotContext from '../../../../context/CurrentScreenshotContext';
 
 const CurrentImageView = function (props) {
   const [dynamicBaselineButtonEnabled, setDynamicBaselineButtonEnabled] = React.useState(true);

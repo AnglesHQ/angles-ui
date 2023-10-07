@@ -35,8 +35,8 @@ import {
   Tooltip,
   Badge,
 } from 'rsuite';
-import SuiteTable from '../../tables/SuiteTable';
-import BuildArtifacts from '../../common/tables/BuildArtifacts';
+import SuiteTable from '../../common/test-suite/SuiteTable';
+import BuildArtifacts from '../../common/BuildArtifacts';
 import ScreenshotView from '../../common/screenshot-view/ScreenshotView';
 import {
   clearCurrentLoaderMessage,
@@ -48,6 +48,7 @@ import CurrentScreenshotContext from '../../../context/CurrentScreenshotContext'
 import { getDuration } from '../../../utility/TimeUtilities';
 import ExecutionPieChart from './charts/ExecutionPieChart';
 import FeaturePieChart from './charts/FeaturePieChart';
+// import ScreenshotModal from "../../common/screenshot-view/modal/ScreenhotModal";
 
 const TestRunDetailsPage = function (props) {
   // TODO: display number of screenshots + lock for test run

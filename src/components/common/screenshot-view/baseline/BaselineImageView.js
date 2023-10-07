@@ -2,10 +2,10 @@
 import React, { useEffect, useContext } from 'react';
 import Table from 'react-bootstrap/Table';
 import RegionSelect from 'react-region-select';
-import BaselineCompareDetailsTable from '../../tables/BaselineCompareDetailsTable';
-import ScreenshotDetailsTable from '../../tables/ScreenshotDetailsTable';
+import BaselineCompareDetailsTable from './BaselineCompareDetailsTable';
+import ScreenshotDetailsTable from '../ScreenshotDetailsTable';
 // import '../pages/Default.css';
-import CurrentScreenshotContext from '../../../context/CurrentScreenshotContext';
+import CurrentScreenshotContext from '../../../../context/CurrentScreenshotContext';
 
 const BaselineImageView = (props) => {
   const {

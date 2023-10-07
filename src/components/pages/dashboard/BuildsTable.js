@@ -13,14 +13,14 @@ import {
   Whisper,
 } from 'rsuite';
 import { getDuration } from '../../../utility/TimeUtilities';
-import ArtifactsDetailsTable from '../../tables/ArtifactsDetailsTable';
 import ExecutionsResultsBar from '../../common/ExecutionsResultsBar';
+import BuildArtifacts from '../../common/BuildArtifacts';
 
 const { Column, HeaderCell, Cell } = Table;
 
 const componentDetailsSpeaker = (build) => (
   <Popover title="Artifacts" style={{ width: '350px' }}>
-    <ArtifactsDetailsTable artifacts={build.artifacts} />
+    <BuildArtifacts build={build} />
   </Popover>
 );
 

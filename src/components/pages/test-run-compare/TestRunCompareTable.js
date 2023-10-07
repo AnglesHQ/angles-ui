@@ -6,7 +6,7 @@ import {
   Table, Whisper,
 } from 'rsuite';
 import InfoOutlineIcon from '@rsuite/icons/InfoOutline';
-import TestDetailsTable from '../../tables/TestDetailsTable';
+import TestDetailsTable from './TestDetailsTable';
 
 const { Column, HeaderCell, Cell } = Table;
 

@@ -9,7 +9,7 @@ import DeviceIcon from '@rsuite/icons/Device';
 import CalendarIcon from '@rsuite/icons/Calendar';
 import Moment from 'react-moment';
 import ActionComponent from './ActionComponent';
-import ExecutionStateContext from '../../context/ExecutionStateContext';
+import ExecutionStateContext from '../../../context/ExecutionStateContext';
 
 const ExecutionTable = function (props) {
   const { isExecutionExpanded, toggleExecution } = useContext(ExecutionStateContext);
@@ -36,16 +36,15 @@ const ExecutionTable = function (props) {
 
   return (
     <>
-      <tr key={`execution_${index}`} className="test-row">
-        <td colSpan="100%" className={`${execution.status}`}>
-
-          <FlexboxGrid justify="start">
+      <div key={`execution_${index}`} className="test-row">
+        <div className={`${execution.status}`}>
+          <FlexboxGrid justify="space-between">
             <FlexboxGrid.Item colspan={1}>
               <span key={isExecutionExpanded(execution._id)} className="test-name" onClick={() => toggleExecution(execution._id)}>
                 {
                 isExecutionExpanded(execution._id) ? (
-                  <CollaspedOutlineIcon />
-                ) : <ExpandOutlineIcon />
+                  <CollaspedOutlineIcon className="execution-icon" />
+                ) : <ExpandOutlineIcon className="execution-icon" />
               }
               </span>
             </FlexboxGrid.Item>
@@ -71,42 +70,32 @@ const ExecutionTable = function (props) {
               </div>
             </FlexboxGrid.Item>
             <FlexboxGrid.Item colspan={1}>
-              <span className="history-link-execution">
-                <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{`See execution history for ${execution.title}`}</Tooltip>}>
-                  <span className="d-inline-block">
-                    <a className="test-history-link" title={`See execution history for ${execution.title}`} href={`/test-execution-history?executionId=${execution._id}`}>
-                      <span>
-                        <HistoryIcon />
-                      </span>
-                    </a>
-                  </span>
-                </OverlayTrigger>
-              </span>
+              <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{`See execution history for ${execution.title}`}</Tooltip>}>
+                <a className="test-history-link" title={`See execution history for ${execution.title}`} href={`/test-execution-history?executionId=${execution._id}`}>
+                  <HistoryIcon className="execution-history-icon" />
+                </a>
+              </OverlayTrigger>
             </FlexboxGrid.Item>
           </FlexboxGrid>
-        </td>
-      </tr>
-      <tr key={`execution_actions_${index}`} className="actions-row">
-        { isExecutionExpanded(execution._id) ? (
-          <td colSpan="100%" className="actions-wrapper">
-            <table className="actions-table">
-              <tbody>
-                { execution.actions.map((action, actionIndex) => [
-                  <ActionComponent
-                    key={index}
-                    action={action}
-                    index={index}
-                    screenshots={screenshots}
-                    openModal={openModal}
-                    actionIndex={actionIndex}
-                    execution={execution}
-                  />,
-                ])}
-              </tbody>
-            </table>
-          </td>
-        ) : null}
-      </tr>
+        </div>
+      </div>
+      { isExecutionExpanded(execution._id) ? (
+        <div key={`execution_actions_${index}`} className="actions-row">
+          <div className="actions-wrapper">
+            { execution.actions.map((action, actionIndex) => [
+              <ActionComponent
+                key={index}
+                action={action}
+                index={index}
+                screenshots={screenshots}
+                openModal={openModal}
+                actionIndex={actionIndex}
+                execution={execution}
+              />,
+            ])}
+          </div>
+        </div>
+      ) : null}
     </>
   );
 };

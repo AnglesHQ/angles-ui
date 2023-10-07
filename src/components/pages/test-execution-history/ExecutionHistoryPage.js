@@ -8,7 +8,7 @@ import ExecutionsResultsPieChart from '../../charts/ExecutionsResultsPieChart';
 import ExecutionsTimeLineChart from '../../charts/ExecutionsTimeLineChart';
 import ScreenshotView from '../../common/screenshot-view/ScreenshotView';
 // import '../charts/Charts.css';
-import SuiteTable from '../../tables/SuiteTable';
+import SuiteTable from '../../common/test-suite/SuiteTable';
 import { ExecutionStateProvider } from '../../../context/ExecutionStateContext';
 import { useConstructor } from '../../../utility/GeneralUtilities';
 

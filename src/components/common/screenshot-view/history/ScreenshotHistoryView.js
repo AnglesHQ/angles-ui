@@ -3,7 +3,7 @@ import { Container } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 import Moment from 'react-moment';
-import CurrentScreenshotContext from '../../../context/CurrentScreenshotContext';
+import CurrentScreenshotContext from '../../../../context/CurrentScreenshotContext';
 
 const ScreenshotHistoryView = function (props) {
   const {
@@ -64,7 +64,7 @@ const ScreenshotHistoryView = function (props) {
           <Card key={screenshot._id} className={`screenshotCard ${isSelectedId(screenshot._id) ? 'card-active' : ''}`}>
             { isBaseline(screenshot._id) ? (<div className="card-img-overlay baseline-overlay"><p>baseline</p></div>) : null }
             { !isSelectedId(screenshot._id) ? (
-              <a title="Go to screenshot" href={`/build?buildId=${screenshot.build}&loadScreenshotId=${screenshot._id}`}>
+              <a title="Go to screenshot" href={`/test-run?buildId=${screenshot.build}&loadScreenshotId=${screenshot._id}`}>
                 <Card.Img className="card-image-history" variant="top" src={`${grabThumbnail(screenshot)}`} />
               </a>
             ) : <Card.Img className="card-image-history" variant="top" src={`${grabThumbnail(screenshot)}`} /> }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table } from 'rsuite';
 // import '../pages/Default.css';
-import { getDuration } from '../../utility/TimeUtilities';
+import { getDuration } from '../../../utility/TimeUtilities';
 
 const TestDetailsTable = function (props) {
   const { execution } = props;

@@ -8,10 +8,10 @@ import Alert from 'react-bootstrap/Alert';
 import { useNavigate } from 'react-router-dom';
 import { BaselineRequests, ScreenshotRequests } from 'angles-javascript-client';
 import ImageCarousel from './ImageCarousel';
-import CurrentImageView from './CurrentImageView';
-import BaselineImageView from './BaselineImageView';
-import ImageSideBySideView from './ImageSideBySideView';
-import ScreenshotHistoryView from './ScreenshotHistoryView';
+import CurrentImageView from './image/CurrentImageView';
+import BaselineImageView from './baseline/BaselineImageView';
+import ImageSideBySideView from './side-by-side/ImageSideBySideView';
+import ScreenshotHistoryView from './history/ScreenshotHistoryView';
 import 'react-multi-carousel/lib/styles.css';
 // import './Default.css';
 import { storeCurrentErrorMessage, storeCurrentInfoMessage, storeCurrentLoaderMessage } from '../../../redux/notificationActions';
@@ -174,7 +174,7 @@ const ScreenshotView = function (props) {
         </span>
       </div>
     ) : (
-      <Panel>
+      <Panel className="screenshot-view-panel">
         <ImageCarousel
           screenshots={buildScreenshots}
           selectedScreenshotDetails={currentScreenshotDetails}
