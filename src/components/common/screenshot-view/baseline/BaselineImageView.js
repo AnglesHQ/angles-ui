@@ -1,5 +1,6 @@
 /* eslint  no-param-reassign: [0] */
 import React, { useEffect, useContext } from 'react';
+import { Button } from 'rsuite';
 import Table from 'react-bootstrap/Table';
 import RegionSelect from 'react-region-select';
 import BaselineCompareDetailsTable from './BaselineCompareDetailsTable';
@@ -269,22 +270,22 @@ const BaselineImageView = (props) => {
           <tr>
             <td colSpan="100%">
               <span style={{ float: 'left' }}>
-                <button
+                <Button
                   type="button"
-                  className="btn btn-outline-primary"
+                  className="filter-submit-button"
                   onMouseUp={() => toggleEditing()}
                 >
                   {`${editing ? 'Save' : 'Edit'} Ignore Blocks`}
-                </button>
+                </Button>
                 {
                   editing ? (
-                    <button
+                    <Button
                       type="button"
-                      className="btn btn-outline-primary second-button"
+                      className="filter-submit-button"
                       onMouseUp={() => resetIgnoreBlocks()}
                     >
                       Cancel Changes
-                    </button>
+                    </Button>
                   ) : null
                 }
               </span>

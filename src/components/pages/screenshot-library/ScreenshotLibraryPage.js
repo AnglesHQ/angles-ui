@@ -178,7 +178,7 @@ const ScreenshotLibraryPage = function () {
           />
           <Button
             disabled={view === '' && tag === ''}
-            appearance="primary"
+            className="filter-submit-button"
             type="submit"
             onClick={() => { submitScreenshotSearch(); }}
           >

@@ -11,38 +11,95 @@
 @import '../components/common/test-suite/styles.less';
 
 :root {
-    --body-background: #f5f8fa;
-    --nav-background: white;
-    --main-panel-background: white;
-    --master-color-1: #F88017;
-    --master-color-2: #FFA538;
-    --master-color-3: #9F9F9F;
-    --master-color-4: #CDCDCD;
-    --master-color-5: white;
 
-    --font-color-1: black;
-    --font-color-2: grey;
-    --font-color-3: white;
-    --font-color-4: #F88017;
+    //master palette
+    --master-color-1: hsl(0, 0%, 96%);
+    --master-color-2: hsl(233, 17%, 91%);
+    --master-color-3: hsl(39, 93%, 48%);
 
+    // TODO: override with hsl relative colors once supported by most browsers
+    --master-color-2-relative: hsl(233, 17%, 75%);
+    --master-color-3-relative: hsl(39, 93%, 60%);
+
+    --master-font-color-1: hsl(0, 0%, 0%);
+    --master-font-color-2: hsl(0, 0%, 100%);
+
+    --master-icon-color: hsl(210, 100%, 60%);
+
+    // body
+    --body-background: var(--master-color-1);
+    // nav
+    --nav-background: var(--master-color-2);
+    --nav-font-color: var(--master-font-color-1);
+    --nav-hover-color: var(--master-color-3);
+    --nav-hover-font-color: var(--master-font-color-2);
+
+    // trend box
+    --trend-box-font-color: var(--master-font-color-2);
+
+    //main panel
+    --main-panel-background: var(--master-color-2);
+    --main-panel-font-color: var(--master-font-color-1);
+    --main-panel-secondary-font-color: var(--master-font-color-2);
+    --main-panel-icon-color: var(--master-icon-color);
+
+    // sub panels
+    --sub-panel-background: var(--master-color-1);
+    --sub-panel-font-color: var(--master-font-color-1);
+    --sub-panel-secondary-font-color: var(--master-font-color-2);
+    --sub-panel-icon-color: var(--master-icon-color);
+
+    // tables
+    --main-table-header-background: var(--master-color-3);
+    --main-table-header-font-color: var(--master-font-color-1);
+    --main-table-body-background: var(--master-color-1);
+    --main-table-body-font-color: var(--master-font-color-1);
+    --main-table-body-secondary-font-color: var(--master-font-color-2);
+
+    // sub tables
+    --sub-table-header-background: var(--master-color-3);
+    --sub-table-header-font-color: var(--master-font-color-1);
+    --sub-table-body-background: var(--master-color-1);
+    --sub-table-body-font-color: var(--master-font-color-1);
+    --sub-table-body-secondary-font-color: var(--master-font-color-2);
+
+    // tabs
+    --tabs-overall-background: var(--master-color-2);
+    --active-tab-background: var(--master-color-2);
+    --active-tab-font-color: var(--master-font-color-1);
+    --inactive-tab-background: var(--master-color-2-relative);
+    --inactive-tab-font-color: var(--master-font-color-1);
+    --active-tab-font-color-hover: var(--master-font-color-2);
+
+    // carousel
+    --carousel-background: var(--master-color-2);
+    --carousel-font-color: var(--master-font-color-2);
+    --carousel-active-font-color: var(--master-font-color-1);
+    --carousel-active-border-color: var(--master-color-3);
+
+    // buttons
+    --button-background: var(--master-color-3);
+    --button-font-color: var(--master-font-color-2);
+    --button-hover-background: var(--master-color-3-relative);
+    --button-hover-font-color: var(--master-font-color-2);
+
+    // result colors
     --pass-color: #5fad6f;
     --fail-color: #fc6571;
     --skipped-color: #2485C1;
     --error-color: #f5b83f;
 
+    // link colors
     --link-color-1: #ee8308;
     --link-color-1-focus: #f1b87f;
-
-
-
+    --link-color-1-disabled: grey;
 
 }
 
-// TODO: add dark mode colors
+ //TODO: add dark mode colors
 @media (prefers-color-scheme: dark) {
     :root {
-        // pallette
-        //--master-color-1: #435177;
+        //--master-color-1: #323746;
         //--master-color-2: #2c2e3e;
         //--master-color-3: #F88017;
         //
@@ -50,47 +107,12 @@
         //--master-font-color-2: #9F9F9F;
 
         --master-color-1: #1c1f26;
-        --master-color-2: #172841;
-        --master-color-3: #1999d8;
+        --master-color-2: #202c48;
+        --master-color-3: #29617c;
 
         --master-font-color-1: #ffffff;
         --master-font-color-2: #817d7d;
 
-        // body
-        --body-background: var(--master-color-1);
-        // nav
-        --nav-background: var(--master-color-2);
-        --nav-font-color: var(--master-font-color-1);
-        --nav-hover-color: var(--master-color-3);
-
-        // trend box
-        --trend-box-font-color: var(--master-font-color-1);
-
-        //main panel
-        --main-panel-background: var(--master-color-2);
-        --main-panel-font-color: var(--master-font-color-1);
-        --main-panel-secondary-font-color: var(--master-font-color-2);
-        --main-panel-icon-color: #3498ff;
-
-        // sub panels
-        --sub-panel-background: var(--master-color-1);
-        --sub-panel-font-color: var(--master-font-color-1);
-        --sub-panel-secondary-font-color: var(--master-font-color-2);
-        --sub-panel-icon-color: #3498ff;
-
-        // tables
-        --main-table-header-background: var(--master-color-3);
-        --main-table-header-font-color: var(--master-font-color-1);
-        --main-table-body-background: var(--master-color-1);
-        --main-table-body-font-color: var(--master-font-color-1);
-        --main-table-body-secondary-font-color: var(--master-font-color-2);
-
-        // sub tables
-        --sub-table-header-background: var(--master-color-3);
-        --sub-table-header-font-color: var(--master-font-color-1);
-        --sub-table-body-background: var(--master-color-1);
-        --sub-table-body-font-color: var(--master-font-color-1);
-        --sub-table-body-secondary-font-color: var(--master-font-color-2);
 
         // result colors
         --pass-color: #5fad6f;
@@ -102,10 +124,6 @@
         --link-color-1: #ee8308;
         --link-color-1-focus: #f1b87f;
         --link-color-1-disabled: grey;
-        --link-color-2: #ff0000;
-        --link-color-2-focus: #d58b8b;
-        --link-color-2-disabled: grey;
-
     }
 }
 
@@ -145,7 +163,7 @@ body {
     }
 
     .rs-sidenav-item:hover {
-        color: var(--nav-font-color);
+        color: var(--nav-hover-font-color);
         background-color: var(--nav-hover-color);
     }
 }
@@ -267,6 +285,22 @@ a:active {
     text-decoration: none;
 }
 
+.filter-submit-button {
+    color: var(--button-font-color);
+    background-color: var(--button-background);
+}
+
+.filter-submit-button:hover  {
+    color: var(--button-hover-font-color);
+    background-color: var(--button-hover-background);
+}
+
+.filter-submit-button:focus  {
+    outline:none;
+    background-color: var(--button-background);
+}
+
+
 .top-menu-stack {
     align-items: center;
     gap: 10px;
@@ -314,30 +348,24 @@ a:active {
 
         .nav-link {
             border: 0px;
-            border-left: 1px solid #545b627a !important;
-            border-right: 1px solid #545b627a !important;
-            border-top: 1px solid #545b627a !important;
-            border-bottom: 1px solid #545b627a !important;
-            background-color: var(--main-panel-background);
             position: relative;
             top: 1px;
-            color: var(--main-panel-secondary-font-color);
+            background-color: var(--inactive-tab-background);
+            color: var(--inactive-tab-font-color);
+
         }
 
         .nav-link:hover {
             border-bottom: 0px;
+            color: var(--active-tab-font-color-hover)
         }
 
         .nav-link.active {
             border: 0px;
-            border-left: 1px solid grey !important;
-            border-right: 1px solid grey !important;
-            border-top: 1px solid grey !important;
-            border-bottom: 1px solid var(--main-panel-background) !important;
-            background-color: var(--main-panel-background);
             font-weight: bold;
             z-index: 9;
-            color: var(--main-panel-font-color);
+            background-color: var(--active-tab-background);
+            color: var(--active-tab-font-color);
         }
 
         .nav-link:focus {
@@ -347,9 +375,9 @@ a:active {
     }
 
     .tab-content {
-        border: 1px solid #dee2e6;
+        //border: 1px solid #dee2e6;
         border-radius: 10px;
-        background: var(--main-panel-background);
+        background: var(--tabs-overall-background);
         padding: 10px;
     }
 }

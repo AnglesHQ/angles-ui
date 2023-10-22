@@ -26,7 +26,7 @@ import AngleRightIcon from '@rsuite/icons/legacy/AngleRight';
 import Image from '@rsuite/icons/Image';
 import BarChart from '@rsuite/icons/BarChart';
 import DocPass from '@rsuite/icons/DocPass';
-import InfoRound from '@rsuite/icons/InfoRound';
+import InfoOutline from '@rsuite/icons/InfoOutline';
 
 import SummaryPage from '../components/pages/dashboard';
 import TestRunDetailsPage from '../components/pages/test-run';
@@ -164,28 +164,28 @@ const App = function (props) {
             </Sidenav.Header>
             <Sidenav.Body>
               <Nav>
-                <Nav.Item eventKey="1" icon={<DocPass />} href="/">
+                <Nav.Item eventKey="1" icon={<DocPass style={{ fontSize: '20px', height: '20px' }} />} href="/">
                   <span>
                     <FormattedMessage
                       id="nav.dashboard"
                     />
                   </span>
                 </Nav.Item>
-                <Nav.Item eventKey="2" icon={<BarChart />} href="/metrics">
+                <Nav.Item eventKey="2" icon={<BarChart style={{ fontSize: '20px', height: '20px' }} />} href="/metrics">
                   <span>
                     <FormattedMessage
                       id="nav.execution-metrics"
                     />
                   </span>
                 </Nav.Item>
-                <Nav.Item eventKey="3" icon={<Image />} href="/screenshot-library">
+                <Nav.Item eventKey="3" icon={<Image style={{ fontSize: '20px', height: '20px' }} />} href="/screenshot-library">
                   <span>
                     <FormattedMessage
                       id="nav.screenshot-library"
                     />
                   </span>
                 </Nav.Item>
-                <Nav.Item eventKey="4" icon={<InfoRound />} href="/about">
+                <Nav.Item eventKey="4" icon={<InfoOutline style={{ fontSize: '20px', height: '20px' }} />} href="/about">
                   <span>
                     <FormattedMessage
                       id="nav.about"

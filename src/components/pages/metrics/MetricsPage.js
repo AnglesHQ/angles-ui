@@ -211,91 +211,93 @@ const MetricsPage = function (props) {
               }
             }}
           />
-          <Button appearance="primary" type="submit" onClick={() => { onSubmit(); }}>
+          <Button className="filter-submit-button" type="submit" onClick={() => { onSubmit(); }}>
             <FormattedMessage id="page.metrics.filters.button.retrieve-metrics" />
           </Button>
         </Stack>
       </Affix>
-      <div className="tabs-container">
-        <Tabs id="execution-metrics-tabs" activeKey={key} defaultActiveKey="execution" onSelect={(tabKey, evt) => setTab(tabKey, evt)}>
-          <Tab eventKey="execution" title={<FormattedMessage id="page.metrics.tab.execution-metrics" />}>
-            <div style={{ display: !metrics ? 'block' : 'none' }} className="alert alert-primary" role="alert">
-              <span>
-                <i className="fas fa-spinner fa-pulse fa-2x" />
-                <span> Retrieving metrics.</span>
-              </span>
-            </div>
-            <div style={{ display: (metrics && Object.keys(metrics).length === 0) ? 'block' : 'none' }} className="alert alert-danger" role="alert">
-              <span>Unable to retrieve metrics. Please refresh the page and try again.</span>
-            </div>
-            {
-              metrics && Object.keys(metrics).length > 0 ? (
-                <div style={{ display: (metrics && Object.keys(metrics).length > 0) ? 'block' : 'none' }}>
-                  <Grid fluid>
-                    <Row gutter={30} className="dash-row">
-                      <Col xs={24}>
-                        <ExecutionMetricsSummary metrics={metrics} />
-                      </Col>
-                    </Row>
-                    <Row gutter={30} className="dash-row">
-                      <Col xs={12}>
-                        <ExecutionMetricsResultsBarChart
-                          metrics={metrics}
-                        />
-                      </Col>
-                      <Col xs={12}>
-                        <PhaseMetricsResultsBarChart
-                          metrics={metrics}
-                        />
-                      </Col>
-                    </Row>
-                  </Grid>
-                </div>
-              ) : null
-            }
-          </Tab>
-          <Tab eventKey="platform" title={<FormattedMessage id="page.metrics.tab.platform-metrics" />}>
-            <div style={{ display: !metrics ? 'block' : 'none' }} className="alert alert-primary" role="alert">
-              <span>
-                <i className="fas fa-spinner fa-pulse fa-2x" />
-                <span> Retrieving metrics.</span>
-              </span>
-            </div>
-            <div style={{ display: (metrics && Object.keys(metrics).length === 0) ? 'block' : 'none' }} className="alert alert-danger" role="alert">
-              <span>Unable to retrieve metrics. Please refresh the page and try again.</span>
-            </div>
-            {
-              metrics && Object.keys(metrics).length > 0 ? (
-                <div style={{ display: (metrics && Object.keys(metrics).length > 0) ? 'block' : 'none' }}>
-                  <Grid fluid>
-                    <Row gutter={30} className="dash-row">
-                      <Col xs={24}>
-                        <PlatformMetricsSummary
-                          metrics={metrics}
-                          platformColors={platformColors}
-                        />
-                      </Col>
-                    </Row>
-                    <Row gutter={30} className="dash-row">
-                      <Col xs={12}>
-                        <PlatformDistributionPieChart
-                          metrics={metrics}
-                          platformColors={platformColors}
-                        />
-                      </Col>
-                      <Col xs={12}>
-                        <PlatformDistributionBarChart
-                          metrics={metrics}
-                          platformColors={platformColors}
-                        />
-                      </Col>
-                    </Row>
-                  </Grid>
-                </div>
-              ) : null
-            }
-          </Tab>
-        </Tabs>
+      <div className="metrics-main">
+        <div className="tabs-container">
+          <Tabs id="execution-metrics-tabs" activeKey={key} defaultActiveKey="execution" onSelect={(tabKey, evt) => setTab(tabKey, evt)}>
+            <Tab eventKey="execution" title={<FormattedMessage id="page.metrics.tab.execution-metrics" />}>
+              <div style={{ display: !metrics ? 'block' : 'none' }} className="alert alert-primary" role="alert">
+                <span>
+                  <i className="fas fa-spinner fa-pulse fa-2x" />
+                  <span> Retrieving metrics.</span>
+                </span>
+              </div>
+              <div style={{ display: (metrics && Object.keys(metrics).length === 0) ? 'block' : 'none' }} className="alert alert-danger" role="alert">
+                <span>Unable to retrieve metrics. Please refresh the page and try again.</span>
+              </div>
+              {
+                metrics && Object.keys(metrics).length > 0 ? (
+                  <div style={{ display: (metrics && Object.keys(metrics).length > 0) ? 'block' : 'none' }}>
+                    <Grid fluid>
+                      <Row gutter={30} className="dash-row">
+                        <Col xs={24}>
+                          <ExecutionMetricsSummary metrics={metrics} />
+                        </Col>
+                      </Row>
+                      <Row gutter={30} className="dash-row">
+                        <Col xs={12}>
+                          <ExecutionMetricsResultsBarChart
+                            metrics={metrics}
+                          />
+                        </Col>
+                        <Col xs={12}>
+                          <PhaseMetricsResultsBarChart
+                            metrics={metrics}
+                          />
+                        </Col>
+                      </Row>
+                    </Grid>
+                  </div>
+                ) : null
+              }
+            </Tab>
+            <Tab eventKey="platform" title={<FormattedMessage id="page.metrics.tab.platform-metrics" />}>
+              <div style={{ display: !metrics ? 'block' : 'none' }} className="alert alert-primary" role="alert">
+                <span>
+                  <i className="fas fa-spinner fa-pulse fa-2x" />
+                  <span> Retrieving metrics.</span>
+                </span>
+              </div>
+              <div style={{ display: (metrics && Object.keys(metrics).length === 0) ? 'block' : 'none' }} className="alert alert-danger" role="alert">
+                <span>Unable to retrieve metrics. Please refresh the page and try again.</span>
+              </div>
+              {
+                metrics && Object.keys(metrics).length > 0 ? (
+                  <div style={{ display: (metrics && Object.keys(metrics).length > 0) ? 'block' : 'none' }}>
+                    <Grid fluid>
+                      <Row gutter={30} className="dash-row">
+                        <Col xs={24}>
+                          <PlatformMetricsSummary
+                            metrics={metrics}
+                            platformColors={platformColors}
+                          />
+                        </Col>
+                      </Row>
+                      <Row gutter={30} className="dash-row">
+                        <Col xs={12}>
+                          <PlatformDistributionPieChart
+                            metrics={metrics}
+                            platformColors={platformColors}
+                          />
+                        </Col>
+                        <Col xs={12}>
+                          <PlatformDistributionBarChart
+                            metrics={metrics}
+                            platformColors={platformColors}
+                          />
+                        </Col>
+                      </Row>
+                    </Grid>
+                  </div>
+                ) : null
+              }
+            </Tab>
+          </Tabs>
+        </div>
       </div>
     </div>
   );

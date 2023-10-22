@@ -1,6 +1,32 @@
 
+.screenshot-modal {
+  max-width: 95%;
+
+  .modal-content {
+    background: none;
+  }
+
+  .modal-header {
+    background-color: var(--main-panel-background);
+    color: var(--main-panel-font-color);
+    font-size: 1.5em;
+    border-bottom: none;
+  }
+
+  .modal-body {
+    background-color: var(--main-panel-background);
+    border: none;
+  }
+}
+
 .screenshot-view-panel {
-  background-color: var(--body-background);
+  background-color: var(--sub-panel-background);
+
+  // applies to all views
+  .image-page-holder {
+    padding: 30px;
+    min-height: 300px;
+  }
 }
 
 .screenshot {
@@ -8,57 +34,6 @@
   /* max-height: 100%; */
   border: 1px solid #ddd;
   border-radius: 4px;
-}
-
-.active-thumbnail {
-  border: 2px solid red;
-}
-
-.thumbnail-card {
-  max-width: 12em;
-  min-width: 12em;
-}
-.card-active {
-  border: 1px solid red;
-}
-
-.card-screenshot-image {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  max-height: 250px;
-  width: auto;
-}
-
-.thumbnail-card .card-body {
-  padding: 0px;
-}
-
-.thumbnail-card-text {
-  font-size: small;
-  text-align: center;
-  padding: 2px;
-  font-weight: bold;
-}
-
-.card-text {
-  font-weight: bold;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 250px;
-}
-
-.card-text-active {
-  color: red;
-}
-
-.card-deck-build-thumbnails {
-  align-items: center;
-  justify-content: center;
-  padding-bottom: 10px;
-  margin-bottom: 10px;
-  border-bottom: 1px solid #b5a5a53b;
 }
 
 .card-deck-history {
@@ -88,7 +63,7 @@
   max-width: 22em;
   min-width: 22em;
   margin: 1em;
-
+  display: inline-block;
 }
 
 .baseline-overlay {
@@ -105,17 +80,6 @@
 
 .screenshot-thumbnail-history {
   width: 200px;
-}
-
-.image-page-holder {
-  padding: 2em;
-  border: 1px solid grey;
-  border-radius: 10px;
-  min-height: 300px;
-}
-
-.screenshot-modal {
-  max-width: 95%;
 }
 
 .screenshot-details-td {
@@ -145,14 +109,6 @@
   font-weight: bold;
 }
 
-.carousel-container {
-  background: #b5a5a53b;
-  padding: 1em;
-  margin-bottom: 1em;
-  border-radius: 10px;
-  border: 1px solid grey;
-}
-
 .screenshot-form-container {
   padding: 15px;
   border-radius: 10px;
@@ -163,3 +119,40 @@
 .screenshot-viewer-surround {
   padding-top: 20px;
 }
+
+// carousel
+.carousel-container {
+
+  background: var(--carousel-background);
+  padding: 1em;
+  margin-bottom: 1em;
+  border-radius: 10px;
+  //border: 1px solid grey;
+
+  .card-screenshot-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-height: 250px;
+    width: auto;
+  }
+
+  .card-text {
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 250px;
+  }
+
+  .card-text-active {
+    color: var(--carousel-active-font-color);
+  }
+
+
+  .card-active {
+    border: 2px solid var(--carousel-active-border-color);
+  }
+
+}
+

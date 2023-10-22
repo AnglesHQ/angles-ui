@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { Button } from 'rsuite';
 import Table from 'react-bootstrap/Table';
 import ScreenshotDetailsTable from '../ScreenshotDetailsTable';
 import CurrentScreenshotContext from '../../../../context/CurrentScreenshotContext';
@@ -43,14 +44,14 @@ const CurrentImageView = function (props) {
   const returnMakeBaselineButton = (screenshotDetailsForButton) => {
     if (screenshotDetailsForButton.platform && screenshotDetailsForButton.view) {
       return (
-        <button
+        <Button
           onClick={() => updateBaseline(screenshotDetailsForButton)}
           disabled={isBaseline(screenshotDetailsForButton._id)}
           type="button"
-          className="btn btn-outline-primary"
+          className="filter-submit-button"
         >
           { !isBaseline(screenshotDetailsForButton._id) ? ('Make Baseline Image') : 'This is the Baseline Image'}
-        </button>
+        </Button>
       );
     }
     return null;
@@ -92,27 +93,27 @@ const CurrentImageView = function (props) {
               {
                 returnMakeBaselineButton(currentScreenshotDetails)
               }
-              <button
+              <Button
                 onClick={() => generateDynamicBaselineClick()}
                 disabled={!dynamicBaselineButtonEnabled}
                 type="button"
-                className="btn btn-outline-primary second-button"
+                className="filter-submit-button"
               >
                 Generate Dynamic Baseline
-              </button>
+              </Button>
               {
                 (
                   currentScreenshotDetails.type && currentScreenshotDetails.type === 'DYNAMIC'
                     && !isBaseline(currentScreenshotDetails._id) ? (
-                      <button
+                      <Button
                         onClick={() => deleteScreenshotClick()}
                         disabled={!deleteScreenshotButtonEnabled}
                         type="button"
-                        className="btn btn-outline-primary second-button"
+                        className="filter-submit-button"
                         title="Only available for dynamic baselines that are not configured as a baseline."
                       >
                         Delete Screenshot
-                      </button>
+                      </Button>
                     ) : null
                 )
               }

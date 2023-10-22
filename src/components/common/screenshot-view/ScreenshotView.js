@@ -185,41 +185,43 @@ const ScreenshotView = function (props) {
             ? <Alert variant="info">To enable the &quot;History&quot; and &quot;Compare with Baseline&quot; tabs please provide a view and platform details when uploading the screenshots to angles.</Alert>
             : null
         }
-        <Tabs id="image-tabs" activeKey={key} defaultActiveKey="image" onSelect={(tabKey) => handleSelect(tabKey)}>
-          <Tab eventKey="image" title="Image">
-            <div className="image-page-holder">
-              <CurrentImageView
-                updateBaseline={updateBaseline}
-                generateDynamicBaseline={generateDynamicBaseline}
-                deleteScreenshot={deleteScreenshot}
-                isBaseline={isBaseline}
-              />
-            </div>
-          </Tab>
-          <Tab eventKey="history" disabled={!currentScreenshotDetails.platform || !currentScreenshotDetails.view} title="History">
-            <div className="image-page-holder">
-              <ScreenshotHistoryView
-                isBaseline={isBaseline}
-              />
-            </div>
-          </Tab>
-          <Tab eventKey="baseline" title="Overlay with Baseline" disabled={!currentScreenshotDetails.platform || !currentScreenshotDetails.view}>
-            <div className="image-page-holder">
-              <BaselineImageView
-                isBaseline={isBaseline}
-                makeUpdateBaselineRequest={makeUpdateBaselineRequest}
-                getBaselineCompare={getBaselineCompare}
-              />
-            </div>
-          </Tab>
-          <Tab eventKey="sidebyside" title="Side by Side with Baseline" disabled={!currentScreenshotDetails.platform || !currentScreenshotDetails.view}>
-            <div className="image-page-holder">
-              <ImageSideBySideView
-                isBaseline={isBaseline}
-              />
-            </div>
-          </Tab>
-        </Tabs>
+        <div className="tabs-container">
+          <Tabs id="image-tabs" activeKey={key} defaultActiveKey="image" onSelect={(tabKey) => handleSelect(tabKey)}>
+            <Tab eventKey="image" title="Image">
+              <div className="image-page-holder">
+                <CurrentImageView
+                  updateBaseline={updateBaseline}
+                  generateDynamicBaseline={generateDynamicBaseline}
+                  deleteScreenshot={deleteScreenshot}
+                  isBaseline={isBaseline}
+                />
+              </div>
+            </Tab>
+            <Tab eventKey="history" disabled={!currentScreenshotDetails.platform || !currentScreenshotDetails.view} title="History">
+              <div className="image-page-holder">
+                <ScreenshotHistoryView
+                  isBaseline={isBaseline}
+                />
+              </div>
+            </Tab>
+            <Tab eventKey="baseline" title="Overlay with Baseline" disabled={!currentScreenshotDetails.platform || !currentScreenshotDetails.view}>
+              <div className="image-page-holder">
+                <BaselineImageView
+                  isBaseline={isBaseline}
+                  makeUpdateBaselineRequest={makeUpdateBaselineRequest}
+                  getBaselineCompare={getBaselineCompare}
+                />
+              </div>
+            </Tab>
+            <Tab eventKey="sidebyside" title="Side by Side with Baseline" disabled={!currentScreenshotDetails.platform || !currentScreenshotDetails.view}>
+              <div className="image-page-holder">
+                <ImageSideBySideView
+                  isBaseline={isBaseline}
+                />
+              </div>
+            </Tab>
+          </Tabs>
+        </div>
       </Panel>
     )
   );
