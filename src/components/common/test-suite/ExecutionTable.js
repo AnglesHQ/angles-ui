@@ -35,12 +35,15 @@ const ExecutionTable = function (props) {
   };
 
   return (
-    <>
+    <div className="test-run-suite-body">
       <div key={`execution_${index}`} className="test-row">
         <div className={`${execution.status}`}>
           <FlexboxGrid justify="space-between">
             <FlexboxGrid.Item colspan={1}>
-              <span key={isExecutionExpanded(execution._id)} className="test-name" onClick={() => toggleExecution(execution._id)}>
+              <span
+                key={isExecutionExpanded(execution._id)}
+                onClick={() => toggleExecution(execution._id)}
+              >
                 {
                 isExecutionExpanded(execution._id) ? (
                   <CollaspedOutlineIcon className="execution-icon" />
@@ -49,11 +52,12 @@ const ExecutionTable = function (props) {
               </span>
             </FlexboxGrid.Item>
             <FlexboxGrid.Item colspan={22}>
-              <div>
-                <span>{`Test: ${execution.title} `}</span>
+              <div className="execution-test-name" onClick={() => toggleExecution(execution._id)}>
+                <span>{`Test: ${execution.title} - `}</span>
+                <span className={`execution-status-${execution.status}`}>{`${execution.status}`}</span>
               </div>
-              <div>
-                <span className="device-details">
+              <div className="execution-details-container">
+                <span className="date-details">
                   <CalendarIcon />
                   <Moment format="DD-MM-YYYY HH:mm:ss">
                     {execution.start}
@@ -96,7 +100,7 @@ const ExecutionTable = function (props) {
           </div>
         </div>
       ) : null}
-    </>
+    </div>
   );
 };
 

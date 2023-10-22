@@ -12,8 +12,8 @@ const defaultOptions = {
     animations: { enabled: false },
     stacked: true,
     stackType: 'normal',
-    background: 'var(--panel-background)',
-    foreColor: 'var(--font-color-2)',
+    background: 'var(--main-panel-background)',
+    foreColor: 'var(--main-panel-font-color)',
     // TODO: could look at adding some click events for filtering etc
     // events:
     //   {
@@ -97,8 +97,7 @@ const generateResultsData = (builds) => {
 };
 
 const ExecutionBarChart = function (props) {
-  const title = '';
-  const { builds } = props;
+  const { builds, title } = props;
   const graphData = generateResultsData(builds);
   const { data, labels } = graphData;
   return (

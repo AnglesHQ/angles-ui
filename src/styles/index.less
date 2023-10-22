@@ -13,7 +13,7 @@
 :root {
     --body-background: #f5f8fa;
     --nav-background: white;
-    --panel-background: white;
+    --main-panel-background: white;
     --master-color-1: #F88017;
     --master-color-2: #FFA538;
     --master-color-3: #9F9F9F;
@@ -31,33 +31,81 @@
     --error-color: #f5b83f;
 
     --link-color-1: #ee8308;
-    --link-color-2: #f1b87f;
+    --link-color-1-focus: #f1b87f;
+
+
+
+
 }
 
 // TODO: add dark mode colors
 @media (prefers-color-scheme: dark) {
     :root {
-        --body-background: #343e59;
-        --nav-background: #2c2e3e;
-        --panel-background: #2c2e3e;
-        --master-color-1: #F88017;
-        --master-color-2: #FFA538;
-        --master-color-3: #9F9F9F;
-        --master-color-4: #CDCDCD;
-        --master-color-5: #2c2e3e;
+        // pallette
+        //--master-color-1: #435177;
+        //--master-color-2: #2c2e3e;
+        //--master-color-3: #F88017;
+        //
+        //--master-font-color-1: white;
+        //--master-font-color-2: #9F9F9F;
 
-        --font-color-1: white;
-        --font-color-2: #c5c5c5;
-        --font-color-3: white;
-        --font-color-4: #ee8308;
+        --master-color-1: #1c1f26;
+        --master-color-2: #172841;
+        --master-color-3: #1999d8;
 
+        --master-font-color-1: #ffffff;
+        --master-font-color-2: #817d7d;
+
+        // body
+        --body-background: var(--master-color-1);
+        // nav
+        --nav-background: var(--master-color-2);
+        --nav-font-color: var(--master-font-color-1);
+        --nav-hover-color: var(--master-color-3);
+
+        // trend box
+        --trend-box-font-color: var(--master-font-color-1);
+
+        //main panel
+        --main-panel-background: var(--master-color-2);
+        --main-panel-font-color: var(--master-font-color-1);
+        --main-panel-secondary-font-color: var(--master-font-color-2);
+        --main-panel-icon-color: #3498ff;
+
+        // sub panels
+        --sub-panel-background: var(--master-color-1);
+        --sub-panel-font-color: var(--master-font-color-1);
+        --sub-panel-secondary-font-color: var(--master-font-color-2);
+        --sub-panel-icon-color: #3498ff;
+
+        // tables
+        --main-table-header-background: var(--master-color-3);
+        --main-table-header-font-color: var(--master-font-color-1);
+        --main-table-body-background: var(--master-color-1);
+        --main-table-body-font-color: var(--master-font-color-1);
+        --main-table-body-secondary-font-color: var(--master-font-color-2);
+
+        // sub tables
+        --sub-table-header-background: var(--master-color-3);
+        --sub-table-header-font-color: var(--master-font-color-1);
+        --sub-table-body-background: var(--master-color-1);
+        --sub-table-body-font-color: var(--master-font-color-1);
+        --sub-table-body-secondary-font-color: var(--master-font-color-2);
+
+        // result colors
         --pass-color: #5fad6f;
         --fail-color: #fc6571;
         --skipped-color: #2485C1;
         --error-color: #f5b83f;
 
+        // link colors
         --link-color-1: #ee8308;
-        --link-color-2: #f1b87f;
+        --link-color-1-focus: #f1b87f;
+        --link-color-1-disabled: grey;
+        --link-color-2: #ff0000;
+        --link-color-2-focus: #d58b8b;
+        --link-color-2-disabled: grey;
+
     }
 }
 
@@ -66,7 +114,7 @@ body {
 }
 
 .main-sidebar {
-    padding-top: 1.5em;
+    padding-top: 25px;
     background-color: var(--nav-background);
     display: flex;
     flexDirection: 'column';
@@ -93,11 +141,12 @@ body {
     }
 
     .rs-sidenav-item {
-        color: var(--font-color-2);
+        color: var(--nav-font-color);
     }
+
     .rs-sidenav-item:hover {
-        color: var(--font-color-1);
-        background-color: var(--master-color-1);
+        color: var(--nav-font-color);
+        background-color: var(--nav-hover-color);
     }
 }
 
@@ -110,14 +159,17 @@ body {
     border-right: none;
 
     .rs-table-scrollbar {
-        background-color: var(--master-color-1);
+        //background-color: var(--main-table-header-background);
+        background: var(--main-table-header-background);
+
     }
+
     .rs-table-row-header {
         background-color: transparent;
 
         .rs-table-cell-content {
-            background-color: var(--master-color-1);
-            color: var(--font-color-1);
+            background-color: var(--main-table-header-background);
+            color: var(--main-table-header-font-color);
             opacity: 0.8;
             font-weight: bold;
             font-size: 1.1em;
@@ -139,7 +191,6 @@ body {
             background-color: transparent;
             border-bottom: none;
         }
-
     }
 
     //.rs-table-row:hover {
@@ -147,10 +198,10 @@ body {
     //}
 
     .rs-table-body-row-wrapper {
-        color: var(--font-color-2);
+        color: var(--main-table-body-font-color);
 
         .rs-table-cell {
-            background-color: var(--body-background);
+            background-color: var(--main-table-body-background);
         }
 
         .rs-table-row:last-child {
@@ -165,15 +216,17 @@ body {
     }
 }
 
-.rg-stack {
-    background-color: var(--panel-background);
-}
-
+// change select picker default
 .rs-picker {
     padding-right: 5px;
 
+    .rs-badge-content {
+        top: 9px;
+        right: -4px;
+    }
+
     .rs-picker-toggle:hover {
-        background-color: var(--panel-background);
+        background-color: var(--main-panel-background);
     }
 
     .rs-picker-toggle-value {
@@ -183,12 +236,17 @@ body {
 
 }
 
+// change pagination
 .rs-pagination-btn {
-    color: var(--font-color-4) !important;
+    color: var(--link-color-1) !important;
+}
+
+.rs-pagination-btn-active {
+    border: 1px solid var(--link-color-1) !important;
 }
 
 .rs-pagination-btn:disabled {
-    color: var(--font-color-2) !important;
+    color: var(--link-color-1-disabled) !important;
 }
 
 
@@ -199,7 +257,7 @@ a {
 }
 
 a:hover, a:focus {
-    color: var(--link-color-2);
+    color: var(--link-color-1-focus);
     text-decoration: none;
 }
 a:visited {
@@ -209,8 +267,22 @@ a:active {
     text-decoration: none;
 }
 
+.top-menu-stack {
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    background: var(--main-panel-background);
+    padding: 4px 4px 4px 15px;
+    border-radius: 6px;
+}
+
 .chart-panel {
-    background-color: var(--panel-background);
+    background-color: var(--main-panel-background);
+
+    .rs-panel-header {
+        color: var(--main-panel-font-color);
+        font-weight: bold;
+    }
 }
 
 .test-results-progress-bar {
@@ -227,5 +299,57 @@ a:active {
     }
     .test-result-skipped {
         background-color: var(--skipped-color);
+    }
+}
+
+
+.tabs-container {
+    margin-left: 10px;
+    position: relative;
+    top: 1px;
+
+    .nav-tabs {
+        border-bottom: 0px;
+        margin-left: 20px;
+
+        .nav-link {
+            border: 0px;
+            border-left: 1px solid #545b627a !important;
+            border-right: 1px solid #545b627a !important;
+            border-top: 1px solid #545b627a !important;
+            border-bottom: 1px solid #545b627a !important;
+            background-color: var(--main-panel-background);
+            position: relative;
+            top: 1px;
+            color: var(--main-panel-secondary-font-color);
+        }
+
+        .nav-link:hover {
+            border-bottom: 0px;
+        }
+
+        .nav-link.active {
+            border: 0px;
+            border-left: 1px solid grey !important;
+            border-right: 1px solid grey !important;
+            border-top: 1px solid grey !important;
+            border-bottom: 1px solid var(--main-panel-background) !important;
+            background-color: var(--main-panel-background);
+            font-weight: bold;
+            z-index: 9;
+            color: var(--main-panel-font-color);
+        }
+
+        .nav-link:focus {
+            outline: none;
+        }
+
+    }
+
+    .tab-content {
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        background: var(--main-panel-background);
+        padding: 10px;
     }
 }

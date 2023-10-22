@@ -152,7 +152,9 @@ const App = function (props) {
         width={expand ? 240 : 56}
         collapsible
       >
-        <Affix>
+        <Affix
+          top={25}
+        >
           <Sidenav expanded={expand} defaultOpenKeys={['3']} appearance="subtle">
             <Sidenav.Header>
               <div className="sidebar-header">

@@ -40,6 +40,8 @@
   "page.dashboard.menu.one-select-message": "Please select at least one test run",
 
   "page.dashboard.execution-barchart.execution-time-seconds": "ExecutionTime (Seconds)",
+  "page.dashboard.execution-bar-chart.title": "Test Runs",
+  "page.dashboard.execution-pie-chart.title": "Overall Status of Test Runs",
 
   "page.metrics.bread-crumb": "Metrics",
   "page.metrics.filters.labels.team": "Team",
@@ -67,7 +69,6 @@
   "page.screenshot-library.search-options.label.view": "View",
   "page.screenshot-library.search-options.label.tag": "Tag",
   "page.screenshot-library.search-options.label.or": "OR",
-  "page.screenshot-library.search-options.label.view-or-tag": "Please provide either a view or tag.",
   "page.screenshot-library.search-options.label.period": "Period",
   "page.screenshot-library.search-options.label.platform": "Platform",
   "page.screenshot-library.search-options.button.search-screenshots": "Search Screenshots",
@@ -77,6 +78,10 @@
   "page.screenshot-library.search-options.dropdown.last-14-days": "Last 14 days",
   "page.screenshot-library.search-options.dropdown.last-30-days": "Last 30 days",
   "page.screenshot-library.search-options.dropdown.last-3-months": "Last 3 months",
-  "page.screenshot-library.search-options.dropdown.last-6-months": "Last 6 months"
+  "page.screenshot-library.search-options.dropdown.last-6-months": "Last 6 months",
 
+  "page.about.header": "About Angles",
+  "page.about.about-angles": "Angles is an open-source dashboard which can be used to store results and screenshots for automated test runs from various frameworks.",
+  "page.about.about-api": "By providing a clearly defined {apiLink} any framework can be adapted to store its test result in Angles, using one of the clients provided (or by using the API directly)",
+  "page.about.about-github": "For more information about Angles go to page: {githubLink}"
 }

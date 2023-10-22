@@ -10,7 +10,7 @@ import {
   Checkbox,
   Table,
   Popover,
-  Whisper,
+  Whisper, CheckboxGroup,
 } from 'rsuite';
 import { getDuration } from '../../../utility/TimeUtilities';
 import ExecutionsResultsBar from '../../common/ExecutionsResultsBar';
@@ -73,13 +73,15 @@ const CheckCell = function (props) {
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading
     <Cell {...rest}>
-      <Checkbox
-        key={`${build._id}-${isRowSelected(build)}`}
-        value={build._id}
-        onClick={() => toggleSelectedBuild(build)}
-        checked={isRowSelected(build)}
-        inline={false}
-      />
+      <CheckboxGroup>
+        <Checkbox
+          key={`${build._id}-${isRowSelected(build)}`}
+          value={build._id}
+          onClick={() => toggleSelectedBuild(build)}
+          checked={isRowSelected(build)}
+          inline={false}
+        />
+      </CheckboxGroup>
     </Cell>
   );
 };

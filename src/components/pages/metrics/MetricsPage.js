@@ -12,9 +12,7 @@ import {
   DateRangePicker,
   SelectPicker,
   Stack,
-  Form,
   Button,
-  Panel,
   Col,
   Row,
   Grid,
@@ -147,165 +145,155 @@ const MetricsPage = function (props) {
 
   return (
     <div>
-      <Affix>
-        <Stack className="rg-stack" spacing={10}>
-          <Form>
-            <SelectPicker
-              cleanable={false}
-              // searchable={false}
-              label={<FormattedMessage id="page.metrics.filters.labels.team" />}
-              appearance="subtle"
-              data={teams.map((team) => ({ label: team.name, value: team._id }))}
-              value={selectedTeam}
-              onChange={(value) => {
-                if (value) {
-                  handleTeamChange(value);
-                }
-              }}
-            />
-            <SelectPicker
-              cleanable
-              // searchable={false}
-              appearance="subtle"
-              label={<FormattedMessage id="page.metrics.filters.labels.component" />}
-              data={getComponents(selectedTeam)
-                .map((teamComponent) => ({ label: teamComponent.name, value: teamComponent._id }))}
-              value={selectedComponent}
-              onChange={(value) => {
-                if (value) {
-                  handleComponentChange(value);
-                }
-              }}
-              onClean={() => {
-                setSelectedComponent(undefined);
-              }}
-            />
-            <DateRangePicker
-              label={<FormattedMessage id="page.metrics.filters.labels.period" />}
-              value={[startDate.toDate(), endDate.toDate()]}
-              format="dd-MMM-yyyy"
-              character=" - "
-              onChange={(value) => {
-                setStartDate(moment(value[0]));
-                setEndDate(moment(value[1]));
-              }}
-              shouldDisableDate={afterToday()}
-              cleanable={false}
-              ranges={getDateRangesPicker()}
-            />
-            <SelectPicker
-              label={<FormattedMessage id="page.metrics.filters.labels.group-by-period" />}
-              cleanable={false}
-              // searchable={false}
-              appearance="subtle"
-              data={[
-                { label: 'Day', value: 'day' },
-                { label: 'Week', value: 'week' },
-                { label: 'Fortnight', value: 'fortnight' },
-                { label: 'Month', value: 'month' },
-                { label: 'Year', value: 'year' },
-              ]}
-              value={groupingPeriod}
-              onChange={(value) => {
-                if (value) {
-                  handleGroupingChange(value);
-                }
-              }}
-            />
-            <Button variant="primary" type="button" className="metrics-button" onClick={() => { onSubmit(); }}>
-              <FormattedMessage id="page.metrics.filters.button.retrieve-metrics" />
-            </Button>
-          </Form>
+      <Affix
+        top={20}
+      >
+        <Stack className="top-menu-stack" spacing={10}>
+          <SelectPicker
+            cleanable={false}
+            // searchable={false}
+            label={<FormattedMessage id="page.metrics.filters.labels.team" />}
+            appearance="subtle"
+            data={teams.map((team) => ({ label: team.name, value: team._id }))}
+            value={selectedTeam}
+            onChange={(value) => {
+              if (value) {
+                handleTeamChange(value);
+              }
+            }}
+          />
+          <SelectPicker
+            cleanable
+            // searchable={false}
+            appearance="subtle"
+            label={<FormattedMessage id="page.metrics.filters.labels.component" />}
+            data={getComponents(selectedTeam)
+              .map((teamComponent) => ({ label: teamComponent.name, value: teamComponent._id }))}
+            value={selectedComponent}
+            onChange={(value) => {
+              if (value) {
+                handleComponentChange(value);
+              }
+            }}
+            onClean={() => {
+              setSelectedComponent(undefined);
+            }}
+          />
+          <DateRangePicker
+            label={<FormattedMessage id="page.metrics.filters.labels.period" />}
+            value={[startDate.toDate(), endDate.toDate()]}
+            format="dd-MMM-yyyy"
+            character=" - "
+            onChange={(value) => {
+              setStartDate(moment(value[0]));
+              setEndDate(moment(value[1]));
+            }}
+            shouldDisableDate={afterToday()}
+            cleanable={false}
+            ranges={getDateRangesPicker()}
+          />
+          <SelectPicker
+            label={<FormattedMessage id="page.metrics.filters.labels.group-by-period" />}
+            cleanable={false}
+            // searchable={false}
+            appearance="subtle"
+            data={[
+              { label: 'Day', value: 'day' },
+              { label: 'Week', value: 'week' },
+              { label: 'Fortnight', value: 'fortnight' },
+              { label: 'Month', value: 'month' },
+              { label: 'Year', value: 'year' },
+            ]}
+            value={groupingPeriod}
+            onChange={(value) => {
+              if (value) {
+                handleGroupingChange(value);
+              }
+            }}
+          />
+          <Button appearance="primary" type="submit" onClick={() => { onSubmit(); }}>
+            <FormattedMessage id="page.metrics.filters.button.retrieve-metrics" />
+          </Button>
         </Stack>
       </Affix>
-      <div className="metrics-data-container">
-        <Tabs className="execution-metrics-tabs" id="execution-metrics-tabs" activeKey={key} defaultActiveKey="execution" onSelect={(tabKey, evt) => setTab(tabKey, evt)}>
+      <div className="tabs-container">
+        <Tabs id="execution-metrics-tabs" activeKey={key} defaultActiveKey="execution" onSelect={(tabKey, evt) => setTab(tabKey, evt)}>
           <Tab eventKey="execution" title={<FormattedMessage id="page.metrics.tab.execution-metrics" />}>
-            <Panel
-              bordered
-              className="execution-metrics-panel"
-            >
-              <div style={{ display: !metrics ? 'block' : 'none' }} className="alert alert-primary" role="alert">
-                <span>
-                  <i className="fas fa-spinner fa-pulse fa-2x" />
-                  <span> Retrieving metrics.</span>
-                </span>
-              </div>
-              <div style={{ display: (metrics && Object.keys(metrics).length === 0) ? 'block' : 'none' }} className="alert alert-danger" role="alert">
-                <span>Unable to retrieve metrics. Please refresh the page and try again.</span>
-              </div>
-              {
-                metrics && Object.keys(metrics).length > 0 ? (
-                  <div style={{ display: (metrics && Object.keys(metrics).length > 0) ? 'block' : 'none' }}>
-                    <Grid fluid>
-                      <Row gutter={30} className="dash-row">
-                        <Col xs={24}>
-                          <ExecutionMetricsSummary metrics={metrics} />
-                        </Col>
-                      </Row>
-                      <Row gutter={30} className="dash-row">
-                        <Col xs={12}>
-                          <ExecutionMetricsResultsBarChart
-                            metrics={metrics}
-                          />
-                        </Col>
-                        <Col xs={12}>
-                          <PhaseMetricsResultsBarChart
-                            metrics={metrics}
-                          />
-                        </Col>
-                      </Row>
-                    </Grid>
-                  </div>
-                ) : null
-              }
-            </Panel>
+            <div style={{ display: !metrics ? 'block' : 'none' }} className="alert alert-primary" role="alert">
+              <span>
+                <i className="fas fa-spinner fa-pulse fa-2x" />
+                <span> Retrieving metrics.</span>
+              </span>
+            </div>
+            <div style={{ display: (metrics && Object.keys(metrics).length === 0) ? 'block' : 'none' }} className="alert alert-danger" role="alert">
+              <span>Unable to retrieve metrics. Please refresh the page and try again.</span>
+            </div>
+            {
+              metrics && Object.keys(metrics).length > 0 ? (
+                <div style={{ display: (metrics && Object.keys(metrics).length > 0) ? 'block' : 'none' }}>
+                  <Grid fluid>
+                    <Row gutter={30} className="dash-row">
+                      <Col xs={24}>
+                        <ExecutionMetricsSummary metrics={metrics} />
+                      </Col>
+                    </Row>
+                    <Row gutter={30} className="dash-row">
+                      <Col xs={12}>
+                        <ExecutionMetricsResultsBarChart
+                          metrics={metrics}
+                        />
+                      </Col>
+                      <Col xs={12}>
+                        <PhaseMetricsResultsBarChart
+                          metrics={metrics}
+                        />
+                      </Col>
+                    </Row>
+                  </Grid>
+                </div>
+              ) : null
+            }
           </Tab>
           <Tab eventKey="platform" title={<FormattedMessage id="page.metrics.tab.platform-metrics" />}>
-            <Panel
-              bordered
-              className="execution-metrics-panel"
-            >
-              <div style={{ display: !metrics ? 'block' : 'none' }} className="alert alert-primary" role="alert">
-                <span>
-                  <i className="fas fa-spinner fa-pulse fa-2x" />
-                  <span> Retrieving metrics.</span>
-                </span>
-              </div>
-              <div style={{ display: (metrics && Object.keys(metrics).length === 0) ? 'block' : 'none' }} className="alert alert-danger" role="alert">
-                <span>Unable to retrieve metrics. Please refresh the page and try again.</span>
-              </div>
-              {
-                metrics && Object.keys(metrics).length > 0 ? (
-                  <div style={{ display: (metrics && Object.keys(metrics).length > 0) ? 'block' : 'none' }}>
-                    <Grid fluid>
-                      <Row gutter={30} className="dash-row">
-                        <Col xs={24}>
-                          <PlatformMetricsSummary
-                            metrics={metrics}
-                            platformColors={platformColors}
-                          />
-                        </Col>
-                      </Row>
-                      <Row gutter={30} className="dash-row">
-                        <Col xs={12}>
-                          <PlatformDistributionPieChart
-                            metrics={metrics}
-                            platformColors={platformColors}
-                          />
-                        </Col>
-                        <Col xs={12}>
-                          <PlatformDistributionBarChart
-                            metrics={metrics}
-                            platformColors={platformColors}
-                          />
-                        </Col>
-                      </Row>
-                    </Grid>
-                  </div>
-                ) : null
-              }
-            </Panel>
+            <div style={{ display: !metrics ? 'block' : 'none' }} className="alert alert-primary" role="alert">
+              <span>
+                <i className="fas fa-spinner fa-pulse fa-2x" />
+                <span> Retrieving metrics.</span>
+              </span>
+            </div>
+            <div style={{ display: (metrics && Object.keys(metrics).length === 0) ? 'block' : 'none' }} className="alert alert-danger" role="alert">
+              <span>Unable to retrieve metrics. Please refresh the page and try again.</span>
+            </div>
+            {
+              metrics && Object.keys(metrics).length > 0 ? (
+                <div style={{ display: (metrics && Object.keys(metrics).length > 0) ? 'block' : 'none' }}>
+                  <Grid fluid>
+                    <Row gutter={30} className="dash-row">
+                      <Col xs={24}>
+                        <PlatformMetricsSummary
+                          metrics={metrics}
+                          platformColors={platformColors}
+                        />
+                      </Col>
+                    </Row>
+                    <Row gutter={30} className="dash-row">
+                      <Col xs={12}>
+                        <PlatformDistributionPieChart
+                          metrics={metrics}
+                          platformColors={platformColors}
+                        />
+                      </Col>
+                      <Col xs={12}>
+                        <PlatformDistributionBarChart
+                          metrics={metrics}
+                          platformColors={platformColors}
+                        />
+                      </Col>
+                    </Row>
+                  </Grid>
+                </div>
+              ) : null
+            }
           </Tab>
         </Tabs>
       </div>

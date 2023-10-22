@@ -297,8 +297,10 @@ const DashboardPage = function (props) {
         </div>
       ) : (
         <div>
-          <Affix>
-            <Stack className="rg-stack" spacing={10}>
+          <Affix
+            top={20}
+          >
+            <Stack className="top-menu-stack" spacing={10}>
               <SelectPicker
                 label={(
                   <FormattedMessage
@@ -398,11 +400,21 @@ const DashboardPage = function (props) {
               <Col xs={16}>
                 <ExecutionBarChart
                   builds={builds}
+                  title={(
+                    <FormattedMessage
+                      id="page.dashboard.execution-bar-chart.title"
+                    />
+                  )}
                 />
               </Col>
               <Col xs={8}>
                 <ExecutionPieChart
                   testRunMetrics={testRunMetrics}
+                  title={(
+                    <FormattedMessage
+                      id="page.dashboard.execution-pie-chart.title"
+                    />
+                  )}
                 />
               </Col>
             </Row>

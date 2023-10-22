@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   Panel,
 } from 'rsuite';
+import { FormattedMessage } from 'react-intl';
 import axios from 'axios';
 import { AnglesRequests } from 'angles-javascript-client';
 import AboutTable from './AboutTable';
@@ -22,25 +23,35 @@ const AboutPage = function () {
       <Panel
         bordered
         className="about-page-panel"
-        header={<span>About Angles</span>}
+        header={(
+          <span className="about-page-header">
+            <FormattedMessage id="page.about.header" />
+          </span>
+        )}
       >
         <div className="about-page-section">
           <span>
-            Angles is an open-source framework to store results for
-            automated test runs from various frameworks.
+            <FormattedMessage id="page.about.about-angles" />
           </span>
         </div>
         <div className="about-page-section">
           <span>
-            By providing a clearly defined
-            <a href="src/components/pages/about/AboutPage?url=https://raw.githubusercontent.com/AnglesHQ/angles/master/swagger/swagger.json" rel="noreferrer" target="_blank"> API </a>
-            any framework can be adapted to store its test result in Angles,
-            using one of the clients provided (or by using the API directly)
+            <FormattedMessage
+              id="page.about.about-api"
+              values={{
+                // TODO: fix link
+                apiLink: <a href="src/components/pages/about/AboutPage?url=https://raw.githubusercontent.com/AnglesHQ/angles/master/swagger/swagger.json" rel="noreferrer" target="_blank"> API </a>,
+              }}
+            />
           </span>
         </div>
         <div className="about-page-section">
-          For more information about Angles go to page:
-          <a href="src/components/pages/about/AboutPage" rel="noreferrer" target="_blank"> https://angleshq.github.io/</a>
+          <FormattedMessage
+            id="page.about.about-github"
+            values={{
+              githubLink: <a href="https://angleshq.github.io/" rel="noreferrer" target="_blank"> https://angleshq.github.io/</a>,
+            }}
+          />
         </div>
         <div className="about-page-section-table">
           <AboutTable versions={versions} />

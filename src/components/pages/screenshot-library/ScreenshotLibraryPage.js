@@ -1,17 +1,17 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import queryString from 'query-string';
 import { ScreenshotRequests } from 'angles-javascript-client';
 import {
-  Form,
   Button,
-  ButtonToolbar,
   SelectPicker,
   Panel,
-  Divider,
-  FlexboxGrid,
+  Affix,
+  Stack,
+  Input,
+  InputGroup,
 } from 'rsuite';
 import ScreenshotView from '../../common/screenshot-view/ScreenshotView';
 import CurrentScreenshotContext from '../../../context/CurrentScreenshotContext';
@@ -28,6 +28,7 @@ const ScreenshotLibraryPage = function () {
   const [view, setView] = useState('');
   const [tag, setTag] = useState('');
   const [numberOfDays, setNumberOfDays] = useState(14);
+  const [selectedPlatform, setSelectedPlatform] = useState(undefined);
   const screenshotRequests = new ScreenshotRequests(axios);
   const {
     setCurrentScreenshotId,
@@ -35,6 +36,7 @@ const ScreenshotLibraryPage = function () {
   const getGroupedScreenshotByPlatform = (viewValue, numberOfDaysValue) => {
     setRetrievingScreenshots(true);
     setFilteredScreenshots(null);
+    setSelectedPlatform(null);
     screenshotRequests
       .getScreenshotsGroupedByPlatform(viewValue, numberOfDaysValue)
       .then((retrievedGroupedScreenshots) => {
@@ -54,6 +56,7 @@ const ScreenshotLibraryPage = function () {
   const getGroupedScreenshotByTag = (tagValue, numberOfDaysValue) => {
     setRetrievingScreenshots(true);
     setFilteredScreenshots(null);
+    setSelectedPlatform(null);
     screenshotRequests.getScreenshotsGroupedByTag(tagValue, numberOfDaysValue)
       .then((retrievedGroupedScreenshots) => {
         const uniquePlatforms = [];
@@ -121,6 +124,7 @@ const ScreenshotLibraryPage = function () {
     const filteredScreenshotsToStore = groupedScreenshots
       .filter((screenshot) => screenshot.platformId === event);
     setFilteredScreenshots(filteredScreenshotsToStore);
+    setSelectedPlatform(event);
   };
 
   const getNumberOfDaysData = () => {
@@ -136,84 +140,69 @@ const ScreenshotLibraryPage = function () {
 
   const getPlatformData = () => platforms.map((platform) => ({ value: platform, label: platform }));
 
+  const intl = useIntl();
+
   return (
     <div>
-      <Panel className="screenshot-library-panel">
-        <Form onSubmit={submitScreenshotSearch} className="screenshot-library-form">
-          <FlexboxGrid>
-            <FlexboxGrid.Item colspan={11}>
-              <Form.Group controlId="view">
-                <Form.ControlLabel>
-                  <FormattedMessage id="page.screenshot-library.search-options.label.view" />
-                </Form.ControlLabel>
-                <Form.Control name="view" value={view} onChange={handleViewChange} />
-                <Form.HelpText>
-                  <FormattedMessage id="page.screenshot-library.search-options.label.view-or-tag" />
-                </Form.HelpText>
-              </Form.Group>
-            </FlexboxGrid.Item>
-            <FlexboxGrid.Item colspan={2} className="screenshot-library-form-or">
-              <span>
-                <FormattedMessage id="page.screenshot-library.search-options.label.or" />
-              </span>
-            </FlexboxGrid.Item>
-            <FlexboxGrid.Item colspan={11}>
-              <Form.Group controlId="tag">
-                <Form.ControlLabel>
-                  <FormattedMessage id="page.screenshot-library.search-options.label.tag" />
-                </Form.ControlLabel>
-                <Form.Control name="tag" value={tag} onChange={handleTagChange} />
-              </Form.Group>
-            </FlexboxGrid.Item>
-          </FlexboxGrid>
-          <FlexboxGrid className="screenshot-form-second-row">
-            <FlexboxGrid.Item colspan={11}>
-              <Form.Group controlId="numberOfDays">
-                <Form.ControlLabel>
-                  <FormattedMessage id="page.screenshot-library.search-options.label.period" />
-                </Form.ControlLabel>
-                <SelectPicker
-                  className="number-of-days-picker"
-                  name="numberOfDays"
-                  data={getNumberOfDaysData()}
-                  value={numberOfDays}
-                  onChange={handleNumberOfDaysChange}
-                  cleanable={false}
-                  searchable={false}
+      <Affix top={25}>
+        <Stack className="top-menu-stack" spacing={10}>
+          <span>Search by: </span>
+          <InputGroup className="screenshot-view-or-tag-input">
+            <Input
+              name="view"
+              value={view}
+              onChange={handleViewChange}
+              placeholder={intl.formatMessage({ id: 'page.screenshot-library.search-options.label.view' })}
+            />
+            <InputGroup.Addon>
+              <FormattedMessage id="page.screenshot-library.search-options.label.or" />
+            </InputGroup.Addon>
+            <Input
+              name="tag"
+              value={tag}
+              onChange={handleTagChange}
+              placeholder={intl.formatMessage({ id: 'page.screenshot-library.search-options.label.tag' })}
+            />
+          </InputGroup>
+          <SelectPicker
+            className="number-of-days-picker"
+            name="numberOfDays"
+            data={getNumberOfDaysData()}
+            value={numberOfDays}
+            onChange={handleNumberOfDaysChange}
+            label={(
+              <FormattedMessage
+                id="page.screenshot-library.search-options.label.period"
+              />
+            )}
+          />
+          <Button
+            disabled={view === '' && tag === ''}
+            appearance="primary"
+            type="submit"
+            onClick={() => { submitScreenshotSearch(); }}
+          >
+            <FormattedMessage id="page.screenshot-library.search-options.button.search-screenshots" />
+          </Button>
+        </Stack>
+      </Affix>
+      <Panel className="screenshot-viewer-surround">
+        {
+          groupType === 'tag' && platforms && platforms.length > 0 ? (
+            <SelectPicker
+              className="platform-picker"
+              name="platformSelect"
+              data={getPlatformData()}
+              value={selectedPlatform}
+              onChange={filterByPlatform}
+              label={(
+                <FormattedMessage
+                  id="page.screenshot-library.search-options.label.platform"
                 />
-              </Form.Group>
-            </FlexboxGrid.Item>
-            <FlexboxGrid.Item colspan={2} />
-            <FlexboxGrid.Item colspan={11}>
-              {
-                groupType === 'tag' && platforms && platforms.length > 0 ? (
-                  <Form.Group controlId="platformSelect">
-                    <Form.ControlLabel>
-                      <FormattedMessage id="page.screenshot-library.search-options.label.platform" />
-                    </Form.ControlLabel>
-                    <SelectPicker
-                      className="platform-picker"
-                      name="platformSelect"
-                      data={getPlatformData()}
-                      value={numberOfDays}
-                      onChange={filterByPlatform}
-                    />
-                  </Form.Group>
-                ) : null
-              }
-            </FlexboxGrid.Item>
-          </FlexboxGrid>
-          <Divider />
-          <Form.Group>
-            <ButtonToolbar>
-              <Button disabled={view === '' && tag === ''} appearance="primary" type="submit">
-                <FormattedMessage id="page.screenshot-library.search-options.button.search-screenshots" />
-              </Button>
-            </ButtonToolbar>
-          </Form.Group>
-        </Form>
-      </Panel>
-      <div className="screenshot-viewer-surround">
+              )}
+            />
+          ) : null
+        }
         {
           retrievingScreenshots ? (
             <div className="alert alert-primary" role="alert">
@@ -245,7 +234,7 @@ const ScreenshotLibraryPage = function () {
             />
             ) : null
         }
-      </div>
+      </Panel>
     </div>
   );
 };

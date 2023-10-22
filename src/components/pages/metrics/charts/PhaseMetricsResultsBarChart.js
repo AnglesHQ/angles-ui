@@ -9,8 +9,8 @@ const defaultOptions = {
     animations: { enabled: false },
     stacked: true,
     stackType: 'normal',
-    background: 'var(--panel-background)',
-    foreColor: 'var(--font-color-2)',
+    background: 'var(--main-panel-background)',
+    foreColor: 'var(--main-panel-font-color)',
   },
   plotOptions: {
     bar: {

@@ -40,6 +40,8 @@
   "page.dashboard.menu.one-select-message": "Selecteer tenminste 1 test run",
 
   "page.dashboard.execution-barchart.execution-time-seconds": "Uitvoertijd (Seconden)",
+  "page.dashboard.execution-bar-chart.title": "Test Runs",
+  "page.dashboard.execution-pie-chart.title": "Algemene Status Overzicht Test Runs",
 
   "page.metrics.bread-crumb": "Statistieken",
   "page.metrics.filters.labels.team": "Team",
@@ -67,7 +69,6 @@
   "page.screenshot-library.search-options.label.view": "Naam",
   "page.screenshot-library.search-options.label.tag": "Label",
   "page.screenshot-library.search-options.label.or": "of",
-  "page.screenshot-library.search-options.label.view-or-tag": "Vul a.u.b. of een naam of een label in.",
   "page.screenshot-library.search-options.label.period": "Periode",
   "page.screenshot-library.search-options.label.platform": "Platform",
   "page.screenshot-library.search-options.button.search-screenshots": "Zoek Schermafbeeldingen",
@@ -77,6 +78,11 @@
   "page.screenshot-library.search-options.dropdown.last-14-days": "Laatste 14 dagen",
   "page.screenshot-library.search-options.dropdown.last-30-days": "Laatste 30 dagen",
   "page.screenshot-library.search-options.dropdown.last-3-months": "Laatste 3 maanden",
-  "page.screenshot-library.search-options.dropdown.last-6-months": "Laatste 6 maanden"
+  "page.screenshot-library.search-options.dropdown.last-6-months": "Laatste 6 maanden",
+
+  "page.about.header": "Over Angles",
+  "page.about.about-angles": "Angles is een open-source dashboard wat gebruikt kan worden om test resultaten en schermafbeeldingen op te slaan voor geautomatiseerd testen van meerdere frameworks.",
+  "page.about.about-api": "Via het duidelijk omschreven {apiLink} van Angles kan elke geautomatiseerde test framework aangepast worden om zijn resultaten in Angles op te slaan",
+  "page.about.about-github": "Voor meer information over Angles kun je terecht op onze pagine: {githubLink}"
 
 }

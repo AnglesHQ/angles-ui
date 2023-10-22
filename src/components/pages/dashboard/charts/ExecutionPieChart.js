@@ -6,8 +6,8 @@ const defaultOptions = {
   chart: {
     toolbar: { show: false },
     animations: { enabled: false },
-    background: 'var(--panel-background)',
-    foreColor: 'var(--font-color-2)',
+    background: 'var(--main-panel-background)',
+    foreColor: 'var(--main-panel-font-color)',
   },
   xaxis: {
     tooltip: {
@@ -36,8 +36,8 @@ const generatePieChartData = (testRunMetrics) => {
 };
 
 const ExecutionPieChart = function (props) {
-  const title = 'Overall Execution Metrics';
   const {
+    title,
     testRunMetrics,
   } = props;
   const { data, labels } = generatePieChartData(testRunMetrics);

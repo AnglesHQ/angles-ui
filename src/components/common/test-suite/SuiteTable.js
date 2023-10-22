@@ -57,11 +57,11 @@ const SuiteTable = function (props) {
 
   return (
     <Panel
-      className="suite-table-panel"
-      classPrefix="suite-table"
+      className="test-run-suite-panel"
+      classPrefix="test-run-suite"
       header={(
         <Grid fluid>
-          <Row className="suite-table-panel-header-row">
+          <Row className="test-run-suite-header">
             <Col xs={12}>
               <div>
                 <span className="field-label">Suite: </span>

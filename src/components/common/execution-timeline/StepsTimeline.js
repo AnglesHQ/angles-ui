@@ -63,7 +63,7 @@ const StepsTimeline = function (props) {
 
   return [
     <Panel className="steps-timeline-panel">
-      <Timeline className="custom-timeline" key={action._id}>
+      <Timeline className="test-steps-timeline" key={action._id}>
         {
           action.steps.map((step, index) => {
             let screenshotImage = null;
@@ -80,7 +80,7 @@ const StepsTimeline = function (props) {
             }
             if (step.status === 'PASS' || step.status === 'FAIL') {
               return (
-                <Timeline.Item dot={getTimeLineIcon(step.status)} key={index}>
+                <Timeline.Item dot={getTimeLineIcon(step.status)} className="timeline-step" key={index}>
                   <Stack className="rg-stack" spacing={10}>
                     <p><Moment format="HH:mm:ss">{step.timestamp}</Moment></p>
                     <p>{step.name}</p>
@@ -91,7 +91,7 @@ const StepsTimeline = function (props) {
               );
             }
             return (
-              <Timeline.Item dot={getTimeLineIcon(step.status)} key={index}>
+              <Timeline.Item dot={getTimeLineIcon(step.status)} className="timeline-step" key={index}>
                 <Stack className="rg-stack" spacing={10}>
                   <p><Moment format="HH:mm:ss">{step.timestamp}</Moment></p>
                   <p>{convertTextToLinks(step.info)}</p>
