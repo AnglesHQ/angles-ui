@@ -17,8 +17,8 @@ const messages = {
   en: messagesEN,
   nl: messagesNL,
 };
-// let language = navigator.language.split(/[-_]/)[0];
-let language = 'nl';
+let language = navigator.language.split(/[-_]/)[0];
+// let language = 'nl';
 language = language in messages ? language : 'en';
 
 root.render(

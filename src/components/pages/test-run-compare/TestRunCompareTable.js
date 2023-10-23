@@ -3,7 +3,9 @@ import Moment from 'react-moment';
 import Popover from 'react-bootstrap/Popover';
 import HistoryIcon from '@rsuite/icons/History';
 import {
-  Table, Whisper,
+  Table,
+  Whisper,
+  Panel,
 } from 'rsuite';
 import InfoOutlineIcon from '@rsuite/icons/InfoOutline';
 import TestDetailsTable from './TestDetailsTable';
@@ -190,121 +192,120 @@ const TestRunCompareTable = function (props) {
 
   return (
     <div>
-      <Table
-        className="test-run-compare-table"
-        data={generateBuildDetailsCompare()}
-        wordWrap="break-word"
-        bordered
-        cellBordered
-        autoHeight
-        headerHeight={40}
-      >
-        <Column width={40}>
-          <HeaderCell>#</HeaderCell>
-          <Cell
-            dataKey="id"
-          />
-        </Column>
-        <Column flexGrow={5}>
-          <HeaderCell>Details</HeaderCell>
-          <Cell dataKey="detailName" />
-        </Column>
-        {
-          testRunCompareBuilds.map((matrixBuild, index) => (
-            <Column width={200} flexGrow={1}>
-              <HeaderCell>
-                <div>
-                  <a href={`/test-run/?buildId=${matrixBuild._id}`} target="_self" title={matrixBuild._id}>
-                    {`Test Run ${index + 1}`}
-                  </a>
-                </div>
-              </HeaderCell>
-              <Cell dataKey={`${matrixBuild._id}`} />
-            </Column>
-          ))
-        }
-      </Table>
-      <Table
-        className="test-run-compare-table"
-        data={generateArtifactCompareArray()}
-        wordWrap="break-word"
-        bordered
-        cellBordered
-        autoHeight
-        headerHeight={40}
-      >
-        <Column width={40}>
-          <HeaderCell>#</HeaderCell>
-          <Cell
-            dataKey="id"
-          />
-        </Column>
-        <Column
-          flexGrow={2}
+      <Panel className="test-run-compare-panel">
+        <Table
+          className="test-run-compare-table"
+          data={generateBuildDetailsCompare()}
+          wordWrap="break-word"
+          autoHeight
+          headerHeight={40}
+          hover={false}
         >
-          <HeaderCell>GroupId</HeaderCell>
-          <Cell dataKey="groupId" />
-        </Column>
-        <Column flexGrow={3}>
-          <HeaderCell>ArtifactId</HeaderCell>
-          <Cell dataKey="artifactId" />
-        </Column>
-        {
-          testRunCompareBuilds.map((matrixBuild, index) => (
-            <Column width={200} flexGrow={1}>
-              <HeaderCell>
-                <div>
-                  <a href={`/test-run/?buildId=${matrixBuild._id}`} target="_self" title={matrixBuild._id}>
-                    {`Test Run ${index + 1}`}
-                  </a>
-                </div>
-              </HeaderCell>
-              <Cell dataKey={`${matrixBuild._id}`} />
-            </Column>
-          ))
-        }
-      </Table>
-      <Table
-        data={generateTestRunCompare()}
-        className="test-run-compare-table"
-        autoHeight
-        wordWrap="break-word"
-        bordered
-        cellBordered
-        headerHeight={40}
-      >
-        <Column width={40}>
-          <HeaderCell>#</HeaderCell>
-          <Cell
-            dataKey="id"
-          />
-        </Column>
-        <Column
-          flexGrow={2}
-          rowSpan={(rowData) => rowData.suiteRowSpan}
+          <Column width={40}>
+            <HeaderCell>#</HeaderCell>
+            <Cell
+              dataKey="id"
+            />
+          </Column>
+          <Column flexGrow={5}>
+            <HeaderCell>Details</HeaderCell>
+            <Cell dataKey="detailName" />
+          </Column>
+          {
+            testRunCompareBuilds.map((matrixBuild, index) => (
+              <Column width={200} flexGrow={1}>
+                <HeaderCell>
+                  <div>
+                    <a href={`/test-run/?buildId=${matrixBuild._id}`} target="_self" title={matrixBuild._id}>
+                      {`Test Run ${index + 1}`}
+                    </a>
+                  </div>
+                </HeaderCell>
+                <Cell dataKey={`${matrixBuild._id}`} />
+              </Column>
+            ))
+          }
+        </Table>
+        <Table
+          className="test-run-compare-table"
+          data={generateArtifactCompareArray()}
+          wordWrap="break-word"
+          autoHeight
+          hover={false}
+          headerHeight={40}
         >
-          <HeaderCell>Suite Name</HeaderCell>
-          <Cell dataKey="suiteName" />
-        </Column>
-        <Column flexGrow={3}>
-          <HeaderCell>Test Name</HeaderCell>
-          <TestDetailsCell />
-        </Column>
-        {
-          testRunCompareBuilds.map((matrixBuild, index) => (
-            <Column width={200} flexGrow={1}>
-              <HeaderCell>
-                <div>
-                  <a href={`/test-run/?buildId=${matrixBuild._id}`} target="_self" title={matrixBuild._id}>
-                    {`Test Run ${index + 1}`}
-                  </a>
-                </div>
-              </HeaderCell>
-              <TestResultsCell buildId={matrixBuild._id} />
-            </Column>
-          ))
-        }
-      </Table>
+          <Column width={40}>
+            <HeaderCell>#</HeaderCell>
+            <Cell
+              dataKey="id"
+            />
+          </Column>
+          <Column
+            flexGrow={2}
+          >
+            <HeaderCell>GroupId</HeaderCell>
+            <Cell dataKey="groupId" />
+          </Column>
+          <Column flexGrow={3}>
+            <HeaderCell>ArtifactId</HeaderCell>
+            <Cell dataKey="artifactId" />
+          </Column>
+          {
+            testRunCompareBuilds.map((matrixBuild, index) => (
+              <Column width={200} flexGrow={1}>
+                <HeaderCell>
+                  <div>
+                    <a href={`/test-run/?buildId=${matrixBuild._id}`} target="_self" title={matrixBuild._id}>
+                      {`Test Run ${index + 1}`}
+                    </a>
+                  </div>
+                </HeaderCell>
+                <Cell dataKey={`${matrixBuild._id}`} />
+              </Column>
+            ))
+          }
+        </Table>
+        <Table
+          data={generateTestRunCompare()}
+          className="test-run-compare-table"
+          autoHeight
+          wordWrap="break-word"
+          headerHeight={40}
+          hover={false}
+        >
+          <Column width={40}>
+            <HeaderCell>#</HeaderCell>
+            <Cell
+              dataKey="id"
+            />
+          </Column>
+          <Column
+            flexGrow={2}
+            rowSpan={(rowData) => rowData.suiteRowSpan}
+          >
+            <HeaderCell>Suite Name</HeaderCell>
+            <Cell dataKey="suiteName" />
+          </Column>
+          <Column flexGrow={3}>
+            <HeaderCell>Test Name</HeaderCell>
+            <TestDetailsCell />
+          </Column>
+          {
+            testRunCompareBuilds.map((matrixBuild, index) => (
+              <Column width={200} flexGrow={1}>
+                <HeaderCell>
+                  <div>
+                    <a href={`/test-run/?buildId=${matrixBuild._id}`} target="_self" title={matrixBuild._id}>
+                      {`Test Run ${index + 1}`}
+                    </a>
+                  </div>
+                </HeaderCell>
+                <TestResultsCell buildId={matrixBuild._id} />
+              </Column>
+            ))
+          }
+        </Table>
+      </Panel>
     </div>
   );
 };

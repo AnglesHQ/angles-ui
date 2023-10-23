@@ -4,10 +4,9 @@ import queryString from 'query-string';
 import Modal from 'react-bootstrap/Modal';
 import { useLocation } from 'react-router-dom';
 import { ExecutionRequests, ScreenshotRequests } from 'angles-javascript-client';
-import ExecutionsResultsPieChart from '../../charts/ExecutionsResultsPieChart';
-import ExecutionsTimeLineChart from '../../charts/ExecutionsTimeLineChart';
+import TestExecutionsResultPieChart from './charts/TestExecutionsResultPieChart';
+import TestExecutionTimelineChart from './charts/TestExecutionTimeLineChart';
 import ScreenshotView from '../../common/screenshot-view/ScreenshotView';
-// import '../charts/Charts.css';
 import SuiteTable from '../../common/test-suite/SuiteTable';
 import { ExecutionStateProvider } from '../../../context/ExecutionStateContext';
 import { useConstructor } from '../../../utility/GeneralUtilities';
@@ -117,8 +116,8 @@ const SummaryPage = function () {
           <span>{executions[0].suite}</span>
         </div>
         <div className="graphContainerParent">
-          <ExecutionsResultsPieChart executions={executions} />
-          <ExecutionsTimeLineChart executions={executions} />
+          <TestExecutionsResultPieChart executions={executions} />
+          <TestExecutionTimelineChart executions={executions} />
         </div>
         <ExecutionStateProvider key={`state-provider-${suiteResult.name}`}>
           <SuiteTable
