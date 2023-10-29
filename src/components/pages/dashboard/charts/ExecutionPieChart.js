@@ -29,7 +29,7 @@ const generatePieChartData = (testRunMetrics) => {
     error,
   } = testRunMetrics;
   const graphData = {
-    data: [pass, skipped, error, fail],
+    data: [pass || 0, skipped || 0, error || 0, fail || 0],
     labels: ['Pass', 'Skipped', 'Error', 'Fail'],
   };
   return graphData;

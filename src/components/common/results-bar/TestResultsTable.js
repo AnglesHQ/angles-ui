@@ -4,18 +4,16 @@ import { Table } from 'rsuite';
 const MetricsTestsTable = function (props) {
   const { Column, HeaderCell, Cell } = Table;
 
-  const generateTableRows = () => {
-    const { period } = props;
+  const generateTestResultsArray = () => {
+    const { result } = props;
     const dataArray = [];
-    period.phases.forEach((phase) => {
-      phase.tests.forEach((testName) => {
-        dataArray.push(
-          {
-            testName,
-            phase: phase.name,
-          },
-        );
-      });
+    Object.keys((result)).forEach((key) => {
+      dataArray.push(
+        {
+          value: key,
+          result: result[key],
+        },
+      );
     });
 
     if (dataArray.length === 0) {
@@ -30,17 +28,17 @@ const MetricsTestsTable = function (props) {
 
   return (
     <Table
-      data={generateTableRows()}
+      data={generateTestResultsArray()}
       hover={false}
       autoHeight
     >
       <Column flexGrow={1}>
-        <HeaderCell>Phase</HeaderCell>
-        <Cell dataKey="phase" />
+        <HeaderCell>Value</HeaderCell>
+        <Cell dataKey="value" />
       </Column>
-      <Column flexGrow={5}>
-        <HeaderCell>Test</HeaderCell>
-        <Cell dataKey="testName" />
+      <Column flexGrow={1}>
+        <HeaderCell>Result</HeaderCell>
+        <Cell dataKey="result" />
       </Column>
     </Table>
   );

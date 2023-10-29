@@ -59,12 +59,16 @@ const TestDetailsTable = function (props) {
   };
 
   return (
-    <Table data={generateTestDetailsData(execution)} width={250} id="test-details">
-      <Column width={80}>
+    <Table
+      data={generateTestDetailsData(execution)}
+      hover={false}
+      autoHeight
+    >
+      <Column flexGrow={1}>
         <HeaderCell>Property</HeaderCell>
         <Cell dataKey="property" />
       </Column>
-      <Column width={190}>
+      <Column flexGrow={2}>
         <HeaderCell>Value</HeaderCell>
         <Cell dataKey="value" />
       </Column>

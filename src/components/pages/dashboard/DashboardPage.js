@@ -17,7 +17,7 @@ import {
   Dropdown,
   IconButton,
 } from 'rsuite';
-import TagLockIcon from '@rsuite/icons/TagLock';
+import { BsLockFill } from 'react-icons/bs';
 import TableColumnIcon from '@rsuite/icons/TableColumn';
 import MenuIcon from '@rsuite/icons/Menu';
 import ReloadIcon from '@rsuite/icons/Reload';
@@ -327,7 +327,6 @@ const DashboardPage = function (props) {
                 format="dd-MMM-yyyy"
                 character=" - "
                 onChange={(value) => {
-                  console.log(JSON.stringify(value));
                   setStartDate(moment(value[0]));
                   setEndDate(moment(value[1]));
                 }}
@@ -381,7 +380,7 @@ const DashboardPage = function (props) {
                       id="page.dashboard.panel.total-test-executions"
                     />
                   </div>
-                  <div className="value">{totalExecutions}</div>
+                  <div className="value">{totalExecutions || 0}</div>
                 </Panel>
               </Col>
               <Col xs={8}>
@@ -449,7 +448,7 @@ const DashboardPage = function (props) {
                                 />
                               </Dropdown.Item>
                               <Dropdown.Item
-                                icon={<TagLockIcon />}
+                                icon={<BsLockFill />}
                                 disabled={!anyBuildsSelected()}
                                 onClick={() => toggleBuildsToKeep()}
                               >

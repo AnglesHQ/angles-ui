@@ -10,28 +10,31 @@
 @import '../components/common/execution-timeline/styles.less';
 @import '../components/common/screenshot-view/styles.less';
 @import '../components/common/test-suite/styles.less';
+@import '../components/common/results-bar/styles.less';
 
 :root {
 
     //master palette
     --master-color-1: hsl(0, 0%, 96%);
     --master-color-2: hsl(233, 17%, 91%);
-    --master-color-3: hsl(39, 93%, 48%);
+    --master-color-3: hsl(28, 87%, 52%);
 
     // TODO: override with hsl relative colors once supported by most browsers
     --master-color-2-relative: hsl(233, 17%, 75%);
-    --master-color-3-relative: hsl(39, 93%, 60%);
+    --master-color-3-relative: hsl(27, 63%, 46%);
 
     --master-font-color-1: hsl(0, 0%, 0%);
     --master-font-color-2: hsl(0, 0%, 100%);
+    --master-font-color-3: hsl(0, 0%, 34%);
 
     --master-icon-color: hsl(210, 100%, 60%);
+
 
     // body
     --body-background: var(--master-color-1);
     // nav
     --nav-background: var(--master-color-2);
-    --nav-font-color: var(--master-font-color-1);
+    --nav-font-color: var(--master-font-color-3);
     --nav-hover-color: var(--master-color-3);
     --nav-hover-font-color: var(--master-font-color-2);
 
@@ -52,7 +55,7 @@
 
     // tables
     --main-table-header-background: var(--master-color-3);
-    --main-table-header-font-color: var(--master-font-color-1);
+    --main-table-header-font-color: var(--master-font-color-2);
     --main-table-body-background: var(--master-color-1);
     --main-table-body-font-color: var(--master-font-color-1);
     --main-table-body-secondary-font-color: var(--master-font-color-2);
@@ -62,7 +65,7 @@
     --sub-table-header-font-color: var(--master-font-color-1);
     --sub-table-body-background: var(--master-color-1);
     --sub-table-body-font-color: var(--master-font-color-1);
-    --sub-table-body-secondary-font-color: var(--master-font-color-2);
+    --sub-table-body-secondary-font-color: var(--master-font-color-3);
 
     // tabs
     --tabs-overall-background: var(--master-color-2);
@@ -81,8 +84,10 @@
     // buttons
     --button-background: var(--master-color-3);
     --button-font-color: var(--master-font-color-2);
-    --button-hover-background: var(--master-color-3-relative);
+    --button-hover-background: var(--master-color-3);
     --button-hover-font-color: var(--master-font-color-2);
+    --button-deactived-background: var(--master-color-2);
+    --button-deactivated-font-color: var(--master-font-color-3);
 
     // result colors
     --pass-color: #5fad6f;
@@ -100,31 +105,21 @@
  //TODO: add dark mode colors
 @media (prefers-color-scheme: dark) {
     :root {
-        --master-color-1: #323746;
-        --master-color-2: #2c2e3e;
-        --master-color-3: #F88017;
+        //master palette
+        --master-color-1: hsl(228, 16%, 24%);
+        --master-color-2: hsl(233, 17%, 21%);
+        --master-color-3: hsl(28, 87%, 52%);
 
-        --master-font-color-1: white;
-        --master-font-color-2: #9F9F9F;
+        // TODO: override with hsl relative colors once supported by most browsers
+        --master-color-2-relative: hsl(240, 9%, 39%);
+        --master-color-3-relative: hsl(27, 63%, 46%);
 
-        //--master-color-1: #1c1f26;
-        //--master-color-2: #202c48;
-        //--master-color-3: #29617c;
-        //
-        //--master-font-color-1: #ffffff;
-        //--master-font-color-2: #817d7d;
+        --master-font-color-1: hsl(240, 9%, 96%);
+        --master-font-color-2: hsl(0, 23%, 97%);
+        --master-font-color-3: hsl(0, 0%, 71%);
 
+        --master-icon-color: hsl(210, 100%, 60%);
 
-        // result colors
-        --pass-color: #5fad6f;
-        --fail-color: #fc6571;
-        --skipped-color: #2485C1;
-        --error-color: #f5b83f;
-
-        // link colors
-        --link-color-1: #ee8308;
-        --link-color-1-focus: #f1b87f;
-        --link-color-1-disabled: grey;
     }
 }
 
@@ -140,7 +135,7 @@ body {
     min-height: 100vh;
 
     .sidebar-header {
-        padding: 3px 2px 3px 2px;
+        padding: 3px 2px 3px 5px;
         height: 60px;
         overflow: hidden;
         white-space: nowrap;
@@ -161,6 +156,8 @@ body {
 
     .rs-sidenav-item {
         color: var(--nav-font-color);
+        font-size: 1.2em;
+        font-weight: bolder;
     }
 
     .rs-sidenav-item:hover {
@@ -191,7 +188,7 @@ body {
             color: var(--main-table-header-font-color);
             opacity: 0.8;
             font-weight: bold;
-            font-size: 1.1em;
+            font-size: 1.2em;
         }
 
         .rs-table-cell-first {
@@ -215,12 +212,16 @@ body {
     //.rs-table-row:hover {
     //    background-color: transparent !important;
     //}
+    .rs-table-cell-rowspan {
+        border-bottom: 0px !important;
+    }
 
     .rs-table-body-row-wrapper {
         color: var(--main-table-body-font-color);
 
         .rs-table-cell {
             background-color: var(--main-table-body-background);
+            font-size: 1.1em;
         }
 
         .rs-table-row:last-child {
@@ -320,37 +321,23 @@ a:active {
     }
 }
 
-.test-results-progress-bar {
-    height: 2em;
-
-    .test-result-success {
-        background-color: var(--pass-color);
-    }
-    .test-result-failure {
-        background-color: var(--fail-color);
-    }
-    .test-result-error {
-        background-color: var(--error-color);
-    }
-    .test-result-skipped {
-        background-color: var(--skipped-color);
-    }
-}
-
-
 .tabs-container {
     margin-left: 10px;
     position: relative;
-    top: 1px;
+    //top: 1px;
 
     .nav-tabs {
         border-bottom: 0px;
         margin-left: 20px;
 
+        .nav-item {
+            margin-bottom: 0px;
+        }
+
         .nav-link {
             border: 0px;
             position: relative;
-            top: 1px;
+            //top: 1px;
             background-color: var(--inactive-tab-background);
             color: var(--inactive-tab-font-color);
 
@@ -364,7 +351,6 @@ a:active {
         .nav-link.active {
             border: 0px;
             font-weight: bold;
-            z-index: 9;
             background-color: var(--active-tab-background);
             color: var(--active-tab-font-color);
         }

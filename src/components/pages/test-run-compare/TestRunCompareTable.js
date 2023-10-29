@@ -1,11 +1,11 @@
 import React from 'react';
 import Moment from 'react-moment';
-import Popover from 'react-bootstrap/Popover';
 import HistoryIcon from '@rsuite/icons/History';
 import {
   Table,
-  Whisper,
   Panel,
+  Popover,
+  Whisper,
 } from 'rsuite';
 import InfoOutlineIcon from '@rsuite/icons/InfoOutline';
 import TestDetailsTable from './TestDetailsTable';
@@ -13,12 +13,8 @@ import TestDetailsTable from './TestDetailsTable';
 const { Column, HeaderCell, Cell } = Table;
 
 const testDetailsSpeaker = (execution) => (
-  <Popover
-    arrow
-  >
-    <div>
-      <TestDetailsTable execution={execution} />
-    </div>
+  <Popover title="Details" style={{ width: '500px' }}>
+    <TestDetailsTable execution={execution} />
   </Popover>
 );
 
@@ -28,9 +24,9 @@ const TestDetailsCell = function (props) {
     // eslint-disable-next-line react/jsx-props-no-spreading
     <Cell {... props}>
       { test.testName }
-      <span className="d-inline-block">
+      <span className="execution-compare-icon">
         <a className="test-history-link" title={`See execution history for ${test.testName}`} href={`/test-execution-history?executionId=${test.executionIdForHistory}`}>
-          <span><HistoryIcon /></span>
+          <HistoryIcon />
         </a>
       </span>
     </Cell>
@@ -55,20 +51,26 @@ const TestResultsCell = function (props) {
   }
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading
-    <Cell {... props} className={testClass}>
-      { test[buildId].status}
+    <Cell {... props}>
+      <span className={testClass}>
+        { test[buildId].status}
+      </span>
       {
         (test.multipleExecutions[buildId] && test.multipleExecutions[buildId] === true)
           ? (<span> - Multiple Executions</span>) : null
       }
-      <Whisper
-        placement="left"
-        trigger="click"
-        controlId="control-id-click"
-        speaker={testDetailsSpeaker(test[buildId])}
-      >
-        <InfoOutlineIcon />
-      </Whisper>
+      <span className="execution-compare-icon">
+        <Whisper
+          placement="leftStart"
+          trigger="click"
+          controlId="control-id-click"
+          speaker={testDetailsSpeaker(test[buildId])}
+        >
+          <span>
+            <InfoOutlineIcon />
+          </span>
+        </Whisper>
+      </span>
     </Cell>
   );
 };

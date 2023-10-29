@@ -1,107 +1,106 @@
 import React from 'react';
+import { Panel } from 'rsuite';
 import Moment from 'react-moment';
-import Table from 'react-bootstrap/Table';
-import { useNavigate } from 'react-router-dom';
-// import '../pages/Default.css';
 
 const ScreenshotDetailsTable = function (props) {
-  const { currentScreenshotDetails, isBaseline } = props;
-
-  const navigateToTagsPage = (tag, e) => {
-    const navigate = useNavigate();
-    e.preventDefault();
-    navigate(`/screenshot-finder/?tag=${tag}`);
-  };
-
-  const navigateToViewsPage = (view, e) => {
-    const navigate = useNavigate();
-    e.preventDefault();
-    navigate(`/screenshot-finder/?view=${view}`);
-  };
+  const {
+    currentScreenshotDetails,
+    isBaseline,
+    currentBaseLineDetails,
+    currentBaselineCompareJson,
+  } = props;
 
   return (
-    <Table className="table-screenshot-details" bordered size="sm">
-      <thead>
-        <tr>
-          <th>Parameter</th>
-          <th>Value</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong>View</strong></td>
-          <td>
-            {currentScreenshotDetails.view ? (
-              <span>
-                {`${currentScreenshotDetails.view} `}
-                <a title={`Find all the latest screenshots for view "${currentScreenshotDetails.view}", grouped by platform.`} href="/" onClick={(e) => navigateToViewsPage(currentScreenshotDetails.view, e)}>see other platforms</a>
-              </span>
-            ) : 'No view provided'}
-          </td>
-        </tr>
-        <tr>
-          <td><strong>Date taken</strong></td>
-          <td>
+    <Panel
+      className="screenshot-details-panel"
+    >
+      <div className="screenshot-details-panel-body">
+        <div className="screenshot-details-row">
+          <span className="screenshot-details-label">View: </span>
+          {currentScreenshotDetails.view ? (
+            <span>
+              {`${currentScreenshotDetails.view} `}
+              <a title={`Find all the latest screenshots for view "${currentScreenshotDetails.view}", grouped by platform.`} href={`/screenshot-library/?view=${currentScreenshotDetails.view}`}>see other platforms</a>
+            </span>
+          ) : 'No view provided'}
+        </div>
+        <div className="screenshot-details-row">
+          <span className="screenshot-details-label">Date: </span>
+          <span>
             <Moment format="DD-MM-YYYY HH:mm:ss">
               {currentScreenshotDetails.timestamp}
             </Moment>
-          </td>
-        </tr>
-        <tr>
-          <td><strong>Resolution</strong></td>
-          <td>{`${currentScreenshotDetails.width} x ${currentScreenshotDetails.height}`}</td>
-        </tr>
-        <tr>
-          <td><strong>Platform Name</strong></td>
-          <td>{ currentScreenshotDetails.platform ? currentScreenshotDetails.platform.platformName : 'No platform provided'}</td>
-        </tr>
-        { currentScreenshotDetails.platform
-            && currentScreenshotDetails.platform.platformVersion ? (
-              <tr>
-                <td><strong>Platform Version</strong></td>
-                <td>{ currentScreenshotDetails.platform.platformVersion }</td>
-              </tr>
-          ) : null}
-        { currentScreenshotDetails.platform
-          && currentScreenshotDetails.platform.deviceName ? (
-            <tr>
-              <td><strong>Device</strong></td>
-              <td>{ currentScreenshotDetails.platform.deviceName }</td>
-            </tr>
-          ) : null}
-        <tr>
-          <td><strong>Browser</strong></td>
-          <td>{currentScreenshotDetails.platform ? currentScreenshotDetails.platform.browserName : 'No browser provided'}</td>
-        </tr>
-        <tr>
-          <td><strong>Version</strong></td>
-          <td>{ currentScreenshotDetails.platform ? currentScreenshotDetails.platform.browserVersion : 'No browser version provided'}</td>
-        </tr>
+          </span>
+        </div>
         {
-          isBaseline !== undefined ? (
-            <tr>
-              <td><strong>Baseline Image</strong></td>
-              <td>{ isBaseline ? ('true') : 'false' }</td>
-            </tr>
+          currentBaseLineDetails ? (
+            <div className="screenshot-details-row">
+              <span className="screenshot-details-label">Baseline Date: </span>
+              <span>
+                <Moment format="DD-MM-YYYY HH:mm:ss">
+                  {currentBaseLineDetails.screenshot.timestamp}
+                </Moment>
+              </span>
+            </div>
           ) : null
         }
-        { currentScreenshotDetails.tags ? (
-          <tr>
-            <td><strong>Tags</strong></td>
-            <td>
-              {
-                currentScreenshotDetails.tags.map((tag, index) => (
-                  <span key={`span-${tag}`}>
-                    {index > 0 && ', '}
-                    <a key={tag} title={`Find all the latest screenshots with tag "${tag}", grouped by view.`} href="/" onClick={(e) => navigateToTagsPage(tag, e)}>{tag}</a>
-                  </span>
-                ))
-              }
-            </td>
-          </tr>
-        ) : null}
-      </tbody>
-    </Table>
+        {
+          currentBaselineCompareJson ? (
+            <div className="screenshot-details-row">
+              <span className="screenshot-details-label">Mismatch: </span>
+              <span>{`${currentBaselineCompareJson.misMatchPercentage}% (analysis time: ${currentBaselineCompareJson.analysisTime}ms)`}</span>
+            </div>
+          ) : null
+        }
+        <div className="screenshot-details-row">
+          <span className="screenshot-details-label">Resolution: </span>
+          <span>{`${currentScreenshotDetails.width} x ${currentScreenshotDetails.height}`}</span>
+        </div>
+        <div className="screenshot-details-row">
+          <span className="screenshot-details-label">Platform: </span>
+          <span>{currentScreenshotDetails.platform ? currentScreenshotDetails.platform.platformName : 'No platform provided'}</span>
+        </div>
+        { currentScreenshotDetails.platform
+        && currentScreenshotDetails.platform.platformVersion ? (
+          <div className="screenshot-details-row">
+            <span className="screenshot-details-label">Platform Version: </span>
+            <span>{ currentScreenshotDetails.platform.platformVersion }</span>
+          </div>
+          ) : null}
+        { currentScreenshotDetails.platform
+        && currentScreenshotDetails.platform.deviceName ? (
+          <div className="screenshot-details-row">
+            <span className="screenshot-details-label">Device(s): </span>
+            <span>{ currentScreenshotDetails.platform.deviceName }</span>
+          </div>
+          ) : null}
+        <div className="screenshot-details-row">
+          <span className="screenshot-details-label">Browser: </span>
+          <span>{currentScreenshotDetails.platform ? currentScreenshotDetails.platform.browserName : 'No browser provided'}</span>
+        </div>
+        <div className="screenshot-details-row">
+          <span className="screenshot-details-label">Browser Version: </span>
+          <span>{ currentScreenshotDetails.platform ? currentScreenshotDetails.platform.browserVersion : 'No browser version provided'}</span>
+        </div>
+        <div className="screenshot-details-row">
+          <span className="screenshot-details-label">Baseline: </span>
+          <span>{isBaseline ? 'Yes' : 'No'}</span>
+        </div>
+        <div className="screenshot-details-row">
+          <span className="screenshot-details-label">Tags: </span>
+          <span>
+            {
+              currentScreenshotDetails.tags.map((tag, index) => (
+                <span key={`span-${tag}`}>
+                  { index > 0 && ', '}
+                  <a key={tag} title={`Find all the latest screenshots with tag "${tag}", grouped by view.`} href={`/screenshot-library/?tag=${tag}`}>{tag}</a>
+                </span>
+              ))
+            }
+          </span>
+        </div>
+      </div>
+    </Panel>
   );
 };
 

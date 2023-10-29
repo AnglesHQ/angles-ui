@@ -13,7 +13,7 @@ import CollaspedOutlineIcon from '@rsuite/icons/CollaspedOutline';
 import { getDuration } from '../../../utility/TimeUtilities';
 import ExecutionTable from './ExecutionTable';
 import ExecutionStateContext from '../../../context/ExecutionStateContext';
-import ExecutionsResultsBar from '../ExecutionsResultsBar';
+import ExecutionsResultsBar from '../results-bar';
 
 const SuiteTable = function (props) {
   const {

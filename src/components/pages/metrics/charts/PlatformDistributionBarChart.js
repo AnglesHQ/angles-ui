@@ -36,8 +36,8 @@ const PlatformDistributionBarChart = function (props) {
       animations: { enabled: false },
       stacked: true,
       stackType: 'normal',
-      background: 'var(--main-panel-background)',
-      foreColor: 'var(--main-panel-font-color)',
+      background: 'var(--sub-panel-background)',
+      foreColor: 'var(--sub-panel-font-color)',
     },
     plotOptions: {
       bar: {
@@ -77,7 +77,7 @@ const PlatformDistributionBarChart = function (props) {
   const { data, labels } = graphData;
   return (
     <Panel
-      className="chart-panel"
+      className="execution-metrics-chart-panel"
       header={(
         <Stack justifyContent="space-between">
           {title}

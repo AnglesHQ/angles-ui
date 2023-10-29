@@ -1,11 +1,12 @@
 /* eslint  no-param-reassign: [0] */
 import React, { useEffect, useContext } from 'react';
-import { Button } from 'rsuite';
+import {
+  Button,
+  Stack,
+} from 'rsuite';
 import Table from 'react-bootstrap/Table';
 import RegionSelect from 'react-region-select';
-import BaselineCompareDetailsTable from './BaselineCompareDetailsTable';
 import ScreenshotDetailsTable from '../ScreenshotDetailsTable';
-// import '../pages/Default.css';
 import CurrentScreenshotContext from '../../../../context/CurrentScreenshotContext';
 
 const BaselineImageView = (props) => {
@@ -242,7 +243,7 @@ const BaselineImageView = (props) => {
           <tr>
             <td className="screenshot-details-td">
               <div>
-                <BaselineCompareDetailsTable
+                <ScreenshotDetailsTable
                   currentScreenshotDetails={currentScreenshotDetails}
                   currentBaseLineDetails={currentBaseLineDetails}
                   currentBaselineCompareJson={currentBaselineCompareJson}
@@ -269,7 +270,7 @@ const BaselineImageView = (props) => {
           </tr>
           <tr>
             <td colSpan="100%">
-              <span style={{ float: 'left' }}>
+              <Stack spacing={10}>
                 <Button
                   type="button"
                   className="filter-submit-button"
@@ -288,7 +289,7 @@ const BaselineImageView = (props) => {
                     </Button>
                   ) : null
                 }
-              </span>
+              </Stack>
             </td>
           </tr>
         </tbody>

@@ -6,17 +6,19 @@ import { getBuildDurationInSeconds } from '../../../../utility/TimeUtilities';
 
 const defaultOptions = {
   chart: {
-    // fontFamily: 'inherit',
-    // parentHeightOffset: 0,
+    fontFamily: 'inherit',
+    parentHeightOffset: 0,
     toolbar: { show: false },
     animations: { enabled: false },
+    background: 'var(--main-panel-background)',
+    foreColor: 'var(--main-panel-font-color)',
   },
   plotOptions: {},
   dataLabels: {
     enabled: false,
   },
   stroke: {
-    width: [0, 0, 0, 0, 3],
+    width: [3],
     curve: 'smooth',
   },
   xaxis: {
@@ -30,14 +32,14 @@ const defaultOptions = {
   yaxis: [
     {
       seriesName: 'ExecutionTime',
-      opposite: true,
+      // opposite: true,
       title: {
         text: 'Execution Time (seconds)',
       },
     },
   ],
   colors: ['#2485C1'],
-  legend: { show: true },
+  // legend: { show: true },
 };
 
 const generateResultsData = (executions) => {
@@ -46,14 +48,14 @@ const generateResultsData = (executions) => {
     labels: [],
   };
   const executionTimes = [];
-  executions.forEach((execution) => {
+  const executionsToReverse = [...executions];
+  executionsToReverse.reverse().forEach((execution) => {
     executionTimes.push(getBuildDurationInSeconds(execution));
     graphData.labels.push(moment(execution.start).format('YYYY-MM-DD hh:mm:ss'));
   });
   graphData.data.push(
     { name: 'ExecutionTime', data: executionTimes, type: 'line' },
   );
-  console.log(JSON.stringify(graphData));
   return graphData;
 };
 
@@ -64,7 +66,7 @@ const TestExecutionTimelineChart = function (props) {
   const { data, labels } = graphData;
   return (
     <Panel
-      className="card"
+      className="chart-panel"
       header={(
         <Stack justifyContent="space-between">
           {title}

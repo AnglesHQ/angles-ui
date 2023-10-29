@@ -3,17 +3,18 @@ import Moment from 'react-moment';
 import { FormattedMessage } from 'react-intl';
 import TimeIcon from '@rsuite/icons/Time';
 import TreeIcon from '@rsuite/icons/Tree';
-import TagLockIcon from '@rsuite/icons/TagLock';
+import { BsFillUnlockFill, BsLockFill } from 'react-icons/bs';
 import {
   Badge,
   FlexboxGrid,
   Checkbox,
   Table,
   Popover,
-  Whisper, CheckboxGroup,
+  Whisper,
+  CheckboxGroup,
 } from 'rsuite';
 import { getDuration } from '../../../utility/TimeUtilities';
-import ExecutionsResultsBar from '../../common/ExecutionsResultsBar';
+import ExecutionsResultsBar from '../../common/results-bar';
 import BuildArtifacts from '../../common/BuildArtifacts';
 
 const { Column, HeaderCell, Cell } = Table;
@@ -32,9 +33,7 @@ const BuildDetailsCell = function (props) {
       <FlexboxGrid justify="start">
         <FlexboxGrid.Item colspan={4}>
           {
-            build.keep ? (
-              <TagLockIcon style={{ fontSize: '1.5em' }} />
-            ) : null
+            build.keep ? <BsLockFill className="tests-runs-lock-icon" /> : <BsFillUnlockFill className="tests-runs-unlock-icon" />
           }
         </FlexboxGrid.Item>
         <FlexboxGrid.Item colspan={16}>
@@ -43,7 +42,7 @@ const BuildDetailsCell = function (props) {
               {build.name}
             </a>
           </div>
-          <div>
+          <div className="dashboard-builds-table-sub-text">
             {
               build.phase ? (
                 <span>{build.phase.name}</span>
@@ -105,9 +104,11 @@ const DateCell = function (props) {
             </Moment>
           </div>
           { build.end ? (
-            <div>
-              <span>
+            <div className="dashboard-builds-table-sub-text">
+              <span className="dashboard-builds-table-date-icon">
                 <TimeIcon />
+              </span>
+              <span>
                 { getDuration(build)}
               </span>
             </div>

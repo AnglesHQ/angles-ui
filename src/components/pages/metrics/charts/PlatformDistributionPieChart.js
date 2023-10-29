@@ -24,8 +24,8 @@ const generatePlatformDistributionGraphData = (metrics) => {
 };
 
 const PlatformDistributionPieChart = function (props) {
+  const title = 'Overall executions distribution by platform';
   const {
-    title,
     metrics,
     platformColors,
   } = props;
@@ -36,8 +36,8 @@ const PlatformDistributionPieChart = function (props) {
     chart: {
       toolbar: { show: false },
       animations: { enabled: false },
-      background: 'var(--main-panel-background)',
-      foreColor: 'var(--main-panel-font-color)',
+      background: 'var(--sub-panel-background)',
+      foreColor: 'var(--sub-panel-font-color)',
     },
     xaxis: {
       tooltip: {
@@ -52,7 +52,7 @@ const PlatformDistributionPieChart = function (props) {
   };
   return (
     <Panel
-      className="chart-panel"
+      className="execution-metrics-chart-panel"
       header={(
         <Stack justifyContent="space-between">
           {title}

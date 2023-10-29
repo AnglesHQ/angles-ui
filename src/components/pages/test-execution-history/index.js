@@ -4,7 +4,7 @@ import ExecutionHistoryPage from './ExecutionHistoryPage';
 
 const Page = function () {
   return (
-    <Panel header={<h3 className="title">Test Execution History</h3>}>
+    <Panel>
       <Breadcrumb>
         <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
         <Breadcrumb.Item>Test Execution History</Breadcrumb.Item>

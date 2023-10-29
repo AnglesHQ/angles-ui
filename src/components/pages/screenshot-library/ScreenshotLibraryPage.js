@@ -142,6 +142,19 @@ const ScreenshotLibraryPage = function () {
 
   const intl = useIntl();
 
+  const addImageToBuildScreenshots = (screenshot) => {
+    filteredScreenshots.push(screenshot);
+    setFilteredScreenshots(filteredScreenshots);
+  };
+
+  const removeImageFromBuildScreenshots = (screenshotToRemove) => {
+    const index = filteredScreenshots
+      .findIndex((screenshot) => screenshot._id === screenshotToRemove._id);
+    if (index > -1) {
+      setFilteredScreenshots(filteredScreenshots.splice(index, 1));
+    }
+  };
+
   return (
     <div>
       <Affix top={25}>
@@ -231,6 +244,8 @@ const ScreenshotLibraryPage = function () {
               buildScreenshots={filteredScreenshots}
               selectedScreenshotId={filteredScreenshots[0]._id}
               selectedTab={selectedTab}
+              addImageToBuildScreenshots={addImageToBuildScreenshots}
+              removeImageFromBuildScreenshots={removeImageFromBuildScreenshots}
             />
             ) : null
         }

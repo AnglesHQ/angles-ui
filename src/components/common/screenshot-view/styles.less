@@ -68,8 +68,8 @@
 
 .baseline-overlay {
   font-weight: bolder;
-  color: red;
-  border: solid 2px red;
+  color: var(--link-color-1);
+  border: solid 2px var(--link-color-1);
   height: 40px;
   padding: 5px;
   background: grey;
@@ -149,10 +149,22 @@
     color: var(--carousel-active-font-color);
   }
 
-
-  .card-active {
-    border: 2px solid var(--carousel-active-border-color);
-  }
-
 }
 
+.card-active {
+  border: 2px solid var(--link-color-1);
+}
+
+.screenshot-details-panel {
+  background: var(--sub-panel-background);
+  width: 330px;
+  color: var(--sub-panel-font-color);
+
+  .screenshot-details-label {
+    font-weight: bold;
+  }
+
+  .screenshot-details-row {
+    margin-bottom: 10px;
+  }
+}

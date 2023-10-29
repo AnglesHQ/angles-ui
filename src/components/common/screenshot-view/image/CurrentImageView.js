@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Button } from 'rsuite';
+import { Button, Stack } from 'rsuite';
 import Table from 'react-bootstrap/Table';
 import ScreenshotDetailsTable from '../ScreenshotDetailsTable';
 import CurrentScreenshotContext from '../../../../context/CurrentScreenshotContext';
@@ -89,7 +89,7 @@ const CurrentImageView = function (props) {
         </tr>
         <tr>
           <td colSpan="100%">
-            <span style={{ float: 'left' }}>
+            <Stack spacing={10}>
               {
                 returnMakeBaselineButton(currentScreenshotDetails)
               }
@@ -117,7 +117,7 @@ const CurrentImageView = function (props) {
                     ) : null
                 )
               }
-            </span>
+            </Stack>
           </td>
         </tr>
       </tbody>

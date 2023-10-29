@@ -5,7 +5,7 @@ import InfoOutlineIcon from '@rsuite/icons/InfoOutline';
 import { Table, Whisper, Popover } from 'rsuite';
 import { getDurationAsString } from '../../../utility/TimeUtilities';
 import MetricsTestsTable from './MetricsTestsTable';
-import ExecutionsResultsBar from '../../common/ExecutionsResultsBar';
+import ExecutionsResultsBar from '../../common/results-bar';
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -18,10 +18,8 @@ const getTestCount = (period) => {
 };
 
 const testDetailsSpeaker = (period) => (
-  <Popover arrow style={{ maxHeight: '300px', overflowY: 'scroll' }}>
-    <div>
-      <MetricsTestsTable period={period} />
-    </div>
+  <Popover title="Unique testcases per phase" style={{ width: '600px' }}>
+    <MetricsTestsTable period={period} />
   </Popover>
 );
 
@@ -33,11 +31,13 @@ const UniqueTestsCell = function (props) {
       { getTestCount(period) }
       <Whisper
         placement="rightStart"
-        trigger="click"
-        controlId="control-id-click"
+        trigger="hover"
+        controlId="control-id-hover"
         speaker={testDetailsSpeaker(period)}
       >
-        <InfoOutlineIcon />
+        <span className="unique-tests-info-icon">
+          <InfoOutlineIcon />
+        </span>
       </Whisper>
     </Cell>
   );
@@ -60,11 +60,11 @@ const ExecutionMetricsSummary = function (props) {
       <Table
         data={periods}
         autoHeight
-        id="build-artifacts"
+        className="execution-metrics-summary-table"
         hover={false}
         bordered
       >
-        <Column width={200}>
+        <Column width={220}>
           <HeaderCell>
             <FormattedMessage id="page.metrics.execution-metrics-summary.label.period" />
           </HeaderCell>
