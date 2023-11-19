@@ -24,9 +24,9 @@ const generatePlatformDistributionGraphData = (metrics) => {
 };
 
 const PlatformDistributionPieChart = function (props) {
-  const title = 'Overall executions distribution by platform';
   const {
     metrics,
+    title,
     platformColors,
   } = props;
   const graphData = generatePlatformDistributionGraphData(metrics);

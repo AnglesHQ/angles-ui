@@ -27,7 +27,8 @@ import Image from '@rsuite/icons/Image';
 import BarChart from '@rsuite/icons/BarChart';
 import DocPass from '@rsuite/icons/DocPass';
 import InfoOutline from '@rsuite/icons/InfoOutline';
-
+import GlobalIcon from '@rsuite/icons/Global';
+import { CgDarkMode } from 'react-icons/cg';
 import SummaryPage from '../components/pages/dashboard';
 import TestRunDetailsPage from '../components/pages/test-run';
 import TestRunsComparePage from '../components/pages/test-run-compare';
@@ -145,6 +146,16 @@ const App = function (props) {
     }
   }, [teams, currentTeam]);
 
+  const setLanguage = (languageCode) => {
+    Cookies.set('language', languageCode);
+  };
+
+  const setTheme = (theme) => {
+    const rootElement = document.documentElement;
+    rootElement.setAttribute('data-theme', theme);
+    Cookies.set('theme', theme);
+  };
+
   return (
     <Container>
       <Sidebar
@@ -185,7 +196,16 @@ const App = function (props) {
                     />
                   </span>
                 </Nav.Item>
-                <Nav.Item eventKey="4" icon={<InfoOutline style={{ fontSize: '20px', height: '20px' }} />} href="/about">
+                <Nav.Menu eventKey="4" icon={<GlobalIcon style={{ fontSize: '20px', height: '20px' }} />} title={<FormattedMessage id="nav.language" />}>
+                  <Nav.Item eventKey="4-1" onClick={() => setLanguage('en')} href="/">English</Nav.Item>
+                  <Nav.Item eventKey="4-2" onClick={() => setLanguage('nl')} href="/">Nederlands</Nav.Item>
+                  <Nav.Item eventKey="4-2" onClick={() => setLanguage('test')} href="/">Test</Nav.Item>
+                </Nav.Menu>
+                <Nav.Menu eventKey="5" icon={<CgDarkMode />} title={<FormattedMessage id="nav.theme" />}>
+                  <Nav.Item eventKey="5-1" onClick={() => setTheme('light')}><FormattedMessage id="nav.theme.light" /></Nav.Item>
+                  <Nav.Item eventKey="5-2" onClick={() => setTheme('dark')}><FormattedMessage id="nav.theme.dark" /></Nav.Item>
+                </Nav.Menu>
+                <Nav.Item eventKey="6" icon={<InfoOutline style={{ fontSize: '20px', height: '20px' }} />} href="/about">
                   <span>
                     <FormattedMessage
                       id="nav.about"

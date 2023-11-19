@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { FormattedMessage } from 'react-intl';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import HistoryIcon from '@rsuite/icons/History';
@@ -53,7 +54,9 @@ const ExecutionTable = function (props) {
             </FlexboxGrid.Item>
             <FlexboxGrid.Item colspan={22}>
               <div className="execution-test-name" onClick={() => toggleExecution(execution._id)}>
-                <span>{`Test: ${execution.title} - `}</span>
+                <span><FormattedMessage id="common.component.suite-table.header.test" /></span>
+                <span>: </span>
+                <span>{`${execution.title} - `}</span>
                 <span className={`execution-status-${execution.status}`}>{`${execution.status}`}</span>
               </div>
               <div className="execution-details-container">
@@ -74,8 +77,12 @@ const ExecutionTable = function (props) {
               </div>
             </FlexboxGrid.Item>
             <FlexboxGrid.Item colspan={1}>
-              <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{`See execution history for ${execution.title}`}</Tooltip>}>
-                <a className="test-history-link" title={`See execution history for ${execution.title}`} href={`/test-execution-history?executionId=${execution._id}`}>
+              <OverlayTrigger overlay={<Tooltip id="tooltip-disabled"><FormattedMessage id="common.component.suite-table.icon.test-history" /></Tooltip>}>
+                <a
+                  className="test-history-link"
+                  title={<FormattedMessage id="common.component.suite-table.icon.test-history" />}
+                  href={`/test-execution-history?executionId=${execution._id}`}
+                >
                   <HistoryIcon className="execution-history-icon" />
                 </a>
               </OverlayTrigger>

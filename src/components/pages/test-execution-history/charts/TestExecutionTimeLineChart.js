@@ -60,7 +60,7 @@ const generateResultsData = (executions) => {
 };
 
 const TestExecutionTimelineChart = function (props) {
-  const title = '';
+  const title = 'Execution Times';
   const { executions } = props;
   const graphData = generateResultsData(executions);
   const { data, labels } = graphData;

@@ -1,7 +1,11 @@
 {
   "nav.dashboard": "Dashboard",
   "nav.execution-metrics": "Statistieken ",
-  "nav.screenshot-library": "Screenshot Bibliotheek",
+  "nav.screenshot-library": "Schermafbeeldingen",
+  "nav.language": "Taal",
+  "nav.theme": "Thema",
+  "nav.theme.light": "Licht",
+  "nav.theme.dark": "Donker",
   "nav.about": "Over Angles",
 
   "app.utils.duration.seconds": "{seconds} seconden",
@@ -24,9 +28,18 @@
   "page.dashboard.filters.label.period": "Periode",
   "page.dashboard.filters.label.display-limit": "Weergave Limiet",
 
+  "page.dashboard.filters.label.environments": "Omgeving",
+  "page.dashboard.filters.label.components": "Onderdelen",
+
   "page.dashboard.panel.total-test-runs": "Totaal Aantal Test Runs",
   "page.dashboard.panel.total-test-executions": "Totaal Aantal Tests",
   "page.dashboard.panel.total-execution-time": "Totale Uitvoertijd",
+
+  "page.dashboard.chart.barchart.pass": "Geslaagd",
+  "page.dashboard.chart.barchart.skipped": "Overgeslagen",
+  "page.dashboard.chart.barchart.error": "Fout",
+  "page.dashboard.chart.barchart.fail": "Mislukt",
+  "page.dashboard.chart.barchart.execution-time-seconds": "Executie Tijd (Seconden)",
 
   "page.dashboard.builds-table.header.build-details": "Test Run Details",
   "page.dashboard.builds-table.header.date-time": "Datum/Tijd",
@@ -59,12 +72,42 @@
   "page.metrics.execution-metrics-summary.label.result": "Resultaat",
   "page.metrics.execution-metrics-summary.label.duration": "Looptijd",
 
+  "page.metrics.execution-metrics-bar-chart.title": "Executie statistieken per resultaat",
+  "page.metrics.execution-metrics-bar-chart.yaxis-title": "Aantal executies",
+  "page.metrics.execution-metrics-phase-bar-chart.title": "Executie statistieken per fase",
+  "page.metrics.execution-metrics-phase-bar-chart.yaxis-title": "Aantal executies",
+  "page.metrics.platform-distribution-pie-chart.title": "Executies per platform",
+  "page.metrics.platform-distribution-bar-chart.title":"Executies per platform",
+  "page.metrics.platform-distribution-bar-chart.yaxis-title": "Platforms",
+  "page.metrics.platform-distribution-bar-chart.xaxis-title": "Aantal executies",
+
   "page.metrics.platform-metrics-summary.label.platform":"Platform",
   "page.metrics.platform-metrics-summary.label.version":"Versie",
   "page.metrics.platform-metrics-summary.label.device":"Aparaat",
   "page.metrics.platform-metrics-summary.label.total":"Totaal",
   "page.metrics.platform-metrics-summary.label.result":"Resultaat",
   "page.metrics.platform-metrics-summary.label.duration":"Looptijd",
+
+  "page.metrics.metrics-test-table.label.unique-testcases": "Unieke test gevallen per fase",
+  "page.metrics.metrics-test-table.label.phase": "Fase",
+  "page.metrics.metrics-test-table.label.test": "Test",
+  "page.metrics.metrics-test-table.no-tests-found": "Geen testgevallen gevonden",
+
+  "page.test-run.steps-header.start": "Start",
+  "page.test-run.steps-header.duration": "Looptijd",
+  "page.test-run.steps-header.end": "Einde",
+  "page.test-run.menu.enable-keep-flag": "Schakel the houd vlag in",
+  "page.test-run.menu.disable-keep-flag": "Schakel de houd vlag uit",
+  "page.test-run.menu.download-report": "Raport downloaden als html",
+  "page.test-run.icons.team.whisper": "Team",
+  "page.test-run.icons.component.whisper": "Onderdeel",
+  "page.test-run.icons.phase.whisper": "Test Fase",
+  "page.test-run.icons.artifacts.whisper": "Aantal artefacten dat aan deze testuitvoering is gekoppeld.",
+  "page.test-run.icons.keep-lock.whisper": "Indien vergrendeld, wordt een test run niet opgeschoond door de nachtelijke cronjob.",
+  "page.test-run.icons.screenshots.whisper": "Deze run heeft {numberOfScreenshots} schermafbeeldingen",
+  "page.test-run.icons.download-report.whisper": "Download het HTML-rapport voor deze test run",
+  "page.test-run.execution-pie-chart.title" : "Executie statistiek",
+  "page.test-run.feature-distribution-pie-chart.title" : "Componenten statistiek",
 
   "page.screenshot-library.search-options.label.view": "Naam",
   "page.screenshot-library.search-options.label.tag": "Label",
@@ -83,6 +126,14 @@
   "page.about.header": "Over Angles",
   "page.about.about-angles": "Angles is een open-source dashboard wat gebruikt kan worden om test resultaten en schermafbeeldingen op te slaan voor geautomatiseerd testen van meerdere frameworks.",
   "page.about.about-api": "Via het duidelijk omschreven {apiLink} van Angles kan elke geautomatiseerde test framework aangepast worden om zijn resultaten in Angles op te slaan",
-  "page.about.about-github": "Voor meer information over Angles kun je terecht op onze pagine: {githubLink}"
+  "page.about.about-github": "Voor meer information over Angles kun je terecht op onze pagine: {githubLink}",
 
+  "common.component.suite-table.header.suite": "Test Pak",
+  "common.component.suite-table.header.test": "Test",
+  "common.component.suite-table.header.duration": "Looptijd",
+  "common.component.suite-table.header.total": "Totaal",
+  "common.component.suite-table.header.collapse-all": "Sluit alle testgevallen en acties",
+  "common.component.suite-table.header.expand-all": "Open alle testgevallen",
+  "common.component.suite-table.header.expand-all-actions": "Open alle testgevallen en acties",
+  "common.component.suite-table.icon.test-history": "Zie executie geschiedenis voor test"
 }

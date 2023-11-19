@@ -2,6 +2,7 @@ import React from 'react';
 import Chart from 'react-apexcharts';
 import { Panel, Stack } from 'rsuite';
 import moment from 'moment/moment';
+import { useIntl } from 'react-intl';
 
 const defaultOptions = {
   chart: {
@@ -33,18 +34,13 @@ const defaultOptions = {
       show: true,
     },
   },
-  yaxis: [
-    {
-      title: {
-        text: 'Number of Executions',
-      },
-    },
-  ],
+  yaxis: [],
   colors: ['var(--pass-color)', 'var(--skipped-color)', 'var(--error-color)', 'var(--fail-color)'],
   legend: { show: true },
 };
 
 const generateMetricsResultsData = (metrics) => {
+  const intl = useIntl();
   const graphData = {
     data: [],
     labels: [],
@@ -69,17 +65,34 @@ const generateMetricsResultsData = (metrics) => {
     graphData.labels.push(`${moment.utc(moment(metricPeriod.start)).format('DD-MM-YYYY')} - ${moment.utc(moment(metricPeriod.end)).format('DD-MM-YYYY')}`);
   });
   graphData.data.push(
-    { name: 'Pass', data: results.PASS, type: 'column' },
-    { name: 'Skipped', data: results.SKIPPED, type: 'column' },
-    { name: 'Error', data: results.ERROR, type: 'column' },
-    { name: 'Fail', data: results.FAIL, type: 'column' },
+    {
+      name: intl.formatMessage({ id: 'page.dashboard.chart.barchart.pass' }),
+      data: results.PASS,
+      type: 'column',
+    },
+    {
+      name: intl.formatMessage({ id: 'page.dashboard.chart.barchart.skipped' }),
+      data: results.SKIPPED,
+      type: 'column',
+    },
+    {
+      name: intl.formatMessage({ id: 'page.dashboard.chart.barchart.error' }),
+      data: results.ERROR,
+      type: 'column',
+    },
+    {
+      name: intl.formatMessage({ id: 'page.dashboard.chart.barchart.pass' }),
+      data: results.FAIL,
+      type: 'column',
+    },
   );
   return graphData;
 };
 
 const ExecutionMetricsResultsBarChart = function (props) {
-  const title = 'Executions grouped by result';
-  const { metrics } = props;
+  const { metrics, title, yaxisTitle } = props;
+  const config = { title: { text: yaxisTitle } };
+  defaultOptions.yaxis.push(config);
   const { data, labels } = generateMetricsResultsData(metrics);
   return (
     <Panel

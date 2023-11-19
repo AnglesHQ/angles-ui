@@ -4,6 +4,7 @@ import Modal from 'react-bootstrap/Modal';
 import queryString from 'query-string';
 import moment from 'moment/moment';
 import { connect } from 'react-redux';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { saveAs } from 'file-saver';
 import { AiOutlineTeam, AiOutlinePartition } from 'react-icons/ai';
 import { GiSandsOfTime, GiTrafficLightsGreen } from 'react-icons/gi';
@@ -48,11 +49,13 @@ import CurrentScreenshotContext from '../../../context/CurrentScreenshotContext'
 import { getDuration } from '../../../utility/TimeUtilities';
 import ExecutionPieChart from './charts/ExecutionPieChart';
 import FeaturePieChart from './charts/FeaturePieChart';
+
 // import ScreenshotModal from "../../common/screenshot-view/modal/ScreenhotModal";
 
 const TestRunDetailsPage = function (props) {
-  // TODO: display number of screenshots + lock for test run
+  // TODO: Environment is not shown!
   const location = useLocation();
+  const intl = useIntl();
   const [showModal, setShowModal] = useState(false);
   const [screenshots, setScreenshots] = useState(null);
   const [query] = useState(queryString.parse(location.search));
@@ -223,7 +226,7 @@ const TestRunDetailsPage = function (props) {
                     disabled={!downloadReportButtonEnabled}
                     onClick={() => { downloadReport(currentBuild._id); }}
                   >
-                    Download Report as HTML file
+                    {intl.formatMessage({ id: 'page.test-run.menu.download-report' })}
                   </Dropdown.Item>
                   <Dropdown.Item
                     icon={<BsLockFill />}
@@ -231,9 +234,9 @@ const TestRunDetailsPage = function (props) {
                   >
                     {
                       (!currentBuild.keep) ? (
-                        'Enable the Keep flag.'
+                        intl.formatMessage({ id: 'page.test-run.menu.enable-keep-flag' })
                       ) : (
-                        'Disable the Keep flag.'
+                        intl.formatMessage({ id: 'page.test-run.menu.disable-keep-flag' })
                       )
                     }
                   </Dropdown.Item>
@@ -263,14 +266,14 @@ const TestRunDetailsPage = function (props) {
                   <div className="test-run-steps">
                     <Steps current={3}>
                       <Steps.Item
-                        title="Start"
+                        title={intl.formatMessage({ id: 'page.test-run.steps-header.start' })}
                         description={moment.utc(moment(currentBuild.start)).format('DD MMM - HH:mm:ss')}
                         icon={
                           <GiTrafficLightsGreen className="test-run-step-icon" />
                         }
                       />
                       <Steps.Item
-                        title="Duration"
+                        title={intl.formatMessage({ id: 'page.test-run.steps-header.duration' })}
                         description={getDuration(currentBuild)}
                         className="test-run-duration"
                         icon={
@@ -278,7 +281,7 @@ const TestRunDetailsPage = function (props) {
                         }
                       />
                       <Steps.Item
-                        title="End"
+                        title={intl.formatMessage({ id: 'page.test-run.steps-header.end' })}
                         className="test-run-end"
                         description={moment.utc(moment(currentBuild.end)).format('DD MMM - HH:mm:ss')}
                         icon={
@@ -294,7 +297,7 @@ const TestRunDetailsPage = function (props) {
                       trigger="hover"
                       speaker={(
                         <Tooltip>
-                          Team
+                          {intl.formatMessage({ id: 'page.test-run.icons.team.whisper' })}
                         </Tooltip>
                       )}
                     >
@@ -309,7 +312,7 @@ const TestRunDetailsPage = function (props) {
                       trigger="hover"
                       speaker={(
                         <Tooltip>
-                          Component
+                          {intl.formatMessage({ id: 'page.test-run.icons.component.whisper' })}
                         </Tooltip>
                       )}
                     >
@@ -324,7 +327,7 @@ const TestRunDetailsPage = function (props) {
                       trigger="hover"
                       speaker={(
                         <Tooltip>
-                          Test Phase
+                          {intl.formatMessage({ id: 'page.test-run.icons.phase.whisper' })}
                         </Tooltip>
                       )}
                     >
@@ -354,7 +357,7 @@ const TestRunDetailsPage = function (props) {
                       trigger="hover"
                       speaker={(
                         <Tooltip>
-                          Number of artifacts associated with this test run.
+                          {intl.formatMessage({ id: 'page.test-run.icons.artifacts.whisper' })}
                         </Tooltip>
                       )}
                     >
@@ -376,7 +379,7 @@ const TestRunDetailsPage = function (props) {
                       trigger="hover"
                       speaker={(
                         <Tooltip>
-                          When locked a test run will not be cleaned up by the nightly test run.
+                          {intl.formatMessage({ id: 'page.test-run.icons.keep-lock.whisper' })}
                         </Tooltip>
                       )}
                     >
@@ -394,7 +397,7 @@ const TestRunDetailsPage = function (props) {
                       trigger="hover"
                       speaker={(
                         <Tooltip>
-                          {`This test run has ${screenshots.length} screenshots`}
+                          { intl.formatMessage({ id: 'page.test-run.icons.screenshots.whisper' }, { numberOfScreenshots: screenshots.length }) }
                         </Tooltip>
                       )}
                     >
@@ -416,7 +419,7 @@ const TestRunDetailsPage = function (props) {
                       trigger="hover"
                       speaker={(
                         <Tooltip>
-                          Download the HTML report for this test run.
+                          {intl.formatMessage({ id: 'page.test-run.icons.download-report.whisper' })}
                         </Tooltip>
                       )}
                     >
@@ -439,10 +442,16 @@ const TestRunDetailsPage = function (props) {
             </Row>
             <Row gutter={30} className="test-run-row">
               <Col xs={12}>
-                <ExecutionPieChart currentBuild={currentBuild} />
+                <ExecutionPieChart
+                  title={<FormattedMessage id="page.test-run.execution-pie-chart.title" />}
+                  currentBuild={currentBuild}
+                />
               </Col>
               <Col xs={12}>
-                <FeaturePieChart currentBuild={currentBuild} />
+                <FeaturePieChart
+                  title={<FormattedMessage id="page.test-run.feature-distribution-pie-chart.title" />}
+                  currentBuild={currentBuild}
+                />
               </Col>
             </Row>
             <Row gutter={30} className="test-run-row">

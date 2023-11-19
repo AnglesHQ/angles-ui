@@ -51,9 +51,9 @@ const generateFeatureDistributionPieChartData = (currentBuild) => {
 };
 
 const FeaturePieChart = function (props) {
-  const title = 'Feature Distribution Metrics';
   const {
     currentBuild,
+    title,
   } = props;
   const { data, labels } = generateFeatureDistributionPieChartData(currentBuild);
   return (

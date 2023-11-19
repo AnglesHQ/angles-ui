@@ -33,13 +33,7 @@ const defaultOptions = {
       show: true,
     },
   },
-  yaxis: [
-    {
-      title: {
-        text: 'Number of Executions',
-      },
-    },
-  ],
+  yaxis: [],
   legend: { show: true },
 };
 
@@ -75,8 +69,8 @@ const generateMetricsResultsData = (metrics) => {
 };
 
 const PhaseMetricsResultsBarChart = function (props) {
-  const title = 'Executions grouped by phase';
-  const { metrics } = props;
+  const { metrics, title, yaxisTitle } = props;
+  defaultOptions.yaxis.push({ title: { text: yaxisTitle } });
   const graphData = generateMetricsResultsData(metrics);
   const { data, labels } = graphData;
   return (

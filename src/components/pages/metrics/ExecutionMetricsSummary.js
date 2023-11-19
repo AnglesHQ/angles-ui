@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import InfoOutlineIcon from '@rsuite/icons/InfoOutline';
 import { Table, Whisper, Popover } from 'rsuite';
 import { getDurationAsString } from '../../../utility/TimeUtilities';
@@ -17,11 +17,17 @@ const getTestCount = (period) => {
   return testCount;
 };
 
-const testDetailsSpeaker = (period) => (
-  <Popover title="Unique testcases per phase" style={{ width: '600px' }}>
-    <MetricsTestsTable period={period} />
-  </Popover>
-);
+const testDetailsSpeaker = (period) => {
+  const intl = useIntl();
+  return (
+    <Popover
+      title={intl.formatMessage({ id: 'page.metrics.metrics-test-table.label.unique-testcases' })}
+      style={{ width: '600px' }}
+    >
+      <MetricsTestsTable period={period} />
+    </Popover>
+  );
+};
 
 const UniqueTestsCell = function (props) {
   const { rowData: period } = props;

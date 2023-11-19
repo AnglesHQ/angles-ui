@@ -1,6 +1,7 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
 import { Panel, Stack } from 'rsuite';
+import { useIntl } from 'react-intl';
 import moment from 'moment';
 import { getBuildDurationInSeconds } from '../../../../utility/TimeUtilities';
 
@@ -59,6 +60,7 @@ const defaultOptions = {
 };
 
 const generateResultsData = (builds) => {
+  const intl = useIntl();
   const graphData = {
     data: [],
     labels: [],
@@ -87,11 +89,31 @@ const generateResultsData = (builds) => {
     graphData.labels.push(moment(build.start).format('YYYY-MM-DD hh:mm:ss'));
   });
   graphData.data.push(
-    { name: 'Pass', data: results.PASS, type: 'column' },
-    { name: 'Skipped', data: results.SKIPPED, type: 'column' },
-    { name: 'Error', data: results.ERROR, type: 'column' },
-    { name: 'Fail', data: results.FAIL, type: 'column' },
-    { name: 'ExecutionTime (Seconds)', data: results.executionTimes, type: 'line' },
+    {
+      name: intl.formatMessage({ id: 'page.dashboard.chart.barchart.pass' }),
+      data: results.PASS,
+      type: 'column',
+    },
+    {
+      name: intl.formatMessage({ id: 'page.dashboard.chart.barchart.skipped' }),
+      data: results.SKIPPED,
+      type: 'column',
+    },
+    {
+      name: intl.formatMessage({ id: 'page.dashboard.chart.barchart.error' }),
+      data: results.ERROR,
+      type: 'column',
+    },
+    {
+      name: intl.formatMessage({ id: 'page.dashboard.chart.barchart.fail' }),
+      data: results.FAIL,
+      type: 'column',
+    },
+    {
+      name: intl.formatMessage({ id: 'page.dashboard.chart.barchart.execution-time-seconds' }),
+      data: results.executionTimes,
+      type: 'line',
+    },
   );
   return graphData;
 };

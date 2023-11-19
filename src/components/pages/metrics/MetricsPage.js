@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import moment from 'moment';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import queryString from 'query-string';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { MetricRequests } from 'angles-javascript-client';
@@ -29,6 +29,7 @@ import PhaseMetricsResultsBarChart from './charts/PhaseMetricsResultsBarChart';
 const MetricsPage = function (props) {
   const navigate = useNavigate();
   const location = useLocation();
+  const intl = useIntl();
   const query = queryString.parse(location.search);
   const { teams, currentTeam } = props;
   const {
@@ -241,11 +242,15 @@ const MetricsPage = function (props) {
                       <Row gutter={30} className="dash-row">
                         <Col xs={12}>
                           <ExecutionMetricsResultsBarChart
+                            title={<FormattedMessage id="page.metrics.execution-metrics-bar-chart.title" />}
+                            yaxisTitle={intl.formatMessage({ id: 'page.metrics.execution-metrics-bar-chart.yaxis-title' })}
                             metrics={metrics}
                           />
                         </Col>
                         <Col xs={12}>
                           <PhaseMetricsResultsBarChart
+                            title={<FormattedMessage id="page.metrics.execution-metrics-phase-bar-chart.title" />}
+                            yaxisTitle={intl.formatMessage({ id: 'page.metrics.execution-metrics-phase-bar-chart.yaxis-title' })}
                             metrics={metrics}
                           />
                         </Col>
@@ -280,12 +285,16 @@ const MetricsPage = function (props) {
                       <Row gutter={30} className="dash-row">
                         <Col xs={12}>
                           <PlatformDistributionPieChart
+                            title={<FormattedMessage id="page.metrics.platform-distribution-pie-chart.title" />}
                             metrics={metrics}
                             platformColors={platformColors}
                           />
                         </Col>
                         <Col xs={12}>
                           <PlatformDistributionBarChart
+                            title={<FormattedMessage id="page.metrics.platform-distribution-bar-chart.title" />}
+                            yaxisTitle={intl.formatMessage({ id: 'page.metrics.platform-distribution-bar-chart.yaxis-title' })}
+                            xaxisTitle={intl.formatMessage({ id: 'page.metrics.platform-distribution-bar-chart.xaxis-title' })}
                             metrics={metrics}
                             platformColors={platformColors}
                           />

@@ -1,6 +1,7 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
 import { Panel, Stack } from 'rsuite';
+import { useIntl } from 'react-intl';
 
 const defaultOptions = {
   chart: {
@@ -8,6 +9,12 @@ const defaultOptions = {
     animations: { enabled: false },
     background: 'var(--main-panel-background)',
     foreColor: 'var(--main-panel-font-color)',
+    events:
+      {
+        click: (event, chartContext, config) => {
+          console.log(event, chartContext, config);
+        },
+      },
   },
   xaxis: {
     tooltip: {
@@ -22,6 +29,7 @@ const defaultOptions = {
 };
 
 const generateExecutionMetricsPieChartData = (currentBuild) => {
+  const intl = useIntl();
   if (currentBuild) {
     const {
       PASS,
@@ -32,7 +40,12 @@ const generateExecutionMetricsPieChartData = (currentBuild) => {
     const data = [PASS, SKIPPED, ERROR, FAIL];
     const graphData = {
       data,
-      labels: ['PASS', 'SKIPPED', 'ERROR', 'FAIL'],
+      labels: [
+        intl.formatMessage({ id: 'page.dashboard.chart.barchart.pass' }),
+        intl.formatMessage({ id: 'page.dashboard.chart.barchart.skipped' }),
+        intl.formatMessage({ id: 'page.dashboard.chart.barchart.error' }),
+        intl.formatMessage({ id: 'page.dashboard.chart.barchart.fail' }),
+      ],
       colors: ['var(--pass-color)', 'var(--skipped-color)', 'var(--error-color)', 'var(--fail-color)'],
     };
     return graphData;
@@ -41,9 +54,9 @@ const generateExecutionMetricsPieChartData = (currentBuild) => {
 };
 
 const ExecutionPieChart = function (props) {
-  const title = 'Overall Execution Metrics';
   const {
     currentBuild,
+    title,
   } = props;
   const { data, labels } = generateExecutionMetricsPieChartData(currentBuild);
   return (

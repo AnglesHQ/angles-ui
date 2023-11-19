@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from 'react';
+import { FormattedMessage } from 'react-intl';
 import {
   Row,
   Grid,
@@ -64,16 +65,25 @@ const SuiteTable = function (props) {
           <Row className="test-run-suite-header">
             <Col xs={12}>
               <div>
-                <span className="field-label">Suite: </span>
+                <span className="field-label">
+                  <FormattedMessage id="common.component.suite-table.header.suite" />
+                </span>
+                <span>: </span>
                 { suite.name }
               </div>
             </Col>
             <Col xs={4}>
-              <span className="field-label">Duration: </span>
+              <span className="field-label">
+                <FormattedMessage id="common.component.suite-table.header.duration" />
+              </span>
+              <span>: </span>
               { getDuration(suite) }
             </Col>
             <Col xs={2}>
-              <span className="field-label">Total: </span>
+              <span className="field-label">
+                <FormattedMessage id="common.component.suite-table.header.total" />
+              </span>
+              <span>: </span>
               { sum(suite.result) }
             </Col>
             <Col xs={4}>
@@ -83,20 +93,35 @@ const SuiteTable = function (props) {
               <div className="suite-menu-div">
                 {
                   isSuiteExpanded(suite) ? (
-                    <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{`Collapse all test cases and actions for suite ${suite.name}`}</Tooltip>}>
+                    <OverlayTrigger overlay={(
+                      <Tooltip id="tooltip-disabled">
+                        <FormattedMessage id="common.component.suite-table.header.collapse-all" />
+                      </Tooltip>
+                    )}
+                    >
                       <span className="expand-icons" onClick={() => collapseAll()}>
                         <CollaspedOutlineIcon />
                       </span>
                     </OverlayTrigger>
                   ) : (
-                    <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{`Expand all test cases for suite ${suite.name}`}</Tooltip>}>
+                    <OverlayTrigger overlay={(
+                      <Tooltip id="tooltip-disabled">
+                        <FormattedMessage id="common.component.suite-table.header.expand-all" />
+                      </Tooltip>
+                    )}
+                    >
                       <span className="expand-icons" onClick={() => expandExecutions()}>
                         <ExpandOutlineIcon />
                       </span>
                     </OverlayTrigger>
                   )
                 }
-                <OverlayTrigger overlay={<Tooltip id="tooltip-disabled">{`Expand all test cases and actions for suite ${suite.name}`}</Tooltip>}>
+                <OverlayTrigger overlay={(
+                  <Tooltip id="tooltip-disabled">
+                    <FormattedMessage id="common.component.suite-table.header.expand-all-actions" />
+                  </Tooltip>
+                )}
+                >
                   <span className="expand-all-icon" onClick={() => expandAll()}>
                     <VscExpandAll />
                   </span>

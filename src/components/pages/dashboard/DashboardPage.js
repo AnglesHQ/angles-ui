@@ -40,13 +40,19 @@ import ExecutionPieChart from './charts/ExecutionPieChart';
 const generateFilterMenuData = function (environments, components) {
   const data = [];
   data.push({
-    label: 'Environments',
+    label:
+      (<FormattedMessage
+        id="page.dashboard.filters.label.environments"
+      />),
     value: 1,
     children: environments
       .map((environment) => ({ value: environment._id, label: environment.name })),
   });
   data.push({
-    label: 'Components',
+    label:
+      (<FormattedMessage
+        id="page.dashboard.filters.label.components"
+      />),
     value: 2,
     children: components
       .map((component) => ({ value: component._id, label: component.name })),

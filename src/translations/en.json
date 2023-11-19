@@ -2,6 +2,10 @@
   "nav.dashboard": "Dashboard",
   "nav.execution-metrics": "Metrics",
   "nav.screenshot-library": "Screenshot Library",
+  "nav.language": "Language",
+  "nav.theme": "Theme",
+  "nav.theme.light": "Light",
+  "nav.theme.dark": "Dark",
   "nav.about": "About Angles",
 
   "app.utils.duration.seconds": "{seconds} seconds",
@@ -24,9 +28,18 @@
   "page.dashboard.filters.label.period": "Period",
   "page.dashboard.filters.label.display-limit": "Display Limit",
 
+  "page.dashboard.filters.label.environments": "Environments",
+  "page.dashboard.filters.label.components": "Components",
+
   "page.dashboard.panel.total-test-runs": "Total Test Runs",
   "page.dashboard.panel.total-test-executions": "Total Test Executions",
   "page.dashboard.panel.total-execution-time": "Total Execution Time",
+
+  "page.dashboard.chart.barchart.pass": "Pass",
+  "page.dashboard.chart.barchart.skipped": "Skipped",
+  "page.dashboard.chart.barchart.error": "Error",
+  "page.dashboard.chart.barchart.fail": "Fail",
+  "page.dashboard.chart.barchart.execution-time-seconds": "Execution Time (Seconds)",
 
   "page.dashboard.builds-table.header.build-details": "Build Details",
   "page.dashboard.builds-table.header.date-time": "Date/Time",
@@ -59,12 +72,42 @@
   "page.metrics.execution-metrics-summary.label.result": "Result",
   "page.metrics.execution-metrics-summary.label.duration": "Duration",
 
+  "page.metrics.execution-metrics-bar-chart.title": "Execution metrics grouped by result",
+  "page.metrics.execution-metrics-bar-chart.yaxis-title": "Number of executions",
+  "page.metrics.execution-metrics-phase-bar-chart.title": "Execution metrics grouped by phase",
+  "page.metrics.execution-metrics-phase-bar-chart.yaxis-title": "Number of executions",
+  "page.metrics.platform-distribution-pie-chart.title": "Overall executions distribution by platform",
+  "page.metrics.platform-distribution-bar-chart.title": "Executions distribution by platform",
+  "page.metrics.platform-distribution-bar-chart.yaxis-title": "Platforms",
+  "page.metrics.platform-distribution-bar-chart.xaxis-title": "Number of executions",
+
   "page.metrics.platform-metrics-summary.label.platform":"Platform",
   "page.metrics.platform-metrics-summary.label.version":"Version",
   "page.metrics.platform-metrics-summary.label.device":"Device",
   "page.metrics.platform-metrics-summary.label.total":"Total",
   "page.metrics.platform-metrics-summary.label.result":"Result",
   "page.metrics.platform-metrics-summary.label.duration":"Duration",
+
+  "page.metrics.metrics-test-table.label.unique-testcases": "Unique test cases per phase",
+  "page.metrics.metrics-test-table.label.phase": "Phase",
+  "page.metrics.metrics-test-table.label.test": "Test",
+  "page.metrics.metrics-test-table.no-tests-found": "No tests found",
+
+  "page.test-run.steps-header.start": "Start",
+  "page.test-run.steps-header.duration": "Duration",
+  "page.test-run.steps-header.end": "End",
+  "page.test-run.menu.enable-keep-flag": "Enable the keep flag",
+  "page.test-run.menu.disable-keep-flag": "Disable the keep flag",
+  "page.test-run.menu.download-report": "Download report as html",
+  "page.test-run.icons.team.whisper": "Team",
+  "page.test-run.icons.component.whisper": "Component",
+  "page.test-run.icons.phase.whisper": "Test Phase",
+  "page.test-run.icons.artifacts.whisper": "Number of artifacts associated with this test run.",
+  "page.test-run.icons.keep-lock.whisper": "When locked a test run will not be cleaned up by the nightly cronjob.",
+  "page.test-run.icons.screenshots.whisper": "This test run has {numberOfScreenshots} screenshots",
+  "page.test-run.icons.download-report.whisper": "Download the HTML report for this test run.",
+  "page.test-run.execution-pie-chart.title" : "Overall execution metrics",
+  "page.test-run.feature-distribution-pie-chart.title" : "Feature distribution metrics",
 
   "page.screenshot-library.search-options.label.view": "View",
   "page.screenshot-library.search-options.label.tag": "Tag",
@@ -83,5 +126,14 @@
   "page.about.header": "About Angles",
   "page.about.about-angles": "Angles is an open-source dashboard which can be used to store results and screenshots for automated test runs from various frameworks.",
   "page.about.about-api": "By providing a clearly defined {apiLink} any framework can be adapted to store its test result in Angles, using one of the clients provided (or by using the API directly)",
-  "page.about.about-github": "For more information about Angles go to page: {githubLink}"
+  "page.about.about-github": "For more information about Angles go to page: {githubLink}",
+
+  "common.component.suite-table.header.suite": "Suite",
+  "common.component.suite-table.header.test": "Test",
+  "common.component.suite-table.header.duration": "Duration",
+  "common.component.suite-table.header.total": "Total",
+  "common.component.suite-table.header.collapse-all": "Collapse all test cases and actions",
+  "common.component.suite-table.header.expand-all": "Expand all test cases",
+  "common.component.suite-table.header.expand-all-actions": "Expand all test cases and actions",
+  "common.component.suite-table.icon.test-history": "See execution history for test"
 }

@@ -103,25 +103,25 @@
 }
 
  //TODO: add dark mode colors
-@media (prefers-color-scheme: dark) {
-    :root {
-        //master palette
-        --master-color-1: hsl(228, 16%, 24%);
-        --master-color-2: hsl(233, 17%, 21%);
-        --master-color-3: hsl(28, 87%, 52%);
+//@media (prefers-color-scheme: dark) {
+:root[data-theme="dark"] {
+    //master palette
+    --master-color-1: hsl(228, 16%, 24%);
+    --master-color-2: hsl(233, 17%, 21%);
+    --master-color-3: hsl(28, 87%, 52%);
 
-        // TODO: override with hsl relative colors once supported by most browsers
-        --master-color-2-relative: hsl(240, 9%, 39%);
-        --master-color-3-relative: hsl(27, 63%, 46%);
+    // TODO: override with hsl relative colors once supported by most browsers
+    --master-color-2-relative: hsl(240, 9%, 39%);
+    --master-color-3-relative: hsl(27, 63%, 46%);
 
-        --master-font-color-1: hsl(240, 9%, 96%);
-        --master-font-color-2: hsl(0, 23%, 97%);
-        --master-font-color-3: hsl(0, 0%, 71%);
+    --master-font-color-1: hsl(240, 9%, 96%);
+    --master-font-color-2: hsl(0, 23%, 97%);
+    --master-font-color-3: hsl(0, 0%, 71%);
 
-        --master-icon-color: hsl(210, 100%, 60%);
+    --master-icon-color: hsl(210, 100%, 60%);
 
-    }
 }
+//}
 
 body {
     background: var(--body-background);
@@ -152,6 +152,14 @@ body {
             vertical-align: center;
             display: inline;
         }
+    }
+
+    .rs-sidenav-item-icon {
+        height: 25px;
+        width: 25px;
+        position: absolute;
+        left: 19px;
+        top: 14px;
     }
 
     .rs-sidenav-item {

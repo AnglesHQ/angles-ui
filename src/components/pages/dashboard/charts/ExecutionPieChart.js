@@ -1,6 +1,7 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
 import { Panel, Stack } from 'rsuite';
+import { useIntl } from 'react-intl';
 
 const defaultOptions = {
   chart: {
@@ -22,6 +23,7 @@ const defaultOptions = {
 };
 
 const generatePieChartData = (testRunMetrics) => {
+  const intl = useIntl();
   const {
     pass,
     fail,
@@ -30,7 +32,12 @@ const generatePieChartData = (testRunMetrics) => {
   } = testRunMetrics;
   const graphData = {
     data: [pass || 0, skipped || 0, error || 0, fail || 0],
-    labels: ['Pass', 'Skipped', 'Error', 'Fail'],
+    labels: [
+      intl.formatMessage({ id: 'page.dashboard.chart.barchart.pass' }),
+      intl.formatMessage({ id: 'page.dashboard.chart.barchart.skipped' }),
+      intl.formatMessage({ id: 'page.dashboard.chart.barchart.error' }),
+      intl.formatMessage({ id: 'page.dashboard.chart.barchart.fail' }),
+    ],
   };
   return graphData;
 };

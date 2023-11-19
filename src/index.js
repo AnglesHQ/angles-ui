@@ -1,5 +1,6 @@
 import React from 'react';
 import { IntlProvider } from 'react-intl';
+import Cookies from 'js-cookie';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
@@ -18,8 +19,17 @@ const messages = {
   nl: messagesNL,
 };
 let language = navigator.language.split(/[-_]/)[0];
-// let language = 'nl';
+const cookieLanguage = Cookies.get('language');
+if (cookieLanguage) {
+  language = cookieLanguage;
+}
 language = language in messages ? language : 'en';
+Cookies.set('language', language);
+
+const theme = Cookies.get('theme');
+if (theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+}
 
 root.render(
   <Provider store={store}>

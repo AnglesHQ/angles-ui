@@ -28,8 +28,13 @@ const generatePlatformDistributionBarGraphData = (metrics) => {
 };
 
 const PlatformDistributionBarChart = function (props) {
-  const title = 'Executions distribution by platform';
-  const { metrics, platformColors: { colors } } = props;
+  const {
+    metrics,
+    title,
+    yaxisTitle,
+    xaxisTitle,
+    platformColors: { colors },
+  } = props;
   const defaultOptions = {
     chart: {
       toolbar: { show: false },
@@ -54,7 +59,7 @@ const PlatformDistributionBarChart = function (props) {
     },
     xaxis: {
       title: {
-        text: 'Number of Executions',
+        text: xaxisTitle,
       },
       tooltip: {
         enabled: true,
@@ -66,7 +71,7 @@ const PlatformDistributionBarChart = function (props) {
     yaxis: [
       {
         title: {
-          text: 'Platforms',
+          text: yaxisTitle,
         },
       },
     ],

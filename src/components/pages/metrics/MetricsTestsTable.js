@@ -1,5 +1,6 @@
 import React from 'react';
 import { Table } from 'rsuite';
+import { FormattedMessage } from 'react-intl';
 
 const MetricsTestsTable = function (props) {
   const { Column, HeaderCell, Cell } = Table;
@@ -21,7 +22,7 @@ const MetricsTestsTable = function (props) {
     if (dataArray.length === 0) {
       dataArray.push(
         {
-          testName: 'No tests found',
+          testName: <FormattedMessage id="page.metrics.metrics-test-table.no-tests-found" />,
         },
       );
     }
@@ -35,11 +36,15 @@ const MetricsTestsTable = function (props) {
       autoHeight
     >
       <Column flexGrow={1}>
-        <HeaderCell>Phase</HeaderCell>
+        <HeaderCell>
+          <FormattedMessage id="page.metrics.metrics-test-table.label.phase" />
+        </HeaderCell>
         <Cell dataKey="phase" />
       </Column>
       <Column flexGrow={5}>
-        <HeaderCell>Test</HeaderCell>
+        <HeaderCell>
+          <FormattedMessage id="page.metrics.metrics-test-table.label.test" />
+        </HeaderCell>
         <Cell dataKey="testName" />
       </Column>
     </Table>
