@@ -47,9 +47,9 @@ const generateExecutionMetricsPieChartData = (executions) => {
 };
 
 const TestExecutionsResultPieChart = function (props) {
-  const title = 'Overall Execution Metrics';
   const {
     executions,
+    title,
   } = props;
   const { data, labels } = generateExecutionMetricsPieChartData(executions);
   return (

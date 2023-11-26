@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import { Breadcrumb, Panel } from 'rsuite';
 import TestRunsComparePage from './TestRunsComparePage';
 
@@ -7,8 +8,12 @@ const Page = function (props) {
   return (
     <Panel>
       <Breadcrumb>
-        <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
-        <Breadcrumb.Item>Test Run Compare</Breadcrumb.Item>
+        <Breadcrumb.Item href="/">
+          <FormattedMessage id="page.home.bread-crumb" />
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>
+          <FormattedMessage id="page.test-run-compare.bread-crumb" />
+        </Breadcrumb.Item>
       </Breadcrumb>
       <TestRunsComparePage currentTeam={currentTeam} />
     </Panel>

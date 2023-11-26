@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import { Breadcrumb, Panel } from 'rsuite';
 import ScreenshotLibraryPage from './ScreenshotLibraryPage';
 
@@ -6,8 +7,12 @@ const Page = function () {
   return (
     <Panel>
       <Breadcrumb>
-        <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
-        <Breadcrumb.Item>Screenshot Library</Breadcrumb.Item>
+        <Breadcrumb.Item href="/">
+          <FormattedMessage id="page.home.bread-crumb" />
+        </Breadcrumb.Item>
+        <Breadcrumb.Item>
+          <FormattedMessage id="page.screenshot-library.bread-crumb" />
+        </Breadcrumb.Item>
       </Breadcrumb>
       <ScreenshotLibraryPage />
     </Panel>

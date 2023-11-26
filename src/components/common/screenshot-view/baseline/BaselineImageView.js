@@ -1,15 +1,20 @@
 /* eslint  no-param-reassign: [0] */
 import React, { useEffect, useContext } from 'react';
+import { FormattedMessage, useIntl } from 'react-intl';
 import {
   Button,
   Stack,
 } from 'rsuite';
+import { IoGitCompareOutline } from 'react-icons/io5';
+import { RiDeleteBin6Line } from 'react-icons/ri';
 import Table from 'react-bootstrap/Table';
 import RegionSelect from 'react-region-select';
 import ScreenshotDetailsTable from '../ScreenshotDetailsTable';
 import CurrentScreenshotContext from '../../../../context/CurrentScreenshotContext';
+import Message from '../../Message';
 
 const BaselineImageView = (props) => {
+  const intl = useIntl();
   const {
     isBaseline,
     getBaselineCompare,
@@ -119,7 +124,7 @@ const BaselineImageView = (props) => {
                  type="button"
                  onClick={() => deleteRegion(regionProps.index)}
                >
-                 <i className="far fa-trash-alt" />
+                 <RiDeleteBin6Line className="baseline-action-icon" />
                </span>
              )
              : null
@@ -141,110 +146,41 @@ const BaselineImageView = (props) => {
   //   setRegions(newRegions);
   // }
 
-  const renderPage = () => {
-    if (!currentBaseLineDetails) {
-      return 'No Baseline selected yet for this view and deviceName or browser combination. To select a baseline, navigate to the image you want as a baseline and click on the "Make Baseline Image" button';
-    }
-    if (currentBaseLineDetails.screenshot._id === currentScreenshotDetails._id) {
-      return (
-        <Table>
-          <tbody>
-            <tr>
-              <td colSpan="100%" className="sbs-header">
-                Current Image (and Baseline)
-              </td>
-            </tr>
-            <tr>
-              <td className="screenshot-details-td">
-                <div>
-                  <ScreenshotDetailsTable
-                    currentScreenshotDetails={currentScreenshotDetails}
-                    isBaseline={isBaseline(currentScreenshotDetails._id)}
-                  />
-                </div>
-              </td>
-              <td>
-                <div style={{ display: 'block' }}>
-                  <div style={{ flexGrow: 1, flexShrink: 1, width: '100%' }}>
-                    <RegionSelect
-                      maxRegions={10}
-                      regions={regions}
-                      regionStyle={regionStyle}
-                      constraint
-                      onChange={onChange}
-                      regionRenderer={regionRenderer}
-                      style={{ border: '1px solid black' }}
-                    >
-                      <img className="screenshot" src={currentScreenshot} id="baseline" alt="Compare" width="100%" />
-                    </RegionSelect>
-                  </div>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td colSpan="100%">
-                <span style={{ float: 'left' }}>
-                  <button
-                    type="button"
-                    className="btn btn-outline-primary"
-                    onMouseUp={() => toggleEditing()}
-                  >
-                    {`${editing ? 'Save' : 'Edit'} Ignore Blocks`}
-                  </button>
-                  {
-                    editing ? (
-                      <button
-                        type="button"
-                        className="btn btn-outline-primary second-button"
-                        onMouseUp={() => resetIgnoreBlocks()}
-                      >
-                        Cancel Changes
-                      </button>
-                    ) : null
-                  }
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </Table>
-      );
-    }
-    if (!currentBaselineCompare) {
-      return (
-        <div className="alert alert-primary" role="alert">
-          <span>
-            <i className="fas fa-spinner fa-pulse fa-2x" />
-            Loading baseline compare.
-          </span>
-        </div>
-      );
-    }
-    if (currentBaselineCompare === 'ERROR') {
-      return (
-        <div className="alert alert-danger" role="alert">
-          <span>Failed to retrieve baseline compare.</span>
-        </div>
-      );
-    }
+  const generateBaselineCompareTable = () => {
+    const isBaselineImage = isBaseline(currentScreenshotDetails._id);
+    const imageToDisplay = isBaselineImage ? currentScreenshot : currentBaselineCompare;
     return (
-      <Table>
+      <Table className="baseline-compare-table">
         <tbody>
           <tr>
-            <td colSpan="100%" className="sbs-header">
-              <span>Baseline Compare </span>
-              <span
-                type="button"
-                onClick={() => getBaselineCompare(currentScreenshotDetails._id, false)}
-              >
-                <i className="fas fa-redo redo-compare-icon" title="Redo compare against baseline." />
-              </span>
-            </td>
+            {
+              isBaselineImage ? (
+                <td colSpan="100%" className="baseline-compare-header">
+                  <FormattedMessage id="common.component.screenshot-view.tabs.baseline.label.current-image-baseline" />
+                </td>
+              ) : (
+                <td colSpan="100%" className="baseline-compare-header">
+                  <span>
+                    <FormattedMessage id="common.component.screenshot-view.tabs.baseline.label.baseline-compare" />
+                  </span>
+                  <span>  </span>
+                  <span
+                    className="baseline-action-icon"
+                    type="button"
+                    onClick={() => getBaselineCompare(currentScreenshotDetails._id, false)}
+                  >
+                    <IoGitCompareOutline title={intl.formatMessage({ id: 'common.component.screenshot-view.tabs.baseline.button.redo-compare-description' })} />
+                  </span>
+                </td>
+              )
+            }
           </tr>
           <tr>
             <td className="screenshot-details-td">
               <div>
                 <ScreenshotDetailsTable
                   currentScreenshotDetails={currentScreenshotDetails}
+                  isBaseline={isBaselineImage}
                   currentBaseLineDetails={currentBaseLineDetails}
                   currentBaselineCompareJson={currentBaselineCompareJson}
                 />
@@ -260,9 +196,8 @@ const BaselineImageView = (props) => {
                     constraint
                     onChange={onChange}
                     regionRenderer={regionRenderer}
-                    style={{ border: '1px solid black' }}
                   >
-                    <img className="screenshot" src={currentBaselineCompare} id="baseline" alt="Compare" width="100%" />
+                    <img className="screenshot" src={imageToDisplay} id="baseline" alt="Compare" width="100%" />
                   </RegionSelect>
                 </div>
               </div>
@@ -276,7 +211,13 @@ const BaselineImageView = (props) => {
                   className="filter-submit-button"
                   onMouseUp={() => toggleEditing()}
                 >
-                  {`${editing ? 'Save' : 'Edit'} Ignore Blocks`}
+                  {
+                    editing ? (
+                      <FormattedMessage id="common.component.screenshot-view.tabs.baseline.button.save-ignore-blocks" />
+                    ) : (
+                      <FormattedMessage id="common.component.screenshot-view.tabs.baseline.button.edit-ignore-blocks" />
+                    )
+                  }
                 </Button>
                 {
                   editing ? (
@@ -285,7 +226,7 @@ const BaselineImageView = (props) => {
                       className="filter-submit-button"
                       onMouseUp={() => resetIgnoreBlocks()}
                     >
-                      Cancel Changes
+                      <FormattedMessage id="common.component.screenshot-view.tabs.baseline.button.cancel-changes" />
                     </Button>
                   ) : null
                 }
@@ -295,6 +236,41 @@ const BaselineImageView = (props) => {
         </tbody>
       </Table>
     );
+  };
+
+  const renderPage = () => {
+    if (!currentBaseLineDetails) {
+      return <FormattedMessage id="common.component.screenshot-view.tabs.baseline.message.no-baseline-set" />;
+    }
+    if (currentBaseLineDetails.screenshot._id === currentScreenshotDetails._id) {
+      return generateBaselineCompareTable();
+    }
+    if (!currentBaselineCompare) {
+      return (
+        <Message
+          type="warning"
+          message={(
+            <span>
+              <i className="fas fa-spinner fa-pulse fa-2x" />
+              <FormattedMessage id="common.component.screenshot-view.tabs.baseline.message.loading-baseline-compare" />
+            </span>
+          )}
+        />
+      );
+    }
+    if (currentBaselineCompare === 'ERROR') {
+      return (
+        <Message
+          type="warning"
+          message={(
+            <span>
+              <FormattedMessage id="ccommon.component.screenshot-view.tabs.baseline.message.loading-baseline-error" />
+            </span>
+          )}
+        />
+      );
+    }
+    return generateBaselineCompareTable();
   };
 
   return renderPage();

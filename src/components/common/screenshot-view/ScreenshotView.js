@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Panel } from 'rsuite';
 import Tabs from 'react-bootstrap/Tabs';
@@ -19,6 +20,7 @@ import CurrentScreenshotContext from '../../../context/CurrentScreenshotContext'
 import { useConstructor } from '../../../utility/GeneralUtilities';
 
 const ScreenshotView = function (props) {
+  const intl = useIntl();
   const { buildScreenshots: propsBuildScreenshots } = props;
   const [buildScreenshots, setBuildScreenshots] = useState(propsBuildScreenshots);
   const [key, setKey] = useState('image');
@@ -182,12 +184,12 @@ const ScreenshotView = function (props) {
         />
         {
           !currentScreenshotDetails.platform || !currentScreenshotDetails.view
-            ? <Alert variant="info">To enable the &quot;History&quot; and &quot;Compare with Baseline&quot; tabs please provide a view and platform details when uploading the screenshots to angles.</Alert>
+            ? <Alert variant="info"><FormattedMessage id="common.component.screenshot-view.tabs.enable-alert" /></Alert>
             : null
         }
         <div className="tabs-container">
           <Tabs id="image-tabs" activeKey={key} defaultActiveKey="image" onSelect={(tabKey) => handleSelect(tabKey)}>
-            <Tab eventKey="image" title="Image">
+            <Tab eventKey="image" title={intl.formatMessage({ id: 'common.component.screenshot-view.tabs.label.image' })}>
               <div className="image-page-holder">
                 <CurrentImageView
                   updateBaseline={updateBaseline}
@@ -197,14 +199,14 @@ const ScreenshotView = function (props) {
                 />
               </div>
             </Tab>
-            <Tab eventKey="history" disabled={!currentScreenshotDetails.platform || !currentScreenshotDetails.view} title="History">
+            <Tab eventKey="history" disabled={!currentScreenshotDetails.platform || !currentScreenshotDetails.view} title={intl.formatMessage({ id: 'common.component.screenshot-view.tabs.label.history' })}>
               <div className="image-page-holder">
                 <ScreenshotHistoryView
                   isBaseline={isBaseline}
                 />
               </div>
             </Tab>
-            <Tab eventKey="baseline" title="Overlay with Baseline" disabled={!currentScreenshotDetails.platform || !currentScreenshotDetails.view}>
+            <Tab eventKey="baseline" title={intl.formatMessage({ id: 'common.component.screenshot-view.tabs.label.overlay-with-baseline' })} disabled={!currentScreenshotDetails.platform || !currentScreenshotDetails.view}>
               <div className="image-page-holder">
                 <BaselineImageView
                   isBaseline={isBaseline}
@@ -213,7 +215,7 @@ const ScreenshotView = function (props) {
                 />
               </div>
             </Tab>
-            <Tab eventKey="sidebyside" title="Side by Side with Baseline" disabled={!currentScreenshotDetails.platform || !currentScreenshotDetails.view}>
+            <Tab eventKey="sidebyside" title={intl.formatMessage({ id: 'common.component.screenshot-view.tabs.label.side-by-side' })} disabled={!currentScreenshotDetails.platform || !currentScreenshotDetails.view}>
               <div className="image-page-holder">
                 <ImageSideBySideView
                   isBaseline={isBaseline}

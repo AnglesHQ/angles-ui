@@ -23,6 +23,8 @@
   "app.result.error": "Fout",
   "app.result.total": "Totaal",
 
+  "page.home.bread-crumb" : "Home",
+
   "page.dashboard.message.retrieving-builds": "Test runs aan het ophalen voor {teamName}...",
   "page.dashboard.filters.label.team": "Team",
   "page.dashboard.filters.label.period": "Periode",
@@ -93,6 +95,7 @@
   "page.metrics.metrics-test-table.label.test": "Test",
   "page.metrics.metrics-test-table.no-tests-found": "Geen testgevallen gevonden",
 
+  "page.test-run.bread-crumb": "Test Run",
   "page.test-run.steps-header.start": "Start",
   "page.test-run.steps-header.duration": "Looptijd",
   "page.test-run.steps-header.end": "Einde",
@@ -109,6 +112,9 @@
   "page.test-run.execution-pie-chart.title" : "Executie statistiek",
   "page.test-run.feature-distribution-pie-chart.title" : "Componenten statistiek",
 
+  "page.test-run-compare.bread-crumb": "Vergelijk Test Runs",
+
+  "page.screenshot-library.bread-crumb" : "Screenshot Library",
   "page.screenshot-library.search-options.label.view": "Naam",
   "page.screenshot-library.search-options.label.tag": "Label",
   "page.screenshot-library.search-options.label.or": "of",
@@ -123,10 +129,22 @@
   "page.screenshot-library.search-options.dropdown.last-3-months": "Laatste 3 maanden",
   "page.screenshot-library.search-options.dropdown.last-6-months": "Laatste 6 maanden",
 
+  "page.test-execution-history.bread-crumb" : "Test Execution History",
+  "page.test-execution-history.header.suite" : "Suite",
+  "page.test-execution-history.messages.retrieving-executions" : "Retrieving Test Executions",
+  "page.test-execution-history.charts.execution-pie-chart.title" : "Overall Execution Metrics",
+  "page.test-execution-history.charts.execution-timeline-chart.title" : "Execution Times",
+  "page.test-execution-history.charts.execution-timeline-chart.yaxis-label" : "Execution Time (seconds)",
+
+  "page.about.bread-crumb" : "Over Angles",
   "page.about.header": "Over Angles",
   "page.about.about-angles": "Angles is een open-source dashboard wat gebruikt kan worden om test resultaten en schermafbeeldingen op te slaan voor geautomatiseerd testen van meerdere frameworks.",
   "page.about.about-api": "Via het duidelijk omschreven {apiLink} van Angles kan elke geautomatiseerde test framework aangepast worden om zijn resultaten in Angles op te slaan",
   "page.about.about-github": "Voor meer information over Angles kun je terecht op onze pagine: {githubLink}",
+
+  "page.not-found.bread-crumb" : "Pagina niet gevonden",
+  "page.not-found.description": "Oops, we were unable to find the \"Angle\" you were looking for. Click {homeLink} to go back to home page.",
+  "page.not-found.home-link-text": "here",
 
   "common.component.suite-table.header.suite": "Test Pak",
   "common.component.suite-table.header.test": "Test",
@@ -135,5 +153,73 @@
   "common.component.suite-table.header.collapse-all": "Sluit alle testgevallen en acties",
   "common.component.suite-table.header.expand-all": "Open alle testgevallen",
   "common.component.suite-table.header.expand-all-actions": "Open alle testgevallen en acties",
-  "common.component.suite-table.icon.test-history": "Zie executie geschiedenis voor test"
+  "common.component.suite-table.icon.test-history": "Zie executie geschiedenis voor test",
+
+  "common.component.screenshot-view.header": "Screenshot Viewer",
+  "common.component.screenshot-view.tabs.enable-alert": "To enable the \"History\" and \"Compare with Baseline\" tabs please provide a view and platform details when uploading the screenshots",
+  "common.component.screenshot-view.tabs.label.image": "Screenshot",
+  "common.component.screenshot-view.tabs.label.history": "Geschiedenis",
+  "common.component.screenshot-view.tabs.label.overlay-with-baseline": "Vergelijking met de baseline",
+  "common.component.screenshot-view.tabs.label.side-by-side": "Naast elkaar met de baseline",
+
+  "common.component.screenshot-view.tabs.screenshot.button.make-baseline-image": "Make baseline image",
+  "common.component.screenshot-view.tabs.screenshot.button.is-baseline-image": "Dit is de baseline",
+  "common.component.screenshot-view.tabs.screenshot.button.generate-dynamic-baseline": "Genereer dynamische baseline",
+  "common.component.screenshot-view.tabs.screenshot.button.delete-screenshot": "Verwijder screenshot",
+  "common.component.screenshot-view.tabs.screenshot.button.delete-screenshot-description": "Alleen beschikbaar voor dynamische baselines die niet als baseline wordt gebruikt.",
+  "common.component.screenshot-view.tabs.screenshot.message.retrieving-screenshot": "Bezig met het ophalen van de screenshot",
+  "common.component.screenshot-view.tabs.screenshot.message.retrieving-screenshot-error": "Unable to retrieve image. Please refresh the page and try again.",
+
+  "common.component.screenshot-view.tabs.history.message.loading-history": "Loading history...",
+  "common.component.screenshot-view.tabs.history.label.baseline": "Baseline Screenshot",
+  "common.component.screenshot-view.tabs.history.label.view": "View",
+  "common.component.screenshot-view.tabs.history.label.date": "Date",
+  "common.component.screenshot-view.tabs.history.label.resolution": "Resolution",
+  "common.component.screenshot-view.tabs.history.label.platform": "Platform",
+  "common.component.screenshot-view.tabs.history.label.device": "Device",
+
+  "common.component.screenshot-view.tabs.side-by-side.label.current-image-baseline": "Current Image (and Baseline)",
+  "common.component.screenshot-view.tabs.side-by-side.label.current-image": "Current Image",
+  "common.component.screenshot-view.tabs.side-by-side.label.baseline": "Baseline",
+  "common.component.screenshot-view.tabs.side-by-side.message.retrieving-baseline-screenshot": "Retrieving baseline screenshot.",
+  "common.component.screenshot-view.tabs.side-by-side.message.retrieving-baseline-screenshot-error": "Unable to retrieve baseline image.Please refresh the page and try again.",
+  "common.component.screenshot-view.tabs.side-by-side.message.retrieving-screenshot": "Retrieving screenshot.",
+  "common.component.screenshot-view.tabs.side-by-side.message.retrieving-screenshot-error": "Unable to retrieve image. Please refresh the page and try again.",
+
+  "common.component.screenshot-view.tabs.baseline.label.current-image-baseline": "Current Image (and Baseline)",
+  "common.component.screenshot-view.tabs.baseline.label.baseline-compare": "Baseline Compare",
+
+
+  "common.component.screenshot-view.tabs.baseline.button.redo-compare-description": "Redo compare against baseline.",
+  "common.component.screenshot-view.tabs.baseline.button.edit-ignore-blocks": "Edit ignore blocks",
+  "common.component.screenshot-view.tabs.baseline.button.save-ignore-blocks": "Save ignore blocks",
+  "common.component.screenshot-view.tabs.baseline.button.cancel-changes": "Cancel changes",
+  "common.component.screenshot-view.tabs.baseline.message.no-baseline-set": "No Baseline selected yet for this view and deviceName or browser combination. To select a baseline, navigate to the image you want as a baseline and click on the \"Make Baseline Image\" button",
+  "common.component.screenshot-view.tabs.baseline.message.loading-baseline-compare": "Loading baseline compare",
+  "common.component.screenshot-view.tabs.baseline.message.loading-baseline-error": "Failed to retrieve baseline compare.",
+
+  "common.component.screenshot-details-table.label.view": "View",
+  "common.component.screenshot-details-table.label.view-link": "other platforms",
+  "common.component.screenshot-details-table.label.view-link-description": "Find all the latest screenshots for view {view}, grouped by platform.",
+  "common.component.screenshot-details-table.label.no-view": "No view provided",
+  "common.component.screenshot-details-table.label.date": "Date",
+  "common.component.screenshot-details-table.label.baseline-date": "Baseline Date",
+  "common.component.screenshot-details-table.label.mismatch": "Mismatch",
+  "common.component.screenshot-details-table.label.mismatch-result": "{mismatchPercentage}% (analysis time: {time} ms)",
+  "common.component.screenshot-details-table.label.resolution": "Resolution",
+  "common.component.screenshot-details-table.label.platform": "Platform",
+  "common.component.screenshot-details-table.label.no-platform": "No platform provided",
+  "common.component.screenshot-details-table.label.platform-version": "Platform version",
+  "common.component.screenshot-details-table.label.device": "Device",
+  "common.component.screenshot-details-table.label.browser": "Browser",
+  "common.component.screenshot-details-table.label.no-browser": "No browser provided",
+  "common.component.screenshot-details-table.label.browser-version": "Browser version",
+  "common.component.screenshot-details-table.label.no-browser-version": "No browser version provided",
+  "common.component.screenshot-details-table.label.baseline": "Baseline",
+  "common.component.screenshot-details-table.label.tags": "Tags",
+  "common.component.screenshot-details-table.label.tags-description": "Find all the latest screenshots with tag \"{tag}\", grouped by view.",
+
+  "common.yes": "Yes",
+  "common.no": "No"
+
 }

@@ -1,7 +1,9 @@
 import React, { useContext } from 'react';
+import { FormattedMessage } from 'react-intl';
 import Table from 'react-bootstrap/Table';
 import ScreenshotDetailsTable from '../ScreenshotDetailsTable';
 import CurrentScreenshotContext from '../../../../context/CurrentScreenshotContext';
+import Message from '../../Message';
 
 const ImageSideBySideView = function (props) {
   const {
@@ -16,22 +18,28 @@ const ImageSideBySideView = function (props) {
   const displaySideBySideBaseline = (baseline) => {
     if (!baseline) {
       return (
-        <div className="alert alert-primary" role="alert">
-          <span>
-            <i className="fas fa-spinner fa-pulse fa-2x" />
-            <span> Retrieving baseline screenshot.</span>
-          </span>
-        </div>
+        <Message
+          type="info"
+          message={(
+            <span>
+              <i className="fas fa-spinner fa-pulse fa-2x" />
+              <FormattedMessage id="common.component.screenshot-view.tabs.side-by-side.message.retrieving-baseline-screenshot" />
+            </span>
+          )}
+        />
       );
     }
     if (baseline === 'ERROR') {
       return (
-        <div className="alert alert-danger" role="alert">
-          <span>
-            Unable to retrieve baseline image.
-            Please refresh the page and try again.
-          </span>
-        </div>
+        <Message
+          type="warning"
+          message={(
+            <span>
+              <i className="fas fa-spinner fa-pulse fa-2x" />
+              <FormattedMessage id="common.component.screenshot-view.tabs.side-by-side.message.retrieving-baseline-screenshot-error" />
+            </span>
+          )}
+        />
       );
     }
     return <img className="screenshot" src={baseline} alt="Baseline Screenshot" />;
@@ -40,21 +48,28 @@ const ImageSideBySideView = function (props) {
   const displaySideBySideScreenshot = (screenshot) => {
     if (!screenshot) {
       return (
-        <div className="alert alert-primary" role="alert">
-          <span>
-            <i className="fas fa-spinner fa-pulse fa-2x" />
-            <span> Retrieving screenshot.</span>
-          </span>
-        </div>
+        <Message
+          type="info"
+          message={(
+            <span>
+              <i className="fas fa-spinner fa-pulse fa-2x" />
+              <FormattedMessage id="common.component.screenshot-view.tabs.side-by-side.message.retrieving-screenshot" />
+            </span>
+          )}
+        />
       );
     }
     if (screenshot === 'ERROR') {
       return (
-        <div className="alert alert-danger" role="alert">
-          <span>
-            Unable to retrieve image. Please refresh the page and try again.
-          </span>
-        </div>
+        <Message
+          type="warning"
+          message={(
+            <span>
+              <i className="fas fa-spinner fa-pulse fa-2x" />
+              <FormattedMessage id="common.component.screenshot-view.tabs.side-by-side.message.retrieving-screenshot-error" />
+            </span>
+          )}
+        />
       );
     }
     return <img className="screenshot" src={screenshot} alt="Screenshot" />;
@@ -62,11 +77,11 @@ const ImageSideBySideView = function (props) {
 
   return (
     isBaseline(currentScreenshotDetails._id) ? (
-      <Table>
+      <Table className="baseline-compare-table">
         <tbody>
           <tr>
-            <td colSpan="100%" className="sbs-header">
-              Current Image (and Baseline)
+            <td colSpan="100%" className="baseline-compare-header">
+              <FormattedMessage id="common.component.screenshot-view.tabs.side-by-side.label.current-image-baseline" />
             </td>
           </tr>
           <tr>
@@ -87,11 +102,11 @@ const ImageSideBySideView = function (props) {
         </tbody>
       </Table>
     ) : (
-      <Table>
+      <Table className="baseline-compare-table">
         <tbody>
           <tr>
-            <td colSpan="100%" className="sbs-header">
-              Current Image
+            <td colSpan="100%" className="baseline-compare-header">
+              <FormattedMessage id="common.component.screenshot-view.tabs.side-by-side.label.current-image" />
             </td>
           </tr>
           <tr>
@@ -111,9 +126,9 @@ const ImageSideBySideView = function (props) {
           </tr>
           {
             currentBaseLineDetails ? ([
-              <tr key="title" className="sbs-header">
+              <tr key="title" className="baseline-compare-header">
                 <td colSpan="100%">
-                  Baseline
+                  <FormattedMessage id="common.component.screenshot-view.tabs.side-by-side.label.baseline" />
                 </td>
               </tr>,
               <tr key="baseline-image">

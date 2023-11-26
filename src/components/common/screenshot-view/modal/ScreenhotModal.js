@@ -1,5 +1,6 @@
 import React from 'react';
 import Modal from 'react-bootstrap/Modal';
+import { FormattedMessage } from 'react-intl';
 import ScreenshotView from '../ScreenshotView';
 
 const ScreenshotModal = function (props) {
@@ -17,7 +18,9 @@ const ScreenshotModal = function (props) {
     // eslint-disable-next-line react/jsx-props-no-spreading
     <Modal show={showModal} onHide={closeModal} dialogClassName="screenshot-modal" {...props}>
       <Modal.Header closeButton>
-        <Modal.Title>Screenshot Viewer</Modal.Title>
+        <Modal.Title>
+          <FormattedMessage id="common.component.screenshot-view.header" />
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <ScreenshotView

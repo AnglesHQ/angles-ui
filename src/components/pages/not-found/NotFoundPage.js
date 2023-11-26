@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import { Panel } from 'rsuite';
 import Message from '../../common/Message';
 
@@ -11,9 +12,16 @@ const NotFoundPage = function () {
         type="warning"
         message={(
           <span>
-            Oops, we were unable to find the &quot;Angle&quot; you were looking for. Click
-            <a href="/" target="_self"> here </a>
-            to go back to home page.
+            <FormattedMessage
+              id="page.not-found.description"
+              values={{
+                homeLink: (
+                  <a href="/" target="_self">
+                    <FormattedMessage id="page.not-found.home-link-text" />
+                  </a>
+                ),
+              }}
+            />
           </span>
         )}
       />

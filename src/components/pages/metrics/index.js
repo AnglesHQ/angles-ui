@@ -8,7 +8,9 @@ const Page = function (props) {
   return (
     <Panel>
       <Breadcrumb>
-        <Breadcrumb.Item href="/">Home</Breadcrumb.Item>
+        <Breadcrumb.Item href="/">
+          <FormattedMessage id="page.home.bread-crumb" />
+        </Breadcrumb.Item>
         <Breadcrumb.Item>
           <FormattedMessage id="page.metrics.bread-crumb" />
         </Breadcrumb.Item>

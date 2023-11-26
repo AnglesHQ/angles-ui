@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
+import { FormattedMessage, useIntl } from 'react-intl';
 import {
   Col,
   Grid,
@@ -17,8 +18,10 @@ import SuiteTable from '../../common/test-suite/SuiteTable';
 import { ExecutionStateProvider } from '../../../context/ExecutionStateContext';
 import { useConstructor } from '../../../utility/GeneralUtilities';
 import CurrentScreenshotContext from '../../../context/CurrentScreenshotContext';
+import Message from '../../common/Message';
 
 const SummaryPage = function () {
+  const intl = useIntl();
   const location = useLocation();
   const [limit] = useState(30);
   const [currentSkip] = useState(0);
@@ -109,12 +112,15 @@ const SummaryPage = function () {
 
   return (
     (executions.length === 0 || suiteResult === null) ? (
-      <div className="alert alert-primary" role="alert">
-        <span>
-          <i className="fas fa-spinner fa-pulse fa-2x" />
-          <span> Retrieving executions.</span>
-        </span>
-      </div>
+      <Message
+        type="info"
+        message={(
+          <span>
+            <i className="fas fa-spinner fa-pulse fa-2x" />
+            <FormattedMessage id="page.test-execution-history.messages.retrieving-executions" />
+          </span>
+        )}
+      />
     ) : (
       <div>
         <Grid fluid>
@@ -128,16 +134,27 @@ const SummaryPage = function () {
                   </div>
                 )}
               >
-                {`Suite: ${executions[0].suite}`}
+                <span>
+                  <FormattedMessage id="page.test-execution-history.header.suite" />
+                </span>
+                <span>: </span>
+                <span>{executions[0].suite}</span>
               </Panel>
             </Col>
           </Row>
           <Row gutter={30} className="test-run-row">
             <Col xs={12}>
-              <TestExecutionsResultPieChart executions={executions} />
+              <TestExecutionsResultPieChart
+                title={intl.formatMessage({ id: 'page.test-execution-history.charts.execution-pie-chart.title' })}
+                executions={executions}
+              />
             </Col>
             <Col xs={12}>
-              <TestExecutionTimelineChart executions={executions} />
+              <TestExecutionTimelineChart
+                title={intl.formatMessage({ id: 'page.test-execution-history.charts.execution-timeline-chart.title' })}
+                yaxisTitle={intl.formatMessage({ id: 'page.test-execution-history.charts.execution-timeline-chart.yaxis-label' })}
+                executions={executions}
+              />
             </Col>
           </Row>
           <Row gutter={30} className="test-run-row">
@@ -155,7 +172,9 @@ const SummaryPage = function () {
         </Grid>
         <Modal show={showModal} onHide={closeModal} dialogClassName="screenshot-modal">
           <Modal.Header closeButton>
-            <Modal.Title>Screenshot Viewer</Modal.Title>
+            <Modal.Title>
+              <FormattedMessage id="common.component.screenshot-view.header" />
+            </Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <ScreenshotView

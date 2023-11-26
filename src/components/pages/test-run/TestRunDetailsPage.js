@@ -478,7 +478,9 @@ const TestRunDetailsPage = function (props) {
           </Grid>
           <Modal show={showModal} onHide={closeModal} dialogClassName="screenshot-modal">
             <Modal.Header closeButton>
-              <Modal.Title>Screenshot Viewer</Modal.Title>
+              <Modal.Title>
+                <FormattedMessage id="common.component.screenshot-view.header" />
+              </Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <ScreenshotView

@@ -33,9 +33,9 @@ const defaultOptions = {
     {
       seriesName: 'ExecutionTime',
       // opposite: true,
-      title: {
-        text: 'Execution Time (seconds)',
-      },
+      // title: {
+      //   text: 'Execution Time (seconds)',
+      // },
     },
   ],
   colors: ['#2485C1'],
@@ -60,8 +60,8 @@ const generateResultsData = (executions) => {
 };
 
 const TestExecutionTimelineChart = function (props) {
-  const title = 'Execution Times';
-  const { executions } = props;
+  const { executions, title, yaxisTitle } = props;
+  defaultOptions.yaxis.push({ title: { text: yaxisTitle } });
   const graphData = generateResultsData(executions);
   const { data, labels } = graphData;
   return (

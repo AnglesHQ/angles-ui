@@ -1,10 +1,13 @@
 import React, { useContext } from 'react';
 import { Button, Stack } from 'rsuite';
+import { FormattedMessage, useIntl } from 'react-intl';
 import Table from 'react-bootstrap/Table';
 import ScreenshotDetailsTable from '../ScreenshotDetailsTable';
 import CurrentScreenshotContext from '../../../../context/CurrentScreenshotContext';
+import Message from '../../Message';
 
 const CurrentImageView = function (props) {
+  const intl = useIntl();
   const [dynamicBaselineButtonEnabled, setDynamicBaselineButtonEnabled] = React.useState(true);
   const [deleteScreenshotButtonEnabled, setDeleteScreenshotButtonEnabled] = React.useState(true);
   const {
@@ -21,21 +24,27 @@ const CurrentImageView = function (props) {
   const displayScreenshot = (currentScreenshotToDisplay) => {
     if (!currentScreenshotToDisplay) {
       return (
-        <div className="alert alert-primary" role="alert">
-          <span>
-            <i className="fas fa-spinner fa-pulse fa-2x" />
-            Retrieving screenshot.
-          </span>
-        </div>
+        <Message
+          type="info"
+          message={(
+            <span>
+              <i className="fas fa-spinner fa-pulse fa-2x" />
+              <FormattedMessage id="common.component.screenshot-view.tabs.screenshot.message.retrieving-screenshot" />
+            </span>
+          )}
+        />
       );
     }
     if (currentScreenshotToDisplay === 'ERROR') {
       return (
-        <div className="alert alert-danger" role="alert">
-          <span>
-            Unable to retrieve image. Please refresh the page and try again.
-          </span>
-        </div>
+        <Message
+          type="warning"
+          message={(
+            <span>
+              <FormattedMessage id="common.component.screenshot-view.tabs.screenshot.message.retrieving-screenshot-error" />
+            </span>
+          )}
+        />
       );
     }
     return <img className="screenshot" src={currentScreenshotToDisplay} alt="Screenshot" />;
@@ -50,7 +59,9 @@ const CurrentImageView = function (props) {
           type="button"
           className="filter-submit-button"
         >
-          { !isBaseline(screenshotDetailsForButton._id) ? ('Make Baseline Image') : 'This is the Baseline Image'}
+          { !isBaseline(screenshotDetailsForButton._id) ? (
+            <FormattedMessage id="common.component.screenshot-view.tabs.screenshot.button.make-baseline-image" />
+          ) : <FormattedMessage id="common.component.screenshot-view.tabs.screenshot.button.is-baseline-image" />}
         </Button>
       );
     }
@@ -99,7 +110,7 @@ const CurrentImageView = function (props) {
                 type="button"
                 className="filter-submit-button"
               >
-                Generate Dynamic Baseline
+                <FormattedMessage id="common.component.screenshot-view.tabs.screenshot.button.generate-dynamic-baseline" />
               </Button>
               {
                 (
@@ -110,9 +121,9 @@ const CurrentImageView = function (props) {
                         disabled={!deleteScreenshotButtonEnabled}
                         type="button"
                         className="filter-submit-button"
-                        title="Only available for dynamic baselines that are not configured as a baseline."
+                        title={intl.formatMessage({ id: 'common.component.screenshot-view.tabs.screenshot.button.delete-screenshot-description' })}
                       >
-                        Delete Screenshot
+                        <FormattedMessage id="common.component.screenshot-view.tabs.screenshot.button.delete-screenshot" />
                       </Button>
                     ) : null
                 )

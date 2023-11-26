@@ -1,9 +1,11 @@
 import React, { useContext } from 'react';
+import { FormattedMessage } from 'react-intl';
 import { Container } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card';
 import Table from 'react-bootstrap/Table';
 import Moment from 'react-moment';
 import CurrentScreenshotContext from '../../../../context/CurrentScreenshotContext';
+import Message from '../../Message';
 
 const ScreenshotHistoryView = function (props) {
   const {
@@ -52,17 +54,28 @@ const ScreenshotHistoryView = function (props) {
 
   return (
     (currentScreenshotHistory == null) ? (
-      <div className="alert alert-primary" role="alert">
-        <span>
-          <i className="fas fa-spinner fa-pulse fa-2x" />
-          <span> Loading history.</span>
-        </span>
-      </div>
+      <Message
+        type="info"
+        message={(
+          <span>
+            <i className="fas fa-spinner fa-pulse fa-2x" />
+            <FormattedMessage id="common.component.screenshot-view.tabs.history.message.loading-history" />
+          </span>
+        )}
+      />
     ) : (
       <Container className="card-deck-history">
         {getScreenshotArray().map((screenshot) => [
           <Card key={screenshot._id} className={`screenshotCard ${isSelectedId(screenshot._id) ? 'card-active' : ''}`}>
-            { isBaseline(screenshot._id) ? (<div className="card-img-overlay baseline-overlay"><p>baseline</p></div>) : null }
+            {
+              isBaseline(screenshot._id) ? (
+                <div className="card-img-overlay baseline-overlay">
+                  <p>
+                    <FormattedMessage id="common.component.screenshot-view.tabs.history.label.baseline" />
+                  </p>
+                </div>
+              ) : null
+            }
             { !isSelectedId(screenshot._id) ? (
               <a title="Go to screenshot" href={`/test-run?buildId=${screenshot.build}&loadScreenshotId=${screenshot._id}`}>
                 <Card.Img className="card-image-history" variant="top" src={`${grabThumbnail(screenshot)}`} />
@@ -75,13 +88,19 @@ const ScreenshotHistoryView = function (props) {
                     <tbody>
                       <tr>
                         <td>
-                          <strong>View: </strong>
+                          <span className="card-label">
+                            <FormattedMessage id="common.component.screenshot-view.tabs.history.label.view" />
+                          </span>
+                          <span>: </span>
                           <span>{` ${screenshot.view}`}</span>
                         </td>
                       </tr>
                       <tr>
                         <td>
-                          <strong>Date: </strong>
+                          <span className="card-label">
+                            <FormattedMessage id="common.component.screenshot-view.tabs.history.label.date" />
+                          </span>
+                          <span>: </span>
                           <Moment format="DD-MM-YYYY HH:mm:ss">
                             {screenshot.timestamp}
                           </Moment>
@@ -89,13 +108,19 @@ const ScreenshotHistoryView = function (props) {
                       </tr>
                       <tr>
                         <td>
-                          <strong>Resolution: </strong>
+                          <span className="card-label">
+                            <FormattedMessage id="common.component.screenshot-view.tabs.history.label.resolution" />
+                          </span>
+                          <span>: </span>
                           <span>{`${screenshot.width} x ${screenshot.height}`}</span>
                         </td>
                       </tr>
                       <tr>
                         <td>
-                          <strong>Platform: </strong>
+                          <span className="card-label">
+                            <FormattedMessage id="common.component.screenshot-view.tabs.history.label.platform" />
+                          </span>
+                          <span>: </span>
                           { screenshot.platform ? (screenshot.platform.platformName) : '' }
                           { screenshot.platform && screenshot.platform.platformVersion ? (screenshot.platform.platformVersion) : '' }
                           { screenshot.platform && screenshot.platform.browserName ? (` (${screenshot.platform.browserName}${screenshot.platform.browserVersion ? (` ${screenshot.platform.browserVersion}`) : ''})`) : '' }
@@ -105,7 +130,10 @@ const ScreenshotHistoryView = function (props) {
                         screenshot.platform && screenshot.platform.deviceName ? (
                           <tr>
                             <td>
-                              <strong>Device: </strong>
+                              <span className="card-label">
+                                <FormattedMessage id="common.component.screenshot-view.tabs.history.label.device" />
+                              </span>
+                              <span>: </span>
                               {` ${screenshot.platform.deviceName} `}
                             </td>
                           </tr>
