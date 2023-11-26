@@ -1,6 +1,6 @@
 import { STORE_BUILDS } from './buildActions';
 
-export const buildReducer = (state = {}, action) => {
+export const buildReducer = (state = {}, action = {}) => {
   const { type, payload } = action;
   switch (type) {
     case STORE_BUILDS: {

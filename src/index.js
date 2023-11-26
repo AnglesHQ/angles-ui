@@ -1,23 +1,47 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { IntlProvider } from 'react-intl';
+import Cookies from 'js-cookie';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { BrowserRouter as Router } from 'react-router-dom';
-
-import './index.css';
-// eslint-disable-next-line import/extensions
-import '@fortawesome/fontawesome-free/js/all.js';
+import messagesEN from './translations/en.json';
+import messagesNL from './translations/nl.json';
 
 import App from './containers/App';
 import * as serviceWorker from './serviceWorker';
 import store from './redux/store';
 
-ReactDOM.render(
-  <Router>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </Router>,
-  document.getElementById('root'),
+const domNode = document.getElementById('root');
+const root = createRoot(domNode);
+
+const messages = {
+  en: messagesEN,
+  nl: messagesNL,
+};
+let language = navigator.language.split(/[-_]/)[0];
+const cookieLanguage = Cookies.get('language');
+if (cookieLanguage) {
+  language = cookieLanguage;
+}
+language = language in messages ? language : 'en';
+Cookies.set('language', language);
+
+const theme = Cookies.get('theme');
+if (theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+}
+
+root.render(
+  <Provider store={store}>
+    <BrowserRouter>
+      <IntlProvider
+        locale={navigator.language}
+        messages={messages[language]}
+      >
+        <App />
+      </IntlProvider>
+    </BrowserRouter>
+  </Provider>,
 );
 
 // If you want your app to work offline and load faster, you can change

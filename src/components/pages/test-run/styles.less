@@ -1,0 +1,158 @@
+
+.test-run-download-icon {
+  position: relative;
+  .test-run-download-button {
+    position: absolute;
+    right: 0;
+    z-index: 2;
+  }
+}
+
+.test-run-row {
+  background-color: var(--main-panel-background);
+  border-radius: 5px;
+  margin: 1em;
+  padding: 1em;
+}
+
+.test-run-header {
+  color: var(--main-panel-font-color);
+  background-color: var(--main-panel-background);
+  max-width: 1300px;
+  margin: auto;
+  padding-bottom: 0px;
+
+  .rs-panel-header {
+    padding: 0px;
+  }
+
+  .rs-panel-body {
+    padding-bottom: 0px;
+  }
+
+  .test-run-header-panel {
+    background-color: var(--main-panel-background);
+    color: var(--main-panel-font-color);
+    font-size: 3em;
+    font-weight: bold;
+    text-align: center;
+
+    .test-run-end-icon-fail {
+      color: var(--fail-color);
+      margin-right: 10px;
+      font-size: 35px;
+    }
+    .test-run-end-icon-pass {
+      color: var(--pass-color);
+      margin-right: 10px;
+      font-size: 35px;
+    }
+    .test-run-end-icon-error {
+      color: var(--error-color);
+      margin-right: 10px;
+      font-size: 35px;
+    }
+    .test-run-end-icon-info {
+      color: var(--info-color);
+      margin-right: 10px;
+      font-size: 35px;
+    }
+    .test-run-lock-icon {
+        position: relative;
+        right: 10px;
+        color: red;
+        top: 10px;
+    }
+  }
+
+  .test-run-steps {
+    padding-top: 10px;
+    padding-bottom: 20px;
+    //border-top: 1px solid #8d8d8d54;
+    width: 90%;
+    margin: auto;
+
+    .rs-steps-item-description {
+      color: var(--main-panel-font-color);
+      margin-left: -40px;
+    }
+    .rs-steps-item-title {
+      color: var(--main-panel-font-color);
+    }
+    .test-run-step-icon {
+      font-size: 28px;
+    }
+    .test-run-duration {
+      .rs-steps-item-description {
+        font-size: 1.7em;
+      }
+    }
+  }
+
+  .test-run-details-grid {
+    padding: 10px 0  20px 0;
+    font-size: 1.3em;
+    border-bottom: 1px solid #8d8d8d54;
+
+    .test-run-details-grid-item > span {
+      font-weight: bold;
+    }
+    :nth-child(2) {
+      text-align: center;
+    }
+    :last-child {
+      text-align: right;
+    }
+
+    .test-run-details-icon {
+      font-size: 2em;
+      margin-right: 10px;
+      color: #3498ff;
+    }
+
+    .test-run-details-icon-disabled {
+      font-size: 2em;
+      color: grey;
+    }
+  }
+
+  .test-run-details-artifact-panel {
+    background-color: var(--body-background);
+    padding: 10px 0  20px 0;
+    font-size: 1.3em;
+
+    .build-artifacts-table {
+      width: 100%;
+    }
+  }
+
+}
+
+.test-run-icons-grid {
+  padding: 15px 0 0 0;
+  width: 150px;
+
+  .test-run-details-icon {
+    font-size: 1.7em;
+    color: #3498ff;
+    cursor: pointer;
+  }
+
+  .test-run-details-icon-disabled {
+    font-size: 1.7em;
+    color: grey;
+    cursor: not-allowed;
+  }
+
+  .test-run-details-lock-icon {
+    position: relative;
+    top: -2px;
+  }
+
+  .test-run-details-unlock-icon {
+    position: relative;
+    top: -2px;
+    color: grey;
+  }
+
+}
