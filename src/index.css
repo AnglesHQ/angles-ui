@@ -17,4 +17,6 @@ code {
   padding-right: 80px;
   padding-top: 35px;
   padding-bottom: 60px;
+  max-width: 1500px;
+  min-width: 1100px;
 }

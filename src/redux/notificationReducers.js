@@ -11,7 +11,7 @@ export const notificationReducer = (state = {
   currentErrorMessage: undefined,
   currentInfoMessage: undefined,
   currentLoaderMessage: undefined,
-}, action) => {
+}, action = {}) => {
   const { type, payload } = action;
   switch (type) {
     case STORE_CURRENT_ERROR_MESSAGE: {

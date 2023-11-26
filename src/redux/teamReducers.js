@@ -4,7 +4,7 @@ export const teamsReducer = (state = {
   teams: {},
   currentTeam: undefined,
   teamsError: undefined,
-}, action) => {
+}, action = {}) => {
   const { type, payload } = action;
   switch (type) {
     case STORE_CURRENT_TEAM: {

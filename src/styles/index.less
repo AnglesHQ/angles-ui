@@ -1,0 +1,377 @@
+@import "rsuite/dist/rsuite.css";
+@import '../components/pages/about/styles.less';
+@import '../components/pages/dashboard/styles.less';
+@import '../components/pages/test-run/styles.less';
+@import '../components/pages/test-run-compare/styles.less';
+@import '../components/pages/metrics/styles.less';
+@import '../components/pages/not-found/styles.less';
+@import '../components/pages/test-execution-history/styles.less';
+@import '../components/pages/screenshot-library/styles.less';
+@import '../components/common/execution-timeline/styles.less';
+@import '../components/common/screenshot-view/styles.less';
+@import '../components/common/test-suite/styles.less';
+@import '../components/common/results-bar/styles.less';
+
+:root {
+
+    //master palette
+    --master-color-1: hsl(0, 0%, 96%);
+    --master-color-2: hsl(233, 17%, 91%);
+    --master-color-3: hsl(28, 87%, 52%);
+
+    // TODO: override with hsl relative colors once supported by most browsers
+    --master-color-2-relative: hsl(233, 17%, 75%);
+    --master-color-3-relative: hsl(27, 63%, 46%);
+
+    --master-font-color-1: hsl(0, 0%, 0%);
+    --master-font-color-2: hsl(0, 0%, 100%);
+    --master-font-color-3: hsl(0, 0%, 34%);
+
+    --master-icon-color: hsl(210, 100%, 60%);
+
+
+    // body
+    --body-background: var(--master-color-1);
+    // nav
+    --nav-background: var(--master-color-2);
+    --nav-font-color: var(--master-font-color-3);
+    --nav-hover-color: var(--master-color-3);
+    --nav-hover-font-color: var(--master-font-color-2);
+
+    // trend box
+    --trend-box-font-color: var(--master-font-color-2);
+
+    //main panel
+    --main-panel-background: var(--master-color-2);
+    --main-panel-font-color: var(--master-font-color-1);
+    --main-panel-secondary-font-color: var(--master-font-color-2);
+    --main-panel-icon-color: var(--master-icon-color);
+
+    // sub panels
+    --sub-panel-background: var(--master-color-1);
+    --sub-panel-font-color: var(--master-font-color-1);
+    --sub-panel-secondary-font-color: var(--master-font-color-2);
+    --sub-panel-icon-color: var(--master-icon-color);
+
+    // tables
+    --main-table-header-background: var(--master-color-3);
+    --main-table-header-font-color: var(--master-font-color-2);
+    --main-table-body-background: var(--master-color-1);
+    --main-table-body-font-color: var(--master-font-color-1);
+    --main-table-body-secondary-font-color: var(--master-font-color-2);
+
+    // sub tables
+    --sub-table-header-background: var(--master-color-3);
+    --sub-table-header-font-color: var(--master-font-color-1);
+    --sub-table-body-background: var(--master-color-1);
+    --sub-table-body-font-color: var(--master-font-color-1);
+    --sub-table-body-secondary-font-color: var(--master-font-color-3);
+
+    // tabs
+    --tabs-overall-background: var(--master-color-2);
+    --active-tab-background: var(--master-color-2);
+    --active-tab-font-color: var(--master-font-color-1);
+    --inactive-tab-background: var(--master-color-2-relative);
+    --inactive-tab-font-color: var(--master-font-color-1);
+    --active-tab-font-color-hover: var(--master-font-color-2);
+
+    // carousel
+    --carousel-background: var(--master-color-2);
+    --carousel-font-color: var(--master-font-color-2);
+    --carousel-active-font-color: var(--master-font-color-1);
+    --carousel-active-border-color: var(--master-color-3);
+
+    // buttons
+    --button-background: var(--master-color-3);
+    --button-font-color: var(--master-font-color-2);
+    --button-hover-background: var(--master-color-3);
+    --button-hover-font-color: var(--master-font-color-2);
+    --button-deactived-background: var(--master-color-2);
+    --button-deactivated-font-color: var(--master-font-color-3);
+
+    // result colors
+    --pass-color: #5fad6f;
+    --fail-color: #fc6571;
+    --skipped-color: #2485C1;
+    --error-color: #f5b83f;
+
+    // link colors
+    --link-color-1: #ee8308;
+    --link-color-1-focus: #f1b87f;
+    --link-color-1-disabled: grey;
+
+}
+
+ //TODO: add dark mode colors
+//@media (prefers-color-scheme: dark) {
+:root[data-theme="dark"] {
+    //master palette
+    --master-color-1: hsl(228, 16%, 24%);
+    --master-color-2: hsl(233, 17%, 21%);
+    --master-color-3: hsl(28, 87%, 52%);
+
+    // TODO: override with hsl relative colors once supported by most browsers
+    --master-color-2-relative: hsl(240, 9%, 39%);
+    --master-color-3-relative: hsl(27, 63%, 46%);
+
+    --master-font-color-1: hsl(240, 9%, 96%);
+    --master-font-color-2: hsl(0, 23%, 97%);
+    --master-font-color-3: hsl(0, 0%, 71%);
+
+    --master-icon-color: hsl(210, 100%, 60%);
+
+}
+//}
+
+body {
+    background: var(--body-background);
+}
+
+.main-sidebar {
+    padding-top: 25px;
+    background-color: var(--nav-background);
+    display: flex;
+    flexDirection: 'column';
+    min-height: 100vh;
+
+    .sidebar-header {
+        padding: 3px 2px 3px 5px;
+        height: 60px;
+        overflow: hidden;
+        white-space: nowrap;
+
+        .sidebar-angles-icon {
+            height: 50px;
+            display: inline;
+            margin-top: -3px;
+        }
+
+        .sidebar-angles-text-icon {
+            height: 55px;
+            padding-left: 6px;
+            vertical-align: center;
+            display: inline;
+        }
+    }
+
+    .rs-sidenav-item-icon {
+        height: 25px;
+        width: 25px;
+        position: absolute;
+        left: 19px;
+        top: 14px;
+    }
+
+    .rs-sidenav-item {
+        color: var(--nav-font-color);
+        font-weight: bolder;
+    }
+
+    .rs-sidenav-item:hover {
+        color: var(--nav-hover-font-color);
+        background-color: var(--nav-hover-color);
+    }
+}
+
+// modifying the default rsuite table
+.rs-table {
+    background-color: transparent;
+    border-bottom: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+
+    .rs-table-scrollbar {
+        //background-color: var(--main-table-header-background);
+        background: var(--main-table-header-background);
+
+    }
+
+    .rs-table-row-header {
+        background-color: transparent;
+
+        .rs-table-cell-content {
+            background-color: var(--main-table-header-background);
+            color: var(--main-table-header-font-color);
+            opacity: 0.8;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .rs-table-cell-first {
+            border-top-left-radius: 7px;
+        }
+        .rs-table-cell-last {
+            border-top-right-radius: 7px;
+        }
+    }
+
+    .rs-table-row {
+        //border-bottom: 2px solid var(--master-color-5);
+        //background-color: var(--master-color-5);
+
+        .rs-table-cell {
+            background-color: transparent;
+            border-bottom: none;
+        }
+    }
+
+    //.rs-table-row:hover {
+    //    background-color: transparent !important;
+    //}
+    .rs-table-cell-rowspan {
+        border-bottom: 0px !important;
+    }
+
+    .rs-table-body-row-wrapper {
+        color: var(--main-table-body-font-color);
+
+        .rs-table-cell {
+            background-color: var(--main-table-body-background);
+            font-size: 1.1em;
+        }
+
+        .rs-table-row:last-child {
+            .rs-table-cell-first {
+                border-bottom-left-radius: 7px;
+            }
+
+            .rs-table-cell-last {
+                border-bottom-right-radius: 7px;
+            }
+        }
+    }
+}
+
+// change select picker default
+.rs-picker {
+    padding-right: 5px;
+
+    .rs-badge-content {
+        top: 9px;
+        right: -4px;
+    }
+
+    .rs-picker-toggle:hover {
+        background-color: var(--main-panel-background);
+    }
+
+    .rs-picker-toggle-value {
+        color: var(--font-color-4) !important;
+        font-size: 1em;
+    }
+
+}
+
+// change pagination
+.rs-pagination-btn {
+    color: var(--link-color-1) !important;
+}
+
+.rs-pagination-btn-active {
+    border: 1px solid var(--link-color-1) !important;
+}
+
+.rs-pagination-btn:disabled {
+    color: var(--link-color-1-disabled) !important;
+}
+
+
+// change the default rsuite link
+a {
+    color: var(--link-color-1);
+    text-decoration: none;
+}
+
+a:hover, a:focus {
+    color: var(--link-color-1-focus);
+    text-decoration: none;
+}
+a:visited {
+    text-decoration: none;
+}
+a:active {
+    text-decoration: none;
+}
+
+.filter-submit-button {
+    color: var(--button-font-color);
+    background-color: var(--button-background);
+}
+
+.filter-submit-button:hover  {
+    color: var(--button-hover-font-color);
+    background-color: var(--button-hover-background);
+}
+
+.filter-submit-button:focus  {
+    outline:none;
+    background-color: var(--button-background);
+}
+
+
+.top-menu-stack {
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    background: var(--main-panel-background);
+    padding: 4px 4px 4px 15px;
+    border-radius: 6px;
+}
+
+.chart-panel {
+    background-color: var(--main-panel-background);
+
+    .rs-panel-header {
+        color: var(--main-panel-font-color);
+        font-weight: bold;
+    }
+}
+
+.tabs-container {
+    margin-left: 10px;
+    position: relative;
+    //top: 1px;
+
+    .nav-tabs {
+        border-bottom: 0px;
+        margin-left: 20px;
+
+        .nav-item {
+            margin-bottom: 0px;
+        }
+
+        .nav-link {
+            border: 0px;
+            position: relative;
+            //top: 1px;
+            background-color: var(--inactive-tab-background);
+            color: var(--inactive-tab-font-color);
+
+        }
+
+        .nav-link:hover {
+            border-bottom: 0px;
+            color: var(--active-tab-font-color-hover)
+        }
+
+        .nav-link.active {
+            border: 0px;
+            font-weight: bold;
+            background-color: var(--active-tab-background);
+            color: var(--active-tab-font-color);
+        }
+
+        .nav-link:focus {
+            outline: none;
+        }
+
+    }
+
+    .tab-content {
+        //border: 1px solid #dee2e6;
+        border-radius: 10px;
+        background: var(--tabs-overall-background);
+        padding: 10px;
+    }
+}
