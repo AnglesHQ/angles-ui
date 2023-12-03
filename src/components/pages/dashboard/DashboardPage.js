@@ -17,12 +17,11 @@ import {
   Dropdown,
   IconButton,
 } from 'rsuite';
-import { BsLockFill } from 'react-icons/bs';
+import { BsLockFill, BsFilterSquare } from 'react-icons/bs';
 import TableColumnIcon from '@rsuite/icons/TableColumn';
 import MenuIcon from '@rsuite/icons/Menu';
 import ReloadIcon from '@rsuite/icons/Reload';
 import RemindFillIcon from '@rsuite/icons/RemindFill';
-import FunnelIcon from '@rsuite/icons/Funnel';
 import WaitIcon from '@rsuite/icons/Wait';
 import ReviewPassIcon from '@rsuite/icons/ReviewPass';
 import DocPassIcon from '@rsuite/icons/DocPass';
@@ -74,16 +73,17 @@ const FilterMenu = function (props) {
     <MultiCascader
       style={{ width: 50 }}
       uncheckableItemValues={[1, 2]}
+      className="dashboard-filter-button"
       placeholder={(
         <span>
-          <FunnelIcon />
+          <BsFilterSquare className="funnel-icon" />
         </span>
       )}
       renderValue={(value, selectedItems) => (
         <span>
           <span style={{ color: '#575757' }}>
             <Badge content={selectedItems.length}>
-              <FunnelIcon />
+              <BsFilterSquare className="funnel-icon" />
             </Badge>
           </span>
         </span>

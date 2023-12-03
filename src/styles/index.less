@@ -89,6 +89,11 @@
     --button-deactived-background: var(--master-color-2);
     --button-deactivated-font-color: var(--master-font-color-3);
 
+    // select picker
+    --select-picker-background: var(--master-color-2);
+    --select-picker-font-color: var(--master-font-color-1);
+    --select-picker-label-color: var(--master-color-3);
+
     // result colors
     --pass-color: #5fad6f;
     --fail-color: #fc6571;
@@ -116,7 +121,7 @@
 
     --master-font-color-1: hsl(240, 9%, 96%);
     --master-font-color-2: hsl(0, 23%, 97%);
-    --master-font-color-3: hsl(0, 0%, 71%);
+    --master-font-color-3: hsl(0, 0%, 84%);
 
     --master-icon-color: hsl(210, 100%, 60%);
 
@@ -251,6 +256,22 @@ body {
 // change select picker default
 .rs-picker {
     padding-right: 5px;
+
+    .rs-picker-toggle, .rs-picker-toggle-active, .rs-picker-default {
+        background: var(--select-picker-background) !important;
+        color: var(--select-picker-font-color);
+        border: none;
+    }
+
+    .rs-picker-toggle:hover, .rs-picker-toggle:focus, .rs-picker-toggle:focus-visible {
+        background: var(--select-picker-background) !important;
+        color: var(--select-picker-font-color);
+        border: none;
+    }
+
+    .rs-picker-toggle-label {
+        color: var(--select-picker-label-color);
+    }
 
     .rs-badge-content {
         top: 9px;
