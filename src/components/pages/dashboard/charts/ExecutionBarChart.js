@@ -3,7 +3,7 @@ import Chart from 'react-apexcharts';
 import { Panel, Stack } from 'rsuite';
 import { useIntl } from 'react-intl';
 import moment from 'moment';
-import { getBuildDurationInSeconds } from '../../../../utility/TimeUtilities';
+// import { getBuildDurationInSeconds } from '../../../../utility/TimeUtilities';
 
 const defaultOptions = {
   chart: {
@@ -70,7 +70,7 @@ const generateResultsData = (builds) => {
     SKIPPED: [],
     ERROR: [],
     FAIL: [],
-    executionTimes: [],
+    // executionTimes: [],
   };
 
   const buildsToReverse = [...builds];
@@ -85,7 +85,7 @@ const generateResultsData = (builds) => {
     results.SKIPPED.push(SKIPPED || 0);
     results.ERROR.push(ERROR || 0);
     results.FAIL.push(FAIL || 0);
-    results.executionTimes.push(getBuildDurationInSeconds(build));
+    // results.executionTimes.push(getBuildDurationInSeconds(build));
     graphData.labels.push(moment(build.start).format('YYYY-MM-DD hh:mm:ss'));
   });
   graphData.data.push(
@@ -109,11 +109,11 @@ const generateResultsData = (builds) => {
       data: results.FAIL,
       type: 'column',
     },
-    {
-      name: intl.formatMessage({ id: 'page.dashboard.chart.barchart.execution-time-seconds' }),
-      data: results.executionTimes,
-      type: 'line',
-    },
+    // {
+    //   name: intl.formatMessage({ id: 'page.dashboard.chart.barchart.execution-time-seconds' }),
+    //   data: results.executionTimes,
+    //   type: 'line',
+    // },
   );
   return graphData;
 };

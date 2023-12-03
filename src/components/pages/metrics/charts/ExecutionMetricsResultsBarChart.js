@@ -91,8 +91,7 @@ const generateMetricsResultsData = (metrics) => {
 
 const ExecutionMetricsResultsBarChart = function (props) {
   const { metrics, title, yaxisTitle } = props;
-  const config = { title: { text: yaxisTitle } };
-  defaultOptions.yaxis.push(config);
+  defaultOptions.yaxis = [{ title: { text: yaxisTitle } }];
   const { data, labels } = generateMetricsResultsData(metrics);
   return (
     <Panel

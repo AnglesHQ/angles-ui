@@ -223,7 +223,7 @@ const App = function (props) {
           </Sidenav>
         </Affix>
       </Sidebar>
-      <Container>
+      <Container className="main-container">
         <Content className="main-content">
           <main>
             {

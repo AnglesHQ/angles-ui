@@ -70,7 +70,7 @@ const generateMetricsResultsData = (metrics) => {
 
 const PhaseMetricsResultsBarChart = function (props) {
   const { metrics, title, yaxisTitle } = props;
-  defaultOptions.yaxis.push({ title: { text: yaxisTitle } });
+  defaultOptions.yaxis = [{ title: { text: yaxisTitle } }];
   const graphData = generateMetricsResultsData(metrics);
   const { data, labels } = graphData;
   return (
