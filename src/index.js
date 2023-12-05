@@ -5,6 +5,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import messagesEN from './translations/en.json';
+import messagesTH from './translations/th.json';
 import messagesNL from './translations/nl.json';
 
 import App from './containers/App';
@@ -17,6 +18,7 @@ const root = createRoot(domNode);
 const messages = {
   en: messagesEN,
   nl: messagesNL,
+  th: messagesTH,
 };
 let language = navigator.language.split(/[-_]/)[0];
 const cookieLanguage = Cookies.get('language');
