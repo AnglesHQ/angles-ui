@@ -178,7 +178,7 @@
   "common.component.screenshot-view.tabs.history.label.platform": "แพลตฟอร์ม",
   "common.component.screenshot-view.tabs.history.label.device": "อุปกรณ์",
 
-  "common.component.screenshot-view.tabs.side-by-side.label.current-image-baseline": "ภาพปัจจุบัน (และพื้นฐาน)"
+  "common.component.screenshot-view.tabs.side-by-side.label.current-image-baseline": "ภาพปัจจุบัน (และพื้นฐาน)",
   "common.component.screenshot-view.tabs.side-by-side.label.current-image": "ภาพปัจจุบัน",
   "common.component.screenshot-view.tabs.side-by-side.label.baseline": "พื้นฐาน",
   "common.component.screenshot-view.tabs.side-by-side.message.retrieving-baseline-screenshot": "กำลังโหลดภาพพื้นฐาน",
