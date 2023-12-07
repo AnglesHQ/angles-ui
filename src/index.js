@@ -15,10 +15,19 @@ const cookieLanguage = Cookies.get('language');
 if (cookieLanguage) {
   language = cookieLanguage;
 }
-const messages = {};
-messages.en = await import('./translations/en.json');
-messages[language] = await import(`./translations/${language}.json`);
-language = language in messages ? language : 'en';
+const messages = await (async () => {
+  const msgs = {};
+  await import(`./translations/${language}.json`)
+    .catch(() => {
+      language = 'en';
+      return import('./translations/en.json');
+    })
+    .then((fileContent) => {
+      msgs[language] = { ...fileContent };
+    });
+  return msgs;
+})();
+
 Cookies.set('language', language);
 
 const theme = Cookies.get('theme');
