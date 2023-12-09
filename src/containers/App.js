@@ -51,7 +51,7 @@ const App = function (props) {
   const location = useLocation();
   const teamRequests = new TeamRequests(axios);
   const environmentRequests = new EnvironmentRequests(axios);
-  const [expand, setExpand] = useState(true);
+  const [expand, setExpand] = useState(Cookies.get('expand') === undefined || (Cookies.get('expand') === 'true'));
   const {
     teams,
     currentTeam,
@@ -156,6 +156,11 @@ const App = function (props) {
     Cookies.set('theme', theme);
   };
 
+  const toggleMenu = () => {
+    Cookies.set('expand', !expand, { expires: 365 });
+    setExpand(!expand);
+  };
+
   return (
     <Container>
       <Sidebar
@@ -218,7 +223,7 @@ const App = function (props) {
             </Sidenav.Body>
             <Navbar appearance="subtle" className="nav-toggle">
               <Nav pullRight>
-                <Nav.Item style={{ width: 56, textAlign: 'center' }} onClick={() => setExpand(!expand)}>
+                <Nav.Item style={{ width: 56, textAlign: 'center' }} onClick={() => toggleMenu()}>
                   {expand ? <AngleLeftIcon /> : <AngleRightIcon />}
                 </Nav.Item>
               </Nav>
