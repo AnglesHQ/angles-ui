@@ -183,7 +183,7 @@ const TestRunCompareTable = function (props) {
     };
     testRunCompareBuilds.forEach((build) => {
       names[build._id] = build.name;
-      startDates[build._id] = <Moment format="DD-MM-YYYY HH:mm">{build.start}</Moment>;
+      startDates[build._id] = <Moment utc format="DD-MM-YYYY HH:mm">{build.start}</Moment>;
       environments[build._id] = build.environment.name;
     });
     buildDetailsRows.push(names);

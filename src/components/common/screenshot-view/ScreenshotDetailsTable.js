@@ -37,7 +37,7 @@ const ScreenshotDetailsTable = function (props) {
           </span>
           <span>: </span>
           <span>
-            <Moment format="DD-MM-YYYY HH:mm:ss">
+            <Moment utc format="DD-MM-YYYY HH:mm:ss">
               {currentScreenshotDetails.timestamp}
             </Moment>
           </span>
@@ -50,7 +50,7 @@ const ScreenshotDetailsTable = function (props) {
               </span>
               <span>: </span>
               <span>
-                <Moment format="DD-MM-YYYY HH:mm:ss">
+                <Moment utc format="DD-MM-YYYY HH:mm:ss">
                   {currentBaseLineDetails.screenshot.timestamp}
                 </Moment>
               </span>

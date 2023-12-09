@@ -94,12 +94,12 @@ const DateCell = function (props) {
         <div>
           <div>
             <span>
-              <Moment format="DD MMM">
+              <Moment utc format="DD MMM">
                 {build.start}
               </Moment>
             </span>
             <span> </span>
-            <Moment format="HH:mm">
+            <Moment utc format="HH:mm">
               {build.start}
             </Moment>
           </div>
@@ -123,7 +123,7 @@ const ResultCell = function (props) {
   const { rowData: build } = props;
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading
-    <Cell {...props}>
+    <Cell {...props} className="builds-table-result-cell">
       <ExecutionsResultsBar result={build.result} />
     </Cell>
   );

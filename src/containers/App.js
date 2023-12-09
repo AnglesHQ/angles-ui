@@ -168,10 +168,12 @@ const App = function (props) {
         >
           <Sidenav expanded={expand} defaultOpenKeys={['3']} appearance="subtle">
             <Sidenav.Header>
-              <div className="sidebar-header">
-                <img src="../assets/angles-icon.png" alt="Angles" className="sidebar-angles-icon" />
-                <img src="../assets/angles-text-logo.png" alt="Angles" className="sidebar-angles-text-icon" />
-              </div>
+              <a href="/">
+                <div className="sidebar-header">
+                  <img src="../assets/angles-icon.png" alt="Angles" className="sidebar-angles-icon" />
+                  <img src="../assets/angles-text-logo.png" alt="Angles" className="sidebar-angles-text-icon" />
+                </div>
+              </a>
             </Sidenav.Header>
             <Sidenav.Body>
               <Nav>
