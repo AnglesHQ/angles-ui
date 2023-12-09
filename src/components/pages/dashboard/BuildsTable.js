@@ -11,7 +11,6 @@ import {
   Table,
   Popover,
   Whisper,
-  CheckboxGroup,
 } from 'rsuite';
 import { getDuration } from '../../../utility/TimeUtilities';
 import ExecutionsResultsBar from '../../common/results-bar';
@@ -72,15 +71,13 @@ const CheckCell = function (props) {
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading
     <Cell {...rest}>
-      <CheckboxGroup>
-        <Checkbox
-          key={`${build._id}-${isRowSelected(build)}`}
-          value={build._id}
-          onClick={() => toggleSelectedBuild(build)}
-          checked={isRowSelected(build)}
-          inline={false}
-        />
-      </CheckboxGroup>
+      <Checkbox
+        key={`${build._id}-${isRowSelected(build)}`}
+        value={build._id}
+        onClick={() => toggleSelectedBuild(build)}
+        checked={isRowSelected(build)}
+        inline={false}
+      />
     </Cell>
   );
 };
@@ -94,12 +91,12 @@ const DateCell = function (props) {
         <div>
           <div>
             <span>
-              <Moment format="DD MMM">
+              <Moment utc format="DD MMM">
                 {build.start}
               </Moment>
             </span>
             <span> </span>
-            <Moment format="HH:mm">
+            <Moment utc format="HH:mm">
               {build.start}
             </Moment>
           </div>
@@ -123,7 +120,7 @@ const ResultCell = function (props) {
   const { rowData: build } = props;
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading
-    <Cell {...props}>
+    <Cell {...props} className="builds-table-result-cell">
       <ExecutionsResultsBar result={build.result} />
     </Cell>
   );

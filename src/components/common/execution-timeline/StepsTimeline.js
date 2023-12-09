@@ -82,7 +82,7 @@ const StepsTimeline = function (props) {
               return (
                 <Timeline.Item dot={getTimeLineIcon(step.status)} className="timeline-step" key={index}>
                   <Stack className="rg-stack" spacing={10}>
-                    <p><Moment format="HH:mm:ss">{step.timestamp}</Moment></p>
+                    <p><Moment utc format="HH:mm:ss">{step.timestamp}</Moment></p>
                     <p>{step.name}</p>
                     <p>{`Expected: ${step.expected}, Actual: ${step.actual}`}</p>
                     <p>{screenshotImage}</p>
@@ -93,7 +93,7 @@ const StepsTimeline = function (props) {
             return (
               <Timeline.Item dot={getTimeLineIcon(step.status)} className="timeline-step" key={index}>
                 <Stack className="rg-stack" spacing={10}>
-                  <p><Moment format="HH:mm:ss">{step.timestamp}</Moment></p>
+                  <p><Moment utc format="HH:mm:ss">{step.timestamp}</Moment></p>
                   <p>{convertTextToLinks(step.info)}</p>
                   <p>{screenshotImage}</p>
                 </Stack>

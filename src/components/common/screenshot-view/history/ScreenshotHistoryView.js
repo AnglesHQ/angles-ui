@@ -101,7 +101,7 @@ const ScreenshotHistoryView = function (props) {
                             <FormattedMessage id="common.component.screenshot-view.tabs.history.label.date" />
                           </span>
                           <span>: </span>
-                          <Moment format="DD-MM-YYYY HH:mm:ss">
+                          <Moment utc format="DD-MM-YYYY HH:mm:ss">
                             {screenshot.timestamp}
                           </Moment>
                         </td>

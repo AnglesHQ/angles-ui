@@ -51,7 +51,7 @@ const generateResultsData = (executions) => {
   const executionsToReverse = [...executions];
   executionsToReverse.reverse().forEach((execution) => {
     executionTimes.push(getBuildDurationInSeconds(execution));
-    graphData.labels.push(moment(execution.start).format('YYYY-MM-DD hh:mm:ss'));
+    graphData.labels.push(moment.utc(moment(execution.start)).format('YYYY-MM-DD hh:mm:ss'));
   });
   graphData.data.push(
     { name: 'ExecutionTime', data: executionTimes, type: 'line' },
