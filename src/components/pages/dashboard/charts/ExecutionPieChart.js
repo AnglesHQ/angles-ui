@@ -18,8 +18,12 @@ const defaultOptions = {
       show: true,
     },
   },
-  colors: ['var(--pass-color)', 'var(--skipped-color)', 'var(--error-color)', 'var(--fail-color)'],
-  legend: { show: true },
+  colors: ['var(--pass-color)', 'var(--fail-color)', 'var(--error-color)', 'var(--skipped-color)'],
+  legend: {
+    show: true,
+    fontSize: '15px',
+    formatter: (seriesName, opts) => `${seriesName}: <strong> ${opts.w.config.series[opts.seriesIndex]}</strong>`,
+  },
 };
 
 const generatePieChartData = (testRunMetrics) => {
@@ -31,12 +35,12 @@ const generatePieChartData = (testRunMetrics) => {
     error,
   } = testRunMetrics;
   const graphData = {
-    data: [pass || 0, skipped || 0, error || 0, fail || 0],
+    data: [pass || 0, fail || 0, error || 0, skipped || 0],
     labels: [
       intl.formatMessage({ id: 'page.dashboard.chart.barchart.pass' }),
-      intl.formatMessage({ id: 'page.dashboard.chart.barchart.skipped' }),
-      intl.formatMessage({ id: 'page.dashboard.chart.barchart.error' }),
       intl.formatMessage({ id: 'page.dashboard.chart.barchart.fail' }),
+      intl.formatMessage({ id: 'page.dashboard.chart.barchart.error' }),
+      intl.formatMessage({ id: 'page.dashboard.chart.barchart.skipped' }),
     ],
   };
   return graphData;

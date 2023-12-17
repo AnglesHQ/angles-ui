@@ -35,7 +35,7 @@ const defaultOptions = {
     },
   },
   yaxis: [],
-  colors: ['var(--pass-color)', 'var(--skipped-color)', 'var(--error-color)', 'var(--fail-color)'],
+  colors: ['var(--pass-color)', 'var(--fail-color)', 'var(--error-color)', 'var(--skipped-color)'],
   legend: { show: true },
 };
 
@@ -71,8 +71,8 @@ const generateMetricsResultsData = (metrics) => {
       type: 'column',
     },
     {
-      name: intl.formatMessage({ id: 'page.dashboard.chart.barchart.skipped' }),
-      data: results.SKIPPED,
+      name: intl.formatMessage({ id: 'page.dashboard.chart.barchart.fail' }),
+      data: results.FAIL,
       type: 'column',
     },
     {
@@ -81,8 +81,8 @@ const generateMetricsResultsData = (metrics) => {
       type: 'column',
     },
     {
-      name: intl.formatMessage({ id: 'page.dashboard.chart.barchart.pass' }),
-      data: results.FAIL,
+      name: intl.formatMessage({ id: 'page.dashboard.chart.barchart.skipped' }),
+      data: results.SKIPPED,
       type: 'column',
     },
   );
