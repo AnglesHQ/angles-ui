@@ -9,6 +9,8 @@ import { saveAs } from 'file-saver';
 import { AiOutlineTeam, AiOutlinePartition } from 'react-icons/ai';
 import { GiSandsOfTime, GiTrafficLightsGreen } from 'react-icons/gi';
 import { BiSolidFlagCheckered } from 'react-icons/bi';
+import { PiMapPinDuotone } from 'react-icons/pi';
+
 import {
   BsJournalCheck,
   BsJournalX,
@@ -291,62 +293,85 @@ const TestRunDetailsPage = function (props) {
                     </Steps>
                   </div>
                   <FlexboxGrid className="test-run-details-grid" justify="space-between">
-                    <Whisper
-                      placement="topStart"
-                      controlId="control-id-hover"
-                      trigger="hover"
-                      speaker={(
-                        <Tooltip>
-                          {intl.formatMessage({ id: 'page.test-run.icons.team.whisper' })}
-                        </Tooltip>
-                      )}
-                    >
-                      <FlexboxGrid.Item colspan={6} className="test-run-details-grid-item">
-                        <AiOutlineTeam className="test-run-details-icon" />
-                        {currentBuild.team.name}
-                      </FlexboxGrid.Item>
-                    </Whisper>
-                    <Whisper
-                      placement="topStart"
-                      controlId="control-id-hover"
-                      trigger="hover"
-                      speaker={(
-                        <Tooltip>
-                          {intl.formatMessage({ id: 'page.test-run.icons.component.whisper' })}
-                        </Tooltip>
-                      )}
-                    >
-                      <FlexboxGrid.Item colspan={6} className="test-run-details-grid-item">
-                        <CgExtension className="test-run-details-icon" />
-                        {getComponentName(currentBuild).name}
-                      </FlexboxGrid.Item>
-                    </Whisper>
-                    <Whisper
-                      placement="topEnd"
-                      controlId="control-id-hover"
-                      trigger="hover"
-                      speaker={(
-                        <Tooltip>
-                          {intl.formatMessage({ id: 'page.test-run.icons.phase.whisper' })}
-                        </Tooltip>
-                      )}
-                    >
-                      <FlexboxGrid.Item colspan={6} className="test-run-details-grid-item">
-                        {
-                          (currentBuild.phase) ? (
-                            <>
-                              <TbTimelineEventText className="test-run-details-icon" />
-                              {currentBuild.phase.name}
-                            </>
-                          ) : (
-                            <>
-                              <TbTimelineEventText className="test-run-details-icon-disabled" />
-                              none
-                            </>
-                          )
-                        }
-                      </FlexboxGrid.Item>
-                    </Whisper>
+                    <FlexboxGrid.Item colspan={6} className="test-run-details-grid-item">
+                      <Whisper
+                        placement="topStart"
+                        controlId="control-id-hover"
+                        trigger="hover"
+                        speaker={(
+                          <Tooltip>
+                            {intl.formatMessage({ id: 'page.test-run.icons.team.whisper' })}
+                          </Tooltip>
+                        )}
+                      >
+                        <span>
+                          <PiMapPinDuotone className="test-run-details-icon" />
+                          {currentBuild.environment.name}
+                        </span>
+                      </Whisper>
+                    </FlexboxGrid.Item>
+                    <FlexboxGrid.Item colspan={6} className="test-run-details-grid-item">
+                      <Whisper
+                        placement="topStart"
+                        controlId="control-id-hover"
+                        trigger="hover"
+                        speaker={(
+                          <Tooltip>
+                            {intl.formatMessage({ id: 'page.test-run.icons.component.whisper' })}
+                          </Tooltip>
+                        )}
+                      >
+                        <span>
+                          <CgExtension className="test-run-details-icon" />
+                          {getComponentName(currentBuild).name}
+                        </span>
+                      </Whisper>
+                    </FlexboxGrid.Item>
+                    <FlexboxGrid.Item colspan={6} className="test-run-details-grid-item">
+                      <Whisper
+                        placement="topStart"
+                        controlId="control-id-hover"
+                        trigger="hover"
+                        speaker={(
+                          <Tooltip>
+                            {intl.formatMessage({ id: 'page.test-run.icons.team.whisper' })}
+                          </Tooltip>
+                        )}
+                      >
+                        <span>
+                          <AiOutlineTeam className="test-run-details-icon" />
+                          {currentBuild.team.name}
+                        </span>
+                      </Whisper>
+                    </FlexboxGrid.Item>
+                    <FlexboxGrid.Item colspan={6} className="test-run-details-grid-item">
+                      <Whisper
+                        placement="topEnd"
+                        controlId="control-id-hover"
+                        trigger="hover"
+                        speaker={(
+                          <Tooltip>
+                            {intl.formatMessage({ id: 'page.test-run.icons.phase.whisper' })}
+                          </Tooltip>
+                        )}
+                      >
+                        <span>
+                          {
+                            (currentBuild.phase) ? (
+                              <>
+                                <TbTimelineEventText className="test-run-details-icon" />
+                                {currentBuild.phase.name}
+                              </>
+                            ) : (
+                              <>
+                                <TbTimelineEventText className="test-run-details-icon-disabled" />
+                                none
+                              </>
+                            )
+                          }
+                        </span>
+                      </Whisper>
+                    </FlexboxGrid.Item>
                   </FlexboxGrid>
                 </Panel>
                 <FlexboxGrid className="test-run-icons-grid">

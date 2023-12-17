@@ -51,7 +51,7 @@ const defaultOptions = {
     //   },
     // },
   ],
-  colors: ['var(--pass-color)', 'var(--skipped-color)', 'var(--error-color)', 'var(--fail-color)', '#2485C1'],
+  colors: ['var(--pass-color)', 'var(--fail-color)', 'var(--error-color)', 'var(--skipped-color)', '#2485C1'],
   legend: { show: true },
 };
 
@@ -91,8 +91,8 @@ const generateResultsData = (builds) => {
       type: 'column',
     },
     {
-      name: intl.formatMessage({ id: 'page.dashboard.chart.barchart.skipped' }),
-      data: results.SKIPPED,
+      name: intl.formatMessage({ id: 'page.dashboard.chart.barchart.fail' }),
+      data: results.FAIL,
       type: 'column',
     },
     {
@@ -101,8 +101,8 @@ const generateResultsData = (builds) => {
       type: 'column',
     },
     {
-      name: intl.formatMessage({ id: 'page.dashboard.chart.barchart.fail' }),
-      data: results.FAIL,
+      name: intl.formatMessage({ id: 'page.dashboard.chart.barchart.skipped' }),
+      data: results.SKIPPED,
       type: 'column',
     },
     // {
