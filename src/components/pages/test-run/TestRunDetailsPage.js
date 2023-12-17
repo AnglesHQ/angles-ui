@@ -55,7 +55,6 @@ import FeaturePieChart from './charts/FeaturePieChart';
 // import ScreenshotModal from "../../common/screenshot-view/modal/ScreenhotModal";
 
 const TestRunDetailsPage = function (props) {
-  // TODO: Environment is not shown!
   const location = useLocation();
   const intl = useIntl();
   const [showModal, setShowModal] = useState(false);
@@ -300,7 +299,7 @@ const TestRunDetailsPage = function (props) {
                         trigger="hover"
                         speaker={(
                           <Tooltip>
-                            {intl.formatMessage({ id: 'page.test-run.icons.team.whisper' })}
+                            {intl.formatMessage({ id: 'page.test-run.icons.environment.whisper' })}
                           </Tooltip>
                         )}
                       >
