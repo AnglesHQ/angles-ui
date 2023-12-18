@@ -36,6 +36,7 @@ import ScreenshotLibraryPage from '../components/pages/screenshot-library';
 import ExecutionHistoryPage from '../components/pages/test-execution-history';
 import AboutPage from '../components/pages/about';
 import NotFoundPage from '../components/pages/not-found';
+import IntroductionPage from '../components/pages/introduction';
 
 import MetricsPage from '../components/pages/metrics';
 import { storeCurrentTeam, storeTeams, storeTeamsError } from '../redux/teamActions';
@@ -337,6 +338,7 @@ const App = function (props) {
                       </span>
                     </div>
                   ) : (
+                    // eslint-disable-next-line no-nested-ternary
                     (!teamsError && teams === undefined) ? (
                       <div key="retrieving-teams" className="alert alert-primary" role="alert">
                         <span>
@@ -349,7 +351,11 @@ const App = function (props) {
                         </span>
                       </div>
                     ) : (
-                      <SummaryPage changeCurrentTeam={changeCurrentTeam} />
+                      (teams.length === 0) ? (
+                        <IntroductionPage />
+                      ) : (
+                        <SummaryPage changeCurrentTeam={changeCurrentTeam} />
+                      )
                     )
                   )
                 }
