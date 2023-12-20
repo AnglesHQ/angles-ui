@@ -102,6 +102,7 @@
   "page.test-run.menu.enable-keep-flag": "啟用保留標誌",
   "page.test-run.menu.disable-keep-flag": "停用保留標誌",
   "page.test-run.menu.download-report": "下載 html 格式的報表",
+  "page.test-run.icons.environment.whisper": "環境",
   "page.test-run.icons.team.whisper": "團隊",
   "page.test-run.icons.component.whisper": "元件",
   "page.test-run.icons.phase.whisper": "測試階段",
