@@ -102,6 +102,7 @@
   "page.test-run.menu.enable-keep-flag": "Schakel de \"houd\" vlag in",
   "page.test-run.menu.disable-keep-flag": "Schakel de \"houd\" vlag uit",
   "page.test-run.menu.download-report": "Raport downloaden als html",
+  "page.test-run.icons.environment.whisper": "Omgeving",
   "page.test-run.icons.team.whisper": "Team",
   "page.test-run.icons.component.whisper": "Onderdeel",
   "page.test-run.icons.phase.whisper": "Test Fase",

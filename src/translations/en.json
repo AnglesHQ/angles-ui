@@ -102,6 +102,7 @@
   "page.test-run.menu.enable-keep-flag": "Enable the keep flag",
   "page.test-run.menu.disable-keep-flag": "Disable the keep flag",
   "page.test-run.menu.download-report": "Download report as html",
+  "page.test-run.icons.environment.whisper": "Environment",
   "page.test-run.icons.team.whisper": "Team",
   "page.test-run.icons.component.whisper": "Component",
   "page.test-run.icons.phase.whisper": "Test Phase",

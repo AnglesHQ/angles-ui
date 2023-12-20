@@ -4,6 +4,7 @@ import { Panel, Stack } from 'rsuite';
 import { useIntl } from 'react-intl';
 import moment from 'moment';
 // import { getBuildDurationInSeconds } from '../../../../utility/TimeUtilities';
+import { useNavigate } from 'react-router-dom';
 
 const defaultOptions = {
   chart: {
@@ -16,12 +17,7 @@ const defaultOptions = {
     background: 'var(--main-panel-background)',
     foreColor: 'var(--main-panel-font-color)',
     // TODO: could look at adding some click events for filtering etc
-    // events:
-    //   {
-    //     click: (event, chartContext, config) => {
-    //       console.log(event, chartContext, config);
-    //     },
-    //   },
+    events: {},
   },
   plotOptions: {
     bar: {
@@ -55,7 +51,7 @@ const defaultOptions = {
     //   },
     // },
   ],
-  colors: ['var(--pass-color)', 'var(--skipped-color)', 'var(--error-color)', 'var(--fail-color)', '#2485C1'],
+  colors: ['var(--pass-color)', 'var(--fail-color)', 'var(--error-color)', 'var(--skipped-color)', '#2485C1'],
   legend: { show: true },
 };
 
@@ -86,7 +82,7 @@ const generateResultsData = (builds) => {
     results.ERROR.push(ERROR || 0);
     results.FAIL.push(FAIL || 0);
     // results.executionTimes.push(getBuildDurationInSeconds(build));
-    graphData.labels.push(moment(build.start).format('YYYY-MM-DD hh:mm:ss'));
+    graphData.labels.push(moment.utc(moment(build.start)).format('YYYY-MM-DD HH:mm:ss'));
   });
   graphData.data.push(
     {
@@ -95,8 +91,8 @@ const generateResultsData = (builds) => {
       type: 'column',
     },
     {
-      name: intl.formatMessage({ id: 'page.dashboard.chart.barchart.skipped' }),
-      data: results.SKIPPED,
+      name: intl.formatMessage({ id: 'page.dashboard.chart.barchart.fail' }),
+      data: results.FAIL,
       type: 'column',
     },
     {
@@ -105,8 +101,8 @@ const generateResultsData = (builds) => {
       type: 'column',
     },
     {
-      name: intl.formatMessage({ id: 'page.dashboard.chart.barchart.fail' }),
-      data: results.FAIL,
+      name: intl.formatMessage({ id: 'page.dashboard.chart.barchart.skipped' }),
+      data: results.SKIPPED,
       type: 'column',
     },
     // {
@@ -120,7 +116,12 @@ const generateResultsData = (builds) => {
 
 const ExecutionBarChart = function (props) {
   const { builds, title } = props;
+  const reversedBuilds = [...builds].reverse();
+  const navigate = useNavigate();
   const graphData = generateResultsData(builds);
+  defaultOptions.chart.events.click = function (event, chartContext, config) {
+    navigate(`/test-run/?buildId=${reversedBuilds[config.dataPointIndex]._id}`);
+  };
   const { data, labels } = graphData;
   return (
     <Panel

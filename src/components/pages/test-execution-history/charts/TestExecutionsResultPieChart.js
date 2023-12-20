@@ -17,8 +17,13 @@ const defaultOptions = {
       show: true,
     },
   },
-  colors: ['var(--pass-color)', 'var(--skipped-color)', 'var(--error-color)', 'var(--fail-color)'],
-  legend: { show: false },
+  colors: ['var(--pass-color)', 'var(--fail-color)', 'var(--error-color)', 'var(--skipped-color)'],
+  legend: {
+    show: true,
+    fontSize: '14px',
+    formatter: (seriesName, opts) => `${seriesName}: <strong> ${opts.w.config.series[opts.seriesIndex]}</strong>`,
+
+  },
 };
 
 const generateExecutionMetricsPieChartData = (executions) => {
@@ -37,11 +42,11 @@ const generateExecutionMetricsPieChartData = (executions) => {
     SKIPPED,
     ERROR,
   } = result;
-  const data = [PASS, SKIPPED, ERROR, FAIL];
+  const data = [PASS, FAIL, ERROR, SKIPPED];
   const graphData = {
     data,
-    labels: ['PASS', 'SKIPPED', 'ERROR', 'FAIL'],
-    colors: ['var(--pass-color)', 'var(--skipped-color)', 'var(--error-color)', 'var(--fail-color)'],
+    labels: ['PASS', 'FAIL', 'ERROR', 'SKIPPED'],
+    colors: ['var(--pass-color)', 'var(--fail-color)', 'var(--error-color)', 'var(--skipped-color)'],
   };
   return graphData;
 };

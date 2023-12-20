@@ -4,28 +4,30 @@ import Cookies from 'js-cookie';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import messagesEN from './translations/en.json';
-import messagesTH from './translations/th.json';
-import messagesNL from './translations/nl.json';
-
 import App from './containers/App';
 import * as serviceWorker from './serviceWorker';
 import store from './redux/store';
 
 const domNode = document.getElementById('root');
 const root = createRoot(domNode);
-
-const messages = {
-  en: messagesEN,
-  nl: messagesNL,
-  th: messagesTH,
-};
 let language = navigator.language.split(/[-_]/)[0];
 const cookieLanguage = Cookies.get('language');
 if (cookieLanguage) {
   language = cookieLanguage;
 }
-language = language in messages ? language : 'en';
+const messages = await (async () => {
+  const msgs = {};
+  await import(`./translations/${language}.json`)
+    .catch(() => {
+      language = 'en';
+      return import('./translations/en.json');
+    })
+    .then((fileContent) => {
+      msgs[language] = { ...fileContent };
+    });
+  return msgs;
+})();
+
 Cookies.set('language', language);
 
 const theme = Cookies.get('theme');

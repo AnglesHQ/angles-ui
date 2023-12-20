@@ -62,7 +62,7 @@ const ExecutionTable = function (props) {
               <div className="execution-details-container">
                 <span className="date-details">
                   <CalendarIcon />
-                  <Moment format="DD-MM-YYYY HH:mm:ss">
+                  <Moment utc format="DD-MM-YYYY HH:mm:ss">
                     {execution.start}
                   </Moment>
                 </span>

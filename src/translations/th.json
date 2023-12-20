@@ -102,6 +102,7 @@
   "page.test-run.menu.enable-keep-flag": "เปิดธงเก็บ",
   "page.test-run.menu.disable-keep-flag": "ปิดธงเก็บ",
   "page.test-run.menu.download-report": "ดาวน์โหลดรายงานเป็น html",
+  "page.test-run.icons.environment.whisper": "สิ่งแวดล้อม",
   "page.test-run.icons.team.whisper": "ทีม",
   "page.test-run.icons.component.whisper": "ส่วนประกอบ",
   "page.test-run.icons.phase.whisper": "เฟสทดสอบ",
