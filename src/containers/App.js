@@ -29,6 +29,7 @@ import DocPass from '@rsuite/icons/DocPass';
 import InfoOutline from '@rsuite/icons/InfoOutline';
 import GlobalIcon from '@rsuite/icons/Global';
 import { CgDarkMode } from 'react-icons/cg';
+import translations from '../translations/translations.json';
 import SummaryPage from '../components/pages/dashboard';
 import TestRunDetailsPage from '../components/pages/test-run';
 import TestRunsComparePage from '../components/pages/test-run-compare';
@@ -204,9 +205,7 @@ const App = function (props) {
                   </span>
                 </Nav.Item>
                 <Nav.Menu eventKey="4" icon={<GlobalIcon style={{ fontSize: '20px', height: '20px' }} />} title={<FormattedMessage id="nav.language" />}>
-                  <Nav.Item eventKey="4-1" onClick={() => setLanguage('en')} href="/">English</Nav.Item>
-                  <Nav.Item eventKey="4-2" onClick={() => setLanguage('nl')} href="/">Nederlands</Nav.Item>
-                  <Nav.Item eventKey="4-3" onClick={() => setLanguage('th')} href="/">ไทย</Nav.Item>
+                  { translations.map((translation, index) => (<Nav.Item eventKey={`4-${index}`} onClick={() => setLanguage(translation.code)} href="/">{translation.text}</Nav.Item>)) }
                 </Nav.Menu>
                 <Nav.Menu eventKey="5" icon={<CgDarkMode />} title={<FormattedMessage id="nav.theme" />}>
                   <Nav.Item eventKey="5-1" onClick={() => setTheme('light')}><FormattedMessage id="nav.theme.light" /></Nav.Item>
