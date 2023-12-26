@@ -143,6 +143,13 @@
   "page.about.about-api": "透過提供明確定義的 {apiLink}，任何框架都可以適應將其測試結果存儲在Angles中，使用提供的客戶端之一（或直接使用API）。",
   "page.about.about-github": "有關 Angles 的更多信息，請訪問頁面：{githubLink}",
 
+  "page.introduction.bread-crumb": "簡介",
+  "page.introduction.header": "歡迎來到角度",
+  "page.introduction.description": "您似乎尚未設定任何團隊或環境。\n\n這可以透過使用 {apiLink} 來完成。",
+  "page.introduction.api-link-text": "Swagger API",
+  "page.introduction.description-alternative": "或您也可以使用 {githubLink} 開始。",
+  "page.introduction.github-link-text": "Github 頁面",
+
   "page.not-found.bread-crumb": "找不到",
   "page.not-found.description": "哎呀，糟糕，我們無法找到您要找的東西。點選 {homeLink} 返回主頁。",
   "page.not-found.home-link-text": "此處",

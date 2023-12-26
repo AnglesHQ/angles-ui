@@ -1,10 +1,9 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Breadcrumb, Panel } from 'rsuite';
-import MetricsPage from './MetricsPage';
+import IntroductionPage from './IntroductionPage';
 
-const Page = function (props) {
-  const { changeCurrentTeam } = props;
+const Page = function () {
   return (
     <Panel>
       <Breadcrumb>
@@ -12,12 +11,10 @@ const Page = function (props) {
           <FormattedMessage id="page.home.bread-crumb" />
         </Breadcrumb.Item>
         <Breadcrumb.Item>
-          <FormattedMessage id="page.metrics.bread-crumb" />
+          <FormattedMessage id="page.introduction.bread-crumb" />
         </Breadcrumb.Item>
       </Breadcrumb>
-      <MetricsPage
-        changeCurrentTeam={changeCurrentTeam}
-      />
+      <IntroductionPage />
     </Panel>
   );
 };

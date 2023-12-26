@@ -143,6 +143,13 @@
   "page.about.about-api": "By providing a clearly defined {apiLink} any framework can be adapted to store its test result in Angles, using one of the clients provided (or by using the API directly)",
   "page.about.about-github": "For more information about Angles go to page: {githubLink}",
 
+  "page.introduction.bread-crumb": "Introduction",
+  "page.introduction.header": "Welcome to Angles",
+  "page.introduction.description": "It looks like you haven't setup any teams or environments.\n\nThis can be done by using {apiLink}.",
+  "page.introduction.api-link-text": "the Swagger API",
+  "page.introduction.description-alternative": "Or alternatively you can use {githubLink} to get started.",
+  "page.introduction.github-link-text": "the Github page",
+
   "page.not-found.bread-crumb" : "Not found",
   "page.not-found.description": "Oops, we were unable to find the \"Angle\" you were looking for. Click {homeLink} to go back to home page.",
   "page.not-found.home-link-text": "here",

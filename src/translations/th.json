@@ -143,6 +143,13 @@
   "page.about.about-api": "ด้วยการจัดเตรียม {apiLink} ที่กำหนดไว้อย่างชัดเจน คุณสามารถปรับใช้เฟรมเวิร์กใดๆ เพื่อจัดเก็บผลการทดสอบใน Angles ได้โดยใช้หนึ่งในไคลเอนต์ที่ให้มา (หรือโดยใช้ API โดยตรง)",
   "page.about.about-github": "สำหรับข้อมูลเพิ่มเติมเกี่ยวกับ Angles ให้ไปที่หน้า: {githubLink}",
 
+  "page.introduction.bread-crumb": "บทนำ",
+  "page.introduction.header": "ยินดีต้อนรับสู่ Angles",
+  "page.introduction.description": "ดูเหมือนว่าคุณยังไม่ได้ตั้งค่าทีมหรือสภาพแวดล้อมใดๆ\n\nซึ่งสามารถทำได้โดยใช้ {apiLink}",
+  "page.introduction.api-link-text": "Swagger API",
+  "page.introduction.description-alternative": "หรืออีกทางหนึ่ง คุณสามารถใช้ {githubLink} เพื่อเริ่มต้นได้",
+  "page.introduction.github-link-text": "หน้า Github",
+
   "page.not-found.bread-crumb" : "ไม่เจอ",
   "page.not-found.description": "อ๊ะ เราไม่พบที่คุณกำลังหา คลิก {homeLink} เพื่อกลับไปที่หน้าแรก",
   "page.not-found.home-link-text": "ที่นี่",
