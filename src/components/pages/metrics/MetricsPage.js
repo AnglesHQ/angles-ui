@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import moment from 'moment';
+import { connect } from 'react-redux';
 import { FormattedMessage, useIntl } from 'react-intl';
 import queryString from 'query-string';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -41,7 +42,7 @@ const MetricsPage = function (props) {
   const [startDate, setStartDate] = useState(queryStartDate ? moment(queryStartDate) : moment().subtract(30, 'days'));
   const [endDate, setEndDate] = useState(queryEndDate ? moment(queryEndDate) : moment());
   const [groupingPeriod, setGroupingPeriod] = useState(grouping || 'week');
-  const [selectedTeam, setSelectedTeam] = useState(currentTeam._id);
+  const [selectedTeam, setSelectedTeam] = useState(currentTeam._id || undefined);
   const [selectedComponent, setSelectedComponent] = useState(component || 'any');
   const [key, setKey] = useState('execution');
   const [metrics, setMetrics] = useState({});
@@ -312,4 +313,9 @@ const MetricsPage = function (props) {
   );
 };
 
-export default MetricsPage;
+const mapStateToProps = (state) => ({
+  currentTeam: state.teamsReducer.currentTeam,
+  teams: state.teamsReducer.teams,
+});
+
+export default connect(mapStateToProps, null)(MetricsPage);

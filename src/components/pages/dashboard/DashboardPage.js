@@ -164,7 +164,7 @@ const DashboardPage = function (props) {
         metrics,
       }) => {
         setBuilds(addIndexToBuilds(retrievedBuilds, skip));
-        setTestRunMetrics(metrics);
+        setTestRunMetrics(metrics || {});
         setCurrentSkip(skip);
       });
   };
@@ -375,7 +375,7 @@ const DashboardPage = function (props) {
                       id="page.dashboard.panel.total-test-runs"
                     />
                   </div>
-                  <div className="value">{totalTestRuns}</div>
+                  <div className="value">{totalTestRuns || 0}</div>
                 </Panel>
               </Col>
               <Col xs={8}>

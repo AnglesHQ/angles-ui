@@ -143,6 +143,13 @@
   "page.about.about-api": "Via het duidelijk omschreven {apiLink} van Angles kan elke geautomatiseerde test framework aangepast worden om zijn resultaten in Angles op te slaan",
   "page.about.about-github": "Voor meer information over Angles kun je terecht op onze pagine: {githubLink}",
 
+  "page.introduction.bread-crumb": "Inleiding",
+  "page.introduction.header": "Welkom bij Angles",
+  "page.introduction.description": "Het lijkt erop dat u geen teams of omgevingen heeft ingesteld.\n\nDit kunt u doen door {apiLink} te gebruiken.",
+  "page.introduction.api-link-text": "de Swagger-API",
+  "page.introduction.description-alternative": "Of u kunt ook {githubLink} gebruiken om aan de slag te gaan.",
+  "page.introduction.github-link-text": "de Github-pagina",
+
   "page.not-found.bread-crumb" : "Pagina niet gevonden",
   "page.not-found.description": "Oeps, we hebben de pagina die je aan het zoeken was niet kunnen vinden. Klik {homeLink} om terug te gaan naar de home pagina.",
   "page.not-found.home-link-text": "hier",
