@@ -198,6 +198,11 @@ const DashboardPage = function (props) {
     setFilteredValues([]);
   }, [environments, currentTeam]);
 
+  useEffect(() => {
+    setActivePage(1);
+  }, [filteredEnvironments, filteredComponents, currentTeam,
+    startDate, endDate, limit]);
+
   const toggleSelectedBuild = (build) => {
     const updatedBuilds = update(
       selectedBuilds,
@@ -224,7 +229,7 @@ const DashboardPage = function (props) {
 
   const navigateToMatrix = () => {
     const selectedBuildIds = retrieveSelectedBuilds();
-    navigate(`/test-runs-compare/?buildIds=${selectedBuildIds.join(',')}`);
+    navigate(`/test-runs-compare/?buildIds=${selectedBuildIds.join(',')}&teamId=${currentTeam._id}`);
   };
 
   const updateBuildWithKeep = (buildId, keep) => buildRequests.setKeep(buildId, keep);

@@ -34,7 +34,7 @@ const TestDetailsCell = function (props) {
 };
 
 const TestResultsCell = function (props) {
-  const { rowData: test, buildId } = props;
+  const { rowData: test, buildid: buildId } = props;
   if (!test[buildId]) {
     return (
       // eslint-disable-next-line react/jsx-props-no-spreading
@@ -302,7 +302,7 @@ const TestRunCompareTable = function (props) {
                     </a>
                   </div>
                 </HeaderCell>
-                <TestResultsCell buildId={matrixBuild._id} />
+                <TestResultsCell buildid={matrixBuild._id} />
               </Column>
             ))
           }

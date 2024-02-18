@@ -120,7 +120,9 @@ const ExecutionBarChart = function (props) {
   const navigate = useNavigate();
   const graphData = generateResultsData(builds);
   defaultOptions.chart.events.click = function (event, chartContext, config) {
-    navigate(`/test-run/?buildId=${reversedBuilds[config.dataPointIndex]._id}`);
+    if (config.dataPointIndex >= 0) {
+      navigate(`/test-run/?buildId=${reversedBuilds[config.dataPointIndex]._id}`);
+    }
   };
   const { data, labels } = graphData;
   return (
