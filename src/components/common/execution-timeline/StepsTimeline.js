@@ -1,5 +1,7 @@
 /* eslint react/no-array-index-key: [0] */
 import React from 'react';
+import DomPurify from 'dompurify';
+import parse from 'html-react-parser';
 import Moment from 'react-moment';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -54,7 +56,7 @@ const StepsTimeline = function (props) {
   };
 
   const convertTextToLinks = (content) => {
-    const reg = /(http:\/\/|https:\/\/)((\w|=|\?|\.|\/|#|&|-)+)/g;
+    const reg = /(http:\/\/|https:\/\/)((\w|=|\?|\.|\/|#|&|%|\+|-)+)/g;
     if (content) {
       return content.replace(reg, "<a href='$1$2' target='_blank'>$1$2</a>");
     }
@@ -92,9 +94,11 @@ const StepsTimeline = function (props) {
             }
             return (
               <Timeline.Item dot={getTimeLineIcon(step.status)} className="timeline-step" key={index}>
-                <Stack className="rg-stack" spacing={10}>
+                <Stack className="rg-stack" spacing={10} alignItems="flex-start">
                   <p><Moment utc format="HH:mm:ss">{step.timestamp}</Moment></p>
-                  <p>{convertTextToLinks(step.info)}</p>
+                  <p className="timeline-step-text">
+                    {parse(DomPurify.sanitize(convertTextToLinks(step.info)))}
+                  </p>
                   <p>{screenshotImage}</p>
                 </Stack>
               </Timeline.Item>
