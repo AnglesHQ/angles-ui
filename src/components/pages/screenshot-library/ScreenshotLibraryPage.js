@@ -3,15 +3,15 @@ import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { FormattedMessage, useIntl } from 'react-intl';
 import queryString from 'query-string';
-import { ScreenshotRequests } from 'angles-javascript-client';
+import { ScreenshotRequests, MetricRequests } from 'angles-javascript-client';
 import {
   Button,
   SelectPicker,
   Panel,
   Affix,
   Stack,
-  Input,
   InputGroup,
+  AutoComplete,
 } from 'rsuite';
 import ScreenshotView from '../../common/screenshot-view/ScreenshotView';
 import CurrentScreenshotContext from '../../../context/CurrentScreenshotContext';
@@ -26,10 +26,14 @@ const ScreenshotLibraryPage = function () {
   const [groupType, setGroupType] = useState(null);
   const [selectedTab] = useState(query.selectedTab || 'image');
   const [view, setView] = useState('');
+  const [autoCompleteViews, setAutoCompleteViews] = useState([]);
   const [tag, setTag] = useState('');
+  const [, setScreenshotMetrics] = useState([]);
+  const [autoCompleteTags, setAutoCompleteTags] = useState([]);
   const [numberOfDays, setNumberOfDays] = useState(14);
   const [selectedPlatform, setSelectedPlatform] = useState(undefined);
   const screenshotRequests = new ScreenshotRequests(axios);
+  const metricRequests = new MetricRequests(axios);
   const {
     setCurrentScreenshotId,
   } = useContext(CurrentScreenshotContext);
@@ -83,6 +87,10 @@ const ScreenshotLibraryPage = function () {
   };
 
   useEffect(() => {
+    metricRequests.getScreenshotMetrics(undefined, undefined, 5, true)
+      .then((retrievedScreenshotMetrics) => {
+        setScreenshotMetrics(retrievedScreenshotMetrics);
+      });
     if (query.view) {
       getGroupedScreenshotByPlatform(
         query.view,
@@ -99,11 +107,29 @@ const ScreenshotLibraryPage = function () {
   const handleViewChange = (event) => {
     setView(event);
     setTag('');
+    setAutoCompleteTags([]);
+    if (event && event.length >= 3) {
+      screenshotRequests.getScreenshotViews(event, 15)
+        .then((retrievedViews) => {
+          setAutoCompleteViews(retrievedViews);
+        });
+    } else {
+      setAutoCompleteViews([]);
+    }
   };
 
   const handleTagChange = (event) => {
     setTag(event);
     setView('');
+    setAutoCompleteViews([]);
+    if (event && event.length >= 3) {
+      screenshotRequests.getScreenshotTags(event, 15)
+        .then((retrievedTags) => {
+          setAutoCompleteTags(retrievedTags);
+        });
+    } else {
+      setAutoCompleteTags([]);
+    }
   };
 
   const handleNumberOfDaysChange = (event) => {
@@ -161,8 +187,10 @@ const ScreenshotLibraryPage = function () {
         <Stack className="top-menu-stack" spacing={10}>
           <span>Search by: </span>
           <InputGroup className="screenshot-view-or-tag-input">
-            <Input
+            <AutoComplete
               name="view"
+              style={{ width: 224 }}
+              data={autoCompleteViews}
               value={view}
               onChange={handleViewChange}
               placeholder={intl.formatMessage({ id: 'page.screenshot-library.search-options.label.view' })}
@@ -170,8 +198,10 @@ const ScreenshotLibraryPage = function () {
             <InputGroup.Addon>
               <FormattedMessage id="page.screenshot-library.search-options.label.or" />
             </InputGroup.Addon>
-            <Input
+            <AutoComplete
               name="tag"
+              style={{ width: 224 }}
+              data={autoCompleteTags}
               value={tag}
               onChange={handleTagChange}
               placeholder={intl.formatMessage({ id: 'page.screenshot-library.search-options.label.tag' })}
