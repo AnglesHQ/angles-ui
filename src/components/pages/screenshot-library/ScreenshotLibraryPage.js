@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { Container } from 'react-bootstrap';
 import queryString from 'query-string';
 import { ScreenshotRequests, MetricRequests } from 'angles-javascript-client';
 import {
@@ -12,9 +13,12 @@ import {
   Stack,
   InputGroup,
   AutoComplete,
+  Col,
+  Row,
 } from 'rsuite';
 import ScreenshotView from '../../common/screenshot-view/ScreenshotView';
 import CurrentScreenshotContext from '../../../context/CurrentScreenshotContext';
+import ScreenshotCard from '../../common/screenshot-view/ScreenshotCard';
 
 const ScreenshotLibraryPage = function () {
   const location = useLocation();
@@ -22,13 +26,14 @@ const ScreenshotLibraryPage = function () {
   const [groupedScreenshots, setGroupedScreenshots] = useState(null);
   const [filteredScreenshots, setFilteredScreenshots] = useState(null);
   const [retrievingScreenshots, setRetrievingScreenshots] = useState(false);
+  const [searchTriggered, setSearchTriggered] = useState(false);
   const [platforms, setPlatforms] = useState(null);
   const [groupType, setGroupType] = useState(null);
   const [selectedTab] = useState(query.selectedTab || 'image');
   const [view, setView] = useState('');
   const [autoCompleteViews, setAutoCompleteViews] = useState([]);
   const [tag, setTag] = useState('');
-  const [, setScreenshotMetrics] = useState([]);
+  const [screenshotMetrics, setScreenshotMetrics] = useState([]);
   const [autoCompleteTags, setAutoCompleteTags] = useState([]);
   const [numberOfDays, setNumberOfDays] = useState(14);
   const [selectedPlatform, setSelectedPlatform] = useState(undefined);
@@ -92,11 +97,13 @@ const ScreenshotLibraryPage = function () {
         setScreenshotMetrics(retrievedScreenshotMetrics);
       });
     if (query.view) {
+      setSearchTriggered(true);
       getGroupedScreenshotByPlatform(
         query.view,
         query.numberOfDays ? (query.numberOfDays) : numberOfDays,
       );
     } else if (query.tag) {
+      setSearchTriggered(true);
       getGroupedScreenshotByTag(
         query.tag,
         query.numberOfDays ? (query.numberOfDays) : numberOfDays,
@@ -138,6 +145,7 @@ const ScreenshotLibraryPage = function () {
 
   const submitScreenshotSearch = () => {
     // event.preventDefault();
+    setSearchTriggered(true);
     setFilteredScreenshots(null);
     if (view !== '') {
       getGroupedScreenshotByPlatform(view, numberOfDays);
@@ -280,6 +288,80 @@ const ScreenshotLibraryPage = function () {
             ) : null
         }
       </Panel>
+      {
+        !searchTriggered ? (
+          <Panel className="screenshot-viewer-metrics-panel" header="Top views and tags">
+            <Row gutter={30}>
+              <Col xs={12}>
+                <div>
+                  {
+                    screenshotMetrics.views ? (
+                      screenshotMetrics.views.map((viewObject, index) => (
+                        <Container className="card-deck-history">
+                          <div>
+                            <span>
+                              <FormattedMessage id="page.screenshot-library.search-options.label.view" />
+                              {` ${index + 1}: `}
+                            </span>
+                            <span>
+                              <a href={`/screenshot-library/?view=${viewObject._id}`}>{`${viewObject._id}`}</a>
+                            </span>
+                            <span>{` (Total: ${viewObject.count})`}</span>
+                          </div>
+                          <div className="screenshot-card-library">
+                            {
+                              viewObject.platforms && viewObject.platforms.length > 0 ? (
+                                <ScreenshotCard
+                                  screenshot={viewObject.platforms[0].screenshot}
+                                  isBaseline={false}
+                                  isSelectedId={false}
+                                />
+                              ) : null
+                            }
+                          </div>
+                        </Container>
+                      ))
+                    ) : null
+                  }
+                </div>
+              </Col>
+              <Col xs={12}>
+                <div>
+                  {
+                    screenshotMetrics.tags ? (
+                      screenshotMetrics.tags.map((tagObject, index) => (
+                        <Container className="card-deck-history">
+                          <div>
+                            <span>
+                              <FormattedMessage id="page.screenshot-library.search-options.label.tag" />
+                              {` ${index + 1}: `}
+                            </span>
+                            <span>
+                              <a href={`/screenshot-library/?tag=${tagObject._id}`}>{`${tagObject._id}`}</a>
+                            </span>
+                            <span>{` (Total: ${tagObject.count})`}</span>
+                          </div>
+                          <div className="screenshot-card-library">
+                            {
+                              tagObject.platforms && tagObject.platforms.length > 0 ? (
+                                <ScreenshotCard
+                                  screenshot={tagObject.platforms[0].screenshot}
+                                  isBaseline={false}
+                                  isSelectedId={false}
+                                />
+                              ) : null
+                            }
+                          </div>
+                        </Container>
+                      ))
+                    ) : null
+                  }
+                </div>
+              </Col>
+            </Row>
+          </Panel>
+        ) : null
+      }
     </div>
   );
 };
