@@ -30,7 +30,9 @@ import update from 'immutability-helper';
 
 import queryString from 'query-string';
 import { connect } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import Cookies from 'js-cookie';
+import { storeCurrentTeam } from '../../../redux/teamActions';
 import BuildsTable from './BuildsTable';
 import { getDateRangesPicker, getDurationAsString } from '../../../utility/TimeUtilities';
 import ExecutionBarChart from './charts/ExecutionBarChart';
@@ -105,14 +107,16 @@ const FilterMenu = function (props) {
 };
 
 const DashboardPage = function (props) {
-  const location = useLocation();
-  const navigate = useNavigate();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
   const buildRequests = new BuildRequests(axios);
-  const { currentTeam, teams, environments } = props;
+  const { currentTeam, teams, environments, saveCurrentTeam, builds: reduxBuilds } = props;
 
   // query values
-  const query = queryString.parse(location.search);
-  const { startDate: queryStartDate, endDate: queryEndDate } = query;
+  // searchParams.get('startDate') ...
+  const queryStartDate = searchParams.get('startDate');
+  const queryEndDate = searchParams.get('endDate');
 
   // page state
   const [builds, setBuilds] = useState(undefined);
@@ -182,7 +186,7 @@ const DashboardPage = function (props) {
       );
     }
   }, [currentTeam, limit, filteredEnvironments,
-    filteredComponents, startDate, endDate, activePage]);
+    filteredComponents, startDate, endDate, activePage, searchParams]);
 
   useEffect(() => {
     if (currentTeam) {
@@ -229,7 +233,7 @@ const DashboardPage = function (props) {
 
   const navigateToMatrix = () => {
     const selectedBuildIds = retrieveSelectedBuilds();
-    navigate(`/test-runs-compare/?buildIds=${selectedBuildIds.join(',')}&teamId=${currentTeam._id}`);
+    router.push(`/test-runs-compare/?buildIds=${selectedBuildIds.join(',')}&teamId=${currentTeam._id}`);
   };
 
   const updateBuildWithKeep = (buildId, keep) => buildRequests.setKeep(buildId, keep);
@@ -258,9 +262,18 @@ const DashboardPage = function (props) {
     setSelectedBuilds({});
   };
 
+  const getTeam = (teamId) => {
+    if (teams && Array.isArray(teams)) {
+      return teams.find((team) => team._id === teamId);
+    }
+    return undefined;
+  };
+
   const handleTeamChange = (teamId) => {
-    const { changeCurrentTeam } = props;
-    changeCurrentTeam(teamId);
+    if (teamId !== undefined) {
+      saveCurrentTeam(getTeam(teamId));
+      Cookies.set('teamId', teamId, { expires: 365 });
+    }
   };
 
   const handleLimitChange = (newLimit) => {
@@ -524,4 +537,8 @@ const mapStateToProps = (state) => ({
   environments: state.environmentsReducer.environments,
   builds: state.buildReducer.builds,
 });
-export default connect(mapStateToProps, null)(DashboardPage);
+const mapDispatchToProps = (dispatch) => ({
+  saveCurrentTeam: (selectedTeam) => dispatch(storeCurrentTeam(selectedTeam)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(DashboardPage);

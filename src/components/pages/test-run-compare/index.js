@@ -3,8 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { Breadcrumb, Panel } from 'rsuite';
 import TestRunsComparePage from './TestRunsComparePage';
 
-const Page = function (props) {
-  const { currentTeam } = props;
+const Page = function () {
   return (
     <Panel>
       <Breadcrumb>
@@ -15,7 +14,7 @@ const Page = function (props) {
           <FormattedMessage id="page.test-run-compare.bread-crumb" />
         </Breadcrumb.Item>
       </Breadcrumb>
-      <TestRunsComparePage currentTeam={currentTeam} />
+      <TestRunsComparePage />
     </Panel>
   );
 };

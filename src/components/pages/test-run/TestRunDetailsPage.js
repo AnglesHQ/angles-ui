@@ -24,7 +24,7 @@ import FileDownloadIcon from '@rsuite/icons/FileDownload';
 import MenuIcon from '@rsuite/icons/Menu';
 import InfoRoundIcon from '@rsuite/icons/InfoRound';
 import { BuildRequests, ScreenshotRequests } from 'angles-javascript-client';
-import { useLocation } from 'react-router-dom';
+import { useSearchParams } from 'next/navigation';
 import {
   Panel,
   Row,
@@ -55,11 +55,17 @@ import FeaturePieChart from './charts/FeaturePieChart';
 // import ScreenshotModal from "../../common/screenshot-view/modal/ScreenhotModal";
 
 const TestRunDetailsPage = function (props) {
-  const location = useLocation();
+  const searchParams = useSearchParams();
   const intl = useIntl();
   const [showModal, setShowModal] = useState(false);
   const [screenshots, setScreenshots] = useState(null);
-  const [query] = useState(queryString.parse(location.search));
+
+  const query = {
+    buildId: searchParams.get('buildId'),
+    loadScreenshotId: searchParams.get('loadScreenshotId'),
+    selectedTab: searchParams.get('selectedTab'),
+  };
+
   const [currentBuild, setCurrentBuild] = useState(null);
   const [displayArtifacts, setDisplayArtifacts] = useState(false);
   // const [, setFilterStates] = useState([]);
@@ -260,7 +266,7 @@ const TestRunDetailsPage = function (props) {
                       >
                         <span>{getTestRunEndIcon(currentBuild)}</span>
                       </Whisper>
-                      { `${currentBuild.name}` }
+                      {`${currentBuild.name}`}
                     </div>
                   )}
                 >
@@ -421,7 +427,7 @@ const TestRunDetailsPage = function (props) {
                       trigger="hover"
                       speaker={(
                         <Tooltip>
-                          { intl.formatMessage({ id: 'page.test-run.icons.screenshots.whisper' }, { numberOfScreenshots: screenshots.length }) }
+                          {intl.formatMessage({ id: 'page.test-run.icons.screenshots.whisper' }, { numberOfScreenshots: screenshots.length })}
                         </Tooltip>
                       )}
                     >

@@ -2,3 +2,8 @@
 /build/
 .idea/
 .DS_Store:
+.vscode/
+.next/
+
+
+src/styles/main.css

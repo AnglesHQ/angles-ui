@@ -6,7 +6,6 @@ import { Panel } from 'rsuite';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import Alert from 'react-bootstrap/Alert';
-import { useNavigate } from 'react-router-dom';
 import { BaselineRequests, ScreenshotRequests } from 'angles-javascript-client';
 import ImageCarousel from './ImageCarousel';
 import CurrentImageView from './image/CurrentImageView';

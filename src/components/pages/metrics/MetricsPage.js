@@ -4,7 +4,9 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import { FormattedMessage, useIntl } from 'react-intl';
 import queryString from 'query-string';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import Cookies from 'js-cookie';
+import { storeCurrentTeam } from '../../../redux/teamActions';
 import { MetricRequests } from 'angles-javascript-client';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
@@ -28,21 +30,22 @@ import ExecutionMetricsResultsBarChart from './charts/ExecutionMetricsResultsBar
 import PhaseMetricsResultsBarChart from './charts/PhaseMetricsResultsBarChart';
 
 const MetricsPage = function (props) {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
   const intl = useIntl();
-  const query = queryString.parse(location.search);
-  const { teams, currentTeam } = props;
+  // const query = queryString.parse(location.search);
+  const { teams, currentTeam, saveCurrentTeam } = props;
   const {
     component,
     grouping,
-    startDate: queryStartDate,
-    endDate: queryEndDate,
-  } = query;
+  } = Object.fromEntries(searchParams.entries());
+  const queryStartDate = searchParams.get('startDate');
+  const queryEndDate = searchParams.get('endDate');
   const [startDate, setStartDate] = useState(queryStartDate ? moment(queryStartDate) : moment().subtract(30, 'days'));
   const [endDate, setEndDate] = useState(queryEndDate ? moment(queryEndDate) : moment());
   const [groupingPeriod, setGroupingPeriod] = useState(grouping || 'week');
-  const [selectedTeam, setSelectedTeam] = useState(currentTeam._id || undefined);
+  const [selectedTeam, setSelectedTeam] = useState(currentTeam?._id || undefined);
   const [selectedComponent, setSelectedComponent] = useState(component || 'any');
   const [key, setKey] = useState('execution');
   const [metrics, setMetrics] = useState({});
@@ -71,7 +74,7 @@ const MetricsPage = function (props) {
   };
 
   const getMetrics = (teamId, componentId, fromDate, toDate, groupingId) => {
-    if (metrics && metrics !== {}) {
+    if (metrics && Object.keys(metrics).length > 0) {
       setMetrics(undefined);
     }
     metricRequests.getPhaseMetrics(teamId, componentId, fromDate, toDate, groupingId)
@@ -103,11 +106,24 @@ const MetricsPage = function (props) {
     setGroupingPeriod(groupingValue);
   };
 
+  const getTeam = (teamId) => {
+    if (teams && Array.isArray(teams)) {
+      return teams.find((team) => team._id === teamId);
+    }
+    return undefined;
+  };
+
   const handleTeamChange = (teamId) => {
-    const { changeCurrentTeam } = props;
     changeCurrentTeam(teamId);
     setSelectedTeam(teamId);
     setSelectedComponent('any');
+  };
+
+  const changeCurrentTeam = (teamId) => {
+    if (teamId !== undefined) {
+      saveCurrentTeam(getTeam(teamId));
+      Cookies.set('teamId', teamId, { expires: 365 });
+    }
   };
 
   const handleComponentChange = (componentId) => {
@@ -133,16 +149,13 @@ const MetricsPage = function (props) {
       endDate: endDate.format('YYYY-MM-DD'),
     };
     // setting the url so people can copy it.
-    navigate({
-      pathname: '/metrics',
-      search: `?${new URLSearchParams(params).toString()}`,
-    });
+    router.push(`${pathname}?${new URLSearchParams(params).toString()}`);
     retrieveMetrics();
   };
 
   const getComponents = (teamId) => {
     const teamFound = teams.find((team) => team._id === teamId);
-    return teamFound.components;
+    return teamFound ? teamFound.components : [];
   };
 
   return (
@@ -318,4 +331,8 @@ const mapStateToProps = (state) => ({
   teams: state.teamsReducer.teams,
 });
 
-export default connect(mapStateToProps, null)(MetricsPage);
+const mapDispatchToProps = (dispatch) => ({
+  saveCurrentTeam: (selectedTeam) => dispatch(storeCurrentTeam(selectedTeam)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(MetricsPage);

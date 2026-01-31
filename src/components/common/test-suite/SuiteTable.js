@@ -69,7 +69,7 @@ const SuiteTable = function (props) {
                   <FormattedMessage id="common.component.suite-table.header.suite" />
                 </span>
                 <span>: </span>
-                { suite.name }
+                {suite.name}
               </div>
             </Col>
             <Col xs={4}>
@@ -77,14 +77,14 @@ const SuiteTable = function (props) {
                 <FormattedMessage id="common.component.suite-table.header.duration" />
               </span>
               <span>: </span>
-              { getDuration(suite) }
+              {getDuration(suite)}
             </Col>
             <Col xs={2}>
               <span className="field-label">
                 <FormattedMessage id="common.component.suite-table.header.total" />
               </span>
               <span>: </span>
-              { sum(suite.result) }
+              {sum(suite.result)}
             </Col>
             <Col xs={4}>
               <ExecutionsResultsBar result={suite.result} />

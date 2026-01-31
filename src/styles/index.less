@@ -1,4 +1,4 @@
-@import "rsuite/dist/rsuite.css";
+// @import "rsuite/dist/rsuite.css";
 @import '../components/pages/about/styles.less';
 @import '../components/pages/dashboard/styles.less';
 @import '../components/pages/test-run/styles.less';
@@ -108,7 +108,7 @@
 
 }
 
- //TODO: add dark mode colors
+//TODO: add dark mode colors
 //@media (prefers-color-scheme: dark) {
 :root[data-theme="dark"] {
     //master palette
@@ -127,9 +127,10 @@
     --master-icon-color: hsl(210, 100%, 60%);
 
 }
+
 //}
 
-body {
+html body {
     background: var(--body-background);
     overflow-x: hidden;
 }
@@ -168,6 +169,7 @@ body {
         left: 19px;
         top: 14px;
     }
+
     .rs-sidenav-body {
         margin-left: -3px;
         padding-right: 3px;
@@ -216,6 +218,7 @@ body {
         .rs-table-cell-first {
             border-top-left-radius: 7px;
         }
+
         .rs-table-cell-last {
             border-top-right-radius: 7px;
         }
@@ -262,13 +265,17 @@ body {
 .rs-picker {
     padding-right: 5px;
 
-    .rs-picker-toggle, .rs-picker-toggle-active, .rs-picker-default {
+    .rs-picker-toggle,
+    .rs-picker-toggle-active,
+    .rs-picker-default {
         background: var(--select-picker-background) !important;
         color: var(--select-picker-font-color);
         border: none;
     }
 
-    .rs-picker-toggle:hover, .rs-picker-toggle:focus, .rs-picker-toggle:focus-visible {
+    .rs-picker-toggle:hover,
+    .rs-picker-toggle:focus,
+    .rs-picker-toggle:focus-visible {
         background: var(--select-picker-background) !important;
         color: var(--select-picker-font-color);
         border: none;
@@ -314,13 +321,16 @@ a {
     text-decoration: none;
 }
 
-a:hover, a:focus {
+a:hover,
+a:focus {
     color: var(--link-color-1-focus);
     text-decoration: none;
 }
+
 a:visited {
     text-decoration: none;
 }
+
 a:active {
     text-decoration: none;
 }
@@ -330,13 +340,13 @@ a:active {
     background-color: var(--button-background);
 }
 
-.filter-submit-button:hover  {
+.filter-submit-button:hover {
     color: var(--button-hover-font-color);
     background-color: var(--button-hover-background);
 }
 
-.filter-submit-button:focus  {
-    outline:none;
+.filter-submit-button:focus {
+    outline: none;
     background-color: var(--button-background);
 }
 

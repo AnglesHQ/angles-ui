@@ -2,11 +2,10 @@ import React from 'react';
 import { Panel } from 'rsuite';
 import DashboardPage from './DashboardPage';
 
-const Page = function (props) {
-  const { changeCurrentTeam } = props;
+const Page = function () {
   return (
     <Panel>
-      <DashboardPage changeCurrentTeam={changeCurrentTeam} />
+      <DashboardPage />
     </Panel>
   );
 };

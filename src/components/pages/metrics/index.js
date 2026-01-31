@@ -3,8 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { Breadcrumb, Panel } from 'rsuite';
 import MetricsPage from './MetricsPage';
 
-const Page = function (props) {
-  const { changeCurrentTeam } = props;
+const Page = function () {
   return (
     <Panel>
       <Breadcrumb>
@@ -15,9 +14,7 @@ const Page = function (props) {
           <FormattedMessage id="page.metrics.bread-crumb" />
         </Breadcrumb.Item>
       </Breadcrumb>
-      <MetricsPage
-        changeCurrentTeam={changeCurrentTeam}
-      />
+      <MetricsPage />
     </Panel>
   );
 };
