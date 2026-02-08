@@ -22,10 +22,9 @@ EXPOSE 3001/tcp
 COPY package.json ./
 COPY package-lock.json ./
 RUN npm install --silent
-RUN npm run build --silent
 
 # add app
 COPY . ./
 
 # start app
-CMD ["npm", "run-script", "start"]
+CMD ["npm", "run-script", "build", "&&", "npm", "run-script", "start"]
