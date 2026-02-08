@@ -24,7 +24,7 @@ jobs:
           node-version: 24
       - name: "Automated Version Bump"
         id: version-bump
-        uses: "phips28/gh-action-bump-version@latest"
+        uses: "phips28/gh-action-bump-version@master"
         with:
           tag-prefix: ''
           minor-wording: 'minor_bump'
