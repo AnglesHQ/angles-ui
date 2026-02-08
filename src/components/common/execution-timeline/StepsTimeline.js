@@ -3,7 +3,7 @@ import React from 'react';
 import DomPurify from 'dompurify';
 import parse from 'html-react-parser';
 import Moment from 'react-moment';
-import { useNavigate } from 'react-router-dom';
+
 import {
   Timeline,
   Panel,

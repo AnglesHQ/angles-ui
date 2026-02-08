@@ -1,9 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Container } from 'react-bootstrap';
-import queryString from 'query-string';
 import { ScreenshotRequests, MetricRequests } from 'angles-javascript-client';
 import {
   Button,
@@ -21,8 +20,13 @@ import CurrentScreenshotContext from '../../../context/CurrentScreenshotContext'
 import ScreenshotCard from '../../common/screenshot-view/ScreenshotCard';
 
 const ScreenshotLibraryPage = function () {
-  const location = useLocation();
-  const query = queryString.parse(location.search);
+  const searchParams = useSearchParams();
+  const query = {
+    selectedTab: searchParams.get('selectedTab'),
+    view: searchParams.get('view'),
+    tag: searchParams.get('tag'),
+    numberOfDays: searchParams.get('numberOfDays'),
+  };
   const [groupedScreenshots, setGroupedScreenshots] = useState(null);
   const [filteredScreenshots, setFilteredScreenshots] = useState(null);
   const [retrievingScreenshots, setRetrievingScreenshots] = useState(false);
@@ -267,17 +271,17 @@ const ScreenshotLibraryPage = function () {
         {
           retrievingScreenshots === false
             && (filteredScreenshots === undefined || (Array.isArray(filteredScreenshots)
-            && filteredScreenshots.length === 0)) ? (
-              <div className="alert alert-primary" role="alert">
-                <span>
-                  <span>No images to display.</span>
-                </span>
-              </div>
-            ) : null
+              && filteredScreenshots.length === 0)) ? (
+            <div className="alert alert-primary" role="alert">
+              <span>
+                <span>No images to display.</span>
+              </span>
+            </div>
+          ) : null
         }
         {
           retrievingScreenshots === false && filteredScreenshots
-          && Array.isArray(filteredScreenshots) && filteredScreenshots.length > 0 ? (
+            && Array.isArray(filteredScreenshots) && filteredScreenshots.length > 0 ? (
             <ScreenshotView
               buildScreenshots={filteredScreenshots}
               selectedScreenshotId={filteredScreenshots[0]._id}
@@ -285,7 +289,7 @@ const ScreenshotLibraryPage = function () {
               addImageToBuildScreenshots={addImageToBuildScreenshots}
               removeImageFromBuildScreenshots={removeImageFromBuildScreenshots}
             />
-            ) : null
+          ) : null
         }
       </Panel>
       {

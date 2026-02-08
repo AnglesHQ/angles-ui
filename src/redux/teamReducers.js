@@ -1,7 +1,7 @@
 import { STORE_CURRENT_TEAM, STORE_TEAMS, STORE_TEAMS_ERROR } from './teamActions';
 
 export const teamsReducer = (state = {
-  teams: {},
+  teams: [],
   currentTeam: undefined,
   teamsError: undefined,
 }, action = {}) => {

@@ -4,7 +4,7 @@ import { Panel, Stack } from 'rsuite';
 import { useIntl } from 'react-intl';
 import moment from 'moment';
 // import { getBuildDurationInSeconds } from '../../../../utility/TimeUtilities';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 
 const defaultOptions = {
   chart: {
@@ -117,11 +117,11 @@ const generateResultsData = (builds) => {
 const ExecutionBarChart = function (props) {
   const { builds, title } = props;
   const reversedBuilds = [...builds].reverse();
-  const navigate = useNavigate();
+  const router = useRouter();
   const graphData = generateResultsData(builds);
   defaultOptions.chart.events.click = function (event, chartContext, config) {
     if (config.dataPointIndex >= 0) {
-      navigate(`/test-run/?buildId=${reversedBuilds[config.dataPointIndex]._id}`);
+      router.push(`/test-run/?buildId=${reversedBuilds[config.dataPointIndex]._id}`);
     }
   };
   const { data, labels } = graphData;

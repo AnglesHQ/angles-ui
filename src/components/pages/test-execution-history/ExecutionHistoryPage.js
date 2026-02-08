@@ -7,9 +7,8 @@ import {
   Panel,
   Row,
 } from 'rsuite';
-import queryString from 'query-string';
 import Modal from 'react-bootstrap/Modal';
-import { useLocation } from 'react-router-dom';
+import { useSearchParams } from 'next/navigation';
 import { ExecutionRequests, ScreenshotRequests } from 'angles-javascript-client';
 import TestExecutionsResultPieChart from './charts/TestExecutionsResultPieChart';
 import TestExecutionTimelineChart from './charts/TestExecutionTimeLineChart';
@@ -22,7 +21,7 @@ import Message from '../../common/Message';
 
 const SummaryPage = function () {
   const intl = useIntl();
-  const location = useLocation();
+  const searchParams = useSearchParams();
   const [limit] = useState(30);
   const [currentSkip] = useState(0);
   const [executions, setExecutions] = useState([]);
@@ -30,7 +29,9 @@ const SummaryPage = function () {
   const [showModal, setShowModal] = useState(false);
   const [selectedTab, setSelectedTab] = useState('image');
   const [suiteResult, setSuiteResult] = useState(null);
-  const [query] = useState(queryString.parse(location.search));
+  const query = {
+    executionId: searchParams.get('executionId'),
+  };
   const screenshotRequests = new ScreenshotRequests(axios);
   const executionRequests = new ExecutionRequests(axios);
   const {
@@ -61,6 +62,7 @@ const SummaryPage = function () {
     executionRequests
       .getExecutionHistory(executionId, skip, queryLimit)
       .then((response) => {
+        console.log('DEBUG: getExecutionHistory response', response);
         const { executions: retrievedExecutions } = response;
         retrieveScreenshotDetailsForExecutions(retrievedExecutions);
         const executionsToSave = [...retrievedExecutions];

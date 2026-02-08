@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import queryString from 'query-string';
+import { useSearchParams } from 'next/navigation';
 import axios from 'axios';
+import { connect } from 'react-redux';
 import { BuildRequests } from 'angles-javascript-client';
 import TestRunCompareTable from './TestRunCompareTable';
 
 const TestRunsComparePage = function (props) {
-  const location = useLocation();
-  const [query] = useState(queryString.parse(location.search));
+  const searchParams = useSearchParams();
+  const buildIds = searchParams.get('buildIds');
   const [testRunCompareBuilds, setTestRunCompareBuilds] = useState([]);
   const buildRequests = new BuildRequests(axios);
 
@@ -21,8 +21,10 @@ const TestRunsComparePage = function (props) {
 
   useEffect(() => {
     const { currentTeam } = props;
-    getTestRunCompareBuilds(currentTeam._id, query.buildIds.split(','));
-  }, []);
+    if (currentTeam && buildIds) {
+      getTestRunCompareBuilds(currentTeam._id, buildIds.split(','));
+    }
+  }, [props.currentTeam, buildIds]);
 
   return (
     (testRunCompareBuilds.length === 0) ? (
@@ -38,4 +40,8 @@ const TestRunsComparePage = function (props) {
   );
 };
 
-export default TestRunsComparePage;
+const mapStateToProps = (state) => ({
+  currentTeam: state.teamsReducer.currentTeam,
+});
+
+export default connect(mapStateToProps, null)(TestRunsComparePage);

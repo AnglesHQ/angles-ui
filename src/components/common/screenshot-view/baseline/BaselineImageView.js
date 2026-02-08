@@ -1,5 +1,5 @@
 /* eslint  no-param-reassign: [0] */
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState, useRef } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import {
   Button,
@@ -8,7 +8,7 @@ import {
 import { IoGitCompareOutline } from 'react-icons/io5';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import Table from 'react-bootstrap/Table';
-import RegionSelect from 'react-region-select';
+import ReactCrop from 'react-image-crop';
 import ScreenshotDetailsTable from '../ScreenshotDetailsTable';
 import CurrentScreenshotContext from '../../../../context/CurrentScreenshotContext';
 import Message from '../../Message';
@@ -27,128 +27,142 @@ const BaselineImageView = (props) => {
     currentBaselineCompare,
     currentBaselineCompareJson,
   } = useContext(CurrentScreenshotContext);
-  const [regions, setRegions] = React.useState([]);
-  const [editing, setEditing] = React.useState(false);
-  const [ignoreBlocks, setIgnoreBlocks] = React.useState([]);
-  const regionStyle = { background: 'rgba(0, 255, 80, 0.3)' };
 
-  const resetIgnoreBlocks = () => {
-    const existingIgnoreBlocks = [];
-    currentBaseLineDetails.ignoreBoxes.forEach((block) => {
-      existingIgnoreBlocks.push(
-        {
-          x: block.left,
-          y: block.top,
-          width: 100 - (block.left + block.right),
-          height: 100 - (block.top + block.bottom),
-          data: {},
-        },
-      );
-    });
-    setRegions(existingIgnoreBlocks);
-    setEditing(false);
-  };
+  const [regions, setRegions] = useState([]);
+  const [editing, setEditing] = useState(false);
+  const [crop, setCrop] = useState();
+  const [activeIndex, setActiveIndex] = useState(null);
+  const imgRef = useRef(null);
 
+  // Load initial regions from baseline details
   useEffect(() => {
     if (currentBaseLineDetails && currentBaseLineDetails.ignoreBoxes
       && currentBaseLineDetails.ignoreBoxes.length > 0) {
-      resetIgnoreBlocks();
+      const existingIgnoreBlocks = currentBaseLineDetails.ignoreBoxes.map((block) => ({
+        unit: '%',
+        x: block.left,
+        y: block.top,
+        width: 100 - (block.left + block.right),
+        height: 100 - (block.top + block.bottom),
+      }));
+      setRegions(existingIgnoreBlocks);
     } else {
       setRegions([]);
       setEditing(false);
     }
   }, [currentBaseLineDetails]);
 
-  useEffect(() => {
-    const latestIgnoreBlocks = [];
-    regions.forEach((crtRegion) => {
-      latestIgnoreBlocks.push({
-        left: crtRegion.x,
-        top: crtRegion.y,
-        right: 100 - (crtRegion.x + crtRegion.width),
-        bottom: 100 - (crtRegion.y + crtRegion.height),
-      });
-    });
-    setIgnoreBlocks(latestIgnoreBlocks);
-  }, [regions]);
-
-  const onChange = (newRegions) => {
-    if (editing) {
-      newRegions.forEach((el) => {
-        const {
-          x,
-          y,
-          width,
-          height,
-        } = el;
-        el.x = parseInt(x, 10);
-        el.y = parseInt(y, 10);
-        el.width = parseInt(width, 10);
-        el.height = parseInt(height, 10);
-      });
-      setRegions(newRegions);
-    }
-  };
-
-  // eslint-disable-next-line no-unused-vars
-  const changeRegionData = (index, event) => {
-    const region = regions[index];
-    let regionsArray = [];
-    switch (event.target.value) {
-      case 'delete':
-        // delete region
-        regionsArray = regions.filter((s) => s !== region);
-        onChange(regionsArray);
-        break;
-      default:
-        break;
-    }
-  };
-
-  const deleteRegion = (index) => {
-    const region = regions[index];
-    let regionsArray = [];
-    regionsArray = regions.filter((s) => s !== region);
-    onChange(regionsArray);
-  };
-
-  const regionRenderer = (regionProps) => {
-    if (!regionProps.isChanging) {
-      return (
-        <div style={{ position: 'absolute', right: 0, bottom: '-25px' }}>
-          {
-           editing
-             ? (
-               <span
-                 className="remove-region-icon"
-                 type="button"
-                 onClick={() => deleteRegion(regionProps.index)}
-               >
-                 <RiDeleteBin6Line className="baseline-action-icon" />
-               </span>
-             )
-             : null
-          }
-        </div>
-      );
-    }
-    return null;
-  };
-
   const toggleEditing = () => {
     if (editing) {
+      // Save: Convert regions back to left/top/right/bottom format
+      const ignoreBlocks = regions.map((r) => ({
+        left: r.x,
+        top: r.y,
+        right: 100 - (r.x + r.width),
+        bottom: 100 - (r.y + r.height),
+      }));
       makeUpdateBaselineRequest(currentBaseLineDetails._id, undefined, ignoreBlocks);
     }
     setEditing(!editing);
+    setActiveIndex(null);
+    setCrop(undefined);
   };
 
-  // init(newRegions) {
-  //   setRegions(newRegions);
-  // }
+  const resetIgnoreBlocks = () => {
+    if (currentBaseLineDetails && currentBaseLineDetails.ignoreBoxes) {
+      const existingIgnoreBlocks = currentBaseLineDetails.ignoreBoxes.map((block) => ({
+        unit: '%',
+        x: block.left,
+        y: block.top,
+        width: 100 - (block.left + block.right),
+        height: 100 - (block.top + block.bottom),
+      }));
+      setRegions(existingIgnoreBlocks);
+    } else {
+      setRegions([]);
+    }
+    setEditing(false);
+    setActiveIndex(null);
+    setCrop(undefined);
+  };
+
+  const onCropChange = (c) => {
+    setCrop(c);
+  };
+
+  const onCropComplete = (crop, percentCrop) => {
+    if (percentCrop.width && percentCrop.height) {
+      const newRegions = [...regions];
+      if (activeIndex !== null) {
+        newRegions[activeIndex] = percentCrop;
+      } else {
+        newRegions.push(percentCrop);
+      }
+      setRegions(newRegions);
+      // Reset after adding/updating
+      setCrop(undefined);
+      setActiveIndex(null);
+    }
+  };
+
+  const startEditRegion = (index, e) => {
+    if (!editing) return;
+    e.stopPropagation(); // prevent ReactCrop from starting a new crop immediately if overlapping
+    setActiveIndex(index);
+    setCrop(regions[index]);
+  };
+
+  const deleteRegion = (index, e) => {
+    e.stopPropagation();
+    const newRegions = regions.filter((_, i) => i !== index);
+    setRegions(newRegions);
+    if (activeIndex === index) {
+      setActiveIndex(null);
+      setCrop(undefined);
+    } else if (activeIndex > index) {
+      setActiveIndex(activeIndex - 1);
+    }
+  };
+
+  const renderOverlayRegions = () => regions.map((region, index) => {
+    // If this region is currently being edited (active), don't show the overlay
+    if (index === activeIndex) return null;
+
+    return (
+      <div
+        key={index}
+        onClick={(e) => startEditRegion(index, e)}
+        style={{
+          position: 'absolute',
+          left: `${region.x}%`,
+          top: `${region.y}%`,
+          width: `${region.width}%`,
+          height: `${region.height}%`,
+          border: '1px solid #00ff50',
+          background: 'rgba(0, 255, 80, 0.3)',
+          cursor: editing ? 'pointer' : 'default',
+          zIndex: 10,
+        }}
+      >
+        {editing && (
+          <div style={{ position: 'absolute', right: 0, bottom: '-25px' }}>
+            <span
+              className="remove-region-icon"
+              type="button"
+              onClick={(e) => deleteRegion(index, e)}
+            >
+              <RiDeleteBin6Line className="baseline-action-icon" />
+            </span>
+          </div>
+        )}
+      </div>
+    );
+  });
 
   const generateBaselineCompareTable = () => {
     const isBaselineImage = isBaseline(currentScreenshotDetails._id);
     const imageToDisplay = isBaselineImage ? currentScreenshot : currentBaselineCompare;
+
     return (
       <Table className="baseline-compare-table">
         <tbody>
@@ -187,18 +201,35 @@ const BaselineImageView = (props) => {
               </div>
             </td>
             <td>
-              <div style={{ display: 'block' }}>
+              <div style={{ display: 'block', position: 'relative' }}>
                 <div style={{ flexGrow: 1, flexShrink: 1, width: '100%' }}>
-                  <RegionSelect
-                    maxRegions={10}
-                    regions={regions}
-                    regionStyle={regionStyle}
-                    constraint
-                    onChange={onChange}
-                    regionRenderer={regionRenderer}
-                  >
-                    <img className="screenshot" src={imageToDisplay} id="baseline" alt="Compare" width="100%" />
-                  </RegionSelect>
+                  {editing ? (
+                    <ReactCrop
+                      crop={crop}
+                      onChange={onCropChange}
+                      onComplete={onCropComplete}
+                      disabled={!editing}
+                    >
+                      <img
+                        ref={imgRef}
+                        className="screenshot"
+                        src={imageToDisplay}
+                        alt="Compare"
+                        width="100%"
+                      />
+                      {renderOverlayRegions()}
+                    </ReactCrop>
+                  ) : (
+                    <div style={{ position: 'relative' }}>
+                      <img
+                        className="screenshot"
+                        src={imageToDisplay}
+                        alt="Compare"
+                        width="100%"
+                      />
+                      {renderOverlayRegions()}
+                    </div>
+                  )}
                 </div>
               </div>
             </td>

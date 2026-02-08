@@ -22,6 +22,7 @@ EXPOSE 3001/tcp
 COPY package.json ./
 COPY package-lock.json ./
 RUN npm install --silent
+RUN npm run build --silent
 
 # add app
 COPY . ./
