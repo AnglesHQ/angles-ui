@@ -1,5 +1,5 @@
 # pull official base image
-FROM node:16.15.0-alpine
+FROM node:24.12.0-alpine
 
 # set working directory
 WORKDIR /app
@@ -21,10 +21,10 @@ EXPOSE 3001/tcp
 # install app dependencies
 COPY package.json ./
 COPY package-lock.json ./
-RUN npm install --silent
+RUN npm install --legacy-peer-deps
 
 # add app
 COPY . ./
 
 # start app
-CMD ["npm", "run-script", "build", "&&", "npm", "run-script", "start"]
+CMD ["npm", "run", "start"]
