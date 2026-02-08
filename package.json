@@ -15,6 +15,7 @@
     "@rsuite/icons": "^1.0.2",
     "@types/react": "^18.0.28",
     "angles-javascript-client": "^1.0.43",
+    "apexcharts": "^5.3.6",
     "axios": "^1.13.3",
     "base-64": "^1.0.0",
     "bootstrap": "^5.2.0",
@@ -67,7 +68,7 @@
     "dev": "npm run build-css && next dev --webpack",
     "build": "npm run build-css && next build --webpack",
     "build-css": "lessc src/styles/index.less src/styles/main.css --js",
-    "start": "next start",
+    "start": "npm run build && next start",
     "lint": "next lint"
   },
   "eslintConfig": {
