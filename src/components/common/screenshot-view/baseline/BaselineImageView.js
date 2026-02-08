@@ -9,7 +9,6 @@ import { IoGitCompareOutline } from 'react-icons/io5';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import Table from 'react-bootstrap/Table';
 import ReactCrop from 'react-image-crop';
-import 'react-image-crop/dist/ReactCrop.css';
 import ScreenshotDetailsTable from '../ScreenshotDetailsTable';
 import CurrentScreenshotContext from '../../../../context/CurrentScreenshotContext';
 import Message from '../../Message';
@@ -91,13 +90,13 @@ const BaselineImageView = (props) => {
     setCrop(c);
   };
 
-  const onCropComplete = (c) => {
-    if (c.width && c.height) {
+  const onCropComplete = (crop, percentCrop) => {
+    if (percentCrop.width && percentCrop.height) {
       const newRegions = [...regions];
       if (activeIndex !== null) {
-        newRegions[activeIndex] = c;
+        newRegions[activeIndex] = percentCrop;
       } else {
-        newRegions.push(c);
+        newRegions.push(percentCrop);
       }
       setRegions(newRegions);
       // Reset after adding/updating

@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import axios from 'axios';
 import queryString from 'query-string';
 import Cookies from 'js-cookie';
@@ -168,12 +169,12 @@ const Shell = function (props) {
                 >
                     <Sidenav expanded={expand} defaultOpenKeys={['3']} appearance="subtle">
                         <Sidenav.Header>
-                            <a href="/">
+                            <Link href="/">
                                 <div className="sidebar-header">
                                     <img src="/assets/angles-icon.png" alt="Angles" className="sidebar-angles-icon" />
                                     <img src="/assets/angles-text-logo.png" alt="Angles" className="sidebar-angles-text-icon" />
                                 </div>
-                            </a>
+                            </Link>
                         </Sidenav.Header>
                         <Sidenav.Body>
                             <Nav activeKey={pathname}>

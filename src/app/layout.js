@@ -1,4 +1,5 @@
 import 'rsuite/dist/rsuite.min.css';
+import 'react-image-crop/dist/ReactCrop.css';
 import '../styles/main.css';
 import '../index.css';
 

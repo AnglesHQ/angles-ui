@@ -1,3 +1,4 @@
+'use client';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import moment from 'moment';
@@ -89,7 +90,7 @@ const MetricsPage = function (props) {
   };
 
   const retrieveMetrics = () => {
-    if (endDate && startDate) {
+    if (endDate && startDate && selectedTeam) {
       if (selectedComponent === 'any') {
         getMetrics(selectedTeam, undefined, startDate, endDate, groupingPeriod);
       } else {
@@ -99,8 +100,14 @@ const MetricsPage = function (props) {
   };
 
   useEffect(() => {
+    if (currentTeam) {
+      setSelectedTeam(currentTeam._id);
+    }
+  }, [currentTeam]);
+
+  useEffect(() => {
     retrieveMetrics();
-  }, []);
+  }, [selectedTeam]);
 
   const handleGroupingChange = (groupingValue) => {
     setGroupingPeriod(groupingValue);

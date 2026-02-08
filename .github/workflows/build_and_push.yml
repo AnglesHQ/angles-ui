@@ -12,19 +12,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout source code"
-        uses: "actions/checkout@v2"
+        uses: "actions/checkout@v6"
         with:
           ref: ${{ github.ref }}
           fetch-depth: 50
       - name: "cat package.json"
         run: cat ./package.json
       - name: "Setup Node.js"
-        uses: "actions/setup-node@v1"
+        uses: "actions/setup-node@v5"
         with:
-          node-version: 12
+          node-version: 24
       - name: "Automated Version Bump"
         id: version-bump
-        uses: "phips28/gh-action-bump-version@master"
+        uses: "phips28/gh-action-bump-version@latest"
         with:
           tag-prefix: ''
           minor-wording: 'minor_bump'
@@ -39,10 +39,13 @@ jobs:
         env:
           NEW_TAG: ${{ steps.version-bump.outputs.newTag }}
         run: echo "new tag $NEW_TAG"
-      - name: "publish release notes"
-        uses: fregante/release-with-changelog@v3
+      - name: "Publish Release"
+        uses: softprops/action-gh-release@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: ${{ steps.version-bump.outputs.newTag }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
   build:
     name: "Build angles-ui container and push to docker hub"
@@ -50,18 +53,17 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [ 12.x ]
+        node-version: [ 24 ]
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v6
       - run: git pull origin master
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node-version }}
       - name: Grab AnglesUI version
         id: extract_version
-        uses: Saionaro/extract-package-version@v1.0.6
-      # From now you can access the version
+        uses: Saionaro/extract-package-version@v1.3.0
       - name: Print version
         run: echo ${{ steps.extract_version.outputs.version }}
       - name: Login to Docker Hub
