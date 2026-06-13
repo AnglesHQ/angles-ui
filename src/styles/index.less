@@ -199,6 +199,35 @@ html body {
         color: var(--nav-hover-font-color) !important;
         background-color: var(--nav-hover-color) !important;
     }
+
+    .nav-toggle {
+        background-color: transparent !important;
+
+        .rs-nav-item,
+        .rs-navbar-item {
+            color: var(--nav-font-color) !important;
+
+            svg {
+                color: var(--nav-font-color) !important;
+                fill: var(--nav-font-color) !important;
+            }
+        }
+
+        .rs-nav-item:hover,
+        .rs-nav-item:focus,
+        .rs-nav-item:active,
+        .rs-navbar-item:hover,
+        .rs-navbar-item:focus,
+        .rs-navbar-item:active {
+            color: var(--nav-hover-font-color) !important;
+            background-color: var(--nav-hover-color) !important;
+
+            svg {
+                color: var(--nav-hover-font-color) !important;
+                fill: var(--nav-hover-font-color) !important;
+            }
+        }
+    }
 }
 
 .main-container {
