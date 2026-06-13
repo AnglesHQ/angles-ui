@@ -16,15 +16,9 @@ const generatePlatformDistributionBarGraphData = (metrics) => {
       });
     }
   });
-  const graphData = {
-    data: [],
-    labels: [],
-  };
-  Object.keys(result).forEach((key) => {
-    graphData.labels.push(key);
-    graphData.data.push({ name: key, data: [result[key]], type: 'column' });
-  });
-  return graphData;
+  const platforms = Object.keys(result);
+  const counts = platforms.map((platform) => result[platform]);
+  return { platforms, counts };
 };
 
 const PlatformDistributionBarChart = function (props) {
@@ -35,27 +29,25 @@ const PlatformDistributionBarChart = function (props) {
     xaxisTitle,
     platformColors: { colors },
   } = props;
+
+  const { platforms, counts } = generatePlatformDistributionBarGraphData(metrics);
+
   const defaultOptions = {
     chart: {
       toolbar: { show: false },
       animations: { enabled: false },
-      stacked: true,
-      stackType: 'normal',
+      stacked: false,
       background: 'var(--sub-panel-background)',
       foreColor: 'var(--sub-panel-font-color)',
     },
     plotOptions: {
       bar: {
-        // columnWidth: '60%',
         horizontal: true,
+        distributed: true,
       },
     },
     dataLabels: {
       enabled: false,
-    },
-    stroke: {
-      width: [0, 0, 0, 0, 3],
-      curve: 'smooth',
     },
     xaxis: {
       title: {
@@ -68,18 +60,18 @@ const PlatformDistributionBarChart = function (props) {
         show: true,
       },
     },
-    yaxis: [
-      {
-        title: {
-          text: yaxisTitle,
-        },
+    yaxis: {
+      title: {
+        text: yaxisTitle,
       },
-    ],
-    colors,
-    legend: { show: true },
+      categories: platforms,
+    },
+    colors: colors && colors.length > 0 ? colors : undefined,
+    legend: { show: false },
   };
-  const graphData = generatePlatformDistributionBarGraphData(metrics);
-  const { data, labels } = graphData;
+
+  const series = [{ name: xaxisTitle, data: counts }];
+
   return (
     <Panel
       className="execution-metrics-chart-panel"
@@ -90,12 +82,10 @@ const PlatformDistributionBarChart = function (props) {
       )}
     >
       <Chart
-        series={data}
+        series={series}
         type="bar"
-        height={350}
-        max-width={500}
-        /* eslint-disable-next-line prefer-object-spread */
-        options={Object.assign({}, defaultOptions, undefined, { labels })}
+        height={Math.max(200, platforms.length * 50 + 80)}
+        options={Object.assign({}, defaultOptions, { labels: platforms })}
       />
     </Panel>
   );

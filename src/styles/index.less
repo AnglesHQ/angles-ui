@@ -51,7 +51,7 @@
     // sub panels
     --sub-panel-background: var(--master-color-1);
     --sub-panel-font-color: var(--master-font-color-1);
-    --sub-panel-secondary-font-color: var(--master-font-color-2);
+    --sub-panel-secondary-font-color: var(--master-font-color-3);
     --sub-panel-icon-color: var(--master-icon-color);
 
     // tables
@@ -184,6 +184,50 @@ html body {
         color: var(--nav-hover-font-color);
         background-color: var(--nav-hover-color);
     }
+
+    .rs-dropdown-item {
+        color: var(--nav-font-color) !important;
+        background-color: transparent !important;
+        font-weight: bolder;
+    }
+
+    .rs-dropdown-item:hover,
+    .rs-dropdown-item-active,
+    .rs-dropdown-item:focus,
+    .rs-dropdown-item:focus-visible,
+    .rs-dropdown-item.rs-dropdown-item-active {
+        color: var(--nav-hover-font-color) !important;
+        background-color: var(--nav-hover-color) !important;
+    }
+
+    .nav-toggle {
+        background-color: transparent !important;
+
+        .rs-nav-item,
+        .rs-navbar-item {
+            color: var(--nav-font-color) !important;
+
+            svg {
+                color: var(--nav-font-color) !important;
+                fill: var(--nav-font-color) !important;
+            }
+        }
+
+        .rs-nav-item:hover,
+        .rs-nav-item:focus,
+        .rs-nav-item:active,
+        .rs-navbar-item:hover,
+        .rs-navbar-item:focus,
+        .rs-navbar-item:active {
+            color: var(--nav-hover-font-color) !important;
+            background-color: var(--nav-hover-color) !important;
+
+            svg {
+                color: var(--nav-hover-font-color) !important;
+                fill: var(--nav-hover-font-color) !important;
+            }
+        }
+    }
 }
 
 .main-container {
@@ -212,21 +256,30 @@ html body {
             color: var(--main-table-header-font-color);
             opacity: 0.8;
             font-weight: bold;
-            font-size: 1.2em;
+            font-size: 0.9em;
         }
 
         .rs-table-cell-first {
             border-top-left-radius: 7px;
+
+            .rs-table-cell-content {
+                border-top-left-radius: 7px;
+            }
         }
 
         .rs-table-cell-last {
             border-top-right-radius: 7px;
+
+            .rs-table-cell-content {
+                border-top-right-radius: 7px;
+            }
         }
     }
 
     .rs-table-row {
         //border-bottom: 2px solid var(--master-color-5);
         //background-color: var(--master-color-5);
+        border-bottom: none !important;
 
         .rs-table-cell {
             background-color: transparent;
@@ -246,16 +299,24 @@ html body {
 
         .rs-table-cell {
             background-color: var(--main-table-body-background);
-            font-size: 1.1em;
+            font-size: 0.9em;
         }
 
         .rs-table-row:last-child {
             .rs-table-cell-first {
                 border-bottom-left-radius: 7px;
+
+                .rs-table-cell-content {
+                    border-bottom-left-radius: 7px;
+                }
             }
 
             .rs-table-cell-last {
                 border-bottom-right-radius: 7px;
+
+                .rs-table-cell-content {
+                    border-bottom-right-radius: 7px;
+                }
             }
         }
     }
@@ -356,6 +417,7 @@ a:active {
     gap: 10px;
     position: relative;
     background: var(--main-panel-background);
+    color: var(--main-panel-font-color);
     padding: 4px 4px 4px 15px;
     border-radius: 6px;
 }

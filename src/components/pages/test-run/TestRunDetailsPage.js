@@ -68,7 +68,7 @@ const TestRunDetailsPage = function (props) {
 
   const [currentBuild, setCurrentBuild] = useState(null);
   const [displayArtifacts, setDisplayArtifacts] = useState(false);
-  // const [, setFilterStates] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState(null);
   const [filteredSuites, setFilteredSuites] = useState(null);
   const [downloadReportButtonEnabled, setDownloadReportButtonEnabled] = useState(true);
   const [selectedTab, setSelectedTab] = useState(query.selectedTab || 'image');
@@ -124,18 +124,20 @@ const TestRunDetailsPage = function (props) {
       });
   });
 
-  // const filterBuilds = (statesToFilterBy) => {
-  //   const filterSuites = [];
-  //   currentBuild.suites.forEach((suite) => {
-  //     const newSuite = { ...suite };
-  //     newSuite.executions = suite.executions
-  //       .filter((execution) => statesToFilterBy.length === 0
-  //         || statesToFilterBy.includes(execution.status));
-  //     filterSuites.push(newSuite);
-  //   });
-  //   setFilteredSuites(filterSuites);
-  //   setFilterStates(statesToFilterBy);
-  // };
+  const filterByStatus = (status) => {
+    if (!status || status === selectedStatus) {
+      // Deselect: show all
+      setSelectedStatus(null);
+      setFilteredSuites(currentBuild.suites);
+    } else {
+      setSelectedStatus(status);
+      const filtered = currentBuild.suites.map((suite) => ({
+        ...suite,
+        executions: suite.executions.filter((execution) => execution.status === status),
+      }));
+      setFilteredSuites(filtered);
+    }
+  };
 
   const addImageToBuildScreenshots = (screenshot) => {
     screenshots.push(screenshot);
@@ -475,6 +477,7 @@ const TestRunDetailsPage = function (props) {
                 <ExecutionPieChart
                   title={<FormattedMessage id="page.test-run.execution-pie-chart.title" />}
                   currentBuild={currentBuild}
+                  onStatusClick={filterByStatus}
                 />
               </Col>
               <Col xs={12}>

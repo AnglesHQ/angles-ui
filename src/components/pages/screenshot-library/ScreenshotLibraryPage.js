@@ -197,7 +197,7 @@ const ScreenshotLibraryPage = function () {
     <div>
       <Affix top={25}>
         <Stack className="top-menu-stack" spacing={10}>
-          <span>Search by: </span>
+          <span className="screenshot-view-or-tag-input-label">Search by: </span>
           <InputGroup className="screenshot-view-or-tag-input">
             <AutoComplete
               name="view"
