@@ -73,7 +73,7 @@ const FilterMenu = function (props) {
   } = props;
   return (
     <MultiCascader
-      style={{ width: 50 }}
+      style={{ width: 80 }}
       uncheckableItemValues={[1, 2]}
       className="dashboard-filter-button"
       placeholder={(
@@ -387,7 +387,7 @@ const DashboardPage = function (props) {
             <Row gutter={30} className="dashboard-header">
               <Col xs={8}>
                 <Panel className="trend-box bg-gradient-red">
-                  <ReviewPassIcon size="3x" className="chart-icon" />
+                  <ReviewPassIcon />
                   <div className="title">
                     <FormattedMessage
                       id="page.dashboard.panel.total-test-runs"
@@ -398,7 +398,7 @@ const DashboardPage = function (props) {
               </Col>
               <Col xs={8}>
                 <Panel className="trend-box bg-gradient-green">
-                  <DocPassIcon size="3x" className="chart-icon" />
+                  <DocPassIcon />
                   <div className="title">
                     <FormattedMessage
                       id="page.dashboard.panel.total-test-executions"
@@ -409,7 +409,7 @@ const DashboardPage = function (props) {
               </Col>
               <Col xs={8}>
                 <Panel className="trend-box bg-gradient-blue">
-                  <WaitIcon size="3x" className="chart-icon" />
+                  <WaitIcon />
                   <div className="title">
                     <FormattedMessage
                       id="page.dashboard.panel.total-execution-time"

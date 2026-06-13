@@ -6,6 +6,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const nextConfig = {
+    env: {
+        REACT_APP_ANGLES_API_URL: process.env.REACT_APP_ANGLES_API_URL,
+    },
     transpilePackages: ['rsuite', '@rsuite/icons'],
     webpack: (config, { isServer }) => {
         if (!isServer) {

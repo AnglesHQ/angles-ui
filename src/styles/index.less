@@ -217,16 +217,25 @@ html body {
 
         .rs-table-cell-first {
             border-top-left-radius: 7px;
+
+            .rs-table-cell-content {
+                border-top-left-radius: 7px;
+            }
         }
 
         .rs-table-cell-last {
             border-top-right-radius: 7px;
+
+            .rs-table-cell-content {
+                border-top-right-radius: 7px;
+            }
         }
     }
 
     .rs-table-row {
         //border-bottom: 2px solid var(--master-color-5);
         //background-color: var(--master-color-5);
+        border-bottom: none !important;
 
         .rs-table-cell {
             background-color: transparent;
@@ -252,10 +261,18 @@ html body {
         .rs-table-row:last-child {
             .rs-table-cell-first {
                 border-bottom-left-radius: 7px;
+
+                .rs-table-cell-content {
+                    border-bottom-left-radius: 7px;
+                }
             }
 
             .rs-table-cell-last {
                 border-bottom-right-radius: 7px;
+
+                .rs-table-cell-content {
+                    border-bottom-right-radius: 7px;
+                }
             }
         }
     }

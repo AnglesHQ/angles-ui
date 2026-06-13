@@ -40,7 +40,7 @@ const AboutPage = function () {
               id="page.about.about-api"
               values={{
                 // TODO: fix link
-                apiLink: <a href="src/components/pages/about/AboutPage?url=https://raw.githubusercontent.com/AnglesHQ/angles/master/swagger/swagger.json" rel="noreferrer" target="_blank"> API </a>,
+                apiLink: <a href={`${process.env.REACT_APP_ANGLES_API_URL}/api-docs`} rel="noreferrer" target="_blank"> API </a>,
               }}
             />
           </span>

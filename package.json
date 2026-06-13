@@ -68,7 +68,7 @@
     "dev": "npm run build-css && next dev --webpack",
     "build": "npm run build-css && next build --webpack",
     "build-css": "lessc src/styles/index.less src/styles/main.css --js",
-    "start": "npm run build && next start",
+    "start": "next start",
     "lint": "next lint"
   },
   "eslintConfig": {
