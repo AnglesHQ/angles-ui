@@ -11,9 +11,11 @@ import { connect } from 'react-redux';
 import { EnvironmentRequests, TeamRequests } from 'angles-javascript-client';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import { useAuth } from '../context/AuthContext';
 
 import {
     Container,
+    Header,
     Sidebar,
     Sidenav,
     Content,
@@ -27,6 +29,9 @@ import BarChart from '@rsuite/icons/BarChart';
 import DocPass from '@rsuite/icons/DocPass';
 import InfoOutline from '@rsuite/icons/InfoOutline';
 import GlobalIcon from '@rsuite/icons/Global';
+import AdminIcon from '@rsuite/icons/Admin';
+import UserBadgeIcon from '@rsuite/icons/UserBadge';
+import ExitIcon from '@rsuite/icons/Exit';
 import { CgDarkMode } from 'react-icons/cg';
 
 import translations from '../translations/translations.json';
@@ -35,6 +40,7 @@ import { storeEnvironments } from '../redux/environmentActions';
 import { clearCurrentErrorMessage, clearCurrentInfoMessage, clearCurrentLoaderMessage } from '../redux/notificationActions';
 
 axios.defaults.baseURL = process.env.NEXT_PUBLIC_ANGLES_API_URL || 'http://localhost:3000/rest/api/v1.0';
+axios.defaults.withCredentials = true;
 
 const Shell = function (props) {
     const pathname = usePathname();
@@ -44,6 +50,7 @@ const Shell = function (props) {
     const teamRequests = new TeamRequests(axios);
     const environmentRequests = new EnvironmentRequests(axios);
     const [expand, setExpand] = useState(true);
+    const { user, logout, isLoading } = useAuth();
 
     const {
         teams,
@@ -121,9 +128,17 @@ const Shell = function (props) {
     };
 
     useEffect(() => {
-        retrieveEnvironmentDetails();
-        retrieveTeamDetails();
-    }, []);
+        if (!isLoading && !user && pathname !== '/login') {
+            router.push('/login');
+        }
+    }, [user, isLoading, pathname, router]);
+
+    useEffect(() => {
+        if (user) {
+            retrieveEnvironmentDetails();
+            retrieveTeamDetails();
+        }
+    }, [user]);
 
     useEffect(() => {
         // Handle query params manually since we don't have location.search directly in typical way
@@ -159,73 +174,94 @@ const Shell = function (props) {
 
     return (
         <Container>
-            <Sidebar
-                className="main-sidebar"
-                width={expand ? 240 : 56}
-                collapsible
-            >
-                <Affix
-                    top={25}
+            {user && (
+                <Sidebar
+                    className="main-sidebar"
+                    width={expand ? 240 : 56}
+                    collapsible
                 >
-                    <Sidenav expanded={expand} defaultOpenKeys={['3']} appearance="subtle">
-                        <Sidenav.Header>
-                            <Link href="/">
-                                <div className="sidebar-header">
-                                    <img src="/assets/angles-icon.png" alt="Angles" className="sidebar-angles-icon" />
-                                    <img src="/assets/angles-text-logo.png" alt="Angles" className="sidebar-angles-text-icon" />
-                                </div>
-                            </Link>
-                        </Sidenav.Header>
-                        <Sidenav.Body>
-                            <Nav activeKey={pathname}>
-                                <Nav.Item as={Link} eventKey="1" icon={<DocPass style={{ fontSize: '20px', height: '20px' }} />} href="/">
-                                    <span>
-                                        <FormattedMessage
-                                            id="nav.dashboard"
-                                        />
-                                    </span>
-                                </Nav.Item>
-                                <Nav.Item as={Link} eventKey="2" icon={<BarChart style={{ fontSize: '20px', height: '20px' }} />} href="/metrics">
-                                    <span>
-                                        <FormattedMessage
-                                            id="nav.execution-metrics"
-                                        />
-                                    </span>
-                                </Nav.Item>
-                                <Nav.Item as={Link} eventKey="3" icon={<Image style={{ fontSize: '20px', height: '20px' }} />} href="/screenshot-library">
-                                    <span>
-                                        <FormattedMessage
-                                            id="nav.screenshot-library"
-                                        />
-                                    </span>
-                                </Nav.Item>
-                                <Nav.Menu eventKey="4" icon={<GlobalIcon style={{ fontSize: '20px', height: '20px' }} />} title={<FormattedMessage id="nav.language" />}>
-                                    {translations.map((translation, index) => (<Nav.Item key={index} eventKey={`4-${index}`} onClick={() => setLanguage(translation.code)}>{translation.text}</Nav.Item>))}
-                                </Nav.Menu>
-                                <Nav.Menu eventKey="5" icon={<CgDarkMode />} title={<FormattedMessage id="nav.theme" />}>
-                                    <Nav.Item eventKey="5-1" onClick={() => setTheme('light')}><FormattedMessage id="nav.theme.light" /></Nav.Item>
-                                    <Nav.Item eventKey="5-2" onClick={() => setTheme('dark')}><FormattedMessage id="nav.theme.dark" /></Nav.Item>
-                                </Nav.Menu>
-                                <Nav.Item as={Link} eventKey="6" icon={<InfoOutline style={{ fontSize: '20px', height: '20px' }} />} href="/about">
-                                    <span>
-                                        <FormattedMessage
-                                            id="nav.about"
-                                        />
-                                    </span>
-                                </Nav.Item>
-                            </Nav>
-                        </Sidenav.Body>
-                        <Navbar appearance="subtle" className="nav-toggle">
-                            <Nav pullRight>
-                                <Nav.Item style={{ width: 56, textAlign: 'center' }} onClick={() => toggleMenu()}>
-                                    {expand ? <AngleLeftIcon /> : <AngleRightIcon />}
-                                </Nav.Item>
-                            </Nav>
-                        </Navbar>
-                    </Sidenav>
-                </Affix>
-            </Sidebar>
+                    <Affix
+                        top={25}
+                    >
+                        <Sidenav expanded={expand} defaultOpenKeys={['3']} appearance="subtle">
+                            <Sidenav.Header>
+                                <Link href="/">
+                                    <div className="sidebar-header">
+                                        <img src="/assets/angles-icon.png" alt="Angles" className="sidebar-angles-icon" />
+                                        <img src="/assets/angles-text-logo.png" alt="Angles" className="sidebar-angles-text-icon" />
+                                    </div>
+                                </Link>
+                            </Sidenav.Header>
+                            <Sidenav.Body>
+                                <Nav activeKey={pathname}>
+                                    <Nav.Item as={Link} eventKey="1" icon={<DocPass style={{ fontSize: '20px', height: '20px' }} />} href="/">
+                                        <span>
+                                            <FormattedMessage
+                                                id="nav.dashboard"
+                                            />
+                                        </span>
+                                    </Nav.Item>
+                                    <Nav.Item as={Link} eventKey="2" icon={<BarChart style={{ fontSize: '20px', height: '20px' }} />} href="/metrics">
+                                        <span>
+                                            <FormattedMessage
+                                                id="nav.execution-metrics"
+                                            />
+                                        </span>
+                                    </Nav.Item>
+                                    <Nav.Item as={Link} eventKey="3" icon={<Image style={{ fontSize: '20px', height: '20px' }} />} href="/screenshot-library">
+                                        <span>
+                                            <FormattedMessage
+                                                id="nav.screenshot-library"
+                                            />
+                                        </span>
+                                    </Nav.Item>
+                                    <Nav.Item as={Link} eventKey="6" icon={<InfoOutline style={{ fontSize: '20px', height: '20px' }} />} href="/about">
+                                        <span>
+                                            <FormattedMessage
+                                                id="nav.about"
+                                            />
+                                        </span>
+                                    </Nav.Item>
+                                    {user && user.userType === 'admin' && (
+                                        <Nav.Menu eventKey="7" icon={<AdminIcon style={{ fontSize: '20px', height: '20px' }} />} title="Administration">
+                                            <Nav.Item as={Link} eventKey="7-1" href="/admin/users">Users</Nav.Item>
+                                            <Nav.Item as={Link} eventKey="7-2" href="/admin/settings">Settings</Nav.Item>
+                                        </Nav.Menu>
+                                    )}
+                                </Nav>
+                            </Sidenav.Body>
+                            <Navbar appearance="subtle" className="nav-toggle">
+                                <Nav pullRight>
+                                    <Nav.Item style={{ width: 56, textAlign: 'center' }} onClick={() => toggleMenu()}>
+                                        {expand ? <AngleLeftIcon /> : <AngleRightIcon />}
+                                    </Nav.Item>
+                                </Nav>
+                            </Navbar>
+                        </Sidenav>
+                    </Affix>
+                </Sidebar>
+            )}
             <Container className="main-container">
+                <Header>
+                    <Navbar appearance="subtle" className="header-navbar">
+                        <Nav pullRight>
+                            <Nav.Menu eventKey="4" icon={<GlobalIcon style={{ fontSize: '20px', height: '20px' }} />} title={<FormattedMessage id="nav.language" />}>
+                                {translations.map((translation, index) => (<Nav.Item key={index} eventKey={`4-${index}`} onClick={() => setLanguage(translation.code)}>{translation.text}</Nav.Item>))}
+                            </Nav.Menu>
+                            <Nav.Menu eventKey="5" icon={<CgDarkMode />} title={<FormattedMessage id="nav.theme" />}>
+                                <Nav.Item eventKey="5-1" onClick={() => setTheme('light')}><FormattedMessage id="nav.theme.light" /></Nav.Item>
+                                <Nav.Item eventKey="5-2" onClick={() => setTheme('dark')}><FormattedMessage id="nav.theme.dark" /></Nav.Item>
+                            </Nav.Menu>
+                            {user && (
+                                <Nav.Menu eventKey="0" icon={<UserBadgeIcon style={{ fontSize: '20px', height: '20px' }} />} title={user.username || 'Profile'}>
+                                    <Nav.Item eventKey="0-1" onClick={logout} icon={<ExitIcon style={{ fontSize: '20px', height: '20px' }} />}>
+                                        Logout
+                                    </Nav.Item>
+                                </Nav.Menu>
+                            )}
+                        </Nav>
+                    </Navbar>
+                </Header>
                 <Content className="main-content">
                     <main>
                         {

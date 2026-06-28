@@ -12,6 +12,7 @@
 @import '../components/common/screenshot-view/styles.less';
 @import '../components/common/test-suite/styles.less';
 @import '../components/common/results-bar/styles.less';
+@import './login.less';
 
 :root {
 
@@ -185,21 +186,6 @@ html body {
         background-color: var(--nav-hover-color);
     }
 
-    .rs-dropdown-item {
-        color: var(--nav-font-color) !important;
-        background-color: transparent !important;
-        font-weight: bolder;
-    }
-
-    .rs-dropdown-item:hover,
-    .rs-dropdown-item-active,
-    .rs-dropdown-item:focus,
-    .rs-dropdown-item:focus-visible,
-    .rs-dropdown-item.rs-dropdown-item-active {
-        color: var(--nav-hover-font-color) !important;
-        background-color: var(--nav-hover-color) !important;
-    }
-
     .nav-toggle {
         background-color: transparent !important;
 
@@ -227,6 +213,91 @@ html body {
                 fill: var(--nav-hover-font-color) !important;
             }
         }
+    }
+}
+
+.main-container .rs-navbar {
+    background-color: transparent !important;
+
+    .rs-nav-item,
+    .rs-navbar-item,
+    .rs-dropdown-toggle,
+    .rs-nav-item *,
+    .rs-navbar-item *,
+    .rs-dropdown-toggle * {
+        color: var(--nav-font-color) !important;
+        font-weight: bolder;
+
+        svg {
+            color: var(--nav-font-color) !important;
+            fill: var(--nav-font-color) !important;
+        }
+    }
+
+    .rs-nav-item:hover,
+    .rs-nav-item:focus,
+    .rs-nav-item:active,
+    .rs-navbar-item:hover,
+    .rs-navbar-item:focus,
+    .rs-navbar-item:active,
+    .rs-dropdown-toggle:hover,
+    .rs-dropdown-toggle:focus,
+    .rs-dropdown-toggle:active,
+    .rs-dropdown.rs-dropdown-open .rs-dropdown-toggle {
+        background-color: var(--nav-hover-color) !important;
+    }
+
+    .rs-nav-item:hover,
+    .rs-nav-item:focus,
+    .rs-nav-item:active,
+    .rs-navbar-item:hover,
+    .rs-navbar-item:focus,
+    .rs-navbar-item:active,
+    .rs-dropdown-toggle:hover,
+    .rs-dropdown-toggle:focus,
+    .rs-dropdown-toggle:active,
+    .rs-dropdown.rs-dropdown-open .rs-dropdown-toggle,
+    .rs-nav-item:hover *,
+    .rs-navbar-item:hover *,
+    .rs-dropdown-toggle:hover * {
+        color: var(--nav-hover-font-color) !important;
+
+        svg {
+            color: var(--nav-hover-font-color) !important;
+            fill: var(--nav-hover-font-color) !important;
+        }
+    }
+}
+
+.rs-dropdown-menu {
+    background-color: var(--nav-background) !important;
+
+    .rs-dropdown-item,
+    .rs-dropdown-item * {
+        color: var(--nav-font-color) !important;
+        background-color: transparent !important;
+        font-weight: bolder;
+    }
+
+    .rs-dropdown-item:hover,
+    .rs-dropdown-item-active,
+    .rs-dropdown-item:focus,
+    .rs-dropdown-item:focus-visible,
+    .rs-dropdown-item.rs-dropdown-item-active {
+        background-color: var(--nav-hover-color) !important;
+    }
+
+    .rs-dropdown-item:hover,
+    .rs-dropdown-item-active,
+    .rs-dropdown-item:focus,
+    .rs-dropdown-item:focus-visible,
+    .rs-dropdown-item.rs-dropdown-item-active,
+    .rs-dropdown-item:hover *,
+    .rs-dropdown-item-active *,
+    .rs-dropdown-item:focus *,
+    .rs-dropdown-item:focus-visible *,
+    .rs-dropdown-item.rs-dropdown-item-active * {
+        color: var(--nav-hover-font-color) !important;
     }
 }
 
