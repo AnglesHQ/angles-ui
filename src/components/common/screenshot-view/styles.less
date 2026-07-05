@@ -26,13 +26,14 @@
   .image-page-holder {
     padding: 30px;
     min-height: 300px;
+    color: var(--sub-panel-font-color);
   }
 }
 
 .screenshot {
   max-width: 100%;
   /* max-height: 100%; */
-  border: 1px solid #ddd;
+  border: 1px solid var(--screenshot-border-color);
   border-radius: 4px;
 }
 
@@ -41,8 +42,7 @@
   justify-content: left;
   padding-bottom: 10px;
   margin-bottom: 10px;
-  border-bottom: 1px solid #b5a5a53b;
-
+  border-bottom: 1px solid var(--screenshot-divider-color);
 
   .card-label {
     font-weight: bold;
@@ -75,16 +75,24 @@
   border: 1px solid var(--master-color-2-relative) !important;
 }
 
+// Baseline badge overlaid on the card image
 .baseline-overlay {
   font-weight: bolder;
   color: var(--link-color-1);
   border: solid 2px var(--link-color-1);
   height: 40px;
   padding: 5px;
-  background: grey;
+  background: var(--baseline-overlay-background);
   margin: 5px;
-  text-align: center;
   float: right;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  p {
+    margin: 0;
+    text-align: center;
+  }
 }
 
 .screenshot-thumbnail-history {
@@ -95,6 +103,27 @@
   width: 20em;
 }
 
+// Bootstrap table used inside the screenshot detail panel — themed to match design system
+.screenshot-table {
+  background-color: var(--sub-panel-background);
+  color: var(--sub-panel-font-color);
+  margin-bottom: 0;
+
+  td,
+  th {
+    color: var(--sub-panel-font-color);
+    border-color: var(--screenshot-border-color);
+    background-color: var(--sub-panel-background);
+  }
+
+  thead td,
+  thead th {
+    background-color: var(--screenshot-details-header-background);
+    color: var(--sub-panel-font-color);
+    font-weight: bold;
+  }
+}
+
 .table-screenshot-details {
   font-size: 12px;
   min-width: 20em;
@@ -102,16 +131,21 @@
 }
 
 .table-screenshot-details thead {
-  background: lightgray;
+  background: var(--screenshot-details-header-background);
+  color: var(--sub-panel-font-color);
 }
 
 .table-screenshot-history-details {
   font-size: 12px;
   margin-bottom: 3px;
+  background-color: var(--sub-panel-background);
+  color: var(--sub-panel-font-color);
 }
 
 .table-screenshot-history-details td {
   border: 0px;
+  background-color: var(--sub-panel-background);
+  color: var(--sub-panel-font-color);
 }
 
 .screenshot-finder-form-or-div {
@@ -122,28 +156,33 @@
 .screenshot-form-container {
   padding: 15px;
   border-radius: 10px;
-  background: #b5a5a53b;
-  border: 1px solid grey;
+  background: var(--screenshot-form-background);
+  border: 1px solid var(--screenshot-form-border);
 }
 
 .screenshot-viewer-surround {
   padding-top: 20px;
 }
 
-// carousel
+// ── Carousel ───────────────────────────────────────────────────────────────
 .carousel-container {
-
   background: var(--carousel-background);
   padding: 1em;
   margin-bottom: 1em;
   border-radius: 10px;
-  //border: 1px solid grey;
+
+  // Prevent tall images from overflowing into adjacent slides
+  .react-multi-carousel-item {
+    overflow: hidden;
+  }
 
   .card-screenshot-image {
     display: block;
     margin-left: auto;
     margin-right: auto;
     width: auto;
+    max-height: 180px;
+    object-fit: contain;
   }
 
   .card-text {
@@ -152,18 +191,24 @@
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 250px;
+    color: var(--carousel-font-color);
   }
 
   .card-text-active {
     color: var(--carousel-active-font-color);
   }
-
 }
 
 .card-active {
   border: 2px solid var(--link-color-1);
 }
 
+// Override the base .screenshotCard border — needed because it uses !important
+.screenshotCard.card-active {
+  border: 2px solid var(--link-color-1) !important;
+}
+
+// ── Screenshot details panel ───────────────────────────────────────────────
 .screenshot-details-panel {
   background: var(--sub-panel-background);
   width: 330px;
@@ -171,15 +216,24 @@
 
   .screenshot-details-label {
     font-weight: bold;
+    color: var(--sub-panel-font-color);
   }
 
   .screenshot-details-row {
     margin-bottom: 10px;
+    color: var(--sub-panel-font-color);
   }
 }
 
-
+// ── Baseline compare table ─────────────────────────────────────────────────
 .baseline-compare-table {
+  background-color: var(--sub-panel-background);
+  color: var(--sub-panel-font-color);
+
+  td {
+    background-color: var(--sub-panel-background);
+    color: var(--sub-panel-font-color);
+  }
 
   .baseline-action-icon {
     font-size: 20px;
@@ -193,4 +247,16 @@
     font-size: 1.2em;
     color: var(--sub-panel-font-color);
   }
+}
+
+// ── Baseline image container layout ───────────────────────────────────────
+.baseline-image-container {
+  display: block;
+  position: relative;
+}
+
+.baseline-image-inner {
+  flex-grow: 1;
+  flex-shrink: 1;
+  width: 100%;
 }

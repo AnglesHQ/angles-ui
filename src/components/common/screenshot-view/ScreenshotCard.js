@@ -36,7 +36,7 @@ const ScreenshotCard = function (props) {
       <Card.Body>
         <Card.Footer>
           <div>
-            <Table className="table-screenshot-history-details" bordered size="sm">
+            <Table className="table-screenshot-history-details screenshot-table" bordered size="sm">
               <tbody>
                 <tr>
                   <td>

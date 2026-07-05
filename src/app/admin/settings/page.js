@@ -61,66 +61,74 @@ export default function SettingsPage() {
 
     return (
         <Container>
-            <Content style={{ padding: '20px' }}>
-                <Panel header={<span className="about-page-header">Authentication Settings</span>} bordered className="about-page-panel">
+            <Content className="admin-settings-page">
+                <Panel
+                    header={<span className="admin-settings-panel-header">Authentication Settings</span>}
+                    bordered
+                    className="admin-settings-panel"
+                >
                     {loading ? (
                         <p>Loading settings...</p>
                     ) : (
                         <Form fluid>
-                            <h5>Local Authentication</h5>
+                            <h5 className="admin-settings-section-title">Local Authentication</h5>
                             <Form.Group>
                                 <Form.ControlLabel>Enable Local Authentication</Form.ControlLabel>
-                                <Toggle 
-                                    checked={config.localAuthEnabled} 
-                                    onChange={(checked) => setConfig({...config, localAuthEnabled: checked})} 
+                                <Toggle
+                                    checked={config.localAuthEnabled}
+                                    onChange={(checked) => setConfig({...config, localAuthEnabled: checked})}
                                 />
                                 <Form.HelpText>Allow users to log in with a username and password.</Form.HelpText>
                             </Form.Group>
 
                             <Divider />
 
-                            <h5>OKTA Authentication</h5>
+                            <h5 className="admin-settings-section-title">OKTA Authentication</h5>
                             <Form.Group>
                                 <Form.ControlLabel>Enable OKTA</Form.ControlLabel>
-                                <Toggle 
-                                    checked={config.oktaAuthEnabled} 
-                                    onChange={(checked) => setConfig({...config, oktaAuthEnabled: checked})} 
+                                <Toggle
+                                    checked={config.oktaAuthEnabled}
+                                    onChange={(checked) => setConfig({...config, oktaAuthEnabled: checked})}
                                 />
                                 <Form.HelpText>Allow users to log in using OKTA Single Sign-On.</Form.HelpText>
                             </Form.Group>
 
                             {config.oktaAuthEnabled && (
-                                <Panel bordered style={{ marginTop: '20px', backgroundColor: 'var(--rs-bg-overlay)' }}>
+                                <Panel bordered className="okta-config-panel">
                                     <Form.Group>
                                         <Form.ControlLabel>OKTA Domain</Form.ControlLabel>
-                                        <Form.Control 
-                                            name="oktaDomain" 
-                                            value={config.oktaDomain || ''} 
-                                            onChange={(value) => setConfig({...config, oktaDomain: value})} 
+                                        <Form.Control
+                                            name="oktaDomain"
+                                            value={config.oktaDomain || ''}
+                                            onChange={(value) => setConfig({...config, oktaDomain: value})}
                                         />
                                     </Form.Group>
                                     <Form.Group>
                                         <Form.ControlLabel>OKTA Client ID</Form.ControlLabel>
-                                        <Form.Control 
-                                            name="oktaClientId" 
-                                            value={config.oktaClientId || ''} 
-                                            onChange={(value) => setConfig({...config, oktaClientId: value})} 
+                                        <Form.Control
+                                            name="oktaClientId"
+                                            value={config.oktaClientId || ''}
+                                            onChange={(value) => setConfig({...config, oktaClientId: value})}
                                         />
                                     </Form.Group>
                                     <Form.Group>
                                         <Form.ControlLabel>OKTA Issuer</Form.ControlLabel>
-                                        <Form.Control 
-                                            name="oktaIssuer" 
-                                            value={config.oktaIssuer || ''} 
-                                            onChange={(value) => setConfig({...config, oktaIssuer: value})} 
+                                        <Form.Control
+                                            name="oktaIssuer"
+                                            value={config.oktaIssuer || ''}
+                                            onChange={(value) => setConfig({...config, oktaIssuer: value})}
                                         />
                                     </Form.Group>
                                 </Panel>
                             )}
 
-                            <Form.Group style={{ marginTop: '20px' }}>
+                            <Form.Group className="admin-settings-actions">
                                 <ButtonToolbar>
-                                    <Button appearance="primary" onClick={handleSaveConfig} loading={saving}>
+                                    <Button
+                                        className="filter-submit-button"
+                                        onClick={handleSaveConfig}
+                                        loading={saving}
+                                    >
                                         Save Settings
                                     </Button>
                                 </ButtonToolbar>

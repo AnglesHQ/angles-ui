@@ -180,6 +180,7 @@ const Shell = function (props) {
                     width={expand ? 240 : 56}
                     collapsible
                 >
+                    <div className="main-sidebar-inner">
                     <Affix
                         top={25}
                     >
@@ -239,6 +240,7 @@ const Shell = function (props) {
                             </Navbar>
                         </Sidenav>
                     </Affix>
+                    </div>
                 </Sidebar>
             )}
             <Container className="main-container">

@@ -5,6 +5,7 @@ import axios from 'axios';
 import { Container, Content, Panel, Table, Button, Modal, Form, ButtonToolbar, Message, useToaster, SelectPicker, TagPicker } from 'rsuite';
 import { useAuth } from '../../../context/AuthContext';
 import { useRouter } from 'next/navigation';
+import ConfirmModal from '../../../components/common/ConfirmModal';
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -19,6 +20,7 @@ export default function UsersPage() {
     const [modalOpen, setModalOpen] = useState(false);
     const [editingUser, setEditingUser] = useState(null);
     const [formData, setFormData] = useState({ username: '', password: '', userType: 'user', teams: [] });
+    const [confirmState, setConfirmState] = useState({ open: false, userId: null });
 
     const userTypes = [
         { label: 'Admin', value: 'admin' },
@@ -97,15 +99,23 @@ export default function UsersPage() {
     };
 
     const handleDeleteUser = async (userId) => {
-        if (window.confirm('Are you sure you want to delete this user?')) {
-            try {
-                await axios.delete(`/users/${userId}`);
-                toaster.push(<Message type="success">User deleted successfully</Message>, { placement: 'topEnd' });
-                fetchUsers();
-            } catch (error) {
-                toaster.push(<Message type="error">Failed to delete user</Message>, { placement: 'topEnd' });
-            }
+        setConfirmState({ open: true, userId });
+    };
+
+    const handleConfirmDelete = async () => {
+        const { userId } = confirmState;
+        setConfirmState({ open: false, userId: null });
+        try {
+            await axios.delete(`/users/${userId}`);
+            toaster.push(<Message type="success">User deleted successfully</Message>, { placement: 'topEnd' });
+            fetchUsers();
+        } catch (error) {
+            toaster.push(<Message type="error">Failed to delete user</Message>, { placement: 'topEnd' });
         }
+    };
+
+    const handleCancelDelete = () => {
+        setConfirmState({ open: false, userId: null });
     };
 
     if (isLoading || !user || user.userType !== 'admin') {
@@ -114,10 +124,14 @@ export default function UsersPage() {
 
     return (
         <Container>
-            <Content style={{ padding: '20px' }}>
-                <Panel header={<span className="about-page-header">User Management</span>} bordered className="about-page-panel">
-                    <ButtonToolbar style={{ marginBottom: '20px' }}>
-                        <Button appearance="primary" onClick={() => handleOpenModal()}>
+            <Content className="admin-users-page">
+                <Panel
+                    header={<span className="admin-users-panel-header">User Management</span>}
+                    bordered
+                    className="admin-users-panel"
+                >
+                    <ButtonToolbar className="admin-users-toolbar">
+                        <Button className="filter-submit-button" onClick={() => handleOpenModal()}>
                             Add User
                         </Button>
                     </ButtonToolbar>
@@ -150,9 +164,21 @@ export default function UsersPage() {
                             <Cell>
                                 {rowData => (
                                     <span>
-                                        <Button appearance="link" onClick={() => handleOpenModal(rowData)}>Edit</Button>
-                                        |
-                                        <Button appearance="link" color="red" onClick={() => handleDeleteUser(rowData._id)}>Delete</Button>
+                                        <Button
+                                            appearance="link"
+                                            className="admin-users-action-link"
+                                            onClick={() => handleOpenModal(rowData)}
+                                        >
+                                            Edit
+                                        </Button>
+                                        <span className="admin-users-action-separator">|</span>
+                                        <Button
+                                            appearance="link"
+                                            className="admin-users-delete-link"
+                                            onClick={() => handleDeleteUser(rowData._id)}
+                                        >
+                                            Delete
+                                        </Button>
                                     </span>
                                 )}
                             </Cell>
@@ -205,14 +231,27 @@ export default function UsersPage() {
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={handleSaveUser} appearance="primary">
+                    <Button className="filter-submit-button" onClick={handleSaveUser}>
                         Save
                     </Button>
-                    <Button onClick={handleCloseModal} appearance="subtle">
+                    <Button
+                        className="filter-cancel-button"
+                        onClick={handleCloseModal}
+                    >
                         Cancel
                     </Button>
                 </Modal.Footer>
             </Modal>
+
+            <ConfirmModal
+                open={confirmState.open}
+                title="Delete User"
+                message="Are you sure you want to delete this user? This action cannot be undone."
+                confirmLabel="Delete"
+                cancelLabel="Cancel"
+                onConfirm={handleConfirmDelete}
+                onCancel={handleCancelDelete}
+            />
         </Container>
     );
 }

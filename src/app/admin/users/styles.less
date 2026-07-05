@@ -1,0 +1,41 @@
+.admin-users-page {
+    padding: 20px;
+
+    .admin-users-panel {
+        background-color: var(--main-panel-background);
+        color: var(--main-panel-font-color);
+        border: none;
+    }
+
+    .admin-users-panel-header {
+        color: var(--main-panel-font-color);
+        font-weight: bold;
+    }
+
+    .admin-users-toolbar {
+        margin-bottom: 20px;
+    }
+
+    .admin-users-action-link {
+        color: var(--link-color-1);
+
+        &:hover,
+        &:focus {
+            color: var(--link-color-1-focus);
+        }
+    }
+
+    .admin-users-delete-link {
+        color: var(--fail-color);
+
+        &:hover,
+        &:focus {
+            opacity: 0.8;
+        }
+    }
+
+    .admin-users-action-separator {
+        color: var(--main-panel-font-color);
+        padding: 0 4px;
+    }
+}

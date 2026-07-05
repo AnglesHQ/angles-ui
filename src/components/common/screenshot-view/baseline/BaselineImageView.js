@@ -164,7 +164,7 @@ const BaselineImageView = (props) => {
     const imageToDisplay = isBaselineImage ? currentScreenshot : currentBaselineCompare;
 
     return (
-      <Table className="baseline-compare-table">
+      <Table className="baseline-compare-table screenshot-table">
         <tbody>
           <tr>
             {
@@ -201,8 +201,8 @@ const BaselineImageView = (props) => {
               </div>
             </td>
             <td>
-              <div style={{ display: 'block', position: 'relative' }}>
-                <div style={{ flexGrow: 1, flexShrink: 1, width: '100%' }}>
+              <div className="baseline-image-container">
+                  <div className="baseline-image-inner">
                   {editing ? (
                     <ReactCrop
                       crop={crop}
@@ -254,7 +254,7 @@ const BaselineImageView = (props) => {
                   editing ? (
                     <Button
                       type="button"
-                      className="filter-submit-button"
+                      className="filter-cancel-button"
                       onMouseUp={() => resetIgnoreBlocks()}
                     >
                       <FormattedMessage id="common.component.screenshot-view.tabs.baseline.button.cancel-changes" />

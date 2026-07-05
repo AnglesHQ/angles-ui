@@ -81,7 +81,7 @@ const CurrentImageView = function (props) {
   };
 
   return (
-    <Table>
+    <Table className="screenshot-table">
       <tbody>
         <tr>
           <td className="screenshot-details-td">
