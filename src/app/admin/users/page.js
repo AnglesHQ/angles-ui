@@ -5,6 +5,8 @@ import axios from 'axios';
 import { Container, Content, Panel, Table, Button, Modal, Form, ButtonToolbar, Message, useToaster, SelectPicker, TagPicker } from 'rsuite';
 import { useAuth } from '../../../context/AuthContext';
 import { useRouter } from 'next/navigation';
+import { FormattedMessage, useIntl } from 'react-intl';
+
 import ConfirmModal from '../../../components/common/ConfirmModal';
 
 const { Column, HeaderCell, Cell } = Table;
@@ -13,6 +15,7 @@ export default function UsersPage() {
     const { user, isLoading } = useAuth();
     const router = useRouter();
     const toaster = useToaster();
+    const intl = useIntl();
 
     const [users, setUsers] = useState([]);
     const [teams, setTeams] = useState([]);
@@ -23,8 +26,8 @@ export default function UsersPage() {
     const [confirmState, setConfirmState] = useState({ open: false, userId: null });
 
     const userTypes = [
-        { label: 'Admin', value: 'admin' },
-        { label: 'User', value: 'user' }
+        { label: intl.formatMessage({ id: 'page.admin.users.user-type.admin' }), value: 'admin' },
+        { label: intl.formatMessage({ id: 'page.admin.users.user-type.user' }), value: 'user' }
     ];
 
     useEffect(() => {
@@ -42,7 +45,7 @@ export default function UsersPage() {
             const response = await axios.get('/users');
             setUsers(response.data);
         } catch (error) {
-            toaster.push(<Message type="error">Failed to fetch users</Message>, { placement: 'topEnd' });
+            toaster.push(<Message type="error">{intl.formatMessage({ id: 'page.admin.users.toast.fetch-error' })}</Message>, { placement: 'topEnd' });
         } finally {
             setLoading(false);
         }
@@ -85,16 +88,16 @@ export default function UsersPage() {
                 // Update
                 if (!payload.password) delete payload.password; // don't update password if empty
                 await axios.put(`/users/${editingUser._id}`, payload);
-                toaster.push(<Message type="success">User updated successfully</Message>, { placement: 'topEnd' });
+                toaster.push(<Message type="success">{intl.formatMessage({ id: 'page.admin.users.toast.update-success' })}</Message>, { placement: 'topEnd' });
             } else {
                 // Create
                 await axios.post('/users', payload);
-                toaster.push(<Message type="success">User created successfully</Message>, { placement: 'topEnd' });
+                toaster.push(<Message type="success">{intl.formatMessage({ id: 'page.admin.users.toast.create-success' })}</Message>, { placement: 'topEnd' });
             }
             fetchUsers();
             handleCloseModal();
         } catch (error) {
-            toaster.push(<Message type="error">{error.response?.data?.message || 'Failed to save user'}</Message>, { placement: 'topEnd' });
+            toaster.push(<Message type="error">{error.response?.data?.message || intl.formatMessage({ id: 'page.admin.users.toast.save-error' })}</Message>, { placement: 'topEnd' });
         }
     };
 
@@ -107,10 +110,10 @@ export default function UsersPage() {
         setConfirmState({ open: false, userId: null });
         try {
             await axios.delete(`/users/${userId}`);
-            toaster.push(<Message type="success">User deleted successfully</Message>, { placement: 'topEnd' });
+            toaster.push(<Message type="success">{intl.formatMessage({ id: 'page.admin.users.toast.delete-success' })}</Message>, { placement: 'topEnd' });
             fetchUsers();
         } catch (error) {
-            toaster.push(<Message type="error">Failed to delete user</Message>, { placement: 'topEnd' });
+            toaster.push(<Message type="error">{intl.formatMessage({ id: 'page.admin.users.toast.delete-error' })}</Message>, { placement: 'topEnd' });
         }
     };
 
@@ -126,13 +129,13 @@ export default function UsersPage() {
         <Container>
             <Content className="admin-users-page">
                 <Panel
-                    header={<span className="admin-users-panel-header">User Management</span>}
+                    header={<span className="admin-users-panel-header"><FormattedMessage id="page.admin.users.header" /></span>}
                     bordered
                     className="admin-users-panel"
                 >
                     <ButtonToolbar className="admin-users-toolbar">
                         <Button className="filter-submit-button" onClick={() => handleOpenModal()}>
-                            Add User
+                            <FormattedMessage id="page.admin.users.button.add-user" />
                         </Button>
                     </ButtonToolbar>
 
@@ -143,24 +146,24 @@ export default function UsersPage() {
                         hover={false}
                     >
                         <Column width={200} align="center" fixed>
-                            <HeaderCell>Username</HeaderCell>
+                            <HeaderCell><FormattedMessage id="page.admin.users.table.username" /></HeaderCell>
                             <Cell dataKey="username" />
                         </Column>
 
                         <Column width={150}>
-                            <HeaderCell>Role</HeaderCell>
+                            <HeaderCell><FormattedMessage id="page.admin.users.table.role" /></HeaderCell>
                             <Cell dataKey="role" />
                         </Column>
 
                         <Column width={300}>
-                            <HeaderCell>Teams</HeaderCell>
+                            <HeaderCell><FormattedMessage id="page.admin.users.table.teams" /></HeaderCell>
                             <Cell>
-                                {rowData => `${rowData.teams ? rowData.teams.length : 0} teams assigned`}
+                                {rowData => intl.formatMessage({ id: 'page.admin.users.table.teams-assigned' }, { count: rowData.teams ? rowData.teams.length : 0 })}
                             </Cell>
                         </Column>
 
                         <Column width={200} fixed="right">
-                            <HeaderCell>Action</HeaderCell>
+                            <HeaderCell><FormattedMessage id="page.user-settings.table.action" /></HeaderCell>
                             <Cell>
                                 {rowData => (
                                     <span>
@@ -169,7 +172,7 @@ export default function UsersPage() {
                                             className="admin-users-action-link"
                                             onClick={() => handleOpenModal(rowData)}
                                         >
-                                            Edit
+                                            <FormattedMessage id="page.admin.users.table.edit" />
                                         </Button>
                                         <span className="admin-users-action-separator">|</span>
                                         <Button
@@ -177,7 +180,7 @@ export default function UsersPage() {
                                             className="admin-users-delete-link"
                                             onClick={() => handleDeleteUser(rowData._id)}
                                         >
-                                            Delete
+                                            <FormattedMessage id="page.admin.users.table.delete" />
                                         </Button>
                                     </span>
                                 )}
@@ -189,12 +192,12 @@ export default function UsersPage() {
 
             <Modal open={modalOpen} onClose={handleCloseModal}>
                 <Modal.Header>
-                    <Modal.Title>{editingUser ? 'Edit User' : 'Add User'}</Modal.Title>
+                    <Modal.Title>{editingUser ? <FormattedMessage id="page.admin.users.modal.edit-user" /> : <FormattedMessage id="page.admin.users.modal.add-user" />}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form fluid>
                         <Form.Group>
-                            <Form.ControlLabel>Username</Form.ControlLabel>
+                            <Form.ControlLabel><FormattedMessage id="page.admin.users.table.username" /></Form.ControlLabel>
                             <Form.Control
                                 name="username"
                                 value={formData.username}
@@ -202,7 +205,7 @@ export default function UsersPage() {
                             />
                         </Form.Group>
                         <Form.Group>
-                            <Form.ControlLabel>Password {editingUser && '(Leave blank to keep unchanged)'}</Form.ControlLabel>
+                            <Form.ControlLabel><FormattedMessage id="page.admin.users.modal.password-label" /> {editingUser && <FormattedMessage id="page.admin.users.modal.password-help" />}</Form.ControlLabel>
                             <Form.Control
                                 name="password"
                                 type="password"
@@ -211,7 +214,7 @@ export default function UsersPage() {
                             />
                         </Form.Group>
                         <Form.Group>
-                            <Form.ControlLabel>User Type</Form.ControlLabel>
+                            <Form.ControlLabel><FormattedMessage id="page.admin.users.modal.user-type" /></Form.ControlLabel>
                             <SelectPicker
                                 data={userTypes}
                                 value={formData.userType}
@@ -220,7 +223,7 @@ export default function UsersPage() {
                             />
                         </Form.Group>
                         <Form.Group>
-                            <Form.ControlLabel>Team Access</Form.ControlLabel>
+                            <Form.ControlLabel><FormattedMessage id="page.admin.users.modal.team-access" /></Form.ControlLabel>
                             <TagPicker
                                 data={teams}
                                 value={formData.teams}
@@ -232,23 +235,23 @@ export default function UsersPage() {
                 </Modal.Body>
                 <Modal.Footer>
                     <Button className="filter-submit-button" onClick={handleSaveUser}>
-                        Save
+                        <FormattedMessage id="page.admin.users.button.save" />
                     </Button>
                     <Button
                         className="filter-cancel-button"
                         onClick={handleCloseModal}
                     >
-                        Cancel
+                        <FormattedMessage id="page.admin.users.button.cancel" />
                     </Button>
                 </Modal.Footer>
             </Modal>
 
             <ConfirmModal
                 open={confirmState.open}
-                title="Delete User"
-                message="Are you sure you want to delete this user? This action cannot be undone."
-                confirmLabel="Delete"
-                cancelLabel="Cancel"
+                title={<FormattedMessage id="page.admin.users.confirm.delete.title" />}
+                message={<FormattedMessage id="page.admin.users.confirm.delete.message" />}
+                confirmLabel={<FormattedMessage id="page.admin.users.table.delete" />}
+                cancelLabel={<FormattedMessage id="page.admin.users.button.cancel" />}
                 onConfirm={handleConfirmDelete}
                 onCancel={handleCancelDelete}
             />

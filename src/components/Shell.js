@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import axios from 'axios';
@@ -51,6 +51,7 @@ const Shell = function (props) {
     const environmentRequests = new EnvironmentRequests(axios);
     const [expand, setExpand] = useState(true);
     const { user, logout, isLoading } = useAuth();
+    const intl = useIntl();
 
     const {
         teams,
@@ -224,9 +225,9 @@ const Shell = function (props) {
                                         </span>
                                     </Nav.Item>
                                     {user && user.userType === 'admin' && (
-                                        <Nav.Menu eventKey="7" icon={<AdminIcon style={{ fontSize: '20px', height: '20px' }} />} title="Administration">
-                                            <Nav.Item as={Link} eventKey="7-1" href="/admin/users">Users</Nav.Item>
-                                            <Nav.Item as={Link} eventKey="7-2" href="/admin/settings">Settings</Nav.Item>
+                                        <Nav.Menu eventKey="7" icon={<AdminIcon style={{ fontSize: '20px', height: '20px' }} />} title={<FormattedMessage id="nav.admin" />}>
+                                            <Nav.Item as={Link} eventKey="7-1" href="/admin/users"><FormattedMessage id="nav.admin.users" /></Nav.Item>
+                                            <Nav.Item as={Link} eventKey="7-2" href="/admin/settings"><FormattedMessage id="nav.admin.settings" /></Nav.Item>
                                         </Nav.Menu>
                                     )}
                                 </Nav>
@@ -255,9 +256,12 @@ const Shell = function (props) {
                                 <Nav.Item eventKey="5-2" onClick={() => setTheme('dark')}><FormattedMessage id="nav.theme.dark" /></Nav.Item>
                             </Nav.Menu>
                             {user && (
-                                <Nav.Menu eventKey="0" icon={<UserBadgeIcon style={{ fontSize: '20px', height: '20px' }} />} title={user.username || 'Profile'}>
-                                    <Nav.Item eventKey="0-1" onClick={logout} icon={<ExitIcon style={{ fontSize: '20px', height: '20px' }} />}>
-                                        Logout
+                                <Nav.Menu eventKey="0" icon={<UserBadgeIcon style={{ fontSize: '20px', height: '20px' }} />} title={user.username || intl.formatMessage({ id: 'nav.profile' })}>
+                                    <Nav.Item as={Link} eventKey="0-1" href="/user-settings">
+                                        <FormattedMessage id="nav.user-settings" />
+                                    </Nav.Item>
+                                    <Nav.Item eventKey="0-2" onClick={logout} icon={<ExitIcon style={{ fontSize: '20px', height: '20px' }} />}>
+                                        <FormattedMessage id="nav.logout" />
                                     </Nav.Item>
                                 </Nav.Menu>
                             )}
@@ -293,7 +297,7 @@ const Shell = function (props) {
                                                 ))
                                             ) : null)
                                         }
-                                        <Button className="error-button" onClick={closeErrorModal}>OK</Button>
+                                        <Button className="error-button" onClick={closeErrorModal}><FormattedMessage id="common.button.ok" /></Button>
                                     </Modal.Footer>
                                 </Modal>
                             ) : null)
@@ -325,7 +329,7 @@ const Shell = function (props) {
                                                 ))
                                             ) : null)
                                         }
-                                        <Button onClick={closeInfoModal}>OK</Button>
+                                        <Button onClick={closeInfoModal}><FormattedMessage id="common.button.ok" /></Button>
                                     </Modal.Footer>
                                 </Modal>
                             ) : null)

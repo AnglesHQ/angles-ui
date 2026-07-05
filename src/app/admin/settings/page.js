@@ -5,11 +5,14 @@ import axios from 'axios';
 import { Container, Content, Panel, Form, ButtonToolbar, Button, Message, useToaster, Toggle, Divider } from 'rsuite';
 import { useAuth } from '../../../context/AuthContext';
 import { useRouter } from 'next/navigation';
+import { FormattedMessage, useIntl } from 'react-intl';
+
 
 export default function SettingsPage() {
     const { user, isLoading } = useAuth();
     const router = useRouter();
     const toaster = useToaster();
+    const intl = useIntl();
 
     const [config, setConfig] = useState({
         localAuthEnabled: true,
@@ -37,7 +40,7 @@ export default function SettingsPage() {
                 setConfig(response.data);
             }
         } catch (error) {
-            toaster.push(<Message type="error">Failed to fetch settings</Message>, { placement: 'topEnd' });
+            toaster.push(<Message type="error">{intl.formatMessage({ id: 'page.admin.settings.toast.fetch-error' })}</Message>, { placement: 'topEnd' });
         } finally {
             setLoading(false);
         }
@@ -47,9 +50,9 @@ export default function SettingsPage() {
         setSaving(true);
         try {
             await axios.put('/settings/auth', config);
-            toaster.push(<Message type="success">Settings saved successfully</Message>, { placement: 'topEnd' });
+            toaster.push(<Message type="success">{intl.formatMessage({ id: 'page.admin.settings.toast.save-success' })}</Message>, { placement: 'topEnd' });
         } catch (error) {
-            toaster.push(<Message type="error">Failed to save settings</Message>, { placement: 'topEnd' });
+            toaster.push(<Message type="error">{intl.formatMessage({ id: 'page.admin.settings.toast.save-error' })}</Message>, { placement: 'topEnd' });
         } finally {
             setSaving(false);
         }
@@ -63,40 +66,40 @@ export default function SettingsPage() {
         <Container>
             <Content className="admin-settings-page">
                 <Panel
-                    header={<span className="admin-settings-panel-header">Authentication Settings</span>}
+                    header={<span className="admin-settings-panel-header"><FormattedMessage id="page.admin.settings.header" /></span>}
                     bordered
                     className="admin-settings-panel"
                 >
                     {loading ? (
-                        <p>Loading settings...</p>
+                        <p><FormattedMessage id="page.admin.settings.loading" /></p>
                     ) : (
                         <Form fluid>
-                            <h5 className="admin-settings-section-title">Local Authentication</h5>
+                            <h5 className="admin-settings-section-title"><FormattedMessage id="page.admin.settings.local-auth.title" /></h5>
                             <Form.Group>
-                                <Form.ControlLabel>Enable Local Authentication</Form.ControlLabel>
+                                <Form.ControlLabel><FormattedMessage id="page.admin.settings.local-auth.enable" /></Form.ControlLabel>
                                 <Toggle
                                     checked={config.localAuthEnabled}
                                     onChange={(checked) => setConfig({...config, localAuthEnabled: checked})}
                                 />
-                                <Form.HelpText>Allow users to log in with a username and password.</Form.HelpText>
+                                <Form.HelpText><FormattedMessage id="page.admin.settings.local-auth.help" /></Form.HelpText>
                             </Form.Group>
 
                             <Divider />
 
-                            <h5 className="admin-settings-section-title">OKTA Authentication</h5>
+                            <h5 className="admin-settings-section-title"><FormattedMessage id="page.admin.settings.okta-auth.title" /></h5>
                             <Form.Group>
-                                <Form.ControlLabel>Enable OKTA</Form.ControlLabel>
+                                <Form.ControlLabel><FormattedMessage id="page.admin.settings.okta-auth.enable" /></Form.ControlLabel>
                                 <Toggle
                                     checked={config.oktaAuthEnabled}
                                     onChange={(checked) => setConfig({...config, oktaAuthEnabled: checked})}
                                 />
-                                <Form.HelpText>Allow users to log in using OKTA Single Sign-On.</Form.HelpText>
+                                <Form.HelpText><FormattedMessage id="page.admin.settings.okta-auth.help" /></Form.HelpText>
                             </Form.Group>
 
                             {config.oktaAuthEnabled && (
                                 <Panel bordered className="okta-config-panel">
                                     <Form.Group>
-                                        <Form.ControlLabel>OKTA Domain</Form.ControlLabel>
+                                        <Form.ControlLabel><FormattedMessage id="page.admin.settings.okta.domain" /></Form.ControlLabel>
                                         <Form.Control
                                             name="oktaDomain"
                                             value={config.oktaDomain || ''}
@@ -104,7 +107,7 @@ export default function SettingsPage() {
                                         />
                                     </Form.Group>
                                     <Form.Group>
-                                        <Form.ControlLabel>OKTA Client ID</Form.ControlLabel>
+                                        <Form.ControlLabel><FormattedMessage id="page.admin.settings.okta.client-id" /></Form.ControlLabel>
                                         <Form.Control
                                             name="oktaClientId"
                                             value={config.oktaClientId || ''}
@@ -112,7 +115,7 @@ export default function SettingsPage() {
                                         />
                                     </Form.Group>
                                     <Form.Group>
-                                        <Form.ControlLabel>OKTA Issuer</Form.ControlLabel>
+                                        <Form.ControlLabel><FormattedMessage id="page.admin.settings.okta.issuer" /></Form.ControlLabel>
                                         <Form.Control
                                             name="oktaIssuer"
                                             value={config.oktaIssuer || ''}
@@ -129,7 +132,7 @@ export default function SettingsPage() {
                                         onClick={handleSaveConfig}
                                         loading={saving}
                                     >
-                                        Save Settings
+                                        <FormattedMessage id="page.admin.settings.button.save" />
                                     </Button>
                                 </ButtonToolbar>
                             </Form.Group>
