@@ -27,6 +27,7 @@ export default function UsersPage() {
 
     const userTypes = [
         { label: intl.formatMessage({ id: 'page.admin.users.user-type.admin' }), value: 'admin' },
+        { label: intl.formatMessage({ id: 'page.admin.users.user-type.team_lead' }), value: 'team_lead' },
         { label: intl.formatMessage({ id: 'page.admin.users.user-type.user' }), value: 'user' }
     ];
 

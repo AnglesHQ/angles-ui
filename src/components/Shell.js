@@ -30,6 +30,7 @@ import DocPass from '@rsuite/icons/DocPass';
 import InfoOutline from '@rsuite/icons/InfoOutline';
 import GlobalIcon from '@rsuite/icons/Global';
 import AdminIcon from '@rsuite/icons/Admin';
+import PeoplesIcon from '@rsuite/icons/Peoples';
 import UserBadgeIcon from '@rsuite/icons/UserBadge';
 import ExitIcon from '@rsuite/icons/Exit';
 import { CgDarkMode } from 'react-icons/cg';
@@ -224,6 +225,15 @@ const Shell = function (props) {
                                             />
                                         </span>
                                     </Nav.Item>
+                                    {user && (user.userType === 'admin' || user.userType === 'team_lead') && (
+                                        <Nav.Item as={Link} eventKey="8" icon={<PeoplesIcon style={{ fontSize: '20px', height: '20px' }} />} href="/team-settings">
+                                            <span>
+                                                <FormattedMessage
+                                                    id="nav.team-settings"
+                                                />
+                                            </span>
+                                        </Nav.Item>
+                                    )}
                                     {user && user.userType === 'admin' && (
                                         <Nav.Menu eventKey="7" icon={<AdminIcon style={{ fontSize: '20px', height: '20px' }} />} title={<FormattedMessage id="nav.admin" />}>
                                             <Nav.Item as={Link} eventKey="7-1" href="/admin/users"><FormattedMessage id="nav.admin.users" /></Nav.Item>

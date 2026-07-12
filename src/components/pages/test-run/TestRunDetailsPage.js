@@ -23,8 +23,9 @@ import { TbTimelineEventText } from 'react-icons/tb';
 import FileDownloadIcon from '@rsuite/icons/FileDownload';
 import MenuIcon from '@rsuite/icons/Menu';
 import InfoRoundIcon from '@rsuite/icons/InfoRound';
+import TrashIcon from '@rsuite/icons/Trash';
 import { BuildRequests, ScreenshotRequests } from 'angles-javascript-client';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Panel,
   Row,
@@ -37,16 +38,20 @@ import {
   Whisper,
   Tooltip,
   Badge,
+  Message,
+  useToaster,
 } from 'rsuite';
 import SuiteTable from '../../common/test-suite/SuiteTable';
 import BuildArtifacts from '../../common/BuildArtifacts';
 import ScreenshotView from '../../common/screenshot-view/ScreenshotView';
+import ConfirmModal from '../../common/ConfirmModal';
 import {
   clearCurrentLoaderMessage,
   storeCurrentLoaderMessage,
 } from '../../../redux/notificationActions';
 import { ExecutionStateProvider } from '../../../context/ExecutionStateContext';
 import { useConstructor } from '../../../utility/GeneralUtilities';
+import { useAuth } from '../../../context/AuthContext';
 import CurrentScreenshotContext from '../../../context/CurrentScreenshotContext';
 import { getDuration } from '../../../utility/TimeUtilities';
 import ExecutionPieChart from './charts/ExecutionPieChart';
@@ -55,10 +60,14 @@ import FeaturePieChart from './charts/FeaturePieChart';
 // import ScreenshotModal from "../../common/screenshot-view/modal/ScreenhotModal";
 
 const TestRunDetailsPage = function (props) {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const intl = useIntl();
+  const toaster = useToaster();
+  const { user } = useAuth();
   const [showModal, setShowModal] = useState(false);
   const [screenshots, setScreenshots] = useState(null);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
 
   const query = {
     buildId: searchParams.get('buildId'),
@@ -182,6 +191,51 @@ const TestRunDetailsPage = function (props) {
       });
   };
 
+  const canDeleteBuild = (build) => {
+    if (!user || !build || !build.team) {
+      return false;
+    }
+    if (user.userType === 'admin') {
+      return true;
+    }
+    if (user.userType === 'team_lead' && Array.isArray(user.teams)) {
+      return user.teams
+        .map((team) => (typeof team === 'object' ? team._id : team))
+        .includes(build.team._id);
+    }
+    return false;
+  };
+
+  const handleDeleteBuild = () => {
+    setDeleteConfirmOpen(true);
+  };
+
+  const handleCancelDeleteBuild = () => {
+    setDeleteConfirmOpen(false);
+  };
+
+  const handleConfirmDeleteBuild = () => {
+    setDeleteConfirmOpen(false);
+    buildRequests.deleteBuild(currentBuild._id)
+      .then(() => {
+        toaster.push(
+          <Message type="success">
+            {intl.formatMessage({ id: 'page.test-run.toast.delete-build-success' })}
+          </Message>,
+          { placement: 'topEnd' },
+        );
+        router.push('/');
+      })
+      .catch(() => {
+        toaster.push(
+          <Message type="error">
+            {intl.formatMessage({ id: 'page.test-run.toast.delete-build-error' })}
+          </Message>,
+          { placement: 'topEnd' },
+        );
+      });
+  };
+
   const getTestRunEndIcon = (build) => {
     if (build.status === 'FAIL') {
       return <BsJournalX className="test-run-end-icon-fail" />;
@@ -249,6 +303,14 @@ const TestRunDetailsPage = function (props) {
                       )
                     }
                   </Dropdown.Item>
+                  {canDeleteBuild(currentBuild) && (
+                    <Dropdown.Item
+                      icon={<TrashIcon />}
+                      onClick={() => handleDeleteBuild()}
+                    >
+                      {intl.formatMessage({ id: 'page.test-run.menu.delete-build' })}
+                    </Dropdown.Item>
+                  )}
                 </Dropdown>
               </div>
               <Col xs={24}>
@@ -524,6 +586,15 @@ const TestRunDetailsPage = function (props) {
               />
             </Modal.Body>
           </Modal>
+          <ConfirmModal
+            open={deleteConfirmOpen}
+            title={<FormattedMessage id="page.test-run.confirm.delete-build.title" />}
+            message={<FormattedMessage id="page.test-run.confirm.delete-build.message" />}
+            confirmLabel={<FormattedMessage id="page.test-run.menu.delete-build" />}
+            cancelLabel={<FormattedMessage id="page.test-run.confirm.delete-build.cancel" />}
+            onConfirm={handleConfirmDeleteBuild}
+            onCancel={handleCancelDeleteBuild}
+          />
         </div>
       )
     )
