@@ -19,7 +19,12 @@ export default function SettingsPage() {
         oktaAuthEnabled: false,
         oktaDomain: '',
         oktaClientId: '',
-        oktaIssuer: ''
+        oktaClientSecret: '',
+        oktaClientSecretSet: false,
+        oktaIssuer: '',
+        oktaAdminGroup: '',
+        oktaTeamLeadGroup: '',
+        oktaUserGroup: ''
     });
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
@@ -37,7 +42,10 @@ export default function SettingsPage() {
         try {
             const response = await axios.get('/settings/auth');
             if (response.data) {
-                setConfig(response.data);
+                // The client secret is write-only: the API never returns its value, only
+                // the oktaClientSecretSet flag. Keep the input blank so an empty save
+                // preserves the stored secret.
+                setConfig({ ...response.data, oktaClientSecret: '' });
             }
         } catch (error) {
             toaster.push(<Message type="error">{intl.formatMessage({ id: 'page.admin.settings.toast.fetch-error' })}</Message>, { placement: 'topEnd' });
@@ -49,7 +57,11 @@ export default function SettingsPage() {
     const handleSaveConfig = async () => {
         setSaving(true);
         try {
-            await axios.put('/settings/auth', config);
+            const response = await axios.put('/settings/auth', config);
+            // Reflect the saved state and clear the write-only secret input.
+            if (response.data) {
+                setConfig({ ...response.data, oktaClientSecret: '' });
+            }
             toaster.push(<Message type="success">{intl.formatMessage({ id: 'page.admin.settings.toast.save-success' })}</Message>, { placement: 'topEnd' });
         } catch (error) {
             toaster.push(<Message type="error">{intl.formatMessage({ id: 'page.admin.settings.toast.save-error' })}</Message>, { placement: 'topEnd' });
@@ -115,12 +127,60 @@ export default function SettingsPage() {
                                         />
                                     </Form.Group>
                                     <Form.Group>
+                                        <Form.ControlLabel><FormattedMessage id="page.admin.settings.okta.client-secret" /></Form.ControlLabel>
+                                        <Form.Control
+                                            name="oktaClientSecret"
+                                            type="password"
+                                            autoComplete="new-password"
+                                            placeholder={config.oktaClientSecretSet ? '••••••••' : ''}
+                                            value={config.oktaClientSecret || ''}
+                                            onChange={(value) => setConfig({...config, oktaClientSecret: value})}
+                                        />
+                                        <Form.HelpText>
+                                            <FormattedMessage id={config.oktaClientSecretSet
+                                                ? 'page.admin.settings.okta.client-secret.help-set'
+                                                : 'page.admin.settings.okta.client-secret.help-unset'} />
+                                        </Form.HelpText>
+                                    </Form.Group>
+                                    <Form.Group>
                                         <Form.ControlLabel><FormattedMessage id="page.admin.settings.okta.issuer" /></Form.ControlLabel>
                                         <Form.Control
                                             name="oktaIssuer"
                                             value={config.oktaIssuer || ''}
                                             onChange={(value) => setConfig({...config, oktaIssuer: value})}
                                         />
+                                    </Form.Group>
+
+                                    <Divider />
+
+                                    <h6 className="admin-settings-section-title"><FormattedMessage id="page.admin.settings.okta.groups-title" /></h6>
+                                    <p className="okta-groups-help"><FormattedMessage id="page.admin.settings.okta.groups-help" /></p>
+                                    <Form.Group>
+                                        <Form.ControlLabel><FormattedMessage id="page.admin.settings.okta.admin-group" /></Form.ControlLabel>
+                                        <Form.Control
+                                            name="oktaAdminGroup"
+                                            value={config.oktaAdminGroup || ''}
+                                            onChange={(value) => setConfig({...config, oktaAdminGroup: value})}
+                                        />
+                                        <Form.HelpText><FormattedMessage id="page.admin.settings.okta.admin-group.help" /></Form.HelpText>
+                                    </Form.Group>
+                                    <Form.Group>
+                                        <Form.ControlLabel><FormattedMessage id="page.admin.settings.okta.team-lead-group" /></Form.ControlLabel>
+                                        <Form.Control
+                                            name="oktaTeamLeadGroup"
+                                            value={config.oktaTeamLeadGroup || ''}
+                                            onChange={(value) => setConfig({...config, oktaTeamLeadGroup: value})}
+                                        />
+                                        <Form.HelpText><FormattedMessage id="page.admin.settings.okta.team-lead-group.help" /></Form.HelpText>
+                                    </Form.Group>
+                                    <Form.Group>
+                                        <Form.ControlLabel><FormattedMessage id="page.admin.settings.okta.user-group" /></Form.ControlLabel>
+                                        <Form.Control
+                                            name="oktaUserGroup"
+                                            value={config.oktaUserGroup || ''}
+                                            onChange={(value) => setConfig({...config, oktaUserGroup: value})}
+                                        />
+                                        <Form.HelpText><FormattedMessage id="page.admin.settings.okta.user-group.help" /></Form.HelpText>
                                     </Form.Group>
                                 </Panel>
                             )}
