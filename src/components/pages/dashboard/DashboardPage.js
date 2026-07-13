@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { BuildRequests } from 'angles-javascript-client';
 import {
   DateRangePicker,
@@ -16,6 +16,8 @@ import {
   Badge,
   Dropdown,
   IconButton,
+  Message,
+  useToaster,
 } from 'rsuite';
 import { BsLockFill, BsFilterSquare } from 'react-icons/bs';
 import TableColumnIcon from '@rsuite/icons/TableColumn';
@@ -25,6 +27,7 @@ import RemindFillIcon from '@rsuite/icons/RemindFill';
 import WaitIcon from '@rsuite/icons/Wait';
 import ReviewPassIcon from '@rsuite/icons/ReviewPass';
 import DocPassIcon from '@rsuite/icons/DocPass';
+import TrashIcon from '@rsuite/icons/Trash';
 import moment from 'moment';
 import update from 'immutability-helper';
 
@@ -32,11 +35,13 @@ import queryString from 'query-string';
 import { connect } from 'react-redux';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import Cookies from 'js-cookie';
+import { useAuth } from '../../../context/AuthContext';
 import { storeCurrentTeam } from '../../../redux/teamActions';
 import BuildsTable from './BuildsTable';
 import { getDateRangesPicker, getDurationAsString } from '../../../utility/TimeUtilities';
 import ExecutionBarChart from './charts/ExecutionBarChart';
 import ExecutionPieChart from './charts/ExecutionPieChart';
+import ConfirmModal from '../../common/ConfirmModal';
 
 const generateFilterMenuData = function (environments, components) {
   const data = [];
@@ -111,6 +116,9 @@ const DashboardPage = function (props) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const buildRequests = new BuildRequests(axios);
+  const { user } = useAuth();
+  const intl = useIntl();
+  const toaster = useToaster();
   const { currentTeam, teams, environments, saveCurrentTeam, builds: reduxBuilds } = props;
 
   // query values
@@ -136,6 +144,9 @@ const DashboardPage = function (props) {
   const [filteredEnvironments, setFilteredEnvironments] = useState([]);
   const [filteredComponents, setFilteredComponents] = useState([]);
   const [filteredValues, setFilteredValues] = useState([]);
+
+  // delete build values
+  const [deleteConfirmState, setDeleteConfirmState] = useState({ open: false, buildIds: [] });
 
   // pagination values
   const [activePage, setActivePage] = React.useState(1);
@@ -297,6 +308,75 @@ const DashboardPage = function (props) {
       }
     });
     return selectedBuildCountValue;
+  };
+
+  const canDeleteBuilds = () => {
+    if (!user || !currentTeam) {
+      return false;
+    }
+    if (user.userType === 'admin') {
+      return true;
+    }
+    if (user.userType === 'team_lead' && Array.isArray(user.teams)) {
+      return user.teams
+        .map((team) => (typeof team === 'object' ? team._id : team))
+        .includes(currentTeam._id);
+    }
+    return false;
+  };
+
+  const handleDeleteBuild = () => {
+    const selectedBuildIds = retrieveSelectedBuilds();
+    if (selectedBuildIds.length === 0) {
+      return;
+    }
+    setDeleteConfirmState({ open: true, buildIds: selectedBuildIds });
+  };
+
+  const handleCancelDeleteBuild = () => {
+    setDeleteConfirmState({ open: false, buildIds: [] });
+  };
+
+  const handleConfirmDeleteBuild = async () => {
+    const { buildIds } = deleteConfirmState;
+    setDeleteConfirmState({ open: false, buildIds: [] });
+
+    const deletedBuildIds = [];
+    let hasFailure = false;
+    // eslint-disable-next-line no-restricted-syntax
+    for (const buildId of buildIds) {
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        await buildRequests.deleteBuild(buildId);
+        deletedBuildIds.push(buildId);
+      } catch {
+        hasFailure = true;
+      }
+    }
+
+    if (deletedBuildIds.length > 0) {
+      setBuilds(builds.filter((build) => !deletedBuildIds.includes(build._id)));
+      setSelectedBuilds(update(selectedBuilds, { $unset: deletedBuildIds }));
+    }
+
+    if (!hasFailure) {
+      toaster.push(
+        <Message type="success">
+          {intl.formatMessage(
+            { id: 'page.dashboard.toast.delete-build-success' },
+            { count: deletedBuildIds.length },
+          )}
+        </Message>,
+        { placement: 'topEnd' },
+      );
+    } else {
+      toaster.push(
+        <Message type="error">
+          {intl.formatMessage({ id: 'page.dashboard.toast.delete-build-error' })}
+        </Message>,
+        { placement: 'topEnd' },
+      );
+    }
   };
 
   const { totalTestRuns, totalExecutions, totalTimeMs } = testRunMetrics;
@@ -489,6 +569,17 @@ const DashboardPage = function (props) {
                                   id="page.dashboard.menu.clear-selection"
                                 />
                               </Dropdown.Item>
+                              {canDeleteBuilds() && (
+                                <Dropdown.Item
+                                  icon={<TrashIcon />}
+                                  disabled={!anyBuildsSelected()}
+                                  onClick={() => handleDeleteBuild()}
+                                >
+                                  <FormattedMessage
+                                    id="page.dashboard.menu.delete-build"
+                                  />
+                                </Dropdown.Item>
+                              )}
                             </>
                           ) : (
                             <Dropdown.Item
@@ -525,6 +616,20 @@ const DashboardPage = function (props) {
               </Col>
             </Row>
           </Grid>
+          <ConfirmModal
+            open={deleteConfirmState.open}
+            title={<FormattedMessage id="page.dashboard.confirm.delete-build.title" />}
+            message={(
+              <FormattedMessage
+                id="page.dashboard.confirm.delete-build.message"
+                values={{ count: deleteConfirmState.buildIds.length }}
+              />
+            )}
+            confirmLabel={<FormattedMessage id="page.dashboard.menu.delete-build" />}
+            cancelLabel={<FormattedMessage id="page.dashboard.confirm.delete-build.cancel" />}
+            onConfirm={handleConfirmDeleteBuild}
+            onCancel={handleCancelDeleteBuild}
+          />
         </div>
       )
     )

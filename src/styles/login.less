@@ -1,0 +1,73 @@
+.login-page {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--body-background, var(--rs-bg-overlay));
+
+    .login-container {
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    .login-panel {
+        background-color: var(--main-panel-background, var(--rs-bg-panel));
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        
+        .login-header {
+            text-align: center;
+            height: 60px;
+
+            .login-angles-icon {
+                height: 50px;
+                display: inline;
+                margin-top: -3px;
+            }
+
+            .login-angles-text-icon {
+                height: 55px;
+                padding-left: 6px;
+                vertical-align: center;
+                display: inline;
+            }
+        }
+
+        .rs-form-control-label {
+            color: var(--main-panel-font-color, var(--rs-text-primary));
+        }
+
+        .rs-input {
+            background-color: var(--body-background, var(--rs-bg-overlay));
+            color: var(--main-panel-font-color, var(--rs-text-primary));
+            border: 1px solid var(--master-color-1, var(--rs-border-primary));
+        }
+    }
+
+    .login-error {
+        margin-bottom: 20px;
+    }
+
+    .okta-login-section {
+        margin-top: 20px;
+        text-align: center;
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            color: var(--main-panel-secondary-font-color, var(--rs-text-secondary));
+
+            &::before, &::after {
+                content: '';
+                flex: 1;
+                border-bottom: 1px solid var(--master-color-1, var(--rs-border-primary));
+            }
+
+            span {
+                padding: 0 10px;
+                background-color: var(--main-panel-background, var(--rs-bg-panel));
+            }
+        }
+    }
+}

@@ -8,6 +8,7 @@ import { Provider } from 'react-redux';
 import store from '../redux/store';
 import { CurrentScreenshotProvider } from '../context/CurrentScreenshotContext';
 import { ExecutionStateProvider } from '../context/ExecutionStateContext';
+import { AuthProvider } from '../context/AuthContext';
 
 // Helper to load messages
 // In a real app, you might want to load this on the server or better handle the async nature
@@ -52,11 +53,13 @@ export default function Providers({ children }) {
     return (
         <Provider store={store}>
             <IntlProvider locale={language} messages={messages}>
-                <CurrentScreenshotProvider>
-                    <ExecutionStateProvider>
-                        {children}
-                    </ExecutionStateProvider>
-                </CurrentScreenshotProvider>
+                <AuthProvider>
+                    <CurrentScreenshotProvider>
+                        <ExecutionStateProvider>
+                            {children}
+                        </ExecutionStateProvider>
+                    </CurrentScreenshotProvider>
+                </AuthProvider>
             </IntlProvider>
         </Provider>
     );

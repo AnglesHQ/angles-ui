@@ -12,6 +12,11 @@
 @import '../components/common/screenshot-view/styles.less';
 @import '../components/common/test-suite/styles.less';
 @import '../components/common/results-bar/styles.less';
+@import './login.less';
+@import '../app/admin/settings/styles.less';
+@import '../app/admin/users/styles.less';
+@import '../app/team-settings/styles.less';
+@import '../app/user-settings/styles.less';
 
 :root {
 
@@ -95,6 +100,19 @@
     --select-picker-font-color: var(--master-font-color-1);
     --select-picker-label-color: var(--master-color-3);
 
+    // modal
+    --modal-background: var(--master-color-2);
+    --modal-font-color: var(--master-font-color-1);
+    --modal-secondary-font-color: var(--master-font-color-3);
+
+    // screenshot viewer
+    --screenshot-border-color: var(--master-color-2-relative);
+    --screenshot-divider-color: var(--master-color-2-relative);
+    --screenshot-details-header-background: var(--master-color-2-relative);
+    --screenshot-form-background: var(--master-color-2);
+    --screenshot-form-border: var(--master-color-2-relative);
+    --baseline-overlay-background: var(--master-color-2-relative);
+
     // result colors
     --pass-color: #5fad6f;
     --fail-color: #fc6571;
@@ -126,6 +144,19 @@
 
     --master-icon-color: hsl(210, 100%, 60%);
 
+    // modal (dark overrides inherit from master palette — no change needed)
+    --modal-background: var(--master-color-2);
+    --modal-font-color: var(--master-font-color-1);
+    --modal-secondary-font-color: var(--master-font-color-3);
+
+    // screenshot viewer (dark overrides inherit from master palette — no change needed)
+    --screenshot-border-color: var(--master-color-2-relative);
+    --screenshot-divider-color: var(--master-color-2-relative);
+    --screenshot-details-header-background: var(--master-color-2-relative);
+    --screenshot-form-background: var(--master-color-2);
+    --screenshot-form-border: var(--master-color-2-relative);
+    --baseline-overlay-background: var(--master-color-2-relative);
+
 }
 
 //}
@@ -138,9 +169,15 @@ html body {
 .main-sidebar {
     padding-top: 25px;
     background-color: var(--nav-background);
-    display: flex;
-    flex-direction: column;
     min-height: 100vh;
+
+    // Inner wrapper carries the flex layout so RSuite can freely control
+    // the outer Sidebar element's width without flex interference
+    .main-sidebar-inner {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
 
     .sidebar-header {
         padding: 3px 2px 3px 5px;
@@ -171,7 +208,6 @@ html body {
     }
 
     .rs-sidenav-body {
-        margin-left: -3px;
         padding-right: 3px;
     }
 
@@ -183,21 +219,6 @@ html body {
     .rs-sidenav-item:hover {
         color: var(--nav-hover-font-color);
         background-color: var(--nav-hover-color);
-    }
-
-    .rs-dropdown-item {
-        color: var(--nav-font-color) !important;
-        background-color: transparent !important;
-        font-weight: bolder;
-    }
-
-    .rs-dropdown-item:hover,
-    .rs-dropdown-item-active,
-    .rs-dropdown-item:focus,
-    .rs-dropdown-item:focus-visible,
-    .rs-dropdown-item.rs-dropdown-item-active {
-        color: var(--nav-hover-font-color) !important;
-        background-color: var(--nav-hover-color) !important;
     }
 
     .nav-toggle {
@@ -227,6 +248,91 @@ html body {
                 fill: var(--nav-hover-font-color) !important;
             }
         }
+    }
+}
+
+.main-container .rs-navbar {
+    background-color: transparent !important;
+
+    .rs-nav-item,
+    .rs-navbar-item,
+    .rs-dropdown-toggle,
+    .rs-nav-item *,
+    .rs-navbar-item *,
+    .rs-dropdown-toggle * {
+        color: var(--nav-font-color) !important;
+        font-weight: bolder;
+
+        svg {
+            color: var(--nav-font-color) !important;
+            fill: var(--nav-font-color) !important;
+        }
+    }
+
+    .rs-nav-item:hover,
+    .rs-nav-item:focus,
+    .rs-nav-item:active,
+    .rs-navbar-item:hover,
+    .rs-navbar-item:focus,
+    .rs-navbar-item:active,
+    .rs-dropdown-toggle:hover,
+    .rs-dropdown-toggle:focus,
+    .rs-dropdown-toggle:active,
+    .rs-dropdown.rs-dropdown-open .rs-dropdown-toggle {
+        background-color: var(--nav-hover-color) !important;
+    }
+
+    .rs-nav-item:hover,
+    .rs-nav-item:focus,
+    .rs-nav-item:active,
+    .rs-navbar-item:hover,
+    .rs-navbar-item:focus,
+    .rs-navbar-item:active,
+    .rs-dropdown-toggle:hover,
+    .rs-dropdown-toggle:focus,
+    .rs-dropdown-toggle:active,
+    .rs-dropdown.rs-dropdown-open .rs-dropdown-toggle,
+    .rs-nav-item:hover *,
+    .rs-navbar-item:hover *,
+    .rs-dropdown-toggle:hover * {
+        color: var(--nav-hover-font-color) !important;
+
+        svg {
+            color: var(--nav-hover-font-color) !important;
+            fill: var(--nav-hover-font-color) !important;
+        }
+    }
+}
+
+.rs-dropdown-menu {
+    background-color: var(--nav-background) !important;
+
+    .rs-dropdown-item,
+    .rs-dropdown-item * {
+        color: var(--nav-font-color) !important;
+        background-color: transparent !important;
+        font-weight: bolder;
+    }
+
+    .rs-dropdown-item:hover,
+    .rs-dropdown-item-active,
+    .rs-dropdown-item:focus,
+    .rs-dropdown-item:focus-visible,
+    .rs-dropdown-item.rs-dropdown-item-active {
+        background-color: var(--nav-hover-color) !important;
+    }
+
+    .rs-dropdown-item:hover,
+    .rs-dropdown-item-active,
+    .rs-dropdown-item:focus,
+    .rs-dropdown-item:focus-visible,
+    .rs-dropdown-item.rs-dropdown-item-active,
+    .rs-dropdown-item:hover *,
+    .rs-dropdown-item-active *,
+    .rs-dropdown-item:focus *,
+    .rs-dropdown-item:focus-visible *,
+    .rs-dropdown-item.rs-dropdown-item-active * {
+        color: var(--nav-hover-font-color) !important;
     }
 }
 
@@ -411,6 +517,51 @@ a:active {
     background-color: var(--button-background);
 }
 
+.filter-cancel-button {
+    color: var(--button-deactivated-font-color);
+    background-color: var(--button-deactived-background);
+}
+
+.filter-cancel-button:hover {
+    color: var(--button-deactivated-font-color);
+    background-color: var(--button-deactived-background);
+    opacity: 0.85;
+}
+
+.filter-cancel-button:focus {
+    outline: none;
+    background-color: var(--button-deactived-background);
+}
+
+// Confirmation modal — use ConfirmModal component instead of window.confirm()
+.confirm-modal {
+
+    .rs-modal-content {
+        background-color: var(--modal-background);
+        color: var(--modal-font-color);
+    }
+
+    .rs-modal-header,
+    .rs-modal-footer {
+        background-color: var(--modal-background);
+    }
+
+    .confirm-modal-title {
+        color: var(--modal-font-color);
+        font-weight: bold;
+    }
+
+    .confirm-modal-message {
+        color: var(--modal-secondary-font-color);
+        margin: 0;
+    }
+
+    .confirm-modal-actions {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+    }
+}
 
 .top-menu-stack {
     align-items: center;
@@ -475,6 +626,7 @@ a:active {
         //border: 1px solid #dee2e6;
         border-radius: 10px;
         background: var(--tabs-overall-background);
+        color: var(--main-panel-font-color);
         padding: 10px;
     }
 }
