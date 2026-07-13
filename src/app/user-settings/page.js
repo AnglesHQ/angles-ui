@@ -8,6 +8,9 @@ import { useRouter } from 'next/navigation';
 import moment from 'moment';
 import { FormattedMessage, useIntl } from 'react-intl';
 import ConfirmModal from '../../components/common/ConfirmModal';
+import PasswordRequirements from '../../components/common/PasswordRequirements';
+import { isPasswordValid } from '../../utility/PasswordUtilities';
+import { getApiErrorMessage } from '../../utility/ApiUtilities';
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -27,6 +30,15 @@ export default function UserSettingsPage() {
 
     // Confirm Modal states
     const [confirmState, setConfirmState] = useState({ open: false, tokenId: null });
+
+    // Change password modal states
+    const [passwordModalOpen, setPasswordModalOpen] = useState(false);
+    const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    const [passwordError, setPasswordError] = useState(null);
+    const [passwordSuccess, setPasswordSuccess] = useState(false);
+
+    // SSO users authenticate through the identity provider and have no local password to change.
+    const canChangePassword = user && user.authProvider !== 'okta';
 
     const expiryOptions = [
         { label: intl.formatMessage({ id: 'page.user-settings.expiry.1-day' }), value: '1' },
@@ -114,6 +126,61 @@ export default function UserSettingsPage() {
         setConfirmState({ open: false, tokenId: null });
     };
 
+    const handleOpenPasswordModal = () => {
+        setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+        setPasswordError(null);
+        setPasswordSuccess(false);
+        setPasswordModalOpen(true);
+    };
+
+    const handleClosePasswordModal = () => {
+        setPasswordModalOpen(false);
+        setPasswordError(null);
+        setPasswordSuccess(false);
+    };
+
+    // Update a single password field and clear any previously shown error as the user edits.
+    const updatePasswordField = (field, value) => {
+        setPasswordForm((prev) => ({ ...prev, [field]: value }));
+        setPasswordError(null);
+    };
+
+    const newPasswordValid = isPasswordValid(passwordForm.newPassword);
+    const confirmMatches = passwordForm.newPassword === passwordForm.confirmPassword;
+    const canSubmitPassword = Boolean(passwordForm.currentPassword)
+        && newPasswordValid
+        && confirmMatches;
+
+    const handleChangePassword = async () => {
+        if (!passwordForm.currentPassword) {
+            setPasswordError(intl.formatMessage({ id: 'page.user-settings.password.toast.current-required' }));
+            return;
+        }
+        if (!newPasswordValid) {
+            setPasswordError(intl.formatMessage({ id: 'password.policy.invalid' }));
+            return;
+        }
+        if (!confirmMatches) {
+            setPasswordError(intl.formatMessage({ id: 'page.user-settings.password.toast.mismatch' }));
+            return;
+        }
+        setPasswordError(null);
+        try {
+            await axios.put(`/users/${user._id}/password`, {
+                currentPassword: passwordForm.currentPassword,
+                newPassword: passwordForm.newPassword,
+            });
+            // Confirm success inline in the modal (persistent, like the token-generated flow)
+            // and also raise a toast so it is visible after the modal is dismissed.
+            setPasswordSuccess(true);
+            toaster.push(<Message type="success">{intl.formatMessage({ id: 'page.user-settings.password.toast.success' })}</Message>, { placement: 'topEnd' });
+        } catch (error) {
+            // Show the API's reason inline in the modal (persistent, not a transient toast)
+            // so it can't be missed, resolving every error shape the API may return.
+            setPasswordError(getApiErrorMessage(error, intl.formatMessage({ id: 'page.user-settings.password.toast.error' })));
+        }
+    };
+
     const copyToClipboard = () => {
         if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(generatedToken);
@@ -128,6 +195,22 @@ export default function UserSettingsPage() {
     return (
         <Container>
             <Content className="user-settings-page">
+                {canChangePassword && (
+                    <Panel
+                        header={<span className="user-settings-panel-header"><FormattedMessage id="page.user-settings.password.title" /></span>}
+                        bordered
+                        className="user-settings-panel"
+                    >
+                        <p style={{ marginBottom: '15px', color: 'var(--main-panel-secondary-font-color)' }}>
+                            <FormattedMessage id="page.user-settings.password.description" />
+                        </p>
+                        <ButtonToolbar className="user-settings-toolbar">
+                            <Button className="filter-submit-button" onClick={handleOpenPasswordModal}>
+                                <FormattedMessage id="page.user-settings.password.button.change" />
+                            </Button>
+                        </ButtonToolbar>
+                    </Panel>
+                )}
                 <Panel
                     header={<span className="user-settings-panel-header"><FormattedMessage id="page.user-settings.header" /></span>}
                     bordered
@@ -252,6 +335,83 @@ export default function UserSettingsPage() {
                                 <FormattedMessage id="page.user-settings.button.generate" />
                             </Button>
                             <Button className="filter-cancel-button" onClick={handleCloseModal}>
+                                <FormattedMessage id="page.user-settings.button.cancel" />
+                            </Button>
+                        </>
+                    )}
+                </Modal.Footer>
+            </Modal>
+
+            <Modal open={passwordModalOpen} onClose={handleClosePasswordModal} size="sm">
+                <Modal.Header>
+                    <Modal.Title><FormattedMessage id="page.user-settings.password.modal.title" /></Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {passwordSuccess ? (
+                        <Message type="success" showIcon className="token-success-message">
+                            <strong><FormattedMessage id="page.user-settings.modal.success-label" /></strong> <FormattedMessage id="page.user-settings.password.modal.success" />
+                        </Message>
+                    ) : (
+                    <>
+                    {passwordError && (
+                        <Message type="error" showIcon closable onClose={() => setPasswordError(null)} style={{ marginBottom: '15px' }}>
+                            {passwordError}
+                        </Message>
+                    )}
+                    <Form fluid>
+                        <Form.Group>
+                            <Form.ControlLabel><FormattedMessage id="page.user-settings.password.modal.current" /></Form.ControlLabel>
+                            <Form.Control
+                                name="currentPassword"
+                                type="password"
+                                autoComplete="current-password"
+                                value={passwordForm.currentPassword}
+                                onChange={(value) => updatePasswordField('currentPassword', value)}
+                            />
+                        </Form.Group>
+                        <Form.Group>
+                            <Form.ControlLabel><FormattedMessage id="page.user-settings.password.modal.new" /></Form.ControlLabel>
+                            <Form.Control
+                                name="newPassword"
+                                type="password"
+                                autoComplete="new-password"
+                                value={passwordForm.newPassword}
+                                onChange={(value) => updatePasswordField('newPassword', value)}
+                            />
+                            {passwordForm.newPassword.length > 0 && (
+                                <PasswordRequirements password={passwordForm.newPassword} />
+                            )}
+                        </Form.Group>
+                        <Form.Group>
+                            <Form.ControlLabel><FormattedMessage id="page.user-settings.password.modal.confirm" /></Form.ControlLabel>
+                            <Form.Control
+                                name="confirmPassword"
+                                type="password"
+                                autoComplete="new-password"
+                                value={passwordForm.confirmPassword}
+                                onChange={(value) => updatePasswordField('confirmPassword', value)}
+                            />
+                            {passwordForm.confirmPassword.length > 0 && !confirmMatches && (
+                                <Form.HelpText style={{ color: 'var(--fail-color)' }}>
+                                    <FormattedMessage id="page.user-settings.password.modal.mismatch" />
+                                </Form.HelpText>
+                            )}
+                        </Form.Group>
+                    </Form>
+                    </>
+                    )}
+                </Modal.Body>
+                <Modal.Footer>
+                    {passwordSuccess ? (
+                        <Button className="filter-submit-button" onClick={handleClosePasswordModal}>
+                            <FormattedMessage id="page.user-settings.button.done" />
+                        </Button>
+                    ) : (
+                        <>
+                            <Button className="filter-submit-button" onClick={handleChangePassword} disabled={!canSubmitPassword}>
+                                <FormattedMessage id="page.user-settings.password.modal.submit" />
+                            </Button>
+                            <Button className="filter-cancel-button" onClick={handleClosePasswordModal}>
                                 <FormattedMessage id="page.user-settings.button.cancel" />
                             </Button>
                         </>

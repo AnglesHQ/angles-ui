@@ -8,6 +8,9 @@ import { useRouter } from 'next/navigation';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import ConfirmModal from '../../../components/common/ConfirmModal';
+import PasswordRequirements from '../../../components/common/PasswordRequirements';
+import { isPasswordValid } from '../../../utility/PasswordUtilities';
+import { getApiErrorMessage } from '../../../utility/ApiUtilities';
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -81,7 +84,18 @@ export default function UsersPage() {
         setModalOpen(false);
     };
 
+    // Password is required when creating a user, and optional when editing (blank keeps the
+    // existing password). Whenever a password IS supplied it must satisfy the strength policy.
+    const passwordProvided = formData.password.length > 0;
+    const passwordAcceptable = editingUser
+        ? (!passwordProvided || isPasswordValid(formData.password))
+        : (passwordProvided && isPasswordValid(formData.password));
+
     const handleSaveUser = async () => {
+        if (!passwordAcceptable) {
+            toaster.push(<Message type="warning">{intl.formatMessage({ id: 'password.policy.invalid' })}</Message>, { placement: 'topEnd' });
+            return;
+        }
         try {
             const payload = { ...formData, role: formData.userType };
             // delete payload.userType;
@@ -98,7 +112,7 @@ export default function UsersPage() {
             fetchUsers();
             handleCloseModal();
         } catch (error) {
-            toaster.push(<Message type="error">{error.response?.data?.message || intl.formatMessage({ id: 'page.admin.users.toast.save-error' })}</Message>, { placement: 'topEnd' });
+            toaster.push(<Message type="error">{getApiErrorMessage(error, intl.formatMessage({ id: 'page.admin.users.toast.save-error' }))}</Message>, { placement: 'topEnd' });
         }
     };
 
@@ -213,6 +227,9 @@ export default function UsersPage() {
                                 value={formData.password}
                                 onChange={(value) => setFormData({ ...formData, password: value })}
                             />
+                            {formData.password.length > 0 && (
+                                <PasswordRequirements password={formData.password} />
+                            )}
                         </Form.Group>
                         <Form.Group>
                             <Form.ControlLabel><FormattedMessage id="page.admin.users.modal.user-type" /></Form.ControlLabel>
@@ -235,7 +252,7 @@ export default function UsersPage() {
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button className="filter-submit-button" onClick={handleSaveUser}>
+                    <Button className="filter-submit-button" onClick={handleSaveUser} disabled={!passwordAcceptable}>
                         <FormattedMessage id="page.admin.users.button.save" />
                     </Button>
                     <Button
