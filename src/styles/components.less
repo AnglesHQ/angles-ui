@@ -19,7 +19,7 @@
     font-weight: var(--font-weight-semibold);
     transition: background-color var(--transition-fast), box-shadow var(--transition-fast);
 
-    &:hover {
+    &:hover:not(:disabled):not(.rs-btn-disabled) {
         color: var(--button-hover-font-color);
         background-color: var(--button-hover-background);
     }
@@ -32,6 +32,18 @@
     &:focus-visible {
         .focus-ring();
         background-color: var(--button-background);
+    }
+
+    // Keep the brand orange when disabled (dimmed), otherwise rsuite's
+    // `.rs-btn-disabled` (higher specificity) paints it grey and the button
+    // looks inconsistent with the other primary buttons. Matches how rsuite
+    // itself dims disabled primary buttons.
+    &:disabled,
+    &.rs-btn-disabled {
+        color: var(--button-font-color);
+        background-color: var(--button-background);
+        opacity: 0.5;
+        cursor: not-allowed;
     }
 }
 

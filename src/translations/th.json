@@ -156,6 +156,8 @@
   "common.component.suite-table.header.expand-all": "ขยายกรณีทดสอบทั้งหมด",
   "common.component.suite-table.header.expand-all-actions": "ขยายกรณีทดสอบและการดำเนินการทั้งหมด",
   "common.component.suite-table.icon.test-history": "ดูประวัติการดำเนินการสำหรับการทดสอบ",
+  "common.component.suite-table.header.show-screenshots": "แสดงภาพหน้าจอของขั้นตอน",
+  "common.component.suite-table.header.hide-screenshots": "ซ่อนภาพหน้าจอของขั้นตอน",
   "common.component.screenshot-view.header": "โปรแกรมดูภาพหน้าจอ",
   "common.component.screenshot-view.tabs.enable-alert": "หากต้องการเปิดใช้งานแท็บ \"ประวัติ\" และ \"เปรียบเทียบกับข้อมูลพื้นฐาน\" โปรดระบุมุมมองและรายละเอียดแพลตฟอร์มเมื่ออัปโหลดภาพหน้าจอ",
   "common.component.screenshot-view.tabs.label.image": "ภาพหน้าจอ",

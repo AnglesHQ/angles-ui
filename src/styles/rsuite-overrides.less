@@ -26,7 +26,7 @@
             color: var(--main-table-header-font-color);
             opacity: 0.8;
             font-weight: bold;
-            font-size: 0.9em;
+            font-size: var(--font-size-sm);
         }
 
         .rs-table-cell-first {
@@ -64,7 +64,7 @@
 
         .rs-table-cell {
             background-color: var(--main-table-body-background);
-            font-size: 0.9em;
+            font-size: var(--font-size-sm);
         }
 
         .rs-table-row:last-child {
@@ -218,6 +218,25 @@
     background-color: var(--main-panel-background);
     color: var(--main-panel-font-color);
     border: none;
+}
+
+// rsuite SearchBox — the filter field inside SelectPicker / CheckPicker /
+// TagPicker and Tree/Cascader dropdown menus. It renders as an *inside*
+// input-group whose inner `.rs-search-box-input` keeps rsuite's default white
+// `--rs-input-bg`; on our dark popup surface that white field looks wrong
+// (in light mode it blends in, hence it only shows up in dark mode). Make the
+// field and its icon addon transparent so the themed group surface shows
+// through as a single tone.
+.rs-search-box {
+    .rs-search-box-input,
+    .rs-input {
+        background-color: transparent;
+        color: var(--main-panel-font-color);
+    }
+
+    .rs-input-group-addon {
+        background-color: transparent;
+    }
 }
 
 // Number stepper (custom token expiry)

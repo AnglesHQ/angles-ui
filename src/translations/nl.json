@@ -156,6 +156,8 @@
   "common.component.suite-table.header.expand-all": "Open alle testgevallen",
   "common.component.suite-table.header.expand-all-actions": "Open alle testgevallen en acties",
   "common.component.suite-table.icon.test-history": "Zie executie geschiedenis voor test",
+  "common.component.suite-table.header.show-screenshots": "Toon screenshots van stappen",
+  "common.component.suite-table.header.hide-screenshots": "Verberg screenshots van stappen",
   "common.component.screenshot-view.header": "Schermafbeeldingen kijker",
   "common.component.screenshot-view.tabs.enable-alert": "Om de tabbladen \"Geschiedenis\" en \"Vergelijken met de baseline\" in te schakelen, geeft U een \"Weergave\" en \"Platform details\" op bij het uploaden van de schermafbeeldingen",
   "common.component.screenshot-view.tabs.label.image": "Schermafbeelding",

@@ -156,6 +156,8 @@
   "common.component.suite-table.header.expand-all": "Expand all test cases",
   "common.component.suite-table.header.expand-all-actions": "Expand all test cases and actions",
   "common.component.suite-table.icon.test-history": "See execution history for test",
+  "common.component.suite-table.header.show-screenshots": "Show step screenshots",
+  "common.component.suite-table.header.hide-screenshots": "Hide step screenshots",
   "common.component.screenshot-view.header": "Screenshot Viewer",
   "common.component.screenshot-view.tabs.enable-alert": "To enable the \"History\" and \"Compare with Baseline\" tabs please provide a view and platform details when uploading the screenshots",
   "common.component.screenshot-view.tabs.label.image": "Screenshot",

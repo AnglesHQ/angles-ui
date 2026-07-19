@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import {
   Row,
@@ -7,6 +7,7 @@ import {
   Panel,
 } from 'rsuite';
 import { VscExpandAll } from 'react-icons/vsc';
+import { MdImage, MdHideImage } from 'react-icons/md';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import ExpandOutlineIcon from '@rsuite/icons/ExpandOutline';
@@ -30,6 +31,8 @@ const SuiteTable = function (props) {
     screenshots,
     openModal,
   } = props;
+
+  const [showScreenshots, setShowScreenshots] = useState(true);
 
   const sum = (result) => {
     if (result === null || result === undefined) {
@@ -91,6 +94,22 @@ const SuiteTable = function (props) {
             </Col>
             <Col xs={2}>
               <div className="suite-menu-div">
+                <OverlayTrigger overlay={(
+                  <Tooltip id="tooltip-disabled">
+                    <FormattedMessage id={showScreenshots
+                      ? 'common.component.suite-table.header.hide-screenshots'
+                      : 'common.component.suite-table.header.show-screenshots'}
+                    />
+                  </Tooltip>
+                )}
+                >
+                  <span
+                    className="screenshot-toggle-icon"
+                    onClick={() => setShowScreenshots(!showScreenshots)}
+                  >
+                    { showScreenshots ? <MdImage /> : <MdHideImage /> }
+                  </span>
+                </OverlayTrigger>
                 {
                   isSuiteExpanded(suite) ? (
                     <OverlayTrigger overlay={(
@@ -140,6 +159,7 @@ const SuiteTable = function (props) {
             index={execution._id}
             screenshots={screenshots}
             openModal={openModal}
+            showScreenshots={showScreenshots}
           />,
         ])
       }

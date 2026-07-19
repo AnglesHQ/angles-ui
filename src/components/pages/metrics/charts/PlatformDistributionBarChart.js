@@ -35,6 +35,7 @@ const PlatformDistributionBarChart = function (props) {
   const defaultOptions = {
     chart: {
       toolbar: { show: false },
+      zoom: { enabled: false },
       animations: { enabled: false },
       stacked: false,
       background: 'var(--sub-panel-background)',

@@ -12,6 +12,7 @@ const defaultOptions = {
     // fontFamily: 'inherit',
     // parentHeightOffset: 0,
     toolbar: { show: false },
+    zoom: { enabled: false },
     animations: { enabled: false },
     stacked: true,
     stackType: 'normal',

@@ -156,6 +156,8 @@
   "common.component.suite-table.header.expand-all": "展開所有測試案例",
   "common.component.suite-table.header.expand-all-actions": "展開所有測試案例和操作",
   "common.component.suite-table.icon.test-history": "查看測試的執行歷史記錄",
+  "common.component.suite-table.header.show-screenshots": "顯示步驟截圖",
+  "common.component.suite-table.header.hide-screenshots": "隱藏步驟截圖",
   "common.component.screenshot-view.header": "螢幕截圖檢視器",
   "common.component.screenshot-view.tabs.enable-alert": "要啟用「歷史記錄」和「與基線比較」選項卡，請在上傳螢幕截圖時提供視圖和平台詳細資訊",
   "common.component.screenshot-view.tabs.label.image": "螢幕截圖",

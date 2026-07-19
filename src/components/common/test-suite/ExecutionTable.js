@@ -19,6 +19,7 @@ const ExecutionTable = function (props) {
     execution,
     screenshots,
     openModal,
+    showScreenshots,
   } = props;
 
   const getPlatformName = (executionToGenerateNameFor) => {
@@ -102,6 +103,7 @@ const ExecutionTable = function (props) {
                 openModal={openModal}
                 actionIndex={actionIndex}
                 execution={execution}
+                showScreenshots={showScreenshots}
               />,
             ])}
           </div>

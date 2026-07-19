@@ -12,6 +12,7 @@ const ActionComponent = function (props) {
     openModal,
     actionIndex,
     execution,
+    showScreenshots,
   } = props;
 
   return (
@@ -31,7 +32,7 @@ const ActionComponent = function (props) {
       <div key={`steps_tables_${actionIndex}`}>
         { isActionExpanded(execution._id, actionIndex) ? (
           <div className="action-steps" key={Math.random().toString(36).substring(7)}>
-            <StepsTimeline key={`step_tables_tr_${index}`} index={index} action={action} screenshots={screenshots} openModal={openModal} />
+            <StepsTimeline key={`step_tables_tr_${index}`} index={index} action={action} screenshots={screenshots} openModal={openModal} showScreenshots={showScreenshots} />
           </div>
         ) : null }
       </div>

@@ -226,6 +226,18 @@ const DashboardPage = function (props) {
     setSelectedBuilds(updatedBuilds);
   };
 
+  const allBuildsSelected = () => builds.length > 0
+    && builds.every((build) => selectedBuilds[build._id] === true);
+
+  const toggleAllSelectedBuilds = () => {
+    const selectAll = !allBuildsSelected();
+    const updatedBuilds = {};
+    builds.forEach((build) => {
+      updatedBuilds[build._id] = selectAll;
+    });
+    setSelectedBuilds(updatedBuilds);
+  };
+
   /*
     Selected builds will contain both ticked and un-ticked, so we just want the selected ones.
   */
@@ -529,6 +541,7 @@ const DashboardPage = function (props) {
                   selectedBuilds={selectedBuilds}
                   retrieveSelectedBuilds={retrieveSelectedBuilds}
                   toggleSelectedBuild={toggleSelectedBuild}
+                  toggleAllSelectedBuilds={toggleAllSelectedBuilds}
                   setFilteredEnvironments={setFilteredEnvironments}
                   setFilteredComponents={setFilteredComponents}
                 />

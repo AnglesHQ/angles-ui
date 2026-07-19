@@ -46,6 +46,7 @@ export const buildBaseOptions = ({
 } = {}) => ({
   chart: {
     toolbar: { show: false },
+    zoom: { enabled: false },
     animations: { enabled: false },
     background,
     foreColor,

@@ -7,7 +7,6 @@ import Moment from 'react-moment';
 import {
   Timeline,
   Panel,
-  Stack,
 } from 'rsuite';
 import InfoRoundIcon from '@rsuite/icons/InfoRound';
 import WarningRoundIcon from '@rsuite/icons/WarningRound';
@@ -19,6 +18,7 @@ const StepsTimeline = function (props) {
     action,
     openModal,
     screenshots,
+    showScreenshots = true,
   } = props;
 
   const getScreenShot = (screenshotId) => {
@@ -49,11 +49,6 @@ const StepsTimeline = function (props) {
         return <InfoRoundIcon className="timeline-icon-info" />;
     }
   };
-  // eslint-disable-next-line no-unused-vars
-  const navigateToImageDetails = (imageId) => {
-    const navigate = useNavigate();
-    navigate(`/image/${imageId}`);
-  };
 
   const convertTextToLinks = (content) => {
     const reg = /(http:\/\/|https:\/\/)((\w|=|\?|\.|\/|#|&|%|\+|-)+)/g;
@@ -63,47 +58,83 @@ const StepsTimeline = function (props) {
     return '';
   };
 
+  const renderScreenshot = (step) => {
+    if (!showScreenshots || !step.screenshot) {
+      return null;
+    }
+    return (
+      <div className="step-shot">
+        <img
+          src={`${getScreenShot(step.screenshot)}`}
+          alt="Step screenshot thumbnail"
+          className="screenshot-thumbnail"
+          onClick={() => openModal(step.screenshot)}
+        />
+      </div>
+    );
+  };
+
+  // Only PASS/FAIL steps carry a name + expected/actual assertion; everything
+  // else (INFO, ERROR, ...) carries free-form `info` text.
+  const isAssertionStep = (status) => status === 'PASS' || status === 'FAIL';
+
+  const renderStepBody = (step) => {
+    if (isAssertionStep(step.status)) {
+      const showDiff = step.status === 'FAIL'
+        && (step.expected !== undefined || step.actual !== undefined);
+      return (
+        <>
+          <div className="step-head">
+            <span className="step-time">
+              <Moment utc format="HH:mm:ss">{step.timestamp}</Moment>
+            </span>
+            <span className="step-name">{step.name}</span>
+          </div>
+          { showDiff ? (
+            <div className="step-diff">
+              <div className="step-diff-line">
+                <span className="step-diff-label">Expected</span>
+                <span className="step-diff-value">{`${step.expected}`}</span>
+              </div>
+              <div className="step-diff-line">
+                <span className="step-diff-label">Actual</span>
+                <span className="step-diff-value">{`${step.actual}`}</span>
+              </div>
+            </div>
+          ) : null }
+        </>
+      );
+    }
+    return (
+      <div className="step-head">
+        <span className="step-time">
+          <Moment utc format="HH:mm:ss">{step.timestamp}</Moment>
+        </span>
+        <span className="step-name step-name-info">
+          {parse(DomPurify.sanitize(convertTextToLinks(step.info)))}
+        </span>
+      </div>
+    );
+  };
+
   return [
     <Panel className="steps-timeline-panel">
       <Timeline className="test-steps-timeline" key={action._id}>
         {
-          action.steps.map((step, index) => {
-            let screenshotImage = null;
-            if (step.screenshot) {
-              screenshotImage = (
-                <img
-                  src={`${getScreenShot(step.screenshot)}`}
-                  alt="Thumbnail"
-                  className="screenshot-thumbnail"
-                  onClick={() => openModal(step.screenshot)}
-                  style={{ cursor: 'pointer', height: '120px' }}
-                />
-              );
-            }
-            if (step.status === 'PASS' || step.status === 'FAIL') {
-              return (
-                <Timeline.Item dot={getTimeLineIcon(step.status)} className="timeline-step" key={index}>
-                  <Stack className="rg-stack" spacing={10}>
-                    <p><Moment utc format="HH:mm:ss">{step.timestamp}</Moment></p>
-                    <p>{step.name}</p>
-                    <p>{`Expected: ${step.expected}, Actual: ${step.actual}`}</p>
-                    <p>{screenshotImage}</p>
-                  </Stack>
-                </Timeline.Item>
-              );
-            }
-            return (
-              <Timeline.Item dot={getTimeLineIcon(step.status)} className="timeline-step" key={index}>
-                <Stack className="rg-stack" spacing={10} alignItems="flex-start">
-                  <p><Moment utc format="HH:mm:ss">{step.timestamp}</Moment></p>
-                  <p className="timeline-step-text">
-                    {parse(DomPurify.sanitize(convertTextToLinks(step.info)))}
-                  </p>
-                  <p>{screenshotImage}</p>
-                </Stack>
-              </Timeline.Item>
-            );
-          })
+          action.steps.map((step, index) => (
+            <Timeline.Item
+              dot={getTimeLineIcon(step.status)}
+              className={`timeline-step timeline-step-${step.status}`}
+              key={index}
+            >
+              <div className="step-row">
+                <div className="step-main">
+                  {renderStepBody(step)}
+                </div>
+                {renderScreenshot(step)}
+              </div>
+            </Timeline.Item>
+          ))
         }
       </Timeline>
     </Panel>,

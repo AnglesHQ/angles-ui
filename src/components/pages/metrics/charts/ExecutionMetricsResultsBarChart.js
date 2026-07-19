@@ -8,6 +8,7 @@ import { useIntl } from 'react-intl';
 const defaultOptions = {
   chart: {
     toolbar: { show: false },
+    zoom: { enabled: false },
     animations: { enabled: false },
     stacked: true,
     stackType: 'normal',

@@ -125,6 +125,13 @@ const MetricsPage = function (props) {
     changeCurrentTeam(teamId);
     setSelectedTeam(teamId);
     setSelectedComponent('any');
+    // Keep the teamId query param in sync with the newly selected team.
+    // The Shell drives currentTeam from the URL, so a stale teamId here would
+    // make it revert us back to the previous team as soon as currentTeam changes.
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('teamId', teamId);
+    params.set('component', 'any');
+    router.replace(`${pathname}?${params.toString()}`);
   };
 
   const changeCurrentTeam = (teamId) => {
