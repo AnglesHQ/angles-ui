@@ -1,7 +1,6 @@
 import 'rsuite/dist/rsuite.min.css';
 import 'react-image-crop/dist/ReactCrop.css';
 import '../styles/main.css';
-import '../index.css';
 
 import Providers from './providers';
 import Shell from '../components/Shell';

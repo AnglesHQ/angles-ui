@@ -62,7 +62,6 @@ const SummaryPage = function () {
     executionRequests
       .getExecutionHistory(executionId, skip, queryLimit)
       .then((response) => {
-        console.log('DEBUG: getExecutionHistory response', response);
         const { executions: retrievedExecutions } = response;
         retrieveScreenshotDetailsForExecutions(retrievedExecutions);
         const executionsToSave = [...retrievedExecutions];

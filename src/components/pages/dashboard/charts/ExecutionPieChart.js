@@ -1,5 +1,6 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
+import { STATUS_COLORS } from '../../../../utility/ChartConfig';
 import { Panel, Stack } from 'rsuite';
 import { useIntl } from 'react-intl';
 
@@ -18,7 +19,7 @@ const defaultOptions = {
       show: true,
     },
   },
-  colors: ['var(--pass-color)', 'var(--fail-color)', 'var(--error-color)', 'var(--skipped-color)'],
+  colors: STATUS_COLORS,
   legend: {
     show: true,
     fontSize: '15px',

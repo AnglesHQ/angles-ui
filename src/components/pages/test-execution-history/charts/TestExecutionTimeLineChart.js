@@ -38,7 +38,7 @@ const defaultOptions = {
       // },
     },
   ],
-  colors: ['#2485C1'],
+  colors: ['var(--color-primary)'],
   // legend: { show: true },
 };
 

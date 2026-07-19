@@ -88,7 +88,7 @@ const FilterMenu = function (props) {
       )}
       renderValue={(value, selectedItems) => (
         <span>
-          <span style={{ color: '#575757' }}>
+          <span style={{ color: 'var(--sub-panel-secondary-font-color)' }}>
             <Badge content={selectedItems.length}>
               <BsFilterSquare className="funnel-icon" />
             </Badge>

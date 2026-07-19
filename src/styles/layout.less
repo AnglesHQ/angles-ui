@@ -1,0 +1,205 @@
+// ============================================================================
+// App chrome / layout
+// ----------------------------------------------------------------------------
+// The persistent shell around every page: the left sidebar navigation, the top
+// navbar and the navigation dropdown menu. These lean heavily on RSuite markup
+// so `!important` is used where RSuite ships high-specificity defaults.
+// ============================================================================
+
+// Smooth the nav hover/active colour swaps (they were instant before).
+.main-sidebar .rs-sidenav-item,
+.main-container .rs-navbar .rs-nav-item,
+.main-container .rs-navbar .rs-navbar-item,
+.main-container .rs-navbar .rs-dropdown-toggle,
+.rs-dropdown-menu .rs-dropdown-item {
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.main-sidebar {
+    padding-top: 25px;
+    background-color: var(--nav-background);
+    min-height: 100vh;
+
+    // Inner wrapper carries the flex layout so RSuite can freely control the
+    // outer Sidebar element's width without flex interference.
+    .main-sidebar-inner {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    .sidebar-header {
+        padding: 3px 2px 3px 5px;
+        height: 60px;
+        overflow: hidden;
+        white-space: nowrap;
+
+        .sidebar-angles-icon {
+            height: 50px;
+            display: inline;
+            margin-top: -3px;
+        }
+
+        .sidebar-angles-text-icon {
+            height: 55px;
+            padding-left: 6px;
+            vertical-align: center;
+            display: inline;
+        }
+    }
+
+    .rs-sidenav-item-icon {
+        height: 25px;
+        width: 25px;
+        position: absolute;
+        left: 19px;
+        top: 14px;
+    }
+
+    .rs-sidenav-body {
+        padding-right: 3px;
+    }
+
+    .rs-sidenav-item {
+        color: var(--nav-font-color);
+        font-weight: bolder;
+    }
+
+    .rs-sidenav-item:hover {
+        color: var(--nav-hover-font-color);
+        background-color: var(--nav-hover-color);
+    }
+
+    .nav-toggle {
+        background-color: transparent !important;
+
+        .rs-nav-item,
+        .rs-navbar-item {
+            color: var(--nav-font-color) !important;
+
+            svg {
+                color: var(--nav-font-color) !important;
+                fill: var(--nav-font-color) !important;
+            }
+        }
+
+        .rs-nav-item:hover,
+        .rs-nav-item:focus,
+        .rs-nav-item:active,
+        .rs-navbar-item:hover,
+        .rs-navbar-item:focus,
+        .rs-navbar-item:active {
+            color: var(--nav-hover-font-color) !important;
+            background-color: var(--nav-hover-color) !important;
+
+            svg {
+                color: var(--nav-hover-font-color) !important;
+                fill: var(--nav-hover-font-color) !important;
+            }
+        }
+    }
+}
+
+.main-container .rs-navbar {
+    background-color: transparent !important;
+
+    .rs-nav-item,
+    .rs-navbar-item,
+    .rs-dropdown-toggle,
+    .rs-nav-item *,
+    .rs-navbar-item *,
+    .rs-dropdown-toggle * {
+        color: var(--nav-font-color) !important;
+        font-weight: bolder;
+
+        svg {
+            color: var(--nav-font-color) !important;
+            fill: var(--nav-font-color) !important;
+        }
+    }
+
+    .rs-nav-item:hover,
+    .rs-nav-item:focus,
+    .rs-nav-item:active,
+    .rs-navbar-item:hover,
+    .rs-navbar-item:focus,
+    .rs-navbar-item:active,
+    .rs-dropdown-toggle:hover,
+    .rs-dropdown-toggle:focus,
+    .rs-dropdown-toggle:active,
+    .rs-dropdown.rs-dropdown-open .rs-dropdown-toggle {
+        background-color: var(--nav-hover-color) !important;
+    }
+
+    .rs-nav-item:hover,
+    .rs-nav-item:focus,
+    .rs-nav-item:active,
+    .rs-navbar-item:hover,
+    .rs-navbar-item:focus,
+    .rs-navbar-item:active,
+    .rs-dropdown-toggle:hover,
+    .rs-dropdown-toggle:focus,
+    .rs-dropdown-toggle:active,
+    .rs-dropdown.rs-dropdown-open .rs-dropdown-toggle,
+    .rs-nav-item:hover *,
+    .rs-navbar-item:hover *,
+    .rs-dropdown-toggle:hover * {
+        color: var(--nav-hover-font-color) !important;
+
+        svg {
+            color: var(--nav-hover-font-color) !important;
+            fill: var(--nav-hover-font-color) !important;
+        }
+    }
+}
+
+.rs-dropdown-menu {
+    background-color: var(--nav-background) !important;
+    // RSuite ships a light 1px border + light box-shadow on the menu, which read
+    // as "white edges" against our dark menu. Neutralise them and clip the
+    // corners so item hover backgrounds don't poke past the rounded menu.
+    border: none !important;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+
+    .rs-dropdown-item,
+    .rs-dropdown-item * {
+        color: var(--nav-font-color) !important;
+        background-color: transparent !important;
+        font-weight: var(--font-weight-semibold);
+    }
+
+    .rs-dropdown-item {
+        transition: background-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    // Hover / focus / active. RSuite marks the current item with its own
+    // `-item-focus` / `-menu-item-focus` classes (default light-blue bg), so we
+    // must cover those too or the selected row keeps RSuite's colours.
+    .rs-dropdown-item:hover,
+    .rs-dropdown-item:focus,
+    .rs-dropdown-item:focus-visible,
+    .rs-dropdown-item-focus,
+    .rs-dropdown-menu-item-focus,
+    .rs-dropdown-item-active,
+    .rs-dropdown-item.rs-dropdown-item-active {
+        background-color: var(--nav-hover-color) !important;
+    }
+
+    .rs-dropdown-item:hover,
+    .rs-dropdown-item:focus,
+    .rs-dropdown-item:focus-visible,
+    .rs-dropdown-item-focus,
+    .rs-dropdown-menu-item-focus,
+    .rs-dropdown-item-active,
+    .rs-dropdown-item.rs-dropdown-item-active,
+    .rs-dropdown-item:hover *,
+    .rs-dropdown-item:focus *,
+    .rs-dropdown-item:focus-visible *,
+    .rs-dropdown-item-focus *,
+    .rs-dropdown-menu-item-focus *,
+    .rs-dropdown-item-active * {
+        color: var(--nav-hover-font-color) !important;
+    }
+}

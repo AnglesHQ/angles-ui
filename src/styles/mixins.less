@@ -1,0 +1,31 @@
+// ============================================================================
+// Mixins — reusable style patterns built on the design tokens
+// ----------------------------------------------------------------------------
+// Loaded after the tokens, before base. Use these so cards, focus rings and
+// hover lifts look identical everywhere.
+// ============================================================================
+
+// Raised surface (panels, cards, toolbars). Works in both themes: shadow in
+// light, hairline border in dark (see _elevation.less / _color.less).
+.card-surface() {
+    background-color: var(--surface-raised);
+    border: 1px solid var(--card-border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--card-shadow);
+}
+
+// Keyboard/interaction focus ring.
+.focus-ring() {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+// Subtle hover elevation for interactive cards.
+.interactive-lift() {
+    transition: box-shadow var(--transition-base), transform var(--transition-base);
+
+    &:hover {
+        box-shadow: var(--shadow-md);
+        transform: translateY(-1px);
+    }
+}

@@ -38,11 +38,12 @@ export default function Providers({ children }) {
     }, []);
 
     useEffect(() => {
+        // Only pin an explicit theme when the user has chosen one. With no
+        // cookie we leave `data-theme` unset so the CSS follows the OS
+        // preference (prefers-color-scheme) — see src/styles/tokens.less.
         const theme = Cookies.get('theme');
         if (theme) {
             document.documentElement.setAttribute('data-theme', theme);
-        } else {
-            document.documentElement.setAttribute('data-theme', 'dark');
         }
     }, []);
 

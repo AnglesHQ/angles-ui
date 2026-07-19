@@ -11,7 +11,6 @@
     "url": "https://github.com/AnglesHQ/angles-ui/issues"
   },
   "dependencies": {
-    "@rsuite/charts": "5.2.0",
     "@rsuite/icons": "^1.0.2",
     "@types/react": "^18.0.28",
     "angles-javascript-client": "^1.0.43",
@@ -19,9 +18,7 @@
     "axios": "^1.13.3",
     "base-64": "^1.0.0",
     "bootstrap": "^5.2.0",
-    "chart.js": "^2.9.3",
     "dompurify": "^3.0.9",
-    "echarts": "^5.4.2",
     "file-saver": "^2.0.5",
     "html-react-parser": "^3.0.16",
     "immutability-helper": "^3.1.1",
@@ -36,7 +33,6 @@
     "react": "^18.2.0",
     "react-apexcharts": "^1.4.0",
     "react-bootstrap": "^2.7.2",
-    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.11.0",
     "react-image-crop": "^11.0.10",

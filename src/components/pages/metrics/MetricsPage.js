@@ -25,7 +25,7 @@ import ExecutionMetricsSummary from './ExecutionMetricsSummary';
 import PlatformDistributionPieChart from './charts/PlatformDistributionPieChart';
 import PlatformDistributionBarChart from './charts/PlatformDistributionBarChart';
 import PlatformMetricsSummary from './PlatformMetricsSummary';
-import { getRandomColor } from '../../../utility/ChartUtilities';
+import { getPaletteColor } from '../../../utility/ChartConfig';
 import { getDateRangesPicker } from '../../../utility/TimeUtilities';
 import ExecutionMetricsResultsBarChart from './charts/ExecutionMetricsResultsBarChart';
 import PhaseMetricsResultsBarChart from './charts/PhaseMetricsResultsBarChart';
@@ -62,7 +62,8 @@ const MetricsPage = function (props) {
           if (execution.platforms && execution.platforms.length > 0) {
             execution.platforms.forEach((platform) => {
               if (!result[platform.platformName]) {
-                const color = getRandomColor(1)[0];
+                // Deterministic by first-seen order → stable across renders.
+                const color = getPaletteColor(result.colors.length);
                 result[platform.platformName] = { color };
                 result.colors.push(color);
               }

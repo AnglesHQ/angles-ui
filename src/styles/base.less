@@ -1,0 +1,50 @@
+// ============================================================================
+// Base / element styles
+// ----------------------------------------------------------------------------
+// Document defaults, typography and element-level resets. No component classes
+// belong here — only bare element selectors and the top-level layout wrapper.
+// ============================================================================
+
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+    font-size: var(--font-size-md);
+    line-height: var(--line-height-normal);
+    color: var(--master-font-color-1);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+html body {
+    background: var(--body-background);
+    overflow-x: hidden;
+}
+
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+// Links
+a {
+    color: var(--link-color-1);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+
+    &:hover,
+    &:focus,
+    &:visited,
+    &:active {
+        text-decoration: none;
+    }
+
+    &:hover,
+    &:focus {
+        color: var(--link-color-1-focus);
+    }
+}
+
+.main-container {
+    min-width: 1000px;
+}

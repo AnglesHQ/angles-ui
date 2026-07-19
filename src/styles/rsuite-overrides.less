@@ -1,0 +1,301 @@
+// ============================================================================
+// RSuite vendor overrides
+// ----------------------------------------------------------------------------
+// Restyles generic RSuite widgets (Table, Picker, Pagination) to the Angles
+// design system. App-chrome navigation lives in `layout.less`; shared app
+// components live in `components.less`.
+// ============================================================================
+
+// ── Table ───────────────────────────────────────────────────────────────────
+.rs-table {
+    background-color: transparent;
+    border-bottom: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+
+    .rs-table-scrollbar {
+        background: var(--main-table-header-background);
+    }
+
+    .rs-table-row-header {
+        background-color: transparent;
+
+        .rs-table-cell-content {
+            background-color: var(--main-table-header-background);
+            color: var(--main-table-header-font-color);
+            opacity: 0.8;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .rs-table-cell-first {
+            border-top-left-radius: var(--radius-md);
+
+            .rs-table-cell-content {
+                border-top-left-radius: var(--radius-md);
+            }
+        }
+
+        .rs-table-cell-last {
+            border-top-right-radius: var(--radius-md);
+
+            .rs-table-cell-content {
+                border-top-right-radius: var(--radius-md);
+            }
+        }
+    }
+
+    .rs-table-row {
+        border-bottom: none !important;
+
+        .rs-table-cell {
+            background-color: transparent;
+            border-bottom: none;
+        }
+    }
+
+    .rs-table-cell-rowspan {
+        border-bottom: 0px !important;
+    }
+
+    .rs-table-body-row-wrapper {
+        color: var(--main-table-body-font-color);
+
+        .rs-table-cell {
+            background-color: var(--main-table-body-background);
+            font-size: 0.9em;
+        }
+
+        .rs-table-row:last-child {
+            .rs-table-cell-first {
+                border-bottom-left-radius: var(--radius-md);
+
+                .rs-table-cell-content {
+                    border-bottom-left-radius: var(--radius-md);
+                }
+            }
+
+            .rs-table-cell-last {
+                border-bottom-right-radius: var(--radius-md);
+
+                .rs-table-cell-content {
+                    border-bottom-right-radius: var(--radius-md);
+                }
+            }
+        }
+    }
+}
+
+// ── Select / pickers ─────────────────────────────────────────────────────────
+.rs-picker {
+    padding-right: 5px;
+
+    .rs-picker-toggle,
+    .rs-picker-toggle-active,
+    .rs-picker-default {
+        background: var(--select-picker-background) !important;
+        color: var(--select-picker-font-color);
+        border: none;
+    }
+
+    .rs-picker-toggle:hover,
+    .rs-picker-toggle:focus,
+    .rs-picker-toggle:focus-visible {
+        background: var(--select-picker-background) !important;
+        color: var(--select-picker-font-color);
+        border: none;
+    }
+
+    .rs-picker-toggle-label {
+        color: var(--select-picker-label-color);
+    }
+
+    .rs-badge-content {
+        top: 9px;
+        right: -4px;
+    }
+
+    .rs-picker-toggle:hover {
+        background-color: var(--main-panel-background);
+    }
+
+    .rs-picker-toggle-value {
+        color: var(--select-picker-font-color) !important;
+        font-size: 1em;
+    }
+}
+
+// ── Pagination ───────────────────────────────────────────────────────────────
+.rs-pagination-btn {
+    color: var(--link-color-1) !important;
+}
+
+.rs-pagination-btn-active {
+    border: 1px solid var(--link-color-1) !important;
+}
+
+.rs-pagination-btn:disabled {
+    color: var(--link-color-1-disabled) !important;
+}
+
+// ── Modals ───────────────────────────────────────────────────────────────────
+// RSuite ships a light-only stylesheet, so modal chrome must be themed to track
+// dark/light. Applies to every RSuite dialog (add/edit user, generate token,
+// change password) as well as ConfirmModal.
+.rs-modal-content {
+    background-color: var(--modal-background);
+    color: var(--modal-font-color);
+}
+
+.rs-modal-header,
+.rs-modal-footer {
+    background-color: var(--modal-background);
+}
+
+.rs-modal-title {
+    color: var(--modal-font-color);
+}
+
+.rs-modal-body {
+    color: var(--modal-font-color);
+}
+
+.rs-modal-header .rs-modal-header-close {
+    color: var(--modal-secondary-font-color);
+}
+
+// ── Form controls ────────────────────────────────────────────────────────────
+// Themes labels, inputs and input groups everywhere (modals, filters, search).
+.rs-form-control-label {
+    color: var(--main-panel-font-color);
+}
+
+.rs-form-help-text {
+    color: var(--sub-panel-secondary-font-color);
+}
+
+.rs-input {
+    background-color: var(--body-background);
+    color: var(--main-panel-font-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+
+    &::placeholder {
+        color: var(--sub-panel-secondary-font-color);
+    }
+
+    &:focus,
+    &:focus-visible {
+        background-color: var(--body-background);
+        color: var(--main-panel-font-color);
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px var(--focus-ring);
+        outline: none;
+    }
+
+    &:disabled {
+        background-color: var(--main-panel-background);
+        color: var(--sub-panel-secondary-font-color);
+    }
+}
+
+// Input groups (e.g. the token field with copy button) — the group owns the
+// border so the inner input drops its own to avoid a double outline.
+.rs-input-group {
+    background-color: var(--body-background);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+
+    .rs-input {
+        border: none;
+        border-radius: var(--radius-md);
+    }
+}
+
+.rs-input-group-addon {
+    background-color: var(--main-panel-background);
+    color: var(--main-panel-font-color);
+    border: none;
+}
+
+// Number stepper (custom token expiry)
+.rs-input-number {
+    background-color: var(--body-background);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+
+    .rs-input {
+        border: none;
+        background-color: transparent;
+    }
+}
+
+.rs-input-number-btn-group-vertical .rs-btn {
+    background-color: var(--main-panel-background);
+    color: var(--main-panel-font-color);
+}
+
+// Input-group pickers (e.g. DateRangePicker) render as `.rs-picker-input-group`
+// wrapping `.rs-input.rs-date-range-input` fields. That wrapper is a *separate*
+// class from `.rs-input-group`, so without this it keeps RSuite's own surface
+// while the inner inputs take our `.rs-input` background — producing a visible
+// two-tone control. Give the wrapper a single surface (matching the sibling
+// pickers) and make the inner inputs transparent so it reads as one field.
+.rs-picker-input-group {
+    background-color: var(--select-picker-background) !important;
+    border: none !important;
+    border-radius: var(--radius-md);
+
+    .rs-input,
+    .rs-date-range-input {
+        background-color: transparent;
+        border: none;
+    }
+
+    .rs-input:focus,
+    .rs-input:focus-visible {
+        box-shadow: none;
+    }
+}
+
+// ── Picker popup menus ───────────────────────────────────────────────────────
+// SelectPicker / TagPicker menus render in a portal (outside the modal DOM), so
+// they must be themed globally to match the dark surface.
+.rs-picker-popup {
+    background-color: var(--select-picker-background);
+    color: var(--main-panel-font-color);
+
+    .rs-picker-select-menu-item,
+    .rs-check-item .rs-checkbox-checker label {
+        color: var(--main-panel-font-color);
+    }
+
+    // Hover / keyboard-focus — accent background with contrast text.
+    .rs-picker-select-menu-item:hover,
+    .rs-picker-select-menu-item-focus,
+    .rs-check-item:hover .rs-checkbox-checker label,
+    .rs-check-item-focus .rs-checkbox-checker label {
+        background-color: var(--nav-hover-color);
+        color: var(--nav-hover-font-color);
+    }
+
+    // Selected value — a filled accent row. Must set BOTH background and a
+    // contrasting text colour: RSuite auto-focuses the selected item on open, so
+    // without an explicit contrast colour the text ends up accent-on-accent
+    // (invisible). Declared after the hover/focus rules so it wins for the
+    // selected row.
+    .rs-picker-select-menu-item-active,
+    .rs-picker-select-menu-item.rs-picker-select-menu-item-active {
+        background-color: var(--color-primary);
+        color: var(--color-primary-contrast);
+        font-weight: var(--font-weight-semibold);
+    }
+
+    .rs-picker-select-menu-item-active:hover,
+    .rs-picker-select-menu-item-active.rs-picker-select-menu-item-focus {
+        background-color: var(--color-primary-hover);
+        color: var(--color-primary-contrast);
+    }
+}

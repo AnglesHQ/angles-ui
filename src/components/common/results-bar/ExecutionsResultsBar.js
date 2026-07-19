@@ -1,5 +1,4 @@
 import React from 'react';
-import ProgressBar from 'react-bootstrap/ProgressBar';
 import { Popover, Whisper } from 'rsuite';
 import TestResultsTable from './TestResultsTable';
 
@@ -8,6 +7,14 @@ const testDetailsSpeaker = (result) => (
     <TestResultsTable result={result} />
   </Popover>
 );
+
+// Segment order matches the previous stacked ProgressBar (pass → skipped → error → fail).
+const SEGMENTS = [
+  { key: 'PASS', className: 'test-result-success' },
+  { key: 'SKIPPED', className: 'test-result-skipped' },
+  { key: 'ERROR', className: 'test-result-error' },
+  { key: 'FAIL', className: 'test-result-failure' },
+];
 
 const ExecutionsResultsBar = function (props) {
   const { result } = props;
@@ -20,15 +27,10 @@ const ExecutionsResultsBar = function (props) {
   localResult.TOTAL = result.TOTAL
     || (localResult.PASS + localResult.FAIL + localResult.ERROR + localResult.SKIPPED);
 
-  const getPercentageString = (resultState) => {
-    let total = 0;
-    Object.keys(localResult).forEach((key) => {
-      if (key !== 'TOTAL') {
-        total += localResult[key];
-      }
-    });
-    return Math.round(((localResult[resultState] / total) * 100));
-  };
+  const denominator = localResult.PASS + localResult.FAIL + localResult.ERROR + localResult.SKIPPED;
+  const getPercentage = (state) => (
+    denominator === 0 ? 0 : Math.round((localResult[state] / denominator) * 100)
+  );
 
   return (
     localResult.TOTAL === 0 ? (
@@ -40,12 +42,21 @@ const ExecutionsResultsBar = function (props) {
         controlId="control-id-hover"
         speaker={testDetailsSpeaker(localResult)}
       >
-        <ProgressBar className="test-results-progress-bar">
-          <ProgressBar label={`${getPercentageString('PASS', localResult)}%`} className="test-result-success" variant="success" now={getPercentageString('PASS', localResult)} key={1} />
-          <ProgressBar label={`${getPercentageString('SKIPPED', localResult)}%`} className="test-result-skipped" variant="info" now={getPercentageString('SKIPPED', localResult)} key={2} />
-          <ProgressBar label={`${getPercentageString('ERROR', localResult)}%`} className="test-result-error" variant="warning" now={getPercentageString('ERROR', localResult)} key={3} />
-          <ProgressBar label={`${getPercentageString('FAIL', localResult)}%`} className="test-result-failure" variant="danger" now={getPercentageString('FAIL', localResult)} key={4} />
-        </ProgressBar>
+        <div className="test-results-progress-bar">
+          {SEGMENTS.map((segment) => {
+            const pct = getPercentage(segment.key);
+            if (pct === 0) return null;
+            return (
+              <div
+                key={segment.key}
+                className={`test-result-segment ${segment.className}`}
+                style={{ width: `${pct}%` }}
+              >
+                {`${pct}%`}
+              </div>
+            );
+          })}
+        </div>
       </Whisper>
     )
   );
