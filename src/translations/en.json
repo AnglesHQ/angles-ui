@@ -146,6 +146,7 @@
   "page.introduction.description-alternative": "Or alternatively you can use {githubLink} to get started.",
   "page.introduction.github-link-text": "the Github page",
   "page.not-found.bread-crumb": "Not found",
+  "page.not-found.header": "Page Not Found",
   "page.not-found.description": "Oops, we were unable to find the \"Angle\" you were looking for. Click {homeLink} to go back to home page.",
   "page.not-found.home-link-text": "here",
   "common.component.suite-table.header.suite": "Suite",

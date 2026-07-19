@@ -146,6 +146,7 @@
   "page.introduction.description-alternative": "หรืออีกทางหนึ่ง คุณสามารถใช้ {githubLink} เพื่อเริ่มต้นได้",
   "page.introduction.github-link-text": "หน้า Github",
   "page.not-found.bread-crumb": "ไม่เจอ",
+  "page.not-found.header": "ไม่พบหน้าเว็บ",
   "page.not-found.description": "อ๊ะ เราไม่พบที่คุณกำลังหา คลิก {homeLink} เพื่อกลับไปที่หน้าแรก",
   "page.not-found.home-link-text": "ที่นี่",
   "common.component.suite-table.header.suite": "สวีท",

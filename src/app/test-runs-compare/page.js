@@ -1,8 +1,13 @@
 'use client';
 
 import React from 'react';
-import TestRunsComparePage from '../../components/pages/test-run-compare/index';
+import PageContainer from '../../components/common/PageContainer';
+import TestRunsComparePage from '../../components/pages/test-runs-compare/TestRunsComparePage';
 
 export default function Page() {
-    return <TestRunsComparePage />;
+    return (
+        <PageContainer breadcrumbMessageId="page.test-run-compare.bread-crumb">
+            <TestRunsComparePage />
+        </PageContainer>
+    );
 }

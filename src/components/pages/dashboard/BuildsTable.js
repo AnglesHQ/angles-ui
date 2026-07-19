@@ -13,7 +13,7 @@ import {
   Whisper,
 } from 'rsuite';
 import { getDuration } from '../../../utility/TimeUtilities';
-import ExecutionsResultsBar from '../../common/results-bar';
+import ExecutionsResultsBar from '../../features/results-bar';
 import BuildArtifacts from '../../common/BuildArtifacts';
 
 const { Column, HeaderCell, Cell } = Table;

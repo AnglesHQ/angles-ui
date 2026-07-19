@@ -5,7 +5,7 @@ import InfoOutlineIcon from '@rsuite/icons/InfoOutline';
 import { Table, Whisper, Popover } from 'rsuite';
 import { getDurationAsString } from '../../../utility/TimeUtilities';
 import MetricsTestsTable from './MetricsTestsTable';
-import ExecutionsResultsBar from '../../common/results-bar';
+import ExecutionsResultsBar from '../../features/results-bar';
 
 const { Column, HeaderCell, Cell } = Table;
 

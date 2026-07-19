@@ -11,7 +11,7 @@ import Table from 'react-bootstrap/Table';
 import ReactCrop from 'react-image-crop';
 import ScreenshotDetailsTable from '../ScreenshotDetailsTable';
 import CurrentScreenshotContext from '../../../../context/CurrentScreenshotContext';
-import Message from '../../Message';
+import Message from '../../../common/Message';
 
 const BaselineImageView = (props) => {
   const intl = useIntl();

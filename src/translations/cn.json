@@ -146,6 +146,7 @@
   "page.introduction.description-alternative": "或您也可以使用 {githubLink} 開始。",
   "page.introduction.github-link-text": "Github 頁面",
   "page.not-found.bread-crumb": "找不到",
+  "page.not-found.header": "找不到页面",
   "page.not-found.description": "哎呀，糟糕，我們無法找到您要找的東西。點選 {homeLink} 返回主頁。",
   "page.not-found.home-link-text": "此處",
   "common.component.suite-table.header.suite": "套件",

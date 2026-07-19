@@ -15,9 +15,9 @@ import {
   Col,
   Row,
 } from 'rsuite';
-import ScreenshotView from '../../common/screenshot-view/ScreenshotView';
+import ScreenshotView from '../../features/screenshot-view/ScreenshotView';
 import CurrentScreenshotContext from '../../../context/CurrentScreenshotContext';
-import ScreenshotCard from '../../common/screenshot-view/ScreenshotCard';
+import ScreenshotCard from '../../features/screenshot-view/ScreenshotCard';
 
 const ScreenshotLibraryPage = function () {
   const searchParams = useSearchParams();

@@ -9,7 +9,6 @@
 //   layout      → app chrome (sidebar / navbar)
 //   rsuite      → generic vendor widget overrides
 //   components  → shared, app-wide UI patterns
-//   login       → login screen
 //   pages/*     → page- and feature-specific styles (co-located with components)
 // ============================================================================
 
@@ -26,23 +25,24 @@
 @import 'layout.less';
 @import 'rsuite-overrides.less';
 @import 'components.less';
-@import 'login.less';
 
-// ── Co-located page & feature styles ─────────────────────────────────────────
+// ── Co-located page styles (components/pages/*) ──────────────────────────────
 @import '../components/pages/about/styles.less';
+@import '../components/pages/admin-settings/styles.less';
+@import '../components/pages/admin-users/styles.less';
 @import '../components/pages/dashboard/styles.less';
-@import '../components/pages/test-run/styles.less';
-@import '../components/pages/test-run-compare/styles.less';
+@import '../components/pages/login/styles.less';
 @import '../components/pages/metrics/styles.less';
 @import '../components/pages/not-found/styles.less';
-@import '../components/pages/test-execution-history/styles.less';
 @import '../components/pages/screenshot-library/styles.less';
-@import '../components/pages/introduction/styles.less';
-@import '../components/common/execution-timeline/styles.less';
-@import '../components/common/screenshot-view/styles.less';
-@import '../components/common/test-suite/styles.less';
-@import '../components/common/results-bar/styles.less';
-@import '../app/admin/settings/styles.less';
-@import '../app/admin/users/styles.less';
-@import '../app/team-settings/styles.less';
-@import '../app/user-settings/styles.less';
+@import '../components/pages/team-settings/styles.less';
+@import '../components/pages/test-execution-history/styles.less';
+@import '../components/pages/test-run/styles.less';
+@import '../components/pages/test-runs-compare/styles.less';
+@import '../components/pages/user-settings/styles.less';
+
+// ── Co-located feature styles (components/features/*) ────────────────────────
+@import '../components/features/execution-timeline/styles.less';
+@import '../components/features/results-bar/styles.less';
+@import '../components/features/screenshot-view/styles.less';
+@import '../components/features/test-suite/styles.less';

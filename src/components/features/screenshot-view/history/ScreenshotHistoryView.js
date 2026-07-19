@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Container } from 'react-bootstrap';
 import CurrentScreenshotContext from '../../../../context/CurrentScreenshotContext';
-import Message from '../../Message';
+import Message from '../../../common/Message';
 import ScreenshotCard from '../ScreenshotCard';
 
 const ScreenshotHistoryView = function (props) {

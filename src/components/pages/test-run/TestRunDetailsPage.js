@@ -41,9 +41,9 @@ import {
   Message,
   useToaster,
 } from 'rsuite';
-import SuiteTable from '../../common/test-suite/SuiteTable';
+import SuiteTable from '../../features/test-suite/SuiteTable';
 import BuildArtifacts from '../../common/BuildArtifacts';
-import ScreenshotView from '../../common/screenshot-view/ScreenshotView';
+import ScreenshotView from '../../features/screenshot-view/ScreenshotView';
 import ConfirmModal from '../../common/ConfirmModal';
 import {
   clearCurrentLoaderMessage,
@@ -54,10 +54,9 @@ import { useConstructor } from '../../../utility/GeneralUtilities';
 import { useAuth } from '../../../context/AuthContext';
 import CurrentScreenshotContext from '../../../context/CurrentScreenshotContext';
 import { getDuration } from '../../../utility/TimeUtilities';
-import ExecutionPieChart from './charts/ExecutionPieChart';
+import TestRunExecutionPieChart from './charts/TestRunExecutionPieChart';
 import FeaturePieChart from './charts/FeaturePieChart';
 
-// import ScreenshotModal from "../../common/screenshot-view/modal/ScreenhotModal";
 
 const TestRunDetailsPage = function (props) {
   const router = useRouter();
@@ -536,7 +535,7 @@ const TestRunDetailsPage = function (props) {
             </Row>
             <Row gutter={30} className="test-run-row">
               <Col xs={12}>
-                <ExecutionPieChart
+                <TestRunExecutionPieChart
                   title={<FormattedMessage id="page.test-run.execution-pie-chart.title" />}
                   currentBuild={currentBuild}
                   onStatusClick={filterByStatus}

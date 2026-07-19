@@ -4,7 +4,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import Table from 'react-bootstrap/Table';
 import ScreenshotDetailsTable from '../ScreenshotDetailsTable';
 import CurrentScreenshotContext from '../../../../context/CurrentScreenshotContext';
-import Message from '../../Message';
+import Message from '../../../common/Message';
 
 const CurrentImageView = function (props) {
   const intl = useIntl();

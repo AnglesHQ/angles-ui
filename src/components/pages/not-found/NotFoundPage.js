@@ -1,16 +1,20 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Panel } from 'rsuite';
-import Message from '../../common/Message';
 
 const NotFoundPage = function () {
   return (
-    <Panel
-      header={<h3 className="title">404</h3>}
-    >
-      <Message
-        type="warning"
-        message={(
+    <div>
+      <Panel
+        bordered
+        className="not-found-page-panel"
+        header={(
+          <span className="not-found-page-header">
+            <FormattedMessage id="page.not-found.header" />
+          </span>
+        )}
+      >
+        <div className="not-found-page-section">
           <span>
             <FormattedMessage
               id="page.not-found.description"
@@ -23,9 +27,9 @@ const NotFoundPage = function () {
               }}
             />
           </span>
-        )}
-      />
-    </Panel>
+        </div>
+      </Panel>
+    </div>
   );
 };
 

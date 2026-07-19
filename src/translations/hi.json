@@ -146,6 +146,7 @@
   "page.introduction.description-alternative": "या वैकल्पिक रूप से आप शुरू करने के लिए {githubLink} का उपयोग कर सकते हैं।",
   "page.introduction.github-link-text": "Github पृष्ठ",
   "page.not-found.bread-crumb": "नहीं मिला",
+  "page.not-found.header": "पृष्ठ नहीं मिला",
   "page.not-found.description": "ओह, हम आपके द्वारा खोजा गया \"Angle\" नहीं ढूँढ सके। होम पेज पर वापस जाने के लिए {homeLink} पर क्लिक करें।",
   "page.not-found.home-link-text": "यहाँ",
   "common.component.suite-table.header.suite": "सूट",

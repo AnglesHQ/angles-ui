@@ -71,7 +71,7 @@ const buildOptions = (labels, colors, statusOrder, onStatusClick) => ({
   },
 });
 
-const ExecutionPieChart = function (props) {
+const TestRunExecutionPieChart = function (props) {
   const {
     currentBuild,
     title,
@@ -106,4 +106,4 @@ const ExecutionPieChart = function (props) {
   );
 };
 
-export default ExecutionPieChart;
+export default TestRunExecutionPieChart;

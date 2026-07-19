@@ -47,7 +47,7 @@ const generatePieChartData = (testRunMetrics) => {
   return graphData;
 };
 
-const ExecutionPieChart = function (props) {
+const BuildExecutionPieChart = function (props) {
   const {
     title,
     testRunMetrics,
@@ -74,4 +74,4 @@ const ExecutionPieChart = function (props) {
   );
 };
 
-export default ExecutionPieChart;
+export default BuildExecutionPieChart;

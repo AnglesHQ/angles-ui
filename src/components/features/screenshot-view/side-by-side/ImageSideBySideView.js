@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import Table from 'react-bootstrap/Table';
 import ScreenshotDetailsTable from '../ScreenshotDetailsTable';
 import CurrentScreenshotContext from '../../../../context/CurrentScreenshotContext';
-import Message from '../../Message';
+import Message from '../../../common/Message';
 
 const ImageSideBySideView = function (props) {
   const {

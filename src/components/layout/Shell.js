@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 import { EnvironmentRequests, TeamRequests } from 'angles-javascript-client';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 import {
     Container,
@@ -35,10 +35,10 @@ import UserBadgeIcon from '@rsuite/icons/UserBadge';
 import ExitIcon from '@rsuite/icons/Exit';
 import { CgDarkMode } from 'react-icons/cg';
 
-import translations from '../translations/translations.json';
-import { storeCurrentTeam, storeTeams, storeTeamsError } from '../redux/teamActions';
-import { storeEnvironments } from '../redux/environmentActions';
-import { clearCurrentErrorMessage, clearCurrentInfoMessage, clearCurrentLoaderMessage } from '../redux/notificationActions';
+import translations from '../../translations/translations.json';
+import { storeCurrentTeam, storeTeams, storeTeamsError } from '../../redux/teamActions';
+import { storeEnvironments } from '../../redux/environmentActions';
+import { clearCurrentErrorMessage, clearCurrentInfoMessage, clearCurrentLoaderMessage } from '../../redux/notificationActions';
 
 axios.defaults.baseURL = process.env.NEXT_PUBLIC_ANGLES_API_URL || 'http://localhost:3000/rest/api/v1.0';
 axios.defaults.withCredentials = true;

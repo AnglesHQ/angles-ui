@@ -40,7 +40,7 @@ import { storeCurrentTeam } from '../../../redux/teamActions';
 import BuildsTable from './BuildsTable';
 import { getDateRangesPicker, getDurationAsString } from '../../../utility/TimeUtilities';
 import ExecutionBarChart from './charts/ExecutionBarChart';
-import ExecutionPieChart from './charts/ExecutionPieChart';
+import BuildExecutionPieChart from './charts/BuildExecutionPieChart';
 import ConfirmModal from '../../common/ConfirmModal';
 
 const generateFilterMenuData = function (environments, components) {
@@ -523,7 +523,7 @@ const DashboardPage = function (props) {
                 />
               </Col>
               <Col xs={8}>
-                <ExecutionPieChart
+                <BuildExecutionPieChart
                   testRunMetrics={testRunMetrics}
                   title={(
                     <FormattedMessage
