@@ -13,7 +13,7 @@
     }
 
     .dashboard-builds-table-sub-text {
-        font-size: 1em;
+        font-size: var(--font-size-sm);
         color: var(--sub-table-body-secondary-font-color);
     }
 
@@ -34,47 +34,76 @@
 }
 
 .dashboard-header {
-    padding-top: 20px;
+    padding-top: var(--space-5);
 
-    .chart-icon {
-        position: absolute;
-        font-size: 4em;
-        left: 26px;
-        top: 34px;
-        opacity: 0.7;
-    }
-
+    // KPI stat cards — elevated tokenized surfaces with a status-tinted accent
+    // (replaces the old loud full-bleed gradients).
     .trend-box {
-        color: var(--trend-box-font-color);
+        .card-surface();
+        .interactive-lift();
+        position: relative;
+        overflow: hidden;
+        color: var(--main-panel-font-color);
 
+        // left accent stripe (colour set per-card by the modifier classes below)
+        &::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--kpi-accent, var(--color-primary));
+        }
+
+        // metric icon — large tinted low-opacity watermark
         .rs-icon {
-            .chart-icon;
+            position: absolute;
+            right: var(--space-4);
+            top: var(--space-4);
+            font-size: 3.25em;
+            color: var(--kpi-accent, var(--color-primary));
+            opacity: 0.16;
         }
 
         .rs-panel-body {
-            text-align: right;
+            padding: var(--space-5);
+            text-align: left;
+
+            .title {
+                color: var(--sub-panel-secondary-font-color);
+                font-size: var(--font-size-sm);
+                font-weight: var(--font-weight-semibold);
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+            }
 
             .value {
-                font-size: 36px;
+                margin-top: var(--space-2);
+                font-size: var(--font-size-4xl);
+                font-weight: var(--font-weight-bold);
+                line-height: var(--line-height-tight);
             }
         }
     }
 }
 
 .dash-row {
-    margin-top: 30px;
+    margin-top: var(--space-6);
 }
 
+// KPI accent colours (class names kept from the old gradient variants so the
+// markup does not need to change).
 .bg-gradient-red {
-    background: linear-gradient(87deg, #f5365c 0, #f56036 100%);
+    --kpi-accent: var(--fail-color);
 }
 
 .bg-gradient-green {
-    background: linear-gradient(87deg, #2dce89 0, #2dcecc 100%);
+    --kpi-accent: var(--pass-color);
 }
 
 .bg-gradient-blue {
-    background: linear-gradient(87deg, #11cdef 0, #1171ef 100%);
+    --kpi-accent: var(--color-primary);
 }
 
 .build-table-header-checkbox {

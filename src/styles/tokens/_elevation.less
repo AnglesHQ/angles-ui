@@ -1,0 +1,19 @@
+// ============================================================================
+// Design tokens — Elevation
+// ----------------------------------------------------------------------------
+// Subtle depth. In LIGHT mode surfaces lift with a soft shadow; in DARK mode
+// shadows read poorly, so `_color.less` overrides `--card-shadow: none` and
+// `--card-border-color` to a hairline instead. Style raised surfaces with BOTH
+// `box-shadow: var(--card-shadow)` and `border: 1px solid var(--card-border-color)`
+// and they will look right in either theme.
+// ============================================================================
+
+:root {
+    --shadow-sm: 0 1px 3px rgba(16, 24, 40, 0.10), 0 1px 2px rgba(16, 24, 40, 0.06);
+    --shadow-md: 0 4px 8px -2px rgba(16, 24, 40, 0.10), 0 2px 4px -2px rgba(16, 24, 40, 0.06);
+    --shadow-lg: 0 12px 16px -4px rgba(16, 24, 40, 0.10), 0 4px 6px -2px rgba(16, 24, 40, 0.05);
+
+    // Semantic elevation for cards/panels (dark flips these in _color.less).
+    --card-shadow: var(--shadow-sm);
+    // --card-border-color is defined in _color.less (transparent light / hairline dark)
+}

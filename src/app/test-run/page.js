@@ -1,8 +1,13 @@
 'use client';
 
 import React from 'react';
-import TestRunDetailsPage from '../../components/pages/test-run/index';
+import PageContainer from '../../components/common/PageContainer';
+import TestRunDetailsPage from '../../components/pages/test-run/TestRunDetailsPage';
 
 export default function Page() {
-    return <TestRunDetailsPage />;
+    return (
+        <PageContainer breadcrumbMessageId="page.test-run.bread-crumb">
+            <TestRunDetailsPage />
+        </PageContainer>
+    );
 }

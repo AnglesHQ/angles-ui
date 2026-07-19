@@ -1,0 +1,155 @@
+.test-steps-timeline {
+
+  .rs-timeline-item-custom-dot {
+
+    .rs-icon {
+      position: absolute;
+      background: var(--timeline-dot-background);
+      top: 0;
+      left: -2px;
+      border: 2px solid var(--timeline-dot-border);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 18px;
+      margin-left: -13px;
+      justify-content: center;
+      padding: 8px;
+    }
+  }
+
+  .timeline-step {
+    margin-left: 24px;
+    padding-bottom: var(--space-3);
+
+    .step-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-4);
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-md);
+      border-left: 3px solid transparent;
+    }
+
+    .step-main {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    // Header line: timestamp + step name
+    .step-head {
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-3);
+    }
+
+    .step-time {
+      flex: 0 0 auto;
+      font-variant-numeric: tabular-nums;
+      font-size: var(--font-size-sm);
+      color: var(--sub-table-body-secondary-font-color);
+    }
+
+    .step-name {
+      flex: 1 1 auto;
+      min-width: 0;
+      word-break: break-word;
+
+      a {
+        color: var(--link-color-1);
+      }
+    }
+
+    .step-name-info {
+      color: var(--sub-table-body-secondary-font-color);
+    }
+
+    // Expected / actual diff — only rendered for failing assertions
+    .step-diff {
+      margin-top: var(--space-2);
+      display: grid;
+      grid-template-columns: max-content 1fr;
+      gap: var(--space-1) var(--space-3);
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-sm);
+      background: color-mix(in srgb, var(--fail-color) 8%, transparent);
+    }
+
+    .step-diff-line {
+      display: contents;
+    }
+
+    .step-diff-label {
+      font-weight: var(--font-weight-semibold);
+      font-size: var(--font-size-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--sub-table-body-secondary-font-color);
+    }
+
+    .step-diff-value {
+      font-variant-numeric: tabular-nums;
+      word-break: break-word;
+    }
+
+    // Screenshot thumbnail — compact, right aligned
+    .step-shot {
+      flex: 0 0 auto;
+    }
+
+    .screenshot-thumbnail {
+      height: 56px;
+      width: auto;
+      max-width: 96px;
+      object-fit: cover;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--timeline-dot-border);
+      cursor: pointer;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+
+      &:hover {
+        transform: scale(1.04);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+      }
+    }
+  }
+
+  // Status emphasis: failing / erroring steps get a tinted row so they
+  // stand out when scanning a long list.
+  .timeline-step-FAIL .step-row {
+    background: color-mix(in srgb, var(--fail-color) 7%, transparent);
+    border-left-color: var(--fail-color);
+
+    .step-name {
+      font-weight: var(--font-weight-semibold);
+      color: var(--fail-color);
+    }
+  }
+
+  .timeline-step-ERROR .step-row {
+    background: color-mix(in srgb, var(--error-color) 8%, transparent);
+    border-left-color: var(--error-color);
+
+    .step-name {
+      font-weight: var(--font-weight-semibold);
+      color: var(--error-color);
+    }
+  }
+}
+
+.timeline-icon-info {
+  color: var(--skipped-color);
+}
+
+.timeline-icon-pass {
+  color: var(--pass-color);
+}
+
+.timeline-icon-fail {
+  color: var(--fail-color);
+}
+
+.timeline-icon-error {
+  color: var(--error-color);
+}

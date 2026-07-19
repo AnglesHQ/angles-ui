@@ -1,0 +1,213 @@
+// ============================================================================
+// Design tokens — Color  ("Ember & Sand" — derived from the Angles logo)
+// ----------------------------------------------------------------------------
+// Palette sampled from the brand logo:
+//   • Ember orange  → primary / accent (buttons, links, active states)
+//   • Warm sand/cream → light surfaces
+//   • Warm near-black (the logo outline) → dark surfaces & light-theme text
+//   • Warm grey (the cube's side face) → secondary text / borders
+//
+// Two layers: primitive palette (raw colours live only here) → semantic tokens
+// (consumed everywhere else). CSS custom properties are late-bound, so the
+// semantic layer is declared once against the primitives; switching theme just
+// overrides the primitives.
+//
+// Light is the default (`:root`). Dark applies on explicit selection
+// (`html[data-theme="dark"]`) or OS preference when the user has not chosen light.
+// ============================================================================
+
+// ── Dark primitive overrides (shared by both dark triggers) ─────────────────
+.theme-dark-primitives() {
+    // Warm near-black neutrals (from the logo outline)
+    --master-color-1: hsl(30, 8%, 17%);
+    --master-color-2: hsl(24, 9%, 12%);
+    --master-color-2-relative: hsl(30, 6%, 34%);
+
+    // Ember accent — brighter on dark for contrast
+    --master-color-3: var(--orange-400);
+    --master-color-3-relative: var(--orange-500);
+
+    // Cream / sand text on dark
+    --master-font-color-1: hsl(40, 30%, 93%);
+    --master-font-color-2: hsl(40, 33%, 97%);
+    --master-font-color-3: hsl(38, 12%, 76%);
+
+    // Status — brighter variants so they read on a dark surface
+    --pass-color: #6cc07e;
+    --fail-color: #ff7b85;
+    --error-color: #f9c65b;
+    --skipped-color: #38bdf8;
+
+    // Focus ring on dark
+    --focus-ring: rgba(246, 173, 85, 0.5);
+
+    // Elevation: shadows read poorly on dark → drop shadow, use a hairline border
+    --card-shadow: none;
+    --card-border-color: rgba(255, 255, 255, 0.08);
+
+    // Tokens whose light value is a literal (cannot inherit via a primitive)
+    --border-subtle: rgba(255, 255, 255, 0.12);
+    --timeline-dot-background: var(--master-color-1);
+}
+
+:root {
+    // ── Primitive palette (light) ───────────────────────────────────────────
+    // Warm sand / cream neutrals
+    --master-color-1: hsl(40, 30%, 97%);
+    --master-color-2: hsl(40, 22%, 92%);
+    --master-color-2-relative: hsl(38, 16%, 80%);
+
+    // Near-black warm text + cream on-accent text
+    --master-font-color-1: hsl(20, 8%, 14%);
+    --master-font-color-2: hsl(40, 33%, 98%);
+    --master-font-color-3: hsl(30, 6%, 40%);
+
+    --master-icon-color: hsl(210, 100%, 60%);
+
+    // Ember orange ramp (brand primary — sampled from the logo)
+    --orange-300: #fbd38d;
+    --orange-400: #f6ad55;
+    --orange-500: #ed8936;
+    --orange-600: #dd6b20;
+
+    // Brand accent = ember orange. `--master-color-3` stays the single "accent"
+    // primitive so every token pointing at it flips in lockstep.
+    --master-color-3: var(--orange-500);
+    --master-color-3-relative: var(--orange-600);
+
+    // Warning / secondary attention accent — a deeper ember, distinct from the
+    // primary so lock/warning cues stand apart from ordinary actions.
+    --color-warning: var(--orange-600);
+    --color-warning-soft: var(--orange-300);
+
+    // Status primitives (theme-independent hues; dark tunes brightness above).
+    --pass-color: #5fad6f;
+    --fail-color: #fc6571;
+    --error-color: #f5b83f;
+    --skipped-color: #0ea5e9;
+
+    // Focus ring
+    --focus-ring: rgba(237, 137, 54, 0.45);
+
+    // ── Semantic: brand / interaction ───────────────────────────────────────
+    --color-primary: var(--master-color-3);
+    --color-primary-hover: var(--master-color-3-relative);
+    --color-primary-contrast: var(--master-font-color-2);
+
+    // Links follow the ember primary.
+    --link-color-1: var(--color-primary);
+    --link-color-1-focus: var(--orange-300);
+    --link-color-1-disabled: grey;
+
+    // ── Semantic: surfaces ──────────────────────────────────────────────────
+    --body-background: var(--master-color-1);
+    --surface-page: var(--master-color-1);
+    --surface-raised: var(--master-color-2);
+    --surface-overlay: var(--master-color-2);
+    --surface-sunken: var(--master-color-1);
+
+    // ── Semantic: navigation / app chrome ───────────────────────────────────
+    --nav-background: var(--master-color-2);
+    --nav-font-color: var(--master-font-color-3);
+    --nav-hover-color: var(--master-color-3);
+    --nav-hover-font-color: var(--master-font-color-2);
+
+    // Trend box
+    --trend-box-font-color: var(--master-font-color-2);
+
+    // Main panel
+    --main-panel-background: var(--master-color-2);
+    --main-panel-font-color: var(--master-font-color-1);
+    --main-panel-secondary-font-color: var(--master-font-color-2);
+    --main-panel-icon-color: var(--master-icon-color);
+
+    // Sub panels
+    --sub-panel-background: var(--master-color-1);
+    --sub-panel-font-color: var(--master-font-color-1);
+    --sub-panel-secondary-font-color: var(--master-font-color-3);
+    --sub-panel-icon-color: var(--master-icon-color);
+
+    // Main tables
+    --main-table-header-background: var(--master-color-3);
+    --main-table-header-font-color: var(--master-font-color-2);
+    --main-table-body-background: var(--master-color-1);
+    --main-table-body-font-color: var(--master-font-color-1);
+    --main-table-body-secondary-font-color: var(--master-font-color-2);
+
+    // Sub tables
+    --sub-table-header-background: var(--master-color-3);
+    --sub-table-header-font-color: var(--master-font-color-2);
+    --sub-table-body-background: var(--master-color-1);
+    --sub-table-body-font-color: var(--master-font-color-1);
+    --sub-table-body-secondary-font-color: var(--master-font-color-3);
+
+    // Tabs
+    --tabs-overall-background: var(--master-color-2);
+    --active-tab-background: var(--master-color-2);
+    --active-tab-font-color: var(--master-font-color-1);
+    --inactive-tab-background: var(--master-color-2-relative);
+    --inactive-tab-font-color: var(--master-font-color-1);
+    --active-tab-font-color-hover: var(--color-primary);
+
+    // Carousel
+    --carousel-background: var(--master-color-2);
+    --carousel-font-color: var(--master-font-color-2);
+    --carousel-active-font-color: var(--master-font-color-1);
+    --carousel-active-border-color: var(--master-color-3);
+
+    // Buttons
+    --button-background: var(--color-primary);
+    --button-font-color: var(--color-primary-contrast);
+    --button-hover-background: var(--color-primary-hover);
+    --button-hover-font-color: var(--color-primary-contrast);
+    --button-deactivated-background: var(--master-color-2);
+    --button-deactivated-font-color: var(--master-font-color-3);
+
+    // Select picker
+    --select-picker-background: var(--master-color-2);
+    --select-picker-font-color: var(--master-font-color-1);
+    --select-picker-label-color: var(--color-primary);
+
+    // Modal
+    --modal-background: var(--master-color-2);
+    --modal-font-color: var(--master-font-color-1);
+    --modal-secondary-font-color: var(--master-font-color-3);
+
+    // Screenshot viewer
+    --screenshot-border-color: var(--master-color-2-relative);
+    --screenshot-divider-color: var(--master-color-2-relative);
+    --screenshot-details-header-background: var(--master-color-2-relative);
+    --screenshot-form-background: var(--master-color-2);
+    --screenshot-form-border: var(--master-color-2-relative);
+    --baseline-overlay-background: var(--master-color-2-relative);
+
+    // Borders & dividers
+    --border-color: var(--master-color-2-relative);
+    --border-subtle: rgba(0, 0, 0, 0.12);
+
+    // Icons & status accents
+    --icon-action-color: var(--master-icon-color);
+    --icon-disabled-color: hsl(0, 0%, 55%);
+    --info-color: var(--master-icon-color);
+    --lock-icon-color: var(--color-warning);
+
+    // Timeline dot (inverts with theme — see dark mixin)
+    --timeline-dot-background: var(--master-font-color-2);
+    --timeline-dot-border: var(--border-color);
+
+    // Elevation companion (light: real shadow, transparent border; dark flips both)
+    --card-border-color: transparent;
+}
+
+// ── Dark theme triggers ─────────────────────────────────────────────────────
+// 1. Explicit user selection wins over everything.
+:root[data-theme='dark'] {
+    .theme-dark-primitives();
+}
+
+// 2. Follow the OS preference when the user has not explicitly chosen light.
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+        .theme-dark-primitives();
+    }
+}

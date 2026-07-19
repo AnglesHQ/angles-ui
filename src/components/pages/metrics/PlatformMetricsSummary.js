@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
 import { Table } from 'rsuite';
 import { getDurationAsString } from '../../../utility/TimeUtilities';
-import ExecutionsResultsBar from '../../common/results-bar';
+import ExecutionsResultsBar from '../../features/results-bar';
 
 const PlatformMetricsSummary = function (props) {
   const { metrics } = props; // platformColors

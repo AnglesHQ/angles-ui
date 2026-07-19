@@ -1,0 +1,141 @@
+.test-run-suite-panel {
+  padding: var(--space-5) 0 var(--space-3) 0;
+
+  .test-run-suite-header {
+    background-color: var(--sub-table-header-background);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    color: var(--main-table-header-font-color);
+    font-size: var(--font-size-lg);
+    padding: var(--space-3) var(--space-3) var(--space-1) var(--space-3);
+
+    .field-label {
+      font-weight: var(--font-weight-semibold);
+    }
+
+    .suite-menu-div {
+      float: right;
+      font-size: 1.1em;
+      cursor: pointer;
+      margin-top: -8px;
+
+      .expand-all-icon {
+        font-size: 1.5em;
+        cursor: pointer;
+      }
+
+      .expand-icons {
+        font-size: 1.5em;
+        cursor: pointer;
+      }
+
+      .screenshot-toggle-icon {
+        font-size: 1.4em;
+        cursor: pointer;
+        margin-right: var(--space-2);
+        vertical-align: middle;
+      }
+    }
+  }
+
+  .test-run-suite-body {
+    background-color: var(--sub-table-body-background);
+    padding: var(--space-3) var(--space-5);
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    border-top: none;
+
+    .test-row {
+      padding: var(--space-1) var(--space-2);
+      font-size: var(--font-size-md);
+      color: var(--sub-table-body-font-color);
+      border-radius: var(--radius-md);
+      transition: background-color var(--transition-fast);
+
+      &:hover {
+        background-color: var(--surface-sunken);
+      }
+
+      .execution-test-name {
+        font-size: var(--font-size-md);
+        cursor: pointer;
+
+        .execution-status-FAIL {
+          color: var(--fail-color);
+          font-weight: bold;
+        }
+
+        .execution-status-PASS {
+          color: var(--pass-color);
+          font-weight: bold;
+        }
+
+        .execution-status-ERROR {
+          color: var(--error-color);
+          font-weight: bold;
+        }
+      }
+
+      .execution-details-container {
+        color: var(--sub-table-body-secondary-font-color);
+        font-size: var(--font-size-sm);
+
+        .rs-icon {
+          margin-right: 5px;
+          font-size: 1.1em
+        }
+
+        .date-details {
+          margin-left: 10px;
+        }
+
+        .device-details {
+          margin-left: 15px;
+        }
+      }
+    }
+
+    .actions-row {
+      padding: 13px 30px;
+      border-radius: 5px;
+      background-color: var(--body-background);
+      color: var(--sub-panel-font-color);
+      cursor: pointer;
+
+      .action-description {
+        font-size: var(--font-size-md);
+        margin-bottom: 10px;
+      }
+
+      .action-steps {
+        background: var(--main-panel-background);
+        border-radius: 5px;
+      }
+    }
+
+    .action-status-FAIL {
+      color: var(--fail-color);
+    }
+
+    .action-status-ERROR {
+      color: var(--error-color);
+    }
+  }
+
+
+  .action-icon {
+    font-size: 1em;
+    cursor: pointer;
+    margin-right: 10px;
+    color: var(--link-color-1);
+  }
+
+  .execution-icon {
+    font-size: 1.5em;
+    cursor: pointer;
+    //color: var(--link-color-1);
+  }
+
+  .execution-history-icon {
+    font-size: 1.3em;
+    cursor: pointer;
+  }
+}

@@ -1,5 +1,6 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
+import { STATUS_COLORS } from '../../../../utility/ChartConfig';
 import { Panel, Stack } from 'rsuite';
 import moment from 'moment/moment';
 import { useIntl } from 'react-intl';
@@ -7,6 +8,7 @@ import { useIntl } from 'react-intl';
 const defaultOptions = {
   chart: {
     toolbar: { show: false },
+    zoom: { enabled: false },
     animations: { enabled: false },
     stacked: true,
     stackType: 'normal',
@@ -35,7 +37,7 @@ const defaultOptions = {
     },
   },
   yaxis: [],
-  colors: ['var(--pass-color)', 'var(--fail-color)', 'var(--error-color)', 'var(--skipped-color)'],
+  colors: STATUS_COLORS,
   legend: { show: true },
 };
 

@@ -1,8 +1,13 @@
 'use client';
 
 import React from 'react';
-import ScreenshotLibraryPage from '../../components/pages/screenshot-library/index';
+import PageContainer from '../../components/common/PageContainer';
+import ScreenshotLibraryPage from '../../components/pages/screenshot-library/ScreenshotLibraryPage';
 
 export default function Page() {
-    return <ScreenshotLibraryPage />;
+    return (
+        <PageContainer breadcrumbMessageId="page.screenshot-library.bread-crumb">
+            <ScreenshotLibraryPage />
+        </PageContainer>
+    );
 }

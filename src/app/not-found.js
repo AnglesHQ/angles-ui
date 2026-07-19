@@ -1,8 +1,13 @@
 'use client';
 
 import React from 'react';
-import NotFoundPage from '../components/pages/not-found/index';
+import PageContainer from '../components/common/PageContainer';
+import NotFoundPage from '../components/pages/not-found/NotFoundPage';
 
 export default function NotFound() {
-    return <NotFoundPage />;
+    return (
+        <PageContainer breadcrumbMessageId="page.not-found.bread-crumb">
+            <NotFoundPage />
+        </PageContainer>
+    );
 }

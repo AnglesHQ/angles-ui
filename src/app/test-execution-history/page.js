@@ -1,8 +1,13 @@
 'use client';
 
 import React from 'react';
-import ExecutionHistoryPage from '../../components/pages/test-execution-history/index';
+import PageContainer from '../../components/common/PageContainer';
+import TestExecutionHistoryPage from '../../components/pages/test-execution-history/TestExecutionHistoryPage';
 
 export default function Page() {
-    return <ExecutionHistoryPage />;
+    return (
+        <PageContainer breadcrumbMessageId="page.test-execution-history.bread-crumb">
+            <TestExecutionHistoryPage />
+        </PageContainer>
+    );
 }

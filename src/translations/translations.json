@@ -2,5 +2,6 @@
   { "code": "en", "text": "English" },
   { "code": "nl", "text": "Nederlands" },
   { "code": "th", "text": "ไทย" },
-  { "code": "cn", "text": "語言" }
+  { "code": "cn", "text": "語言" },
+  { "code": "hi", "text": "हिन्दी" }
 ]

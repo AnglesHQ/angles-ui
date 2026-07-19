@@ -13,7 +13,7 @@ import {
   Whisper,
 } from 'rsuite';
 import { getDuration } from '../../../utility/TimeUtilities';
-import ExecutionsResultsBar from '../../common/results-bar';
+import ExecutionsResultsBar from '../../features/results-bar';
 import BuildArtifacts from '../../common/BuildArtifacts';
 
 const { Column, HeaderCell, Cell } = Table;
@@ -132,6 +132,7 @@ const BuildsTable = function (props) {
     selectedBuilds,
     retrieveSelectedBuilds,
     toggleSelectedBuild,
+    toggleAllSelectedBuilds,
   } = props;
 
   const isRowSelected = (build) => selectedBuilds[build._id];
@@ -140,6 +141,11 @@ const BuildsTable = function (props) {
     const selectedRowsArray = retrieveSelectedBuilds();
     return (Object.keys(selectedRowsArray).length > 0);
   };
+
+  const allRowsSelected = () => builds.length > 0
+    && builds.every((build) => isRowSelected(build));
+
+  const someRowsSelected = () => anyRowsSelected() && !allRowsSelected();
 
   const getComponentName = (build) => build.team.components
     .find((component) => component._id === build.component);
@@ -162,7 +168,13 @@ const BuildsTable = function (props) {
         </Column>
         <Column width={50}>
           <HeaderCell>
-            <Checkbox className="build-table-header-checkbox" checked={anyRowsSelected()} inline />
+            <Checkbox
+              className="build-table-header-checkbox"
+              checked={allRowsSelected()}
+              indeterminate={someRowsSelected()}
+              onChange={() => toggleAllSelectedBuilds()}
+              inline
+            />
           </HeaderCell>
           <CheckCell isRowSelected={isRowSelected} toggleSelectedBuild={toggleSelectedBuild} />
         </Column>

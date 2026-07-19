@@ -5,12 +5,14 @@ import { useIntl } from 'react-intl';
 import moment from 'moment';
 // import { getBuildDurationInSeconds } from '../../../../utility/TimeUtilities';
 import { useRouter } from 'next/navigation';
+import { STATUS_COLORS } from '../../../../utility/ChartConfig';
 
 const defaultOptions = {
   chart: {
     // fontFamily: 'inherit',
     // parentHeightOffset: 0,
     toolbar: { show: false },
+    zoom: { enabled: false },
     animations: { enabled: false },
     stacked: true,
     stackType: 'normal',
@@ -51,7 +53,7 @@ const defaultOptions = {
     //   },
     // },
   ],
-  colors: ['var(--pass-color)', 'var(--fail-color)', 'var(--error-color)', 'var(--skipped-color)', '#2485C1'],
+  colors: STATUS_COLORS,
   legend: { show: true },
 };
 

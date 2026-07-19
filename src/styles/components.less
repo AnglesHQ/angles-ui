@@ -1,0 +1,177 @@
+// ============================================================================
+// Shared components
+// ----------------------------------------------------------------------------
+// App-wide UI patterns that are not owned by a single page: buttons, the
+// confirmation modal, the top menu bar, chart panels and the tab container.
+// Built on the design tokens + mixins (see tokens/ and mixins.less).
+// ============================================================================
+
+// ── Buttons ──────────────────────────────────────────────────────────────────
+// Canonical classes are .btn-primary / .btn-secondary / .btn-ghost. The older
+// .filter-submit-button / .filter-cancel-button names are kept as aliases so
+// existing markup keeps working; new/edited markup should prefer the btn-* names.
+.btn-primary,
+.filter-submit-button {
+    color: var(--button-font-color);
+    background-color: var(--button-background);
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    font-weight: var(--font-weight-semibold);
+    transition: background-color var(--transition-fast), box-shadow var(--transition-fast);
+
+    &:hover:not(:disabled):not(.rs-btn-disabled) {
+        color: var(--button-hover-font-color);
+        background-color: var(--button-hover-background);
+    }
+
+    &:active {
+        background-color: var(--color-primary-hover);
+    }
+
+    &:focus,
+    &:focus-visible {
+        .focus-ring();
+        background-color: var(--button-background);
+    }
+
+    // Keep the brand orange when disabled (dimmed), otherwise rsuite's
+    // `.rs-btn-disabled` (higher specificity) paints it grey and the button
+    // looks inconsistent with the other primary buttons. Matches how rsuite
+    // itself dims disabled primary buttons.
+    &:disabled,
+    &.rs-btn-disabled {
+        color: var(--button-font-color);
+        background-color: var(--button-background);
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+.btn-secondary,
+.filter-cancel-button {
+    color: var(--button-deactivated-font-color);
+    background-color: var(--button-deactivated-background);
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    font-weight: var(--font-weight-medium);
+    transition: background-color var(--transition-fast), opacity var(--transition-fast), box-shadow var(--transition-fast);
+
+    &:hover {
+        color: var(--button-deactivated-font-color);
+        background-color: var(--button-deactivated-background);
+        opacity: 0.85;
+    }
+
+    &:focus,
+    &:focus-visible {
+        .focus-ring();
+        background-color: var(--button-deactivated-background);
+    }
+}
+
+.btn-ghost {
+    color: var(--color-primary);
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-weight: var(--font-weight-medium);
+    transition: background-color var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast);
+
+    &:hover {
+        color: var(--color-primary-contrast);
+        background-color: var(--color-primary);
+    }
+
+    &:focus,
+    &:focus-visible {
+        .focus-ring();
+    }
+}
+
+// ── Confirmation modal (use the ConfirmModal component, not window.confirm) ──
+// Modal chrome (background, title, close) is themed globally in
+// rsuite-overrides.less; only the confirm-specific bits live here.
+.confirm-modal {
+    .confirm-modal-title {
+        font-weight: var(--font-weight-bold);
+    }
+
+    .confirm-modal-message {
+        color: var(--modal-secondary-font-color);
+        margin: 0;
+    }
+
+    .confirm-modal-actions {
+        display: flex;
+        gap: var(--space-2);
+        justify-content: flex-end;
+    }
+}
+
+// ── Top menu bar / filter toolbar ────────────────────────────────────────────
+.top-menu-stack {
+    .card-surface();
+    align-items: center;
+    gap: var(--space-3);
+    position: relative;
+    color: var(--main-panel-font-color);
+    padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+}
+
+// ── Chart panel / card ───────────────────────────────────────────────────────
+.chart-panel {
+    .card-surface();
+
+    .rs-panel-header {
+        color: var(--main-panel-font-color);
+        font-weight: var(--font-weight-semibold);
+        font-size: var(--font-size-lg);
+    }
+}
+
+// ── Tabs ─────────────────────────────────────────────────────────────────────
+.tabs-container {
+    margin-left: var(--space-2);
+    position: relative;
+
+    .nav-tabs {
+        border-bottom: 0;
+        margin-left: var(--space-5);
+
+        .nav-item {
+            margin-bottom: 0;
+        }
+
+        .nav-link {
+            border: 0;
+            position: relative;
+            border-radius: var(--radius-md) var(--radius-md) 0 0;
+            background-color: var(--inactive-tab-background);
+            color: var(--inactive-tab-font-color);
+            transition: background-color var(--transition-fast), color var(--transition-fast);
+        }
+
+        .nav-link:hover {
+            border-bottom: 0;
+            color: var(--active-tab-font-color-hover);
+        }
+
+        .nav-link.active {
+            border: 0;
+            font-weight: var(--font-weight-semibold);
+            background-color: var(--active-tab-background);
+            color: var(--active-tab-font-color);
+        }
+
+        .nav-link:focus {
+            .focus-ring();
+        }
+    }
+
+    .tab-content {
+        border-radius: var(--radius-lg);
+        background: var(--tabs-overall-background);
+        color: var(--main-panel-font-color);
+        padding: var(--space-3);
+    }
+}
