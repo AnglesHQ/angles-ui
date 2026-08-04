@@ -68,27 +68,22 @@
   }
 }
 
-// Baseline badge overlaid on the card image
+// Baseline indicator icon overlaid on the top-right corner of the card image
 .baseline-overlay {
   position: absolute;
   top: 0;
   right: 0;
   z-index: 1;
-  font-weight: var(--font-weight-bold);
-  color: var(--link-color-1);
-  border: solid 2px var(--link-color-1);
-  height: 40px;
-  padding: var(--space-1);
+  color: var(--pass-color);
   background: var(--baseline-overlay-background);
-  margin: var(--space-1);
+  border: solid 2px var(--link-color-1);
+  border-radius: 0 var(--radius-md) 0 var(--radius-md);
+  padding: var(--space-1);
   display: flex;
   align-items: center;
   justify-content: center;
-
-  p {
-    margin: 0;
-    text-align: center;
-  }
+  font-size: var(--font-size-4xl);
+  line-height: 1;
 }
 
 .screenshot-details-td {

@@ -1,6 +1,7 @@
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import Moment from 'react-moment';
 import React from 'react';
+import { VscVerified } from 'react-icons/vsc';
 
 const grabThumbnail = (screenshot) => {
   if (screenshot.thumbnail.startsWith('data:image')) {
@@ -14,15 +15,17 @@ const ScreenshotCard = function (props) {
     isBaseline,
     isSelectedId,
   } = props;
+  const intl = useIntl();
 
   return (
     <div key={screenshot._id} className={`screenshot-card ${isSelectedId ? 'card-active' : ''}`}>
       {
         isBaseline ? (
-          <div className="baseline-overlay">
-            <p>
-              <FormattedMessage id="common.component.screenshot-view.tabs.history.label.baseline" />
-            </p>
+          <div
+            className="baseline-overlay"
+            title={intl.formatMessage({ id: 'common.component.screenshot-view.tabs.history.label.baseline' })}
+          >
+            <VscVerified />
           </div>
         ) : null
       }

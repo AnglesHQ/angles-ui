@@ -219,13 +219,6 @@ const Shell = function (props) {
                                             />
                                         </span>
                                     </Nav.Item>
-                                    <Nav.Item as={Link} eventKey="6" icon={<InfoOutline className="nav-item-icon" />} href="/about">
-                                        <span>
-                                            <FormattedMessage
-                                                id="nav.about"
-                                            />
-                                        </span>
-                                    </Nav.Item>
                                     {user && (user.userType === 'admin' || user.userType === 'team_lead') && (
                                         <Nav.Item as={Link} eventKey="8" icon={<PeoplesIcon className="nav-item-icon" />} href="/team-settings">
                                             <span>
@@ -241,6 +234,13 @@ const Shell = function (props) {
                                             <Nav.Item as={Link} eventKey="7-2" href="/admin/settings"><FormattedMessage id="nav.admin.settings" /></Nav.Item>
                                         </Nav.Menu>
                                     )}
+                                    <Nav.Item as={Link} eventKey="6" icon={<InfoOutline className="nav-item-icon" />} href="/about">
+                                        <span>
+                                            <FormattedMessage
+                                                id="nav.about"
+                                            />
+                                        </span>
+                                    </Nav.Item>
                                 </Nav>
                             </Sidenav.Body>
                             <Navbar appearance="subtle" className="nav-toggle">
