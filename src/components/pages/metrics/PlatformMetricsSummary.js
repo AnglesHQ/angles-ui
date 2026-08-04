@@ -3,6 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
 import { Table } from 'rsuite';
 import { getDurationAsString } from '../../../utility/TimeUtilities';
+import { getPlatformLabel } from '../../../utility/ChartConfig';
 import ExecutionsResultsBar from '../../features/results-bar';
 
 const PlatformMetricsSummary = function (props) {
@@ -17,19 +18,7 @@ const PlatformMetricsSummary = function (props) {
           if (execution.platforms && execution.platforms.length > 0) {
             execution.platforms.forEach((platform) => {
               if (platform.platformName) {
-                let platformId = 'undefined';
-                // if (['ios', 'android'].includes(platform.platformName.toLocaleLowerCase()) {
-                if (platform.deviceName) {
-                  platformId = platform.deviceName;
-                } else {
-                  platformId = platform.platformName;
-                  if (platform.platformVersion) {
-                    platformId += `_${platform.platformVersion}`;
-                  }
-                  if (platform.platformVersion) {
-                    platformId += `_${platform.platformVersion}`;
-                  }
-                }
+                const platformId = getPlatformLabel(platform);
                 if (!deviceMetrics[platformId]) {
                   deviceMetrics[platformId] = {
                     platform,
@@ -118,6 +107,22 @@ const PlatformMetricsSummary = function (props) {
             <FormattedMessage id="page.metrics.platform-metrics-summary.label.device" />
           </HeaderCell>
           <Cell dataKey="platform.deviceName" />
+        </Column>
+        <Column flexGrow={4}>
+          <HeaderCell>
+            <FormattedMessage id="page.metrics.platform-metrics-summary.label.browser" />
+          </HeaderCell>
+          <Cell>
+            {
+              (rowData) => {
+                const { browserName, browserVersion } = rowData.platform;
+                if (!browserName) {
+                  return null;
+                }
+                return `${browserName}${browserVersion ? ` ${browserVersion}` : ''}`;
+              }
+            }
+          </Cell>
         </Column>
         <Column flexGrow={1}>
           <HeaderCell>

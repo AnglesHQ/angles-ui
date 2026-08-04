@@ -1,15 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import {
-  Row,
-  Grid,
-  Col,
   Panel,
+  Tooltip,
+  Whisper,
 } from 'rsuite';
 import { VscExpandAll } from 'react-icons/vsc';
 import { MdImage, MdHideImage } from 'react-icons/md';
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import Tooltip from 'react-bootstrap/Tooltip';
 import ExpandOutlineIcon from '@rsuite/icons/ExpandOutline';
 import CollaspedOutlineIcon from '@rsuite/icons/CollaspedOutline';
 import { getDuration } from '../../../utility/TimeUtilities';
@@ -30,6 +27,7 @@ const SuiteTable = function (props) {
     // index: suiteIndex,
     screenshots,
     openModal,
+    showHistoryLink,
   } = props;
 
   const [showScreenshots, setShowScreenshots] = useState(true);
@@ -64,91 +62,96 @@ const SuiteTable = function (props) {
       className="test-run-suite-panel"
       classPrefix="test-run-suite"
       header={(
-        <Grid fluid>
-          <Row className="test-run-suite-header">
-            <Col xs={12}>
-              <div>
+        <div className="suite-header-inner">
+          <div className="suite-header-info">
+            <div className="suite-header-title" title={suite.name}>{suite.name}</div>
+            <div className="suite-header-meta">
+              <span className="suite-header-meta-item">
                 <span className="field-label">
-                  <FormattedMessage id="common.component.suite-table.header.suite" />
+                  <FormattedMessage id="common.component.suite-table.header.duration" />
                 </span>
                 <span>: </span>
-                {suite.name}
-              </div>
-            </Col>
-            <Col xs={4}>
-              <span className="field-label">
-                <FormattedMessage id="common.component.suite-table.header.duration" />
+                {getDuration(suite)}
               </span>
-              <span>: </span>
-              {getDuration(suite)}
-            </Col>
-            <Col xs={2}>
-              <span className="field-label">
-                <FormattedMessage id="common.component.suite-table.header.total" />
+              <span className="suite-header-meta-sep">•</span>
+              <span className="suite-header-meta-item">
+                <span className="field-label">
+                  <FormattedMessage id="common.component.suite-table.header.total" />
+                </span>
+                <span>: </span>
+                {sum(suite.result)}
               </span>
-              <span>: </span>
-              {sum(suite.result)}
-            </Col>
-            <Col xs={4}>
-              <ExecutionsResultsBar result={suite.result} />
-            </Col>
-            <Col xs={2}>
-              <div className="suite-menu-div">
-                <OverlayTrigger overlay={(
-                  <Tooltip id="tooltip-disabled">
-                    <FormattedMessage id={showScreenshots
-                      ? 'common.component.suite-table.header.hide-screenshots'
-                      : 'common.component.suite-table.header.show-screenshots'}
-                    />
-                  </Tooltip>
-                )}
+            </div>
+          </div>
+          <div className="suite-header-results">
+            <ExecutionsResultsBar result={suite.result} />
+          </div>
+          <div className="suite-header-actions">
+            <Whisper
+              placement="top"
+              trigger="hover"
+              speaker={(
+                <Tooltip>
+                  <FormattedMessage id={showScreenshots
+                    ? 'common.component.suite-table.header.hide-screenshots'
+                    : 'common.component.suite-table.header.show-screenshots'}
+                  />
+                </Tooltip>
+              )}
+            >
+              <span
+                className="suite-header-action-icon"
+                onClick={() => setShowScreenshots(!showScreenshots)}
+              >
+                { showScreenshots ? <MdImage /> : <MdHideImage /> }
+              </span>
+            </Whisper>
+            {
+              isSuiteExpanded(suite) ? (
+                <Whisper
+                  placement="top"
+                  trigger="hover"
+                  speaker={(
+                    <Tooltip>
+                      <FormattedMessage id="common.component.suite-table.header.collapse-all" />
+                    </Tooltip>
+                  )}
                 >
-                  <span
-                    className="screenshot-toggle-icon"
-                    onClick={() => setShowScreenshots(!showScreenshots)}
-                  >
-                    { showScreenshots ? <MdImage /> : <MdHideImage /> }
+                  <span className="suite-header-action-icon" onClick={() => collapseAll()}>
+                    <CollaspedOutlineIcon />
                   </span>
-                </OverlayTrigger>
-                {
-                  isSuiteExpanded(suite) ? (
-                    <OverlayTrigger overlay={(
-                      <Tooltip id="tooltip-disabled">
-                        <FormattedMessage id="common.component.suite-table.header.collapse-all" />
-                      </Tooltip>
-                    )}
-                    >
-                      <span className="expand-icons" onClick={() => collapseAll()}>
-                        <CollaspedOutlineIcon />
-                      </span>
-                    </OverlayTrigger>
-                  ) : (
-                    <OverlayTrigger overlay={(
-                      <Tooltip id="tooltip-disabled">
-                        <FormattedMessage id="common.component.suite-table.header.expand-all" />
-                      </Tooltip>
-                    )}
-                    >
-                      <span className="expand-icons" onClick={() => expandExecutions()}>
-                        <ExpandOutlineIcon />
-                      </span>
-                    </OverlayTrigger>
-                  )
-                }
-                <OverlayTrigger overlay={(
-                  <Tooltip id="tooltip-disabled">
-                    <FormattedMessage id="common.component.suite-table.header.expand-all-actions" />
-                  </Tooltip>
-                )}
+                </Whisper>
+              ) : (
+                <Whisper
+                  placement="top"
+                  trigger="hover"
+                  speaker={(
+                    <Tooltip>
+                      <FormattedMessage id="common.component.suite-table.header.expand-all" />
+                    </Tooltip>
+                  )}
                 >
-                  <span className="expand-all-icon" onClick={() => expandAll()}>
-                    <VscExpandAll />
+                  <span className="suite-header-action-icon" onClick={() => expandExecutions()}>
+                    <ExpandOutlineIcon />
                   </span>
-                </OverlayTrigger>
-              </div>
-            </Col>
-          </Row>
-        </Grid>
+                </Whisper>
+              )
+            }
+            <Whisper
+              placement="top"
+              trigger="hover"
+              speaker={(
+                <Tooltip>
+                  <FormattedMessage id="common.component.suite-table.header.expand-all-actions" />
+                </Tooltip>
+              )}
+            >
+              <span className="suite-header-action-icon" onClick={() => expandAll()}>
+                <VscExpandAll />
+              </span>
+            </Whisper>
+          </div>
+        </div>
       )}
     >
       {
@@ -160,6 +163,7 @@ const SuiteTable = function (props) {
             screenshots={screenshots}
             openModal={openModal}
             showScreenshots={showScreenshots}
+            showHistoryLink={showHistoryLink}
           />,
         ])
       }

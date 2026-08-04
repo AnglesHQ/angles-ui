@@ -43,11 +43,11 @@ const TestResultsCell = function (props) {
   }
   let testClass = 'table-info';
   if (test[buildId].status === 'PASS') {
-    testClass = 'table-pass';
+    testClass = 'status-pass';
   } else if (test[buildId].status === 'FAIL') {
-    testClass = 'table-fail';
+    testClass = 'status-fail';
   } else if (test[buildId].status === 'ERROR') {
-    testClass = 'table-error';
+    testClass = 'status-error';
   }
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading

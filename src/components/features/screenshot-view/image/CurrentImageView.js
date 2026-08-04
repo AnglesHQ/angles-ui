@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
-import { Button, Stack } from 'rsuite';
+import { Button, Loader, Stack } from 'rsuite';
 import { FormattedMessage, useIntl } from 'react-intl';
-import Table from 'react-bootstrap/Table';
 import ScreenshotDetailsTable from '../ScreenshotDetailsTable';
 import CurrentScreenshotContext from '../../../../context/CurrentScreenshotContext';
 import Message from '../../../common/Message';
@@ -28,7 +27,7 @@ const CurrentImageView = function (props) {
           type="info"
           message={(
             <span>
-              <i className="fas fa-spinner fa-pulse fa-2x" />
+              <Loader />
               <FormattedMessage id="common.component.screenshot-view.tabs.screenshot.message.retrieving-screenshot" />
             </span>
           )}
@@ -57,7 +56,7 @@ const CurrentImageView = function (props) {
           onClick={() => updateBaseline(screenshotDetailsForButton)}
           disabled={isBaseline(screenshotDetailsForButton._id)}
           type="button"
-          className="filter-submit-button"
+          className="btn-primary"
         >
           { !isBaseline(screenshotDetailsForButton._id) ? (
             <FormattedMessage id="common.component.screenshot-view.tabs.screenshot.button.make-baseline-image" />
@@ -81,7 +80,7 @@ const CurrentImageView = function (props) {
   };
 
   return (
-    <Table className="screenshot-table">
+    <table className="screenshot-table">
       <tbody>
         <tr>
           <td className="screenshot-details-td">
@@ -108,7 +107,7 @@ const CurrentImageView = function (props) {
                 onClick={() => generateDynamicBaselineClick()}
                 disabled={!dynamicBaselineButtonEnabled}
                 type="button"
-                className="filter-submit-button"
+                className="btn-primary"
               >
                 <FormattedMessage id="common.component.screenshot-view.tabs.screenshot.button.generate-dynamic-baseline" />
               </Button>
@@ -120,7 +119,7 @@ const CurrentImageView = function (props) {
                         onClick={() => deleteScreenshotClick()}
                         disabled={!deleteScreenshotButtonEnabled}
                         type="button"
-                        className="filter-submit-button"
+                        className="btn-primary"
                         title={intl.formatMessage({ id: 'common.component.screenshot-view.tabs.screenshot.button.delete-screenshot-description' })}
                       >
                         <FormattedMessage id="common.component.screenshot-view.tabs.screenshot.button.delete-screenshot" />
@@ -132,7 +131,7 @@ const CurrentImageView = function (props) {
           </td>
         </tr>
       </tbody>
-    </Table>
+    </table>
   );
 };
 

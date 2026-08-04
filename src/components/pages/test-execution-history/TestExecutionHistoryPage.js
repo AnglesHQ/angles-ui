@@ -2,16 +2,18 @@ import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { FormattedMessage, useIntl } from 'react-intl';
 import {
+  Loader,
   Col,
   Grid,
+  Modal,
   Panel,
   Row,
 } from 'rsuite';
-import Modal from 'react-bootstrap/Modal';
 import { useSearchParams } from 'next/navigation';
 import { ExecutionRequests, ScreenshotRequests } from 'angles-javascript-client';
 import TestExecutionsResultPieChart from './charts/TestExecutionsResultPieChart';
 import TestExecutionTimelineChart from './charts/TestExecutionTimelineChart';
+import TestExecutionPlatformBarChart from './charts/TestExecutionPlatformBarChart';
 import ScreenshotView from '../../features/screenshot-view/ScreenshotView';
 import SuiteTable from '../../features/test-suite/SuiteTable';
 import { ExecutionStateProvider } from '../../../context/ExecutionStateContext';
@@ -29,6 +31,7 @@ const SummaryPage = function () {
   const [showModal, setShowModal] = useState(false);
   const [selectedTab, setSelectedTab] = useState('image');
   const [suiteResult, setSuiteResult] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState(null);
   const query = {
     executionId: searchParams.get('executionId'),
   };
@@ -82,7 +85,7 @@ const SummaryPage = function () {
     return suite;
   };
 
-  const generateSuiteResult = (executionsArray) => calculateSuiteResults({
+  const generateSuiteResult = (executionsArray, suiteName) => calculateSuiteResults({
     executions: executionsArray,
     result: {
       PASS: 0,
@@ -90,16 +93,23 @@ const SummaryPage = function () {
       ERROR: 0,
       SKIPPED: 0,
     },
-    name: executionsArray[0].suite,
+    name: suiteName,
     status: 'N/A',
   });
 
   useEffect(() => {
     if (executions.length > 0) {
-      const suite = generateSuiteResult(executions);
+      const filteredExecutions = selectedStatus
+        ? executions.filter((execution) => execution.status === selectedStatus)
+        : executions;
+      const suite = generateSuiteResult(filteredExecutions, executions[0].suite);
       setSuiteResult(suite);
     }
-  }, [executions]);
+  }, [executions, selectedStatus]);
+
+  const filterByStatus = (status) => {
+    setSelectedStatus(status === selectedStatus ? null : status);
+  };
 
   const closeModal = () => {
     setShowModal(false);
@@ -117,7 +127,7 @@ const SummaryPage = function () {
         type="info"
         message={(
           <span>
-            <i className="fas fa-spinner fa-pulse fa-2x" />
+            <Loader />
             <FormattedMessage id="page.test-execution-history.messages.retrieving-executions" />
           </span>
         )}
@@ -125,12 +135,12 @@ const SummaryPage = function () {
     ) : (
       <div>
         <Grid fluid>
-          <Row gutter={30} className="test-run-row">
+          <Row gutter={30} className="detail-row">
             <Col xs={24}>
               <Panel
-                className="test-history-header"
+                className="page-detail-header"
                 header={(
-                  <div className="test-history-header-panel">
+                  <div className="page-detail-header-title">
                     {executions[0].title}
                   </div>
                 )}
@@ -143,11 +153,12 @@ const SummaryPage = function () {
               </Panel>
             </Col>
           </Row>
-          <Row gutter={30} className="test-run-row">
+          <Row gutter={30} className="detail-row">
             <Col xs={12}>
               <TestExecutionsResultPieChart
                 title={intl.formatMessage({ id: 'page.test-execution-history.charts.execution-pie-chart.title' })}
                 executions={executions}
+                onStatusClick={filterByStatus}
               />
             </Col>
             <Col xs={12}>
@@ -158,7 +169,17 @@ const SummaryPage = function () {
               />
             </Col>
           </Row>
-          <Row gutter={30} className="test-run-row">
+          <Row gutter={30} className="detail-row">
+            <Col xs={24}>
+              <TestExecutionPlatformBarChart
+                title={intl.formatMessage({ id: 'page.test-execution-history.charts.execution-platform-bar-chart.title' })}
+                yaxisTitle={intl.formatMessage({ id: 'page.test-execution-history.charts.execution-platform-bar-chart.yaxis-title' })}
+                xaxisTitle={intl.formatMessage({ id: 'page.test-execution-history.charts.execution-platform-bar-chart.xaxis-title' })}
+                executions={suiteResult.executions}
+              />
+            </Col>
+          </Row>
+          <Row gutter={30} className="detail-row">
             <Col xs={24}>
               <ExecutionStateProvider key={`state-provider-${suiteResult.name}`}>
                 <SuiteTable
@@ -166,13 +187,14 @@ const SummaryPage = function () {
                   suite={suiteResult}
                   screenshots={screenshots}
                   openModal={openModal}
+                  showHistoryLink={false}
                 />
               </ExecutionStateProvider>
             </Col>
           </Row>
         </Grid>
-        <Modal show={showModal} onHide={closeModal} dialogClassName="screenshot-modal">
-          <Modal.Header closeButton>
+        <Modal open={showModal} onClose={closeModal} className="screenshot-modal">
+          <Modal.Header>
             <Modal.Title>
               <FormattedMessage id="common.component.screenshot-view.header" />
             </Modal.Title>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Loader } from 'rsuite';
 import { useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import { connect } from 'react-redux';
@@ -28,11 +29,9 @@ const TestRunsComparePage = function (props) {
 
   return (
     (testRunCompareBuilds.length === 0) ? (
-      <div className="alert alert-primary" role="alert">
-        <span>
-          <i className="fas fa-spinner fa-pulse fa-2x" />
-          <span> Retrieving build details to generate the matrix view.</span>
-        </span>
+      <div className="app-alert app-alert-info" role="alert">
+        <Loader />
+        <span> Retrieving build details to generate the matrix view.</span>
       </div>
     ) : (
       <TestRunCompareTable testRunCompareBuilds={testRunCompareBuilds} />

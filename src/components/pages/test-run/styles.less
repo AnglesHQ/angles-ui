@@ -1,3 +1,6 @@
+// Test-run detail page. Generic header chrome comes from .page-detail-header /
+// .page-detail-header-title / .detail-row (components.less); only the
+// test-run-specific pieces live here.
 .test-run-download-icon {
   position: relative;
 
@@ -8,71 +11,20 @@
   }
 }
 
-.test-run-row {
-  background-color: var(--main-panel-background);
-  border-radius: var(--radius-lg);
-  margin: var(--space-4);
-  padding: var(--space-4);
-}
-
 .test-run-header {
-  color: var(--main-panel-font-color);
-  background-color: var(--main-panel-background);
-  max-width: 1300px;
-  margin: auto;
-  padding-bottom: 0px;
-
-  .rs-panel-header {
-    padding: 0px;
-  }
-
-  .rs-panel-body {
-    padding-bottom: 0px;
-  }
-
   .test-run-header-panel {
-    background-color: var(--main-panel-background);
-    color: var(--main-panel-font-color);
     font-size: var(--font-size-4xl);
-    font-weight: var(--font-weight-bold);
-    text-align: center;
 
-    .test-run-end-icon-fail {
-      color: var(--fail-color);
-      margin-right: 10px;
+    .test-run-end-icon {
+      margin-right: var(--space-3);
       font-size: 35px;
     }
 
-    .test-run-end-icon-pass {
-      color: var(--pass-color);
-      margin-right: 10px;
-      font-size: 35px;
-    }
-
-    .test-run-end-icon-error {
-      color: var(--error-color);
-      margin-right: 10px;
-      font-size: 35px;
-    }
-
-    .test-run-end-icon-info {
-      color: var(--info-color);
-      margin-right: 10px;
-      font-size: 35px;
-    }
-
-    .test-run-lock-icon {
-      position: relative;
-      right: 10px;
-      color: var(--lock-icon-color);
-      top: 10px;
-    }
   }
 
   .test-run-steps {
-    padding-top: 10px;
-    padding-bottom: 20px;
-    //border-top: 1px solid #8d8d8d54;
+    padding-top: var(--space-3);
+    padding-bottom: var(--space-5);
     width: 90%;
     margin: auto;
 
@@ -97,12 +49,12 @@
   }
 
   .test-run-details-grid {
-    padding: 10px 0 20px 0;
+    padding: var(--space-3) 0 var(--space-5) 0;
     font-size: var(--font-size-md);
     border-bottom: 1px solid var(--border-subtle);
 
     .test-run-details-grid-item>span {
-      font-weight: bold;
+      font-weight: var(--font-weight-bold);
     }
 
     :nth-child(2) {
@@ -119,7 +71,7 @@
 
     .test-run-details-icon {
       font-size: 2em;
-      margin-right: 10px;
+      margin-right: var(--space-3);
       color: var(--icon-action-color);
     }
 
@@ -131,18 +83,17 @@
 
   .test-run-details-artifact-panel {
     background-color: var(--body-background);
-    padding: 10px 0 20px 0;
+    padding: var(--space-3) 0 var(--space-5) 0;
     font-size: var(--font-size-md);
 
     .build-artifacts-table {
       width: 100%;
     }
   }
-
 }
 
 .test-run-icons-grid {
-  padding: 15px 0 0 0;
+  padding: var(--space-4) 0 0 0;
   width: 150px;
 
   .test-run-details-icon {
@@ -167,5 +118,4 @@
     top: -2px;
     color: var(--icon-disabled-color);
   }
-
 }

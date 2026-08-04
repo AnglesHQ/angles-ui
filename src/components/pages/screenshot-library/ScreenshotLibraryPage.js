@@ -2,9 +2,9 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { Container } from 'react-bootstrap';
 import { ScreenshotRequests, MetricRequests } from 'angles-javascript-client';
 import {
+  Loader,
   Button,
   SelectPicker,
   Panel,
@@ -233,7 +233,7 @@ const ScreenshotLibraryPage = function () {
           />
           <Button
             disabled={view === '' && tag === ''}
-            className="filter-submit-button"
+            className="btn-primary"
             type="submit"
             onClick={() => { submitScreenshotSearch(); }}
           >
@@ -260,11 +260,9 @@ const ScreenshotLibraryPage = function () {
         }
         {
           retrievingScreenshots ? (
-            <div className="alert alert-primary" role="alert">
-              <span>
-                <i className="fas fa-spinner fa-pulse fa-2x" />
-                <span> Retrieving screenshot details.</span>
-              </span>
+            <div className="app-alert app-alert-info" role="alert">
+              <Loader />
+              <span> Retrieving screenshot details.</span>
             </div>
           ) : null
         }
@@ -272,10 +270,8 @@ const ScreenshotLibraryPage = function () {
           retrievingScreenshots === false
             && (filteredScreenshots === undefined || (Array.isArray(filteredScreenshots)
               && filteredScreenshots.length === 0)) ? (
-            <div className="alert alert-primary" role="alert">
-              <span>
-                <span>No images to display.</span>
-              </span>
+            <div className="app-alert app-alert-info" role="alert">
+              <span>No images to display.</span>
             </div>
           ) : null
         }
@@ -301,7 +297,7 @@ const ScreenshotLibraryPage = function () {
                   {
                     screenshotMetrics.views ? (
                       screenshotMetrics.views.map((viewObject, index) => (
-                        <Container className="card-deck-history">
+                        <div className="card-deck-history">
                           <div>
                             <span>
                               <FormattedMessage id="page.screenshot-library.search-options.label.view" />
@@ -323,7 +319,7 @@ const ScreenshotLibraryPage = function () {
                               ) : null
                             }
                           </div>
-                        </Container>
+                        </div>
                       ))
                     ) : null
                   }
@@ -334,7 +330,7 @@ const ScreenshotLibraryPage = function () {
                   {
                     screenshotMetrics.tags ? (
                       screenshotMetrics.tags.map((tagObject, index) => (
-                        <Container className="card-deck-history">
+                        <div className="card-deck-history">
                           <div>
                             <span>
                               <FormattedMessage id="page.screenshot-library.search-options.label.tag" />
@@ -356,7 +352,7 @@ const ScreenshotLibraryPage = function () {
                               ) : null
                             }
                           </div>
-                        </Container>
+                        </div>
                       ))
                     ) : null
                   }

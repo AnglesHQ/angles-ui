@@ -38,15 +38,15 @@ const StepsTimeline = function (props) {
   const getTimeLineIcon = (status) => {
     switch (status) {
       case 'PASS':
-        return <CheckRoundIcon className="timeline-icon-pass" />;
+        return <CheckRoundIcon className="status-pass" />;
       case 'FAIL':
-        return <WarningRoundIcon className="timeline-icon-fail" />;
+        return <WarningRoundIcon className="status-fail" />;
       case 'ERROR':
-        return <RemindRoundIcon className="timeline-icon-error" />;
+        return <RemindRoundIcon className="status-error" />;
       case 'INFO':
-        return <InfoRoundIcon className="timeline-icon-info" />;
+        return <InfoRoundIcon className="status-info" />;
       default:
-        return <InfoRoundIcon className="timeline-icon-info" />;
+        return <InfoRoundIcon className="status-info" />;
     }
   };
 
@@ -124,7 +124,7 @@ const StepsTimeline = function (props) {
           action.steps.map((step, index) => (
             <Timeline.Item
               dot={getTimeLineIcon(step.status)}
-              className={`timeline-step timeline-step-${step.status}`}
+              className={`timeline-step timeline-step-${step.status.toLowerCase()}`}
               key={index}
             >
               <div className="step-row">

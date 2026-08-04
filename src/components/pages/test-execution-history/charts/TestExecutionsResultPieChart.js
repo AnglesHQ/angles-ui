@@ -3,29 +3,7 @@ import Chart from 'react-apexcharts';
 import { STATUS_COLORS } from '../../../../utility/ChartConfig';
 import { Panel, Stack } from 'rsuite';
 
-const defaultOptions = {
-  chart: {
-    toolbar: { show: false },
-    animations: { enabled: false },
-    background: 'var(--main-panel-background)',
-    foreColor: 'var(--main-panel-font-color)',
-  },
-  xaxis: {
-    tooltip: {
-      enabled: true,
-    },
-    axisBorder: {
-      show: true,
-    },
-  },
-  colors: STATUS_COLORS,
-  legend: {
-    show: true,
-    fontSize: '14px',
-    formatter: (seriesName, opts) => `${seriesName}: <strong> ${opts.w.config.series[opts.seriesIndex]}</strong>`,
-
-  },
-};
+const STATUS_ORDER = ['PASS', 'FAIL', 'ERROR', 'SKIPPED'];
 
 const generateExecutionMetricsPieChartData = (executions) => {
   const result = {
@@ -46,16 +24,61 @@ const generateExecutionMetricsPieChartData = (executions) => {
   const data = [PASS, FAIL, ERROR, SKIPPED];
   const graphData = {
     data,
-    labels: ['PASS', 'FAIL', 'ERROR', 'SKIPPED'],
+    labels: STATUS_ORDER,
     colors: STATUS_COLORS,
   };
   return graphData;
 };
 
+const buildOptions = (labels, onStatusClick) => ({
+  chart: {
+    toolbar: { show: false },
+    animations: { enabled: false },
+    background: 'var(--main-panel-background)',
+    foreColor: 'var(--main-panel-font-color)',
+    events: {
+      dataPointSelection: (event, chartContext, config) => {
+        if (onStatusClick) {
+          const { dataPointIndex, selectedDataPoints } = config;
+          const isNowSelected = selectedDataPoints
+            && selectedDataPoints[0]
+            && selectedDataPoints[0].includes(dataPointIndex);
+          onStatusClick(isNowSelected ? STATUS_ORDER[dataPointIndex] : null);
+        }
+      },
+    },
+  },
+  xaxis: {
+    tooltip: {
+      enabled: true,
+    },
+    axisBorder: {
+      show: true,
+    },
+  },
+  colors: STATUS_COLORS,
+  labels,
+  legend: {
+    show: true,
+    fontSize: '14px',
+    formatter: (seriesName, opts) => `${seriesName}: <strong> ${opts.w.config.series[opts.seriesIndex]}</strong>`,
+
+  },
+  states: {
+    active: {
+      filter: {
+        type: 'darken',
+        value: 0.75,
+      },
+    },
+  },
+});
+
 const TestExecutionsResultPieChart = function (props) {
   const {
     executions,
     title,
+    onStatusClick,
   } = props;
   const { data, labels } = generateExecutionMetricsPieChartData(executions);
   return (
@@ -72,8 +95,7 @@ const TestExecutionsResultPieChart = function (props) {
         type="pie"
         height={350}
         max-width={500}
-        /* eslint-disable-next-line prefer-object-spread */
-        options={Object.assign({}, defaultOptions, { labels })}
+        options={buildOptions(labels, onStatusClick)}
       />
     </Panel>
   );

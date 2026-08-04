@@ -2,10 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { Panel } from 'rsuite';
-import Tabs from 'react-bootstrap/Tabs';
-import Tab from 'react-bootstrap/Tab';
-import Alert from 'react-bootstrap/Alert';
+import { Loader, Panel, Tabs } from 'rsuite';
 import { BaselineRequests, ScreenshotRequests } from 'angles-javascript-client';
 import ImageCarousel from './ImageCarousel';
 import CurrentImageView from './image/CurrentImageView';
@@ -13,7 +10,6 @@ import BaselineImageView from './baseline/BaselineImageView';
 import ImageSideBySideView from './side-by-side/ImageSideBySideView';
 import ScreenshotHistoryView from './history/ScreenshotHistoryView';
 import 'react-multi-carousel/lib/styles.css';
-// import './Default.css';
 import { storeCurrentErrorMessage, storeCurrentInfoMessage, storeCurrentLoaderMessage } from '../../../redux/notificationActions';
 import CurrentScreenshotContext from '../../../context/CurrentScreenshotContext';
 import { useConstructor } from '../../../utility/GeneralUtilities';
@@ -168,11 +164,9 @@ const ScreenshotView = function (props) {
 
   return (
     (!buildScreenshots || !currentScreenshotDetails) ? (
-      <div className="alert alert-primary" role="alert">
-        <span>
-          <i className="fas fa-spinner fa-pulse fa-2x" />
-          <span> Retrieving screenshot details.</span>
-        </span>
+      <div className="app-alert app-alert-info" role="alert">
+        <Loader />
+        <span> Retrieving screenshot details.</span>
       </div>
     ) : (
       <Panel className="screenshot-view-panel">
@@ -183,12 +177,16 @@ const ScreenshotView = function (props) {
         />
         {
           !currentScreenshotDetails.platform || !currentScreenshotDetails.view
-            ? <Alert variant="info"><FormattedMessage id="common.component.screenshot-view.tabs.enable-alert" /></Alert>
+            ? (
+              <div className="app-alert app-alert-info" role="alert">
+                <FormattedMessage id="common.component.screenshot-view.tabs.enable-alert" />
+              </div>
+            )
             : null
         }
         <div className="tabs-container">
           <Tabs id="image-tabs" activeKey={key} defaultActiveKey="image" onSelect={(tabKey) => handleSelect(tabKey)}>
-            <Tab eventKey="image" title={intl.formatMessage({ id: 'common.component.screenshot-view.tabs.label.image' })}>
+            <Tabs.Tab eventKey="image" title={intl.formatMessage({ id: 'common.component.screenshot-view.tabs.label.image' })}>
               <div className="image-page-holder">
                 <CurrentImageView
                   updateBaseline={updateBaseline}
@@ -197,15 +195,15 @@ const ScreenshotView = function (props) {
                   isBaseline={isBaseline}
                 />
               </div>
-            </Tab>
-            <Tab eventKey="history" disabled={!currentScreenshotDetails.platform || !currentScreenshotDetails.view} title={intl.formatMessage({ id: 'common.component.screenshot-view.tabs.label.history' })}>
+            </Tabs.Tab>
+            <Tabs.Tab eventKey="history" disabled={!currentScreenshotDetails.platform || !currentScreenshotDetails.view} title={intl.formatMessage({ id: 'common.component.screenshot-view.tabs.label.history' })}>
               <div className="image-page-holder">
                 <ScreenshotHistoryView
                   isBaseline={isBaseline}
                 />
               </div>
-            </Tab>
-            <Tab eventKey="baseline" title={intl.formatMessage({ id: 'common.component.screenshot-view.tabs.label.overlay-with-baseline' })} disabled={!currentScreenshotDetails.platform || !currentScreenshotDetails.view}>
+            </Tabs.Tab>
+            <Tabs.Tab eventKey="baseline" title={intl.formatMessage({ id: 'common.component.screenshot-view.tabs.label.overlay-with-baseline' })} disabled={!currentScreenshotDetails.platform || !currentScreenshotDetails.view}>
               <div className="image-page-holder">
                 <BaselineImageView
                   isBaseline={isBaseline}
@@ -213,14 +211,14 @@ const ScreenshotView = function (props) {
                   getBaselineCompare={getBaselineCompare}
                 />
               </div>
-            </Tab>
-            <Tab eventKey="sidebyside" title={intl.formatMessage({ id: 'common.component.screenshot-view.tabs.label.side-by-side' })} disabled={!currentScreenshotDetails.platform || !currentScreenshotDetails.view}>
+            </Tabs.Tab>
+            <Tabs.Tab eventKey="sidebyside" title={intl.formatMessage({ id: 'common.component.screenshot-view.tabs.label.side-by-side' })} disabled={!currentScreenshotDetails.platform || !currentScreenshotDetails.view}>
               <div className="image-page-holder">
                 <ImageSideBySideView
                   isBaseline={isBaseline}
                 />
               </div>
-            </Tab>
+            </Tabs.Tab>
           </Tabs>
         </div>
       </Panel>

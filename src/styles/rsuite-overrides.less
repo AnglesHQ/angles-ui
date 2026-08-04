@@ -96,15 +96,24 @@
     .rs-picker-default {
         background: var(--select-picker-background) !important;
         color: var(--select-picker-font-color);
-        border: none;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-md);
+        transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
     }
 
-    .rs-picker-toggle:hover,
+    .rs-picker-toggle:hover {
+        background: var(--select-picker-background) !important;
+        color: var(--select-picker-font-color);
+        border-color: var(--color-primary);
+    }
+
     .rs-picker-toggle:focus,
     .rs-picker-toggle:focus-visible {
         background: var(--select-picker-background) !important;
         color: var(--select-picker-font-color);
-        border: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px var(--focus-ring);
+        outline: none;
     }
 
     .rs-picker-toggle-label {
@@ -114,10 +123,6 @@
     .rs-badge-content {
         top: 9px;
         right: -4px;
-    }
-
-    .rs-picker-toggle:hover {
-        background-color: var(--main-panel-background);
     }
 
     .rs-picker-toggle-value {
@@ -264,8 +269,18 @@
 // pickers) and make the inner inputs transparent so it reads as one field.
 .rs-picker-input-group {
     background-color: var(--select-picker-background) !important;
-    border: none !important;
+    border: 1px solid var(--border-color) !important;
     border-radius: var(--radius-md);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+
+    &:hover {
+        border-color: var(--color-primary) !important;
+    }
+
+    &:focus-within {
+        border-color: var(--color-primary) !important;
+        box-shadow: 0 0 0 3px var(--focus-ring);
+    }
 
     .rs-input,
     .rs-date-range-input {

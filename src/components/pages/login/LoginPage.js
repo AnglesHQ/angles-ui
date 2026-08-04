@@ -46,8 +46,8 @@ export default function LoginPage() {
             <div className="login-container">
                 <Panel header={
                     <div className="login-header">
-                        <img src="/assets/angles-icon.png" alt="Angles" className="login-angles-icon" />
-                        <img src="/assets/angles-text-logo.png" alt="Angles" className="login-angles-text-icon" />
+                        <img src="/assets/angles-icon.png" alt="Angles" className="brand-logo-icon" />
+                        <img src="/assets/angles-text-logo.png" alt="Angles" className="brand-logo-text" />
                     </div>
                 } bordered className="login-panel">
                     {error && <Message showIcon type="error" className="login-error">{error}</Message>}

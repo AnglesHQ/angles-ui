@@ -1,6 +1,7 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
 import { Panel, Stack } from 'rsuite';
+import { getPlatformLabel } from '../../../../utility/ChartConfig';
 
 const generatePlatformDistributionGraphData = (metrics) => {
   const result = {};
@@ -9,10 +10,11 @@ const generatePlatformDistributionGraphData = (metrics) => {
   allExecutions.forEach((execution) => {
     if (execution.platforms && execution.platforms.length > 0) {
       execution.platforms.forEach((platform) => {
-        if (!result[platform.platformName]) {
-          result[platform.platformName] = 0;
+        const platformLabel = getPlatformLabel(platform);
+        if (!result[platformLabel]) {
+          result[platformLabel] = 0;
         }
-        result[platform.platformName] += 1;
+        result[platformLabel] += 1;
       });
     }
   });

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { BuildRequests } from 'angles-javascript-client';
 import {
+  Loader,
   DateRangePicker,
   Pagination,
   SelectPicker,
@@ -88,7 +89,7 @@ const FilterMenu = function (props) {
       )}
       renderValue={(value, selectedItems) => (
         <span>
-          <span style={{ color: 'var(--sub-panel-secondary-font-color)' }}>
+          <span className="filter-badge-icon">
             <Badge content={selectedItems.length}>
               <BsFilterSquare className="funnel-icon" />
             </Badge>
@@ -400,15 +401,13 @@ const DashboardPage = function (props) {
     ) : (
       (!builds) ? (
         // if no builds then don't display
-        <div className="alert alert-primary" role="alert">
+        <div className="app-alert app-alert-info" role="alert">
+          <Loader />
           <span>
-            <i className="fas fa-spinner fa-pulse fa-2x" />
-            <span>
-              <FormattedMessage
-                id="page.dashboard.message.retrieving-builds"
-                values={{ teamName: currentTeam.name }}
-              />
-            </span>
+            <FormattedMessage
+              id="page.dashboard.message.retrieving-builds"
+              values={{ teamName: currentTeam.name }}
+            />
           </span>
         </div>
       ) : (
@@ -478,7 +477,7 @@ const DashboardPage = function (props) {
           <Grid fluid>
             <Row gutter={30} className="dashboard-header">
               <Col xs={8}>
-                <Panel className="trend-box bg-gradient-red">
+                <Panel className="trend-box kpi-accent-fail">
                   <ReviewPassIcon />
                   <div className="title">
                     <FormattedMessage
@@ -489,7 +488,7 @@ const DashboardPage = function (props) {
                 </Panel>
               </Col>
               <Col xs={8}>
-                <Panel className="trend-box bg-gradient-green">
+                <Panel className="trend-box kpi-accent-pass">
                   <DocPassIcon />
                   <div className="title">
                     <FormattedMessage
@@ -500,7 +499,7 @@ const DashboardPage = function (props) {
                 </Panel>
               </Col>
               <Col xs={8}>
-                <Panel className="trend-box bg-gradient-blue">
+                <Panel className="trend-box kpi-accent-primary">
                   <WaitIcon />
                   <div className="title">
                     <FormattedMessage
@@ -511,7 +510,7 @@ const DashboardPage = function (props) {
                 </Panel>
               </Col>
             </Row>
-            <Row gutter={30} className="dash-row">
+            <Row gutter={30} className="dashboard-row">
               <Col xs={16}>
                 <ExecutionBarChart
                   builds={builds}
@@ -533,7 +532,7 @@ const DashboardPage = function (props) {
                 />
               </Col>
             </Row>
-            <Row gutter={30} className="dash-row">
+            <Row gutter={30} className="dashboard-row">
               <Col xs={24}>
                 <BuildsTable
                   builds={builds}
@@ -547,7 +546,7 @@ const DashboardPage = function (props) {
                 />
                 <div className="builds-table-menu">
                   <span style={{ float: 'left' }}>
-                    <Badge color="blue" className="build-table-menu-badge" content={selectedBuildCount()}>
+                    <Badge color="blue" className="builds-table-menu-badge" content={selectedBuildCount()}>
                       <Dropdown
                         renderToggle={renderIconButton}
                         placement="topStart"

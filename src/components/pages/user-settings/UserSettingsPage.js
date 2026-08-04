@@ -192,34 +192,34 @@ export default function UserSettingsPage() {
 
     return (
         <Container>
-            <Content className="user-settings-page">
+            <Content className="page">
                 {canChangePassword && (
                     <Panel
-                        header={<span className="user-settings-panel-header"><FormattedMessage id="page.user-settings.password.title" /></span>}
+                        header={<span className="page-panel-header"><FormattedMessage id="page.user-settings.password.title" /></span>}
                         bordered
-                        className="user-settings-panel"
+                        className="page-panel"
                     >
-                        <p style={{ marginBottom: '15px', color: 'var(--main-panel-secondary-font-color)' }}>
+                        <p className="page-help-text">
                             <FormattedMessage id="page.user-settings.password.description" />
                         </p>
-                        <ButtonToolbar className="user-settings-toolbar">
-                            <Button className="filter-submit-button" onClick={handleOpenPasswordModal}>
+                        <ButtonToolbar className="page-toolbar">
+                            <Button className="btn-primary" onClick={handleOpenPasswordModal}>
                                 <FormattedMessage id="page.user-settings.password.button.change" />
                             </Button>
                         </ButtonToolbar>
                     </Panel>
                 )}
                 <Panel
-                    header={<span className="user-settings-panel-header"><FormattedMessage id="page.user-settings.header" /></span>}
+                    header={<span className="page-panel-header"><FormattedMessage id="page.user-settings.header" /></span>}
                     bordered
-                    className="user-settings-panel"
+                    className="page-panel"
                 >
-                    <h5 className="user-settings-section-title"><FormattedMessage id="page.user-settings.api-tokens.title" /></h5>
-                    <p style={{ marginBottom: '15px', color: 'var(--main-panel-secondary-font-color)' }}>
+                    <h5 className="page-section-title"><FormattedMessage id="page.user-settings.api-tokens.title" /></h5>
+                    <p className="page-help-text">
                         <FormattedMessage id="page.user-settings.api-tokens.description" />
                     </p>
-                    <ButtonToolbar className="user-settings-toolbar">
-                        <Button className="filter-submit-button" onClick={() => handleOpenModal()}>
+                    <ButtonToolbar className="page-toolbar">
+                        <Button className="btn-primary" onClick={() => handleOpenModal()}>
                             <FormattedMessage id="page.user-settings.button.generate-new-token" />
                         </Button>
                     </ButtonToolbar>
@@ -255,7 +255,7 @@ export default function UserSettingsPage() {
                                 {rowData => (
                                     <Button
                                         appearance="link"
-                                        className="user-settings-delete-link"
+                                        className="link-danger"
                                         onClick={() => handleDeleteToken(rowData._id)}
                                     >
                                         <FormattedMessage id="page.user-settings.table.revoke" />
@@ -277,12 +277,12 @@ export default function UserSettingsPage() {
                             <Message type="success" showIcon className="token-success-message">
                                 <strong><FormattedMessage id="page.user-settings.modal.success-label" /></strong> <FormattedMessage id="page.user-settings.modal.success" />
                             </Message>
-                            <p style={{ marginTop: '15px', marginBottom: '10px', color: 'var(--fail-color)', fontWeight: 'bold' }}>
+                            <p className="form-warning-text">
                                 <FormattedMessage id="page.user-settings.modal.warning" />
                             </p>
                             <InputGroup>
                                 <InputGroup.Addon><FormattedMessage id="page.user-settings.modal.token-label" /></InputGroup.Addon>
-                                <Input readOnly value={generatedToken} style={{ fontFamily: 'monospace' }} />
+                                <Input readOnly value={generatedToken} className="token-input" />
                                 <InputGroup.Button onClick={copyToClipboard}>
                                     <FormattedMessage id="page.user-settings.modal.button.copy" />
                                 </InputGroup.Button>
@@ -324,15 +324,15 @@ export default function UserSettingsPage() {
                 </Modal.Body>
                 <Modal.Footer>
                     {generatedToken ? (
-                        <Button className="filter-submit-button" onClick={handleCloseModal}>
+                        <Button className="btn-primary" onClick={handleCloseModal}>
                             <FormattedMessage id="page.user-settings.button.done" />
                         </Button>
                     ) : (
                         <>
-                            <Button className="filter-submit-button" onClick={handleGenerateToken}>
+                            <Button className="btn-primary" onClick={handleGenerateToken}>
                                 <FormattedMessage id="page.user-settings.button.generate" />
                             </Button>
-                            <Button className="filter-cancel-button" onClick={handleCloseModal}>
+                            <Button className="btn-secondary" onClick={handleCloseModal}>
                                 <FormattedMessage id="page.user-settings.button.cancel" />
                             </Button>
                         </>
@@ -390,7 +390,7 @@ export default function UserSettingsPage() {
                                 onChange={(value) => updatePasswordField('confirmPassword', value)}
                             />
                             {passwordForm.confirmPassword.length > 0 && !confirmMatches && (
-                                <Form.HelpText style={{ color: 'var(--fail-color)' }}>
+                                <Form.HelpText className="form-error-text">
                                     <FormattedMessage id="page.user-settings.password.modal.mismatch" />
                                 </Form.HelpText>
                             )}
@@ -401,15 +401,15 @@ export default function UserSettingsPage() {
                 </Modal.Body>
                 <Modal.Footer>
                     {passwordSuccess ? (
-                        <Button className="filter-submit-button" onClick={handleClosePasswordModal}>
+                        <Button className="btn-primary" onClick={handleClosePasswordModal}>
                             <FormattedMessage id="page.user-settings.button.done" />
                         </Button>
                     ) : (
                         <>
-                            <Button className="filter-submit-button" onClick={handleChangePassword} disabled={!canSubmitPassword}>
+                            <Button className="btn-primary" onClick={handleChangePassword} disabled={!canSubmitPassword}>
                                 <FormattedMessage id="page.user-settings.password.modal.submit" />
                             </Button>
-                            <Button className="filter-cancel-button" onClick={handleClosePasswordModal}>
+                            <Button className="btn-secondary" onClick={handleClosePasswordModal}>
                                 <FormattedMessage id="page.user-settings.button.cancel" />
                             </Button>
                         </>

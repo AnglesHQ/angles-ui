@@ -34,10 +34,10 @@ export default function ConfirmModal({
             </Modal.Body>
             <Modal.Footer>
                 <ButtonToolbar className="confirm-modal-actions">
-                    <Button className="filter-submit-button" onClick={onConfirm}>
+                    <Button className="btn-primary" onClick={onConfirm}>
                         {confirmLabel}
                     </Button>
-                    <Button className="filter-cancel-button" onClick={onCancel}>
+                    <Button className="btn-secondary" onClick={onCancel}>
                         {cancelLabel}
                     </Button>
                 </ButtonToolbar>

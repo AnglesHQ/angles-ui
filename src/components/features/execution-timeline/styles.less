@@ -14,7 +14,7 @@
       font-size: 18px;
       margin-left: -13px;
       justify-content: center;
-      padding: 8px;
+      padding: var(--space-2);
     }
   }
 
@@ -110,14 +110,15 @@
 
       &:hover {
         transform: scale(1.04);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+        box-shadow: var(--shadow-md);
       }
     }
   }
 
   // Status emphasis: failing / erroring steps get a tinted row so they
-  // stand out when scanning a long list.
-  .timeline-step-FAIL .step-row {
+  // stand out when scanning a long list. (Icon colours come from the shared
+  // .status-* classes in components.less.)
+  .timeline-step-fail .step-row {
     background: color-mix(in srgb, var(--fail-color) 7%, transparent);
     border-left-color: var(--fail-color);
 
@@ -127,7 +128,7 @@
     }
   }
 
-  .timeline-step-ERROR .step-row {
+  .timeline-step-error .step-row {
     background: color-mix(in srgb, var(--error-color) 8%, transparent);
     border-left-color: var(--error-color);
 
@@ -136,20 +137,4 @@
       color: var(--error-color);
     }
   }
-}
-
-.timeline-icon-info {
-  color: var(--skipped-color);
-}
-
-.timeline-icon-pass {
-  color: var(--pass-color);
-}
-
-.timeline-icon-fail {
-  color: var(--fail-color);
-}
-
-.timeline-icon-error {
-  color: var(--error-color);
 }

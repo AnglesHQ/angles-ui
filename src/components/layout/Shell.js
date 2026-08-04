@@ -9,8 +9,6 @@ import queryString from 'query-string';
 import Cookies from 'js-cookie';
 import { connect } from 'react-redux';
 import { EnvironmentRequests, TeamRequests } from 'angles-javascript-client';
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
 import { useAuth } from '../../context/AuthContext';
 
 import {
@@ -21,6 +19,9 @@ import {
     Content,
     Navbar,
     Nav, Affix,
+    Modal,
+    Button,
+    Loader,
 } from 'rsuite';
 import AngleLeftIcon from '@rsuite/icons/legacy/AngleLeft';
 import AngleRightIcon from '@rsuite/icons/legacy/AngleRight';
@@ -190,35 +191,35 @@ const Shell = function (props) {
                             <Sidenav.Header>
                                 <Link href="/">
                                     <div className="sidebar-header">
-                                        <img src="/assets/angles-icon.png" alt="Angles" className="sidebar-angles-icon" />
-                                        <img src="/assets/angles-text-logo.png" alt="Angles" className="sidebar-angles-text-icon" />
+                                        <img src="/assets/angles-icon.png" alt="Angles" className="brand-logo-icon" />
+                                        <img src="/assets/angles-text-logo.png" alt="Angles" className="brand-logo-text" />
                                     </div>
                                 </Link>
                             </Sidenav.Header>
                             <Sidenav.Body>
                                 <Nav activeKey={pathname}>
-                                    <Nav.Item as={Link} eventKey="1" icon={<DocPass style={{ fontSize: '20px', height: '20px' }} />} href="/">
+                                    <Nav.Item as={Link} eventKey="1" icon={<DocPass className="nav-item-icon" />} href="/">
                                         <span>
                                             <FormattedMessage
                                                 id="nav.dashboard"
                                             />
                                         </span>
                                     </Nav.Item>
-                                    <Nav.Item as={Link} eventKey="2" icon={<BarChart style={{ fontSize: '20px', height: '20px' }} />} href="/metrics">
+                                    <Nav.Item as={Link} eventKey="2" icon={<BarChart className="nav-item-icon" />} href="/metrics">
                                         <span>
                                             <FormattedMessage
                                                 id="nav.execution-metrics"
                                             />
                                         </span>
                                     </Nav.Item>
-                                    <Nav.Item as={Link} eventKey="3" icon={<Image style={{ fontSize: '20px', height: '20px' }} />} href="/screenshot-library">
+                                    <Nav.Item as={Link} eventKey="3" icon={<Image className="nav-item-icon" />} href="/screenshot-library">
                                         <span>
                                             <FormattedMessage
                                                 id="nav.screenshot-library"
                                             />
                                         </span>
                                     </Nav.Item>
-                                    <Nav.Item as={Link} eventKey="6" icon={<InfoOutline style={{ fontSize: '20px', height: '20px' }} />} href="/about">
+                                    <Nav.Item as={Link} eventKey="6" icon={<InfoOutline className="nav-item-icon" />} href="/about">
                                         <span>
                                             <FormattedMessage
                                                 id="nav.about"
@@ -226,7 +227,7 @@ const Shell = function (props) {
                                         </span>
                                     </Nav.Item>
                                     {user && (user.userType === 'admin' || user.userType === 'team_lead') && (
-                                        <Nav.Item as={Link} eventKey="8" icon={<PeoplesIcon style={{ fontSize: '20px', height: '20px' }} />} href="/team-settings">
+                                        <Nav.Item as={Link} eventKey="8" icon={<PeoplesIcon className="nav-item-icon" />} href="/team-settings">
                                             <span>
                                                 <FormattedMessage
                                                     id="nav.team-settings"
@@ -235,7 +236,7 @@ const Shell = function (props) {
                                         </Nav.Item>
                                     )}
                                     {user && user.userType === 'admin' && (
-                                        <Nav.Menu eventKey="7" icon={<AdminIcon style={{ fontSize: '20px', height: '20px' }} />} title={<FormattedMessage id="nav.admin" />}>
+                                        <Nav.Menu eventKey="7" icon={<AdminIcon className="nav-item-icon" />} title={<FormattedMessage id="nav.admin" />}>
                                             <Nav.Item as={Link} eventKey="7-1" href="/admin/users"><FormattedMessage id="nav.admin.users" /></Nav.Item>
                                             <Nav.Item as={Link} eventKey="7-2" href="/admin/settings"><FormattedMessage id="nav.admin.settings" /></Nav.Item>
                                         </Nav.Menu>
@@ -244,7 +245,7 @@ const Shell = function (props) {
                             </Sidenav.Body>
                             <Navbar appearance="subtle" className="nav-toggle">
                                 <Nav pullRight>
-                                    <Nav.Item style={{ width: 56, textAlign: 'center' }} onClick={() => toggleMenu()}>
+                                    <Nav.Item className="nav-toggle-item" onClick={() => toggleMenu()}>
                                         {expand ? <AngleLeftIcon /> : <AngleRightIcon />}
                                     </Nav.Item>
                                 </Nav>
@@ -258,7 +259,7 @@ const Shell = function (props) {
                 <Header>
                     <Navbar appearance="subtle" className="header-navbar">
                         <Nav pullRight>
-                            <Nav.Menu eventKey="4" icon={<GlobalIcon style={{ fontSize: '20px', height: '20px' }} />} title={<FormattedMessage id="nav.language" />}>
+                            <Nav.Menu eventKey="4" icon={<GlobalIcon className="nav-item-icon" />} title={<FormattedMessage id="nav.language" />}>
                                 {translations.map((translation, index) => (<Nav.Item key={index} eventKey={`4-${index}`} onClick={() => setLanguage(translation.code)}>{translation.text}</Nav.Item>))}
                             </Nav.Menu>
                             <Nav.Menu eventKey="5" icon={<CgDarkMode />} title={<FormattedMessage id="nav.theme" />}>
@@ -266,11 +267,11 @@ const Shell = function (props) {
                                 <Nav.Item eventKey="5-2" onClick={() => setTheme('dark')}><FormattedMessage id="nav.theme.dark" /></Nav.Item>
                             </Nav.Menu>
                             {user && (
-                                <Nav.Menu eventKey="0" icon={<UserBadgeIcon style={{ fontSize: '20px', height: '20px' }} />} title={user.username || intl.formatMessage({ id: 'nav.profile' })}>
+                                <Nav.Menu eventKey="0" icon={<UserBadgeIcon className="nav-item-icon" />} title={user.username || intl.formatMessage({ id: 'nav.profile' })}>
                                     <Nav.Item as={Link} eventKey="0-1" href="/user-settings">
                                         <FormattedMessage id="nav.user-settings" />
                                     </Nav.Item>
-                                    <Nav.Item eventKey="0-2" onClick={logout} icon={<ExitIcon style={{ fontSize: '20px', height: '20px' }} />}>
+                                    <Nav.Item eventKey="0-2" onClick={logout} icon={<ExitIcon className="nav-item-icon" />}>
                                         <FormattedMessage id="nav.logout" />
                                     </Nav.Item>
                                 </Nav.Menu>
@@ -283,14 +284,12 @@ const Shell = function (props) {
                         {
                             (currentErrorMessage ? (
                                 <Modal
-                                    show={(currentErrorMessage !== undefined)}
-                                    onHide={closeErrorModal}
-                                    dialogClassName="error-modal"
-                                    centered
+                                    open={(currentErrorMessage !== undefined)}
+                                    onClose={closeErrorModal}
+                                    className="error-modal"
                                 >
-                                    <Modal.Header closeButton>
+                                    <Modal.Header>
                                         <Modal.Title>
-                                            <i className="fa fa-exclamation" aria-hidden="true" />
                                             <span>{currentErrorMessage.title}</span>
                                         </Modal.Title>
                                     </Modal.Header>
@@ -301,13 +300,13 @@ const Shell = function (props) {
                                         {
                                             (currentErrorMessage.actions !== undefined ? (
                                                 currentErrorMessage.actions.map((action, idx) => (
-                                                    <Button key={idx} className="error-button" onClick={action.method}>
+                                                    <Button key={idx} className="btn-primary" onClick={action.method}>
                                                         {action.text}
                                                     </Button>
                                                 ))
                                             ) : null)
                                         }
-                                        <Button className="error-button" onClick={closeErrorModal}><FormattedMessage id="common.button.ok" /></Button>
+                                        <Button className="btn-primary" onClick={closeErrorModal}><FormattedMessage id="common.button.ok" /></Button>
                                     </Modal.Footer>
                                 </Modal>
                             ) : null)
@@ -315,14 +314,12 @@ const Shell = function (props) {
                         {
                             (currentInfoMessage ? (
                                 <Modal
-                                    show={(currentInfoMessage !== undefined)}
-                                    onHide={closeInfoModal}
-                                    dialogClassName="info-modal"
-                                    centered
+                                    open={(currentInfoMessage !== undefined)}
+                                    onClose={closeInfoModal}
+                                    className="info-modal"
                                 >
-                                    <Modal.Header closeButton>
+                                    <Modal.Header>
                                         <Modal.Title>
-                                            <i className="fa fa-info" aria-hidden="true" />
                                             <span>{currentInfoMessage.title}</span>
                                         </Modal.Title>
                                     </Modal.Header>
@@ -333,13 +330,13 @@ const Shell = function (props) {
                                         {
                                             (currentInfoMessage.actions !== undefined ? (
                                                 currentInfoMessage.actions.map((action, idx) => (
-                                                    <Button key={idx} onClick={action.method}>
+                                                    <Button key={idx} className="btn-primary" onClick={action.method}>
                                                         {action.text}
                                                     </Button>
                                                 ))
                                             ) : null)
                                         }
-                                        <Button onClick={closeInfoModal}><FormattedMessage id="common.button.ok" /></Button>
+                                        <Button className="btn-primary" onClick={closeInfoModal}><FormattedMessage id="common.button.ok" /></Button>
                                     </Modal.Footer>
                                 </Modal>
                             ) : null)
@@ -347,14 +344,13 @@ const Shell = function (props) {
                         {
                             (currentLoaderMessage ? (
                                 <Modal
-                                    show={(currentLoaderMessage !== undefined)}
-                                    dialogClassName="info-modal"
-                                    onHide={closeLoaderModal}
-                                    centered
+                                    open={(currentLoaderMessage !== undefined)}
+                                    className="info-modal"
+                                    onClose={closeLoaderModal}
                                 >
-                                    <Modal.Header closeButton>
+                                    <Modal.Header>
                                         <Modal.Title>
-                                            <i className="fas fa-spinner fa-pulse fa-2x" />
+                                            <Loader />
                                             <span>{currentLoaderMessage.title}</span>
                                         </Modal.Title>
                                     </Modal.Header>

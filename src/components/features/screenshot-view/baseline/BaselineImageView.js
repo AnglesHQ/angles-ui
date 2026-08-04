@@ -2,12 +2,12 @@
 import React, { useEffect, useContext, useState, useRef } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import {
+  Loader,
   Button,
   Stack,
 } from 'rsuite';
 import { IoGitCompareOutline } from 'react-icons/io5';
 import { RiDeleteBin6Line } from 'react-icons/ri';
-import Table from 'react-bootstrap/Table';
 import ReactCrop from 'react-image-crop';
 import ScreenshotDetailsTable from '../ScreenshotDetailsTable';
 import CurrentScreenshotContext from '../../../../context/CurrentScreenshotContext';
@@ -164,7 +164,7 @@ const BaselineImageView = (props) => {
     const imageToDisplay = isBaselineImage ? currentScreenshot : currentBaselineCompare;
 
     return (
-      <Table className="baseline-compare-table screenshot-table">
+      <table className="baseline-compare-table screenshot-table">
         <tbody>
           <tr>
             {
@@ -239,7 +239,7 @@ const BaselineImageView = (props) => {
               <Stack spacing={10}>
                 <Button
                   type="button"
-                  className="filter-submit-button"
+                  className="btn-primary"
                   onMouseUp={() => toggleEditing()}
                 >
                   {
@@ -254,7 +254,7 @@ const BaselineImageView = (props) => {
                   editing ? (
                     <Button
                       type="button"
-                      className="filter-cancel-button"
+                      className="btn-secondary"
                       onMouseUp={() => resetIgnoreBlocks()}
                     >
                       <FormattedMessage id="common.component.screenshot-view.tabs.baseline.button.cancel-changes" />
@@ -265,7 +265,7 @@ const BaselineImageView = (props) => {
             </td>
           </tr>
         </tbody>
-      </Table>
+      </table>
     );
   };
 
@@ -282,7 +282,7 @@ const BaselineImageView = (props) => {
           type="warning"
           message={(
             <span>
-              <i className="fas fa-spinner fa-pulse fa-2x" />
+              <Loader />
               <FormattedMessage id="common.component.screenshot-view.tabs.baseline.message.loading-baseline-compare" />
             </span>
           )}
