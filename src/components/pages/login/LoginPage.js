@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../../context/AuthContext';
+import { getAnglesApiUrl } from '../../../utils/runtime-config';
 import { Container, Content, Panel, Form, ButtonToolbar, Button, Message } from 'rsuite';
 import { FormattedMessage, useIntl } from 'react-intl';
 
@@ -38,7 +39,7 @@ export default function LoginPage() {
 
     const handleOktaLogin = () => {
         // Here we would typically redirect to the backend endpoint that initiates OKTA flow
-        window.location.href = `${process.env.NEXT_PUBLIC_ANGLES_API_URL || 'http://localhost:3000/rest/api/v1.0'}/auth/okta`;
+        window.location.href = `${getAnglesApiUrl()}/auth/okta`;
     };
 
     return (

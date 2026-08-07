@@ -10,6 +10,7 @@ import Cookies from 'js-cookie';
 import { connect } from 'react-redux';
 import { EnvironmentRequests, TeamRequests } from 'angles-javascript-client';
 import { useAuth } from '../../context/AuthContext';
+import { getAnglesApiUrl } from '../../utils/runtime-config';
 
 import {
     Container,
@@ -41,13 +42,19 @@ import { storeCurrentTeam, storeTeams, storeTeamsError } from '../../redux/teamA
 import { storeEnvironments } from '../../redux/environmentActions';
 import { clearCurrentErrorMessage, clearCurrentInfoMessage, clearCurrentLoaderMessage } from '../../redux/notificationActions';
 
-axios.defaults.baseURL = process.env.NEXT_PUBLIC_ANGLES_API_URL || 'http://localhost:3000/rest/api/v1.0';
+// Resolved from the runtime config injected by the server layout, so the API
+// URL can be changed per-deployment without rebuilding the image.
+axios.defaults.baseURL = getAnglesApiUrl();
 axios.defaults.withCredentials = true;
 
 const Shell = function (props) {
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const router = useRouter();
+
+    // Re-resolve on the client: the module-scope assignment above also runs
+    // during SSR, where `window.__ANGLES_CONFIG__` does not exist yet.
+    axios.defaults.baseURL = getAnglesApiUrl();
 
     const teamRequests = new TeamRequests(axios);
     const environmentRequests = new EnvironmentRequests(axios);
