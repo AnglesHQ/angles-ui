@@ -32,7 +32,7 @@ const BuildDetailsCell = function (props) {
       <FlexboxGrid justify="start">
         <FlexboxGrid.Item colspan={4}>
           {
-            build.keep ? <BsLockFill className="tests-runs-lock-icon" /> : <BsFillUnlockFill className="tests-runs-unlock-icon" />
+            build.keep ? <BsLockFill className="test-run-lock-icon" /> : <BsFillUnlockFill className="test-run-unlock-icon" />
           }
         </FlexboxGrid.Item>
         <FlexboxGrid.Item colspan={16}>
@@ -169,7 +169,7 @@ const BuildsTable = function (props) {
         <Column width={50}>
           <HeaderCell>
             <Checkbox
-              className="build-table-header-checkbox"
+              className="builds-table-header-checkbox"
               checked={allRowsSelected()}
               indeterminate={someRowsSelected()}
               onChange={() => toggleAllSelectedBuilds()}

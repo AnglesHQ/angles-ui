@@ -34,6 +34,17 @@ export const CATEGORICAL_PALETTE = [
 // across renders and reloads.
 export const getPaletteColor = (index) => CATEGORICAL_PALETTE[index % CATEGORICAL_PALETTE.length];
 
+// Groups platform breakdowns by device/browser + version rather than just
+// platformName, so e.g. "iPhone 12 [iOS 16]" and "Pixel 6 [Android 13]" don't
+// collapse into a single "iOS"/"Android" bucket. Shared by every platform
+// chart/table so they all agree on what counts as one distinct platform.
+export const getPlatformLabel = (platform) => {
+  if (platform.deviceName) {
+    return `${platform.deviceName} [${platform.platformName}${platform.platformVersion ? platform.platformVersion : ''}]`;
+  }
+  return `${platform.browserName}${platform.browserVersion ? ` - ${platform.browserVersion}` : ''} [${platform.platformName}]`;
+};
+
 // Legend formatter shared by the result charts — renders "Label: <strong>N</strong>".
 export const resultLegendFormatter = (seriesName, opts) => `${seriesName}: <strong> ${opts.w.config.series[opts.seriesIndex]}</strong>`;
 

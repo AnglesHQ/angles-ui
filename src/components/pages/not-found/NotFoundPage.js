@@ -7,14 +7,14 @@ const NotFoundPage = function () {
     <div>
       <Panel
         bordered
-        className="not-found-page-panel"
+        className="page-panel"
         header={(
-          <span className="not-found-page-header">
+          <span className="page-panel-header">
             <FormattedMessage id="page.not-found.header" />
           </span>
         )}
       >
-        <div className="not-found-page-section">
+        <div className="page-section">
           <span>
             <FormattedMessage
               id="page.not-found.description"

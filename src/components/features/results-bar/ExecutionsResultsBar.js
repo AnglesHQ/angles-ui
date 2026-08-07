@@ -10,10 +10,10 @@ const testDetailsSpeaker = (result) => (
 
 // Segment order matches the previous stacked ProgressBar (pass → skipped → error → fail).
 const SEGMENTS = [
-  { key: 'PASS', className: 'test-result-success' },
-  { key: 'SKIPPED', className: 'test-result-skipped' },
-  { key: 'ERROR', className: 'test-result-error' },
-  { key: 'FAIL', className: 'test-result-failure' },
+  { key: 'PASS', className: 'status-bg-pass' },
+  { key: 'SKIPPED', className: 'status-bg-skipped' },
+  { key: 'ERROR', className: 'status-bg-error' },
+  { key: 'FAIL', className: 'status-bg-fail' },
 ];
 
 const ExecutionsResultsBar = function (props) {

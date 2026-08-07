@@ -140,14 +140,14 @@ export default function AdminUsersPage() {
 
     return (
         <Container>
-            <Content className="admin-users-page">
+            <Content className="page">
                 <Panel
-                    header={<span className="admin-users-panel-header"><FormattedMessage id="page.admin.users.header" /></span>}
+                    header={<span className="page-panel-header"><FormattedMessage id="page.admin.users.header" /></span>}
                     bordered
-                    className="admin-users-panel"
+                    className="page-panel"
                 >
-                    <ButtonToolbar className="admin-users-toolbar">
-                        <Button className="filter-submit-button" onClick={() => handleOpenModal()}>
+                    <ButtonToolbar className="page-toolbar">
+                        <Button className="btn-primary" onClick={() => handleOpenModal()}>
                             <FormattedMessage id="page.admin.users.button.add-user" />
                         </Button>
                     </ButtonToolbar>
@@ -182,15 +182,15 @@ export default function AdminUsersPage() {
                                     <span>
                                         <Button
                                             appearance="link"
-                                            className="admin-users-action-link"
+                                            className="link-action"
                                             onClick={() => handleOpenModal(rowData)}
                                         >
                                             <FormattedMessage id="page.admin.users.table.edit" />
                                         </Button>
-                                        <span className="admin-users-action-separator">|</span>
+                                        <span className="link-separator">|</span>
                                         <Button
                                             appearance="link"
-                                            className="admin-users-delete-link"
+                                            className="link-danger"
                                             onClick={() => handleDeleteUser(rowData._id)}
                                         >
                                             <FormattedMessage id="page.admin.users.table.delete" />
@@ -250,11 +250,11 @@ export default function AdminUsersPage() {
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button className="filter-submit-button" onClick={handleSaveUser} disabled={!passwordAcceptable}>
+                    <Button className="btn-primary" onClick={handleSaveUser} disabled={!passwordAcceptable}>
                         <FormattedMessage id="page.admin.users.button.save" />
                     </Button>
                     <Button
-                        className="filter-cancel-button"
+                        className="btn-secondary"
                         onClick={handleCloseModal}
                     >
                         <FormattedMessage id="page.admin.users.button.cancel" />

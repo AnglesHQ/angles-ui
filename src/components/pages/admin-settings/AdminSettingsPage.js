@@ -74,17 +74,17 @@ export default function AdminSettingsPage() {
 
     return (
         <Container>
-            <Content className="admin-settings-page">
+            <Content className="page">
                 <Panel
-                    header={<span className="admin-settings-panel-header"><FormattedMessage id="page.admin.settings.header" /></span>}
+                    header={<span className="page-panel-header"><FormattedMessage id="page.admin.settings.header" /></span>}
                     bordered
-                    className="admin-settings-panel"
+                    className="page-panel"
                 >
                     {loading ? (
                         <p><FormattedMessage id="page.admin.settings.loading" /></p>
                     ) : (
                         <Form fluid>
-                            <h5 className="admin-settings-section-title"><FormattedMessage id="page.admin.settings.local-auth.title" /></h5>
+                            <h5 className="page-section-title"><FormattedMessage id="page.admin.settings.local-auth.title" /></h5>
                             <Form.Group>
                                 <Form.ControlLabel><FormattedMessage id="page.admin.settings.local-auth.enable" /></Form.ControlLabel>
                                 <Toggle
@@ -96,7 +96,7 @@ export default function AdminSettingsPage() {
 
                             <Divider />
 
-                            <h5 className="admin-settings-section-title"><FormattedMessage id="page.admin.settings.okta-auth.title" /></h5>
+                            <h5 className="page-section-title"><FormattedMessage id="page.admin.settings.okta-auth.title" /></h5>
                             <Form.Group>
                                 <Form.ControlLabel><FormattedMessage id="page.admin.settings.okta-auth.enable" /></Form.ControlLabel>
                                 <Toggle
@@ -151,7 +151,7 @@ export default function AdminSettingsPage() {
 
                                     <Divider />
 
-                                    <h6 className="admin-settings-section-title"><FormattedMessage id="page.admin.settings.okta.groups-title" /></h6>
+                                    <h6 className="page-section-title"><FormattedMessage id="page.admin.settings.okta.groups-title" /></h6>
                                     <p className="okta-groups-help"><FormattedMessage id="page.admin.settings.okta.groups-help" /></p>
                                     <Form.Group>
                                         <Form.ControlLabel><FormattedMessage id="page.admin.settings.okta.admin-group" /></Form.ControlLabel>
@@ -186,7 +186,7 @@ export default function AdminSettingsPage() {
                             <Form.Group className="admin-settings-actions">
                                 <ButtonToolbar>
                                     <Button
-                                        className="filter-submit-button"
+                                        className="btn-primary"
                                         onClick={handleSaveConfig}
                                         loading={saving}
                                     >

@@ -18,7 +18,7 @@ const ActionComponent = function (props) {
   return (
     <>
       <div className="action-description" onClick={() => toggleAction(execution._id, actionIndex)}>
-        <div className={`action-status-${action.status}`} key={`action_${actionIndex}_${isActionExpanded(execution._id, actionIndex)}`}>
+        <div className={`status-${action.status.toLowerCase()}`} key={`action_${actionIndex}_${isActionExpanded(execution._id, actionIndex)}`}>
           {
             isActionExpanded(execution._id, actionIndex) ? (
               <BiSolidDownArrow key="" className="action-icon" />

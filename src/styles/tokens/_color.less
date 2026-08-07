@@ -75,11 +75,6 @@
     --master-color-3: var(--orange-500);
     --master-color-3-relative: var(--orange-600);
 
-    // Warning / secondary attention accent — a deeper ember, distinct from the
-    // primary so lock/warning cues stand apart from ordinary actions.
-    --color-warning: var(--orange-600);
-    --color-warning-soft: var(--orange-300);
-
     // Status primitives (theme-independent hues; dark tunes brightness above).
     --pass-color: #5fad6f;
     --fail-color: #fc6571;
@@ -101,9 +96,7 @@
 
     // ── Semantic: surfaces ──────────────────────────────────────────────────
     --body-background: var(--master-color-1);
-    --surface-page: var(--master-color-1);
     --surface-raised: var(--master-color-2);
-    --surface-overlay: var(--master-color-2);
     --surface-sunken: var(--master-color-1);
 
     // ── Semantic: navigation / app chrome ───────────────────────────────────
@@ -112,13 +105,10 @@
     --nav-hover-color: var(--master-color-3);
     --nav-hover-font-color: var(--master-font-color-2);
 
-    // Trend box
-    --trend-box-font-color: var(--master-font-color-2);
-
     // Main panel
     --main-panel-background: var(--master-color-2);
     --main-panel-font-color: var(--master-font-color-1);
-    --main-panel-secondary-font-color: var(--master-font-color-2);
+    --main-panel-secondary-font-color: var(--master-font-color-3);
     --main-panel-icon-color: var(--master-icon-color);
 
     // Sub panels
@@ -177,8 +167,6 @@
     --screenshot-border-color: var(--master-color-2-relative);
     --screenshot-divider-color: var(--master-color-2-relative);
     --screenshot-details-header-background: var(--master-color-2-relative);
-    --screenshot-form-background: var(--master-color-2);
-    --screenshot-form-border: var(--master-color-2-relative);
     --baseline-overlay-background: var(--master-color-2-relative);
 
     // Borders & dividers
@@ -189,7 +177,6 @@
     --icon-action-color: var(--master-icon-color);
     --icon-disabled-color: hsl(0, 0%, 55%);
     --info-color: var(--master-icon-color);
-    --lock-icon-color: var(--color-warning);
 
     // Timeline dot (inverts with theme — see dark mixin)
     --timeline-dot-background: var(--master-font-color-2);

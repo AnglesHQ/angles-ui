@@ -122,11 +122,11 @@ function TeamSettingsPage(props) {
 
     return (
         <Container>
-            <Content className="team-settings-page">
+            <Content className="page">
                 <Panel
-                    header={<span className="team-settings-panel-header"><FormattedMessage id="page.team-settings.header" /></span>}
+                    header={<span className="page-panel-header"><FormattedMessage id="page.team-settings.header" /></span>}
                     bordered
-                    className="team-settings-panel"
+                    className="page-panel"
                 >
                     {(!teams || teams.length === 0) ? (
                         <p><FormattedMessage id="page.team-settings.no-team-access" /></p>
@@ -146,7 +146,7 @@ function TeamSettingsPage(props) {
 
                             <Divider />
 
-                            <h5 className="team-settings-section-title"><FormattedMessage id="page.team-settings.section.details" /></h5>
+                            <h5 className="page-section-title"><FormattedMessage id="page.team-settings.section.details" /></h5>
                             <Form.Group>
                                 <Form.ControlLabel><FormattedMessage id="page.team-settings.label.name" /></Form.ControlLabel>
                                 <Form.Control
@@ -159,7 +159,7 @@ function TeamSettingsPage(props) {
                             <Form.Group>
                                 <ButtonToolbar>
                                     <Button
-                                        className="filter-submit-button"
+                                        className="btn-primary"
                                         onClick={handleSaveName}
                                         loading={savingName}
                                         disabled={loading || !nameInput || nameInput === teamDetails?.name}
@@ -171,7 +171,7 @@ function TeamSettingsPage(props) {
 
                             <Divider />
 
-                            <h5 className="team-settings-section-title"><FormattedMessage id="page.team-settings.section.components" /></h5>
+                            <h5 className="page-section-title"><FormattedMessage id="page.team-settings.section.components" /></h5>
                             <Form.HelpText className="team-settings-components-help"><FormattedMessage id="page.team-settings.components.help" /></Form.HelpText>
                             <Form.Group>
                                 <Form.ControlLabel><FormattedMessage id="page.team-settings.label.existing-components" /></Form.ControlLabel>
@@ -195,7 +195,7 @@ function TeamSettingsPage(props) {
                             <Form.Group>
                                 <ButtonToolbar>
                                     <Button
-                                        className="filter-submit-button"
+                                        className="btn-primary"
                                         onClick={handleAddComponents}
                                         loading={savingComponents}
                                         disabled={loading || (newComponents.length === 0 && !pendingComponentText.trim())}

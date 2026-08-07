@@ -9,23 +9,23 @@ import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import Cookies from 'js-cookie';
 import { storeCurrentTeam } from '../../../redux/teamActions';
 import { MetricRequests } from 'angles-javascript-client';
-import Tabs from 'react-bootstrap/Tabs';
-import Tab from 'react-bootstrap/Tab';
 import {
   Affix,
   DateRangePicker,
+  Loader,
   SelectPicker,
   Stack,
   Button,
   Col,
   Row,
   Grid,
+  Tabs,
 } from 'rsuite';
 import ExecutionMetricsSummary from './ExecutionMetricsSummary';
 import PlatformDistributionPieChart from './charts/PlatformDistributionPieChart';
 import PlatformDistributionBarChart from './charts/PlatformDistributionBarChart';
 import PlatformMetricsSummary from './PlatformMetricsSummary';
-import { getPaletteColor } from '../../../utility/ChartConfig';
+import { getPaletteColor, getPlatformLabel } from '../../../utility/ChartConfig';
 import { getDateRangesPicker } from '../../../utility/TimeUtilities';
 import ExecutionMetricsResultsBarChart from './charts/ExecutionMetricsResultsBarChart';
 import PhaseMetricsResultsBarChart from './charts/PhaseMetricsResultsBarChart';
@@ -61,10 +61,11 @@ const MetricsPage = function (props) {
         phase.executions.forEach((execution) => {
           if (execution.platforms && execution.platforms.length > 0) {
             execution.platforms.forEach((platform) => {
-              if (!result[platform.platformName]) {
+              const platformLabel = getPlatformLabel(platform);
+              if (!result[platformLabel]) {
                 // Deterministic by first-seen order → stable across renders.
                 const color = getPaletteColor(result.colors.length);
-                result[platform.platformName] = { color };
+                result[platformLabel] = { color };
                 result.colors.push(color);
               }
             });
@@ -241,7 +242,7 @@ const MetricsPage = function (props) {
               }
             }}
           />
-          <Button className="filter-submit-button" type="submit" onClick={() => { onSubmit(); }}>
+          <Button className="btn-primary" type="submit" onClick={() => { onSubmit(); }}>
             <FormattedMessage id="page.metrics.filters.button.retrieve-metrics" />
           </Button>
         </Stack>
@@ -249,26 +250,32 @@ const MetricsPage = function (props) {
       <div className="metrics-main">
         <div className="tabs-container">
           <Tabs id="execution-metrics-tabs" activeKey={key} defaultActiveKey="execution" onSelect={(tabKey, evt) => setTab(tabKey, evt)}>
-            <Tab eventKey="execution" title={<FormattedMessage id="page.metrics.tab.execution-metrics" />}>
-              <div style={{ display: !metrics ? 'block' : 'none' }} className="alert alert-primary" role="alert">
-                <span>
-                  <i className="fas fa-spinner fa-pulse fa-2x" />
-                  <span> Retrieving metrics.</span>
-                </span>
-              </div>
-              <div style={{ display: (metrics && Object.keys(metrics).length === 0) ? 'block' : 'none' }} className="alert alert-danger" role="alert">
-                <span>Unable to retrieve metrics. Please refresh the page and try again.</span>
-              </div>
+            <Tabs.Tab eventKey="execution" title={<FormattedMessage id="page.metrics.tab.execution-metrics" />}>
+              {
+                !metrics ? (
+                  <div className="app-alert app-alert-info" role="alert">
+                    <Loader />
+                    <span> Retrieving metrics.</span>
+                  </div>
+                ) : null
+              }
+              {
+                metrics && Object.keys(metrics).length === 0 ? (
+                  <div className="app-alert app-alert-error" role="alert">
+                    <span>Unable to retrieve metrics. Please refresh the page and try again.</span>
+                  </div>
+                ) : null
+              }
               {
                 metrics && Object.keys(metrics).length > 0 ? (
-                  <div style={{ display: (metrics && Object.keys(metrics).length > 0) ? 'block' : 'none' }}>
+                  <div>
                     <Grid fluid>
-                      <Row gutter={30} className="dash-row">
+                      <Row gutter={30} className="dashboard-row">
                         <Col xs={24}>
                           <ExecutionMetricsSummary metrics={metrics} />
                         </Col>
                       </Row>
-                      <Row gutter={30} className="dash-row">
+                      <Row gutter={30} className="dashboard-row">
                         <Col xs={12}>
                           <ExecutionMetricsResultsBarChart
                             title={<FormattedMessage id="page.metrics.execution-metrics-bar-chart.title" />}
@@ -288,22 +295,28 @@ const MetricsPage = function (props) {
                   </div>
                 ) : null
               }
-            </Tab>
-            <Tab eventKey="platform" title={<FormattedMessage id="page.metrics.tab.platform-metrics" />}>
-              <div style={{ display: !metrics ? 'block' : 'none' }} className="alert alert-primary" role="alert">
-                <span>
-                  <i className="fas fa-spinner fa-pulse fa-2x" />
-                  <span> Retrieving metrics.</span>
-                </span>
-              </div>
-              <div style={{ display: (metrics && Object.keys(metrics).length === 0) ? 'block' : 'none' }} className="alert alert-danger" role="alert">
-                <span>Unable to retrieve metrics. Please refresh the page and try again.</span>
-              </div>
+            </Tabs.Tab>
+            <Tabs.Tab eventKey="platform" title={<FormattedMessage id="page.metrics.tab.platform-metrics" />}>
+              {
+                !metrics ? (
+                  <div className="app-alert app-alert-info" role="alert">
+                    <Loader />
+                    <span> Retrieving metrics.</span>
+                  </div>
+                ) : null
+              }
+              {
+                metrics && Object.keys(metrics).length === 0 ? (
+                  <div className="app-alert app-alert-error" role="alert">
+                    <span>Unable to retrieve metrics. Please refresh the page and try again.</span>
+                  </div>
+                ) : null
+              }
               {
                 metrics && Object.keys(metrics).length > 0 ? (
-                  <div style={{ display: (metrics && Object.keys(metrics).length > 0) ? 'block' : 'none' }}>
+                  <div>
                     <Grid fluid>
-                      <Row gutter={30} className="dash-row">
+                      <Row gutter={30} className="dashboard-row">
                         <Col xs={24}>
                           <PlatformMetricsSummary
                             metrics={metrics}
@@ -311,7 +324,7 @@ const MetricsPage = function (props) {
                           />
                         </Col>
                       </Row>
-                      <Row gutter={30} className="dash-row">
+                      <Row gutter={30} className="dashboard-row">
                         <Col xs={12}>
                           <PlatformDistributionPieChart
                             title={<FormattedMessage id="page.metrics.platform-distribution-pie-chart.title" />}
@@ -333,7 +346,7 @@ const MetricsPage = function (props) {
                   </div>
                 ) : null
               }
-            </Tab>
+            </Tabs.Tab>
           </Tabs>
         </div>
       </div>

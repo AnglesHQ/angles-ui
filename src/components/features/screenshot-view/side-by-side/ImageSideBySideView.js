@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
+import { Loader } from 'rsuite';
 import { FormattedMessage } from 'react-intl';
-import Table from 'react-bootstrap/Table';
 import ScreenshotDetailsTable from '../ScreenshotDetailsTable';
 import CurrentScreenshotContext from '../../../../context/CurrentScreenshotContext';
 import Message from '../../../common/Message';
@@ -22,7 +22,7 @@ const ImageSideBySideView = function (props) {
           type="info"
           message={(
             <span>
-              <i className="fas fa-spinner fa-pulse fa-2x" />
+              <Loader />
               <FormattedMessage id="common.component.screenshot-view.tabs.side-by-side.message.retrieving-baseline-screenshot" />
             </span>
           )}
@@ -35,7 +35,7 @@ const ImageSideBySideView = function (props) {
           type="warning"
           message={(
             <span>
-              <i className="fas fa-spinner fa-pulse fa-2x" />
+              <Loader />
               <FormattedMessage id="common.component.screenshot-view.tabs.side-by-side.message.retrieving-baseline-screenshot-error" />
             </span>
           )}
@@ -52,7 +52,7 @@ const ImageSideBySideView = function (props) {
           type="info"
           message={(
             <span>
-              <i className="fas fa-spinner fa-pulse fa-2x" />
+              <Loader />
               <FormattedMessage id="common.component.screenshot-view.tabs.side-by-side.message.retrieving-screenshot" />
             </span>
           )}
@@ -65,7 +65,7 @@ const ImageSideBySideView = function (props) {
           type="warning"
           message={(
             <span>
-              <i className="fas fa-spinner fa-pulse fa-2x" />
+              <Loader />
               <FormattedMessage id="common.component.screenshot-view.tabs.side-by-side.message.retrieving-screenshot-error" />
             </span>
           )}
@@ -77,7 +77,7 @@ const ImageSideBySideView = function (props) {
 
   return (
     isBaseline(currentScreenshotDetails._id) ? (
-      <Table className="baseline-compare-table">
+      <table className="baseline-compare-table">
         <tbody>
           <tr>
             <td colSpan="100%" className="baseline-compare-header">
@@ -100,9 +100,9 @@ const ImageSideBySideView = function (props) {
             </td>
           </tr>
         </tbody>
-      </Table>
+      </table>
     ) : (
-      <Table className="baseline-compare-table">
+      <table className="baseline-compare-table">
         <tbody>
           <tr>
             <td colSpan="100%" className="baseline-compare-header">
@@ -149,7 +149,7 @@ const ImageSideBySideView = function (props) {
             ]) : null
           }
         </tbody>
-      </Table>
+      </table>
     )
   );
 };

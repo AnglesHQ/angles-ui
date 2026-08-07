@@ -1,13 +1,11 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
 import { Panel, Stack } from 'rsuite';
-import { getPlatformLabel } from '../../../../utility/ChartConfig';
+import { getPaletteColor, getPlatformLabel } from '../../../../utility/ChartConfig';
 
-const generatePlatformDistributionBarGraphData = (metrics) => {
+const generatePlatformDistributionBarGraphData = (executions) => {
   const result = {};
-  const allExecutions = metrics.periods
-    .flatMap((period) => period.phases.flatMap((phase) => phase.executions));
-  allExecutions.forEach((execution) => {
+  executions.forEach((execution) => {
     if (execution.platforms && execution.platforms.length > 0) {
       execution.platforms.forEach((platform) => {
         const platformLabel = getPlatformLabel(platform);
@@ -23,16 +21,16 @@ const generatePlatformDistributionBarGraphData = (metrics) => {
   return { platforms, counts };
 };
 
-const PlatformDistributionBarChart = function (props) {
+const TestExecutionPlatformBarChart = function (props) {
   const {
-    metrics,
+    executions,
     title,
     yaxisTitle,
     xaxisTitle,
-    platformColors: { colors },
   } = props;
 
-  const { platforms, counts } = generatePlatformDistributionBarGraphData(metrics);
+  const { platforms, counts } = generatePlatformDistributionBarGraphData(executions);
+  const colors = platforms.map((platform, index) => getPaletteColor(index));
 
   const defaultOptions = {
     chart: {
@@ -40,8 +38,8 @@ const PlatformDistributionBarChart = function (props) {
       zoom: { enabled: false },
       animations: { enabled: false },
       stacked: false,
-      background: 'var(--sub-panel-background)',
-      foreColor: 'var(--sub-panel-font-color)',
+      background: 'var(--main-panel-background)',
+      foreColor: 'var(--main-panel-font-color)',
     },
     plotOptions: {
       bar: {
@@ -69,7 +67,7 @@ const PlatformDistributionBarChart = function (props) {
       },
       categories: platforms,
     },
-    colors: colors && colors.length > 0 ? colors : undefined,
+    colors,
     legend: { show: false },
   };
 
@@ -77,7 +75,7 @@ const PlatformDistributionBarChart = function (props) {
 
   return (
     <Panel
-      className="execution-metrics-chart-panel"
+      className="chart-panel"
       header={(
         <Stack justifyContent="space-between">
           {title}
@@ -94,4 +92,4 @@ const PlatformDistributionBarChart = function (props) {
   );
 };
 
-export default PlatformDistributionBarChart;
+export default TestExecutionPlatformBarChart;

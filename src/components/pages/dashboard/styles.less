@@ -3,11 +3,11 @@
         background-color: var(--main-panel-background) !important;
     }
 
-    .tests-runs-lock-icon {
+    .test-run-lock-icon {
         font-size: 1.5em;
     }
 
-    .tests-runs-unlock-icon {
+    .test-run-unlock-icon {
         font-size: 1.5em;
         opacity: 0.3;
     }
@@ -18,26 +18,27 @@
     }
 
     .dashboard-builds-table-date-icon {
-        padding-right: 6px;
+        padding-right: var(--space-2);
     }
 }
 
 .top-menu-stack {
-
     .dashboard-filter-button {
-
         .funnel-icon {
             font-size: 1.3em;
             color: var(--link-color-1);
         }
+    }
+
+    .filter-badge-icon {
+        color: var(--sub-panel-secondary-font-color);
     }
 }
 
 .dashboard-header {
     padding-top: var(--space-5);
 
-    // KPI stat cards — elevated tokenized surfaces with a status-tinted accent
-    // (replaces the old loud full-bleed gradients).
+    // KPI stat cards — elevated tokenized surfaces with a status-tinted accent.
     .trend-box {
         .card-surface();
         .interactive-lift();
@@ -45,7 +46,7 @@
         overflow: hidden;
         color: var(--main-panel-font-color);
 
-        // left accent stripe (colour set per-card by the modifier classes below)
+        // left accent stripe (colour set per-card by the kpi-accent-* modifiers)
         &::before {
             content: '';
             position: absolute;
@@ -88,29 +89,28 @@
     }
 }
 
-.dash-row {
+.dashboard-row {
     margin-top: var(--space-6);
 }
 
-// KPI accent colours (class names kept from the old gradient variants so the
-// markup does not need to change).
-.bg-gradient-red {
+// KPI accent colours for the trend boxes.
+.kpi-accent-fail {
     --kpi-accent: var(--fail-color);
 }
 
-.bg-gradient-green {
+.kpi-accent-pass {
     --kpi-accent: var(--pass-color);
 }
 
-.bg-gradient-blue {
+.kpi-accent-primary {
     --kpi-accent: var(--color-primary);
 }
 
-.build-table-header-checkbox {
-    top: -7px
+.builds-table-header-checkbox {
+    top: -7px;
 }
 
-.build-table-menu-badge {
+.builds-table-menu-badge {
     .rs-badge-content {
         right: 2px;
         top: 4px;
@@ -122,10 +122,10 @@
 }
 
 .builds-table-menu {
-    padding-top: 10px;
+    padding-top: var(--space-3);
 }
 
 .builds-table-result-cell {
-    padding-right: 10px;
-    display: flex
+    padding-right: var(--space-3);
+    display: flex;
 }

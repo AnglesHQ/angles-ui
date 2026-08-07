@@ -1,5 +1,6 @@
 import React from 'react';
 import Moment from 'react-moment';
+import { FormattedMessage, useIntl } from 'react-intl';
 import HistoryIcon from '@rsuite/icons/History';
 import {
   Table,
@@ -12,20 +13,21 @@ import TestDetailsTable from './TestDetailsTable';
 
 const { Column, HeaderCell, Cell } = Table;
 
-const testDetailsSpeaker = (execution) => (
-  <Popover title="Details" style={{ width: '500px' }}>
+const testDetailsSpeaker = (execution, intl) => (
+  <Popover title={intl.formatMessage({ id: 'page.test-run-compare.popover.details-title' })} style={{ width: '500px' }}>
     <TestDetailsTable execution={execution} />
   </Popover>
 );
 
 const TestDetailsCell = function (props) {
   const { rowData: test } = props;
+  const intl = useIntl();
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading
     <Cell {... props}>
       { test.testName }
       <span className="execution-compare-icon">
-        <a className="test-history-link" title={`See execution history for ${test.testName}`} href={`/test-execution-history?executionId=${test.executionIdForHistory}`}>
+        <a className="test-history-link" title={intl.formatMessage({ id: 'page.test-run-compare.link.execution-history' }, { testName: test.testName })} href={`/test-execution-history?executionId=${test.executionIdForHistory}`}>
           <HistoryIcon />
         </a>
       </span>
@@ -35,19 +37,20 @@ const TestDetailsCell = function (props) {
 
 const TestResultsCell = function (props) {
   const { rowData: test, buildid: buildId } = props;
+  const intl = useIntl();
   if (!test[buildId]) {
     return (
       // eslint-disable-next-line react/jsx-props-no-spreading
-      <Cell {... props}>N/A</Cell>
+      <Cell {... props}><FormattedMessage id="page.test-run-compare.cell.not-available" /></Cell>
     );
   }
   let testClass = 'table-info';
   if (test[buildId].status === 'PASS') {
-    testClass = 'table-pass';
+    testClass = 'status-pass';
   } else if (test[buildId].status === 'FAIL') {
-    testClass = 'table-fail';
+    testClass = 'status-fail';
   } else if (test[buildId].status === 'ERROR') {
-    testClass = 'table-error';
+    testClass = 'status-error';
   }
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading
@@ -57,14 +60,14 @@ const TestResultsCell = function (props) {
       </span>
       {
         (test.multipleExecutions[buildId] && test.multipleExecutions[buildId] === true)
-          ? (<span> - Multiple Executions</span>) : null
+          ? (<span> - <FormattedMessage id="page.test-run-compare.cell.multiple-executions" /></span>) : null
       }
       <span className="execution-compare-icon">
         <Whisper
           placement="leftStart"
           trigger="click"
           controlId="control-id-click"
-          speaker={testDetailsSpeaker(test[buildId])}
+          speaker={testDetailsSpeaker(test[buildId], intl)}
         >
           <span>
             <InfoOutlineIcon />
@@ -77,6 +80,7 @@ const TestResultsCell = function (props) {
 
 const TestRunCompareTable = function (props) {
   const { testRunCompareBuilds } = props;
+  const intl = useIntl();
 
   const generateTestRunCompare = () => {
     const suites = testRunCompareBuilds
@@ -171,15 +175,15 @@ const TestRunCompareTable = function (props) {
     const buildDetailsRows = [];
     const names = {
       id: 1,
-      detailName: 'Test Run Name',
+      detailName: intl.formatMessage({ id: 'page.test-run-compare.detail.test-run-name' }),
     };
     const startDates = {
       id: 2,
-      detailName: 'Start Date',
+      detailName: intl.formatMessage({ id: 'page.test-run-compare.detail.start-date' }),
     };
     const environments = {
       id: 3,
-      detailName: 'Environment',
+      detailName: intl.formatMessage({ id: 'page.test-run-compare.detail.environment' }),
     };
     testRunCompareBuilds.forEach((build) => {
       names[build._id] = build.name;
@@ -204,13 +208,13 @@ const TestRunCompareTable = function (props) {
           hover={false}
         >
           <Column width={40}>
-            <HeaderCell>#</HeaderCell>
+            <HeaderCell><FormattedMessage id="page.test-run-compare.header.number" /></HeaderCell>
             <Cell
               dataKey="id"
             />
           </Column>
           <Column flexGrow={5}>
-            <HeaderCell>Details</HeaderCell>
+            <HeaderCell><FormattedMessage id="page.test-run-compare.header.details" /></HeaderCell>
             <Cell dataKey="detailName" />
           </Column>
           {
@@ -219,7 +223,7 @@ const TestRunCompareTable = function (props) {
                 <HeaderCell>
                   <div>
                     <a href={`/test-run/?buildId=${matrixBuild._id}`} target="_self" title={matrixBuild._id}>
-                      {`Test Run ${index + 1}`}
+                      <FormattedMessage id="page.test-run-compare.header.test-run" values={{ number: index + 1 }} />
                     </a>
                   </div>
                 </HeaderCell>
@@ -237,7 +241,7 @@ const TestRunCompareTable = function (props) {
           headerHeight={40}
         >
           <Column width={40}>
-            <HeaderCell>#</HeaderCell>
+            <HeaderCell><FormattedMessage id="page.test-run-compare.header.number" /></HeaderCell>
             <Cell
               dataKey="id"
             />
@@ -245,11 +249,11 @@ const TestRunCompareTable = function (props) {
           <Column
             flexGrow={2}
           >
-            <HeaderCell>GroupId</HeaderCell>
+            <HeaderCell><FormattedMessage id="page.test-run-compare.header.group-id" /></HeaderCell>
             <Cell dataKey="groupId" />
           </Column>
           <Column flexGrow={3}>
-            <HeaderCell>ArtifactId</HeaderCell>
+            <HeaderCell><FormattedMessage id="page.test-run-compare.header.artifact-id" /></HeaderCell>
             <Cell dataKey="artifactId" />
           </Column>
           {
@@ -258,7 +262,7 @@ const TestRunCompareTable = function (props) {
                 <HeaderCell>
                   <div>
                     <a href={`/test-run/?buildId=${matrixBuild._id}`} target="_self" title={matrixBuild._id}>
-                      {`Test Run ${index + 1}`}
+                      <FormattedMessage id="page.test-run-compare.header.test-run" values={{ number: index + 1 }} />
                     </a>
                   </div>
                 </HeaderCell>
@@ -276,7 +280,7 @@ const TestRunCompareTable = function (props) {
           hover={false}
         >
           <Column width={40}>
-            <HeaderCell>#</HeaderCell>
+            <HeaderCell><FormattedMessage id="page.test-run-compare.header.number" /></HeaderCell>
             <Cell
               dataKey="id"
             />
@@ -285,11 +289,11 @@ const TestRunCompareTable = function (props) {
             flexGrow={2}
             rowSpan={(rowData) => rowData.suiteRowSpan}
           >
-            <HeaderCell>Suite Name</HeaderCell>
+            <HeaderCell><FormattedMessage id="page.test-run-compare.header.suite-name" /></HeaderCell>
             <Cell dataKey="suiteName" />
           </Column>
           <Column flexGrow={3}>
-            <HeaderCell>Test Name</HeaderCell>
+            <HeaderCell><FormattedMessage id="page.test-run-compare.header.test-name" /></HeaderCell>
             <TestDetailsCell />
           </Column>
           {
@@ -298,7 +302,7 @@ const TestRunCompareTable = function (props) {
                 <HeaderCell>
                   <div>
                     <a href={`/test-run/?buildId=${matrixBuild._id}`} target="_self" title={matrixBuild._id}>
-                      {`Test Run ${index + 1}`}
+                      <FormattedMessage id="page.test-run-compare.header.test-run" values={{ number: index + 1 }} />
                     </a>
                   </div>
                 </HeaderCell>

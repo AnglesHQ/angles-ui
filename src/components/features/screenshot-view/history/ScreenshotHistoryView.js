@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
+import { Loader } from 'rsuite';
 import { FormattedMessage } from 'react-intl';
-import { Container } from 'react-bootstrap';
 import CurrentScreenshotContext from '../../../../context/CurrentScreenshotContext';
 import Message from '../../../common/Message';
 import ScreenshotCard from '../ScreenshotCard';
@@ -49,13 +49,13 @@ const ScreenshotHistoryView = function (props) {
         type="info"
         message={(
           <span>
-            <i className="fas fa-spinner fa-pulse fa-2x" />
+            <Loader />
             <FormattedMessage id="common.component.screenshot-view.tabs.history.message.loading-history" />
           </span>
         )}
       />
     ) : (
-      <Container className="card-deck-history">
+      <div className="card-deck-history">
         {getScreenshotArray().map((screenshot) => [
           <ScreenshotCard
             screenshot={screenshot}
@@ -63,7 +63,7 @@ const ScreenshotHistoryView = function (props) {
             isSelectedId={isSelectedId(screenshot._id)}
           />,
         ])}
-      </Container>
+      </div>
     )
   );
 };

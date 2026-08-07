@@ -1,38 +1,78 @@
 .test-run-suite-panel {
   padding: var(--space-5) 0 var(--space-3) 0;
 
-  .test-run-suite-header {
+  // RSuite's PanelHeader receives our header as a single valid element, so it
+  // clones it (merging `test-run-suite-title`) rather than wrapping it in its
+  // own `.test-run-suite-header` element — our `.suite-header-inner` div IS the
+  // header. Carry the themed surface + rounded top corners here, and it's a
+  // single flex row with three zones: info (name + meta, grows), the results
+  // bar, and the action icons.
+  .suite-header-inner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
     background-color: var(--sub-table-header-background);
     border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     color: var(--main-table-header-font-color);
-    font-size: var(--font-size-lg);
-    padding: var(--space-3) var(--space-3) var(--space-1) var(--space-3);
+    padding: var(--space-3) var(--space-4);
 
     .field-label {
       font-weight: var(--font-weight-semibold);
     }
 
-    .suite-menu-div {
-      float: right;
-      font-size: 1.1em;
+    // Left zone: suite name (primary) with duration/total meta beneath.
+    .suite-header-info {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .suite-header-title {
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-bold);
+      line-height: var(--line-height-tight);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .suite-header-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-top: var(--space-1);
+      font-size: var(--font-size-sm);
+      opacity: 0.9;
+    }
+
+    .suite-header-meta-sep {
+      opacity: 0.6;
+    }
+
+    // Middle zone: results bar, fixed sensible width.
+    .suite-header-results {
+      flex: 0 0 auto;
+      width: 200px;
+    }
+
+    // Right zone: action icons, evenly spaced on one line.
+    .suite-header-actions {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .suite-header-action-icon {
+      display: inline-flex;
+      align-items: center;
+      font-size: 1.5em;
+      line-height: 1;
       cursor: pointer;
-      margin-top: -8px;
+      opacity: 0.85;
+      transition: opacity var(--transition-fast);
 
-      .expand-all-icon {
-        font-size: 1.5em;
-        cursor: pointer;
-      }
-
-      .expand-icons {
-        font-size: 1.5em;
-        cursor: pointer;
-      }
-
-      .screenshot-toggle-icon {
-        font-size: 1.4em;
-        cursor: pointer;
-        margin-right: var(--space-2);
-        vertical-align: middle;
+      &:hover {
+        opacity: 1;
       }
     }
   }
@@ -54,24 +94,10 @@
         background-color: var(--surface-sunken);
       }
 
+      // Result labels use the shared .status-* classes (components.less).
       .execution-test-name {
         font-size: var(--font-size-md);
         cursor: pointer;
-
-        .execution-status-FAIL {
-          color: var(--fail-color);
-          font-weight: bold;
-        }
-
-        .execution-status-PASS {
-          color: var(--pass-color);
-          font-weight: bold;
-        }
-
-        .execution-status-ERROR {
-          color: var(--error-color);
-          font-weight: bold;
-        }
       }
 
       .execution-details-container {
@@ -79,59 +105,49 @@
         font-size: var(--font-size-sm);
 
         .rs-icon {
-          margin-right: 5px;
-          font-size: 1.1em
+          margin-right: var(--space-1);
+          font-size: 1.1em;
         }
 
         .date-details {
-          margin-left: 10px;
+          margin-left: var(--space-3);
         }
 
         .device-details {
-          margin-left: 15px;
+          margin-left: var(--space-4);
         }
       }
     }
 
     .actions-row {
-      padding: 13px 30px;
-      border-radius: 5px;
+      padding: var(--space-3) var(--space-6);
+      border-radius: var(--radius-sm);
       background-color: var(--body-background);
       color: var(--sub-panel-font-color);
       cursor: pointer;
 
       .action-description {
         font-size: var(--font-size-md);
-        margin-bottom: 10px;
+        margin-bottom: var(--space-3);
       }
 
       .action-steps {
         background: var(--main-panel-background);
-        border-radius: 5px;
+        border-radius: var(--radius-sm);
       }
     }
-
-    .action-status-FAIL {
-      color: var(--fail-color);
-    }
-
-    .action-status-ERROR {
-      color: var(--error-color);
-    }
   }
-
 
   .action-icon {
     font-size: 1em;
     cursor: pointer;
-    margin-right: 10px;
+    margin-right: var(--space-3);
     color: var(--link-color-1);
   }
 
   .execution-icon {
     font-size: 1.5em;
     cursor: pointer;
-    //color: var(--link-color-1);
   }
 
   .execution-history-icon {

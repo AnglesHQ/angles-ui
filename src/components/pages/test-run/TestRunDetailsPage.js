@@ -1,6 +1,5 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
-import Modal from 'react-bootstrap/Modal';
 import queryString from 'query-string';
 import moment from 'moment/moment';
 import { connect } from 'react-redux';
@@ -38,7 +37,9 @@ import {
   Whisper,
   Tooltip,
   Badge,
+  Loader,
   Message,
+  Modal,
   useToaster,
 } from 'rsuite';
 import SuiteTable from '../../features/test-suite/SuiteTable';
@@ -237,15 +238,15 @@ const TestRunDetailsPage = function (props) {
 
   const getTestRunEndIcon = (build) => {
     if (build.status === 'FAIL') {
-      return <BsJournalX className="test-run-end-icon-fail" />;
+      return <BsJournalX className="test-run-end-icon status-fail" />;
     }
     if (build.status === 'PASS') {
-      return <BsJournalCheck className="test-run-end-icon-pass" />;
+      return <BsJournalCheck className="test-run-end-icon status-pass" />;
     }
     if (build.status === 'ERROR') {
-      return <BsJournalX className="test-run-end-icon-error" />;
+      return <BsJournalX className="test-run-end-icon status-error" />;
     }
-    return <InfoRoundIcon className="test-run-end-icon-info" />;
+    return <InfoRoundIcon className="test-run-end-icon status-info" />;
   };
 
   const toggleDisplayArtifacts = () => {
@@ -255,16 +256,14 @@ const TestRunDetailsPage = function (props) {
   return (
     // eslint-disable-next-line no-nested-ternary
     (!currentBuild || !screenshots) ? (
-      <div className="alert alert-primary" role="alert">
-        <span>
-          <i className="fas fa-spinner fa-pulse fa-2x" />
-          <span> Retrieving build details.</span>
-        </span>
+      <div className="app-alert app-alert-info" role="alert">
+        <Loader />
+        <span> Retrieving build details.</span>
       </div>
     ) : (
       (Object.keys(currentBuild).length === 0) ? (
         <div>
-          <div className="alert alert-danger" role="alert">
+          <div className="app-alert app-alert-error" role="alert">
             <span>
               {
                 'Unable to retrieve build details. '
@@ -276,7 +275,7 @@ const TestRunDetailsPage = function (props) {
       ) : (
         <div>
           <Grid fluid>
-            <Row gutter={30} className="test-run-row">
+            <Row gutter={30} className="detail-row">
               <div className="test-run-download-icon">
                 <Dropdown
                   className="test-run-download-button"
@@ -314,9 +313,9 @@ const TestRunDetailsPage = function (props) {
               </div>
               <Col xs={24}>
                 <Panel
-                  className="test-run-header"
+                  className="page-detail-header test-run-header"
                   header={(
-                    <div className="test-run-header-panel">
+                    <div className="page-detail-header-title test-run-header-panel">
                       <Whisper
                         placement="bottomStart"
                         controlId="control-id-hover"
@@ -533,7 +532,7 @@ const TestRunDetailsPage = function (props) {
                 </FlexboxGrid>
               </Col>
             </Row>
-            <Row gutter={30} className="test-run-row">
+            <Row gutter={30} className="detail-row">
               <Col xs={12}>
                 <TestRunExecutionPieChart
                   title={<FormattedMessage id="page.test-run.execution-pie-chart.title" />}
@@ -548,7 +547,7 @@ const TestRunDetailsPage = function (props) {
                 />
               </Col>
             </Row>
-            <Row gutter={30} className="test-run-row">
+            <Row gutter={30} className="detail-row">
               <Col xs={24}>
                 <div>
                   {
@@ -570,8 +569,8 @@ const TestRunDetailsPage = function (props) {
               </Col>
             </Row>
           </Grid>
-          <Modal show={showModal} onHide={closeModal} dialogClassName="screenshot-modal">
-            <Modal.Header closeButton>
+          <Modal open={showModal} onClose={closeModal} className="screenshot-modal">
+            <Modal.Header>
               <Modal.Title>
                 <FormattedMessage id="common.component.screenshot-view.header" />
               </Modal.Title>

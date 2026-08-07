@@ -22,19 +22,19 @@ const AboutPage = function () {
     <div>
       <Panel
         bordered
-        className="about-page-panel"
+        className="page-panel"
         header={(
-          <span className="about-page-header">
+          <span className="page-panel-header">
             <FormattedMessage id="page.about.header" />
           </span>
         )}
       >
-        <div className="about-page-section">
+        <div className="page-section">
           <span>
             <FormattedMessage id="page.about.about-angles" />
           </span>
         </div>
-        <div className="about-page-section">
+        <div className="page-section">
           <span>
             <FormattedMessage
               id="page.about.about-api"
@@ -45,7 +45,7 @@ const AboutPage = function () {
             />
           </span>
         </div>
-        <div className="about-page-section">
+        <div className="page-section">
           <FormattedMessage
             id="page.about.about-github"
             values={{
@@ -53,7 +53,7 @@ const AboutPage = function () {
             }}
           />
         </div>
-        <div className="about-page-section-table">
+        <div className="page-section-table">
           <AboutTable versions={versions} />
         </div>
       </Panel>

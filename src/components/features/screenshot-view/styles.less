@@ -1,21 +1,12 @@
+// Screenshot viewer feature — carousel, cards, detail tables and the modal.
+
+// Full-width rsuite modal hosting the screenshot viewer.
 .screenshot-modal {
-  max-width: 95% !important;
-  width: 95% !important;
+  width: 95%;
+  max-width: 95%;
 
-  .modal-content {
-    background: none;
-  }
-
-  .modal-header {
-    background-color: var(--main-panel-background);
-    color: var(--main-panel-font-color);
+  .rs-modal-title {
     font-size: var(--font-size-2xl);
-    border-bottom: none;
-  }
-
-  .modal-body {
-    background-color: var(--main-panel-background);
-    border: none;
   }
 }
 
@@ -24,7 +15,7 @@
 
   // applies to all views
   .image-page-holder {
-    padding: 30px;
+    padding: var(--space-6);
     min-height: 300px;
     color: var(--sub-panel-font-color);
   }
@@ -32,21 +23,23 @@
 
 .screenshot {
   max-width: 100%;
-  /* max-height: 100%; */
   border: 1px solid var(--screenshot-border-color);
   border-radius: var(--radius-xs);
 }
 
+// History strip: wrapping row of screenshot cards.
 .card-deck-history {
-  align-items: center;
-  justify-content: left;
-  padding-bottom: 10px;
-  margin-bottom: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding-bottom: var(--space-3);
+  margin-bottom: var(--space-3);
   border-bottom: 1px solid var(--screenshot-divider-color);
+}
 
-  .card-label {
-    font-weight: bold;
-  }
+.card-label {
+  font-weight: var(--font-weight-bold);
 }
 
 .card-image-history {
@@ -57,54 +50,52 @@
   display: block;
 }
 
-.card-deck-history .card-body {
-  padding: 0px;
-}
-
-.card-deck-history .card-footer {
-  padding: 4px;
-}
-
-.screenshotCard {
+// Screenshot card (history + library views).
+.screenshot-card {
+  position: relative;
   max-width: 22em;
   min-width: 22em;
   margin: 1em;
   display: inline-block;
-  background-color: var(--sub-panel-background) !important;
-  color: var(--sub-panel-font-color) !important;
-  border: 1px solid var(--border-color) !important;
-}
+  background-color: var(--sub-panel-background);
+  color: var(--sub-panel-font-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
 
-// Baseline badge overlaid on the card image
-.baseline-overlay {
-  font-weight: bolder;
-  color: var(--link-color-1);
-  border: solid 2px var(--link-color-1);
-  height: 40px;
-  padding: 5px;
-  background: var(--baseline-overlay-background);
-  margin: 5px;
-  float: right;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  p {
-    margin: 0;
-    text-align: center;
+  .screenshot-card-footer {
+    padding: var(--space-1);
   }
 }
 
-.screenshot-thumbnail-history {
-  width: 200px;
+// Baseline indicator icon overlaid on the top-right corner of the card image
+.baseline-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  color: var(--pass-color);
+  background: var(--baseline-overlay-background);
+  border: solid 2px var(--link-color-1);
+  border-radius: 0 var(--radius-md) 0 var(--radius-md);
+  padding: var(--space-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-4xl);
+  line-height: 1;
 }
 
 .screenshot-details-td {
   width: 20em;
+  vertical-align: top;
+  text-align: left;
 }
 
-// Bootstrap table used inside the screenshot detail panel — themed to match design system
+// Detail tables inside the screenshot views (plain <table> markup).
 .screenshot-table {
+  width: 100%;
+  border-collapse: collapse;
   background-color: var(--sub-panel-background);
   color: var(--sub-panel-font-color);
   margin-bottom: 0;
@@ -112,27 +103,18 @@
   td,
   th {
     color: var(--sub-panel-font-color);
-    border-color: var(--screenshot-border-color);
+    border: 1px solid var(--screenshot-border-color);
     background-color: var(--sub-panel-background);
+    padding: var(--space-1) var(--space-2);
+    text-align: left;
   }
 
   thead td,
   thead th {
     background-color: var(--screenshot-details-header-background);
     color: var(--sub-panel-font-color);
-    font-weight: bold;
+    font-weight: var(--font-weight-bold);
   }
-}
-
-.table-screenshot-details {
-  font-size: var(--font-size-sm);
-  min-width: 20em;
-  max-width: 25em;
-}
-
-.table-screenshot-details thead {
-  background: var(--screenshot-details-header-background);
-  color: var(--sub-panel-font-color);
 }
 
 .table-screenshot-history-details {
@@ -140,28 +122,16 @@
   margin-bottom: 3px;
   background-color: var(--sub-panel-background);
   color: var(--sub-panel-font-color);
-}
 
-.table-screenshot-history-details td {
-  border: 0px;
-  background-color: var(--sub-panel-background);
-  color: var(--sub-panel-font-color);
-}
-
-.screenshot-finder-form-or-div {
-  margin: 30px;
-  font-weight: bold;
-}
-
-.screenshot-form-container {
-  padding: 15px;
-  border-radius: var(--radius-lg);
-  background: var(--screenshot-form-background);
-  border: 1px solid var(--screenshot-form-border);
+  td {
+    border: 0;
+    background-color: var(--sub-panel-background);
+    color: var(--sub-panel-font-color);
+  }
 }
 
 .screenshot-viewer-surround {
-  padding-top: 20px;
+  padding-top: var(--space-5);
 }
 
 // ── Carousel ───────────────────────────────────────────────────────────────
@@ -186,7 +156,7 @@
   }
 
   .card-text {
-    font-weight: bold;
+    font-weight: var(--font-weight-bold);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -203,11 +173,6 @@
   border: 2px solid var(--link-color-1);
 }
 
-// Override the base .screenshotCard border — needed because it uses !important
-.screenshotCard.card-active {
-  border: 2px solid var(--link-color-1) !important;
-}
-
 // ── Screenshot details panel ───────────────────────────────────────────────
 .screenshot-details-panel {
   background: var(--sub-panel-background);
@@ -215,35 +180,37 @@
   color: var(--sub-panel-font-color);
 
   .screenshot-details-label {
-    font-weight: bold;
+    font-weight: var(--font-weight-bold);
     color: var(--sub-panel-font-color);
   }
 
   .screenshot-details-row {
-    margin-bottom: 10px;
+    margin-bottom: var(--space-3);
     color: var(--sub-panel-font-color);
   }
 }
 
 // ── Baseline compare table ─────────────────────────────────────────────────
 .baseline-compare-table {
+  width: 100%;
   background-color: var(--sub-panel-background);
   color: var(--sub-panel-font-color);
 
   td {
     background-color: var(--sub-panel-background);
     color: var(--sub-panel-font-color);
+    padding: var(--space-1) var(--space-2);
   }
 
   .baseline-action-icon {
     font-size: 20px;
-    margin-left: 10px;
+    margin-left: var(--space-3);
     cursor: pointer;
     color: var(--link-color-1);
   }
 
   .baseline-compare-header {
-    font-weight: bold;
+    font-weight: var(--font-weight-bold);
     font-size: var(--font-size-lg);
     color: var(--sub-panel-font-color);
   }

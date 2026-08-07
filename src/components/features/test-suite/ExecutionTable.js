@@ -1,11 +1,9 @@
 import React, { useContext } from 'react';
 import { FormattedMessage } from 'react-intl';
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import Tooltip from 'react-bootstrap/Tooltip';
 import HistoryIcon from '@rsuite/icons/History';
 import ExpandOutlineIcon from '@rsuite/icons/ExpandOutline';
 import CollaspedOutlineIcon from '@rsuite/icons/CollaspedOutline';
-import { FlexboxGrid } from 'rsuite';
+import { FlexboxGrid, Tooltip, Whisper } from 'rsuite';
 import DeviceIcon from '@rsuite/icons/Device';
 import CalendarIcon from '@rsuite/icons/Calendar';
 import Moment from 'react-moment';
@@ -20,6 +18,7 @@ const ExecutionTable = function (props) {
     screenshots,
     openModal,
     showScreenshots,
+    showHistoryLink,
   } = props;
 
   const getPlatformName = (executionToGenerateNameFor) => {
@@ -53,12 +52,12 @@ const ExecutionTable = function (props) {
               }
               </span>
             </FlexboxGrid.Item>
-            <FlexboxGrid.Item colspan={22}>
+            <FlexboxGrid.Item colspan={showHistoryLink === false ? 23 : 22}>
               <div className="execution-test-name" onClick={() => toggleExecution(execution._id)}>
                 <span><FormattedMessage id="common.component.suite-table.header.test" /></span>
                 <span>: </span>
                 <span>{`${execution.title} - `}</span>
-                <span className={`execution-status-${execution.status}`}>{`${execution.status}`}</span>
+                <span className={`status-${execution.status.toLowerCase()}`}>{`${execution.status}`}</span>
               </div>
               <div className="execution-details-container">
                 <span className="date-details">
@@ -77,17 +76,22 @@ const ExecutionTable = function (props) {
                 </span>
               </div>
             </FlexboxGrid.Item>
-            <FlexboxGrid.Item colspan={1}>
-              <OverlayTrigger overlay={<Tooltip id="tooltip-disabled"><FormattedMessage id="common.component.suite-table.icon.test-history" /></Tooltip>}>
-                <a
-                  className="test-history-link"
-                  title={<FormattedMessage id="common.component.suite-table.icon.test-history" />}
-                  href={`/test-execution-history?executionId=${execution._id}`}
+            { showHistoryLink !== false ? (
+              <FlexboxGrid.Item colspan={1}>
+                <Whisper
+                  placement="top"
+                  trigger="hover"
+                  speaker={<Tooltip><FormattedMessage id="common.component.suite-table.icon.test-history" /></Tooltip>}
                 >
-                  <HistoryIcon className="execution-history-icon" />
-                </a>
-              </OverlayTrigger>
-            </FlexboxGrid.Item>
+                  <a
+                    className="test-history-link"
+                    href={`/test-execution-history?executionId=${execution._id}`}
+                  >
+                    <HistoryIcon className="execution-history-icon" />
+                  </a>
+                </Whisper>
+              </FlexboxGrid.Item>
+            ) : null }
           </FlexboxGrid>
         </div>
       </div>

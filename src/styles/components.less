@@ -1,17 +1,14 @@
 // ============================================================================
 // Shared components
 // ----------------------------------------------------------------------------
-// App-wide UI patterns that are not owned by a single page: buttons, the
-// confirmation modal, the top menu bar, chart panels and the tab container.
+// App-wide UI patterns that are not owned by a single page: buttons, alerts,
+// status colours, generic page/panel chrome, the confirmation modal, the top
+// menu bar, chart panels and the tab container.
 // Built on the design tokens + mixins (see tokens/ and mixins.less).
 // ============================================================================
 
 // ── Buttons ──────────────────────────────────────────────────────────────────
-// Canonical classes are .btn-primary / .btn-secondary / .btn-ghost. The older
-// .filter-submit-button / .filter-cancel-button names are kept as aliases so
-// existing markup keeps working; new/edited markup should prefer the btn-* names.
-.btn-primary,
-.filter-submit-button {
+.btn-primary {
     color: var(--button-font-color);
     background-color: var(--button-background);
     border: 1px solid transparent;
@@ -47,8 +44,7 @@
     }
 }
 
-.btn-secondary,
-.filter-cancel-button {
+.btn-secondary {
     color: var(--button-deactivated-font-color);
     background-color: var(--button-deactivated-background);
     border: 1px solid transparent;
@@ -85,6 +81,232 @@
     &:focus,
     &:focus-visible {
         .focus-ring();
+    }
+}
+
+// ── Status colours ───────────────────────────────────────────────────────────
+// The single source of truth for pass/fail/error/skipped/info colouring.
+// `.status-*` colours text (result labels, icons); `.status-bg-*` fills a
+// surface (results bar segments). Status suffixes are always lowercase — build
+// them from API values with `status.toLowerCase()`.
+.status-pass {
+    color: var(--pass-color);
+    font-weight: var(--font-weight-semibold);
+}
+
+.status-fail {
+    color: var(--fail-color);
+    font-weight: var(--font-weight-semibold);
+}
+
+.status-error {
+    color: var(--error-color);
+    font-weight: var(--font-weight-semibold);
+}
+
+.status-skipped {
+    color: var(--skipped-color);
+    font-weight: var(--font-weight-semibold);
+}
+
+.status-info {
+    color: var(--skipped-color);
+}
+
+.status-bg-pass {
+    background-color: var(--pass-color);
+}
+
+.status-bg-fail {
+    background-color: var(--fail-color);
+}
+
+.status-bg-error {
+    background-color: var(--error-color);
+}
+
+.status-bg-skipped {
+    background-color: var(--skipped-color);
+}
+
+// ── Inline alerts ────────────────────────────────────────────────────────────
+// Themed replacement for the old Bootstrap `.alert` blocks — loading and
+// empty/error states inside page content.
+.app-alert {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    margin-bottom: var(--space-4);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--info-color);
+    border-radius: var(--radius-md);
+    background-color: var(--main-panel-background);
+    color: var(--main-panel-font-color);
+}
+
+.app-alert-info {
+    border-left-color: var(--info-color);
+}
+
+.app-alert-error {
+    border-left-color: var(--fail-color);
+}
+
+// ── Generic page chrome ──────────────────────────────────────────────────────
+// Shared by the settings/about/not-found style pages so each page's LESS only
+// carries what is genuinely page-specific.
+.page {
+    padding: var(--space-5);
+}
+
+.page-panel {
+    .card-surface();
+    color: var(--main-panel-font-color);
+
+    // Space stacked panels apart (only between them, not above the first).
+    & + .page-panel {
+        margin-top: var(--space-3);
+    }
+}
+
+.page-panel-header {
+    color: var(--main-panel-font-color);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-2xl);
+}
+
+.page-section-title {
+    color: var(--main-panel-font-color);
+    font-size: var(--font-size-xl);
+    margin-top: var(--space-1);
+    margin-bottom: var(--space-3);
+}
+
+.page-section {
+    padding-bottom: var(--space-3);
+}
+
+.page-section-table {
+    padding-top: var(--space-3);
+}
+
+.page-toolbar {
+    margin-bottom: var(--space-5);
+}
+
+.page-help-text {
+    margin-bottom: var(--space-4);
+    color: var(--main-panel-secondary-font-color);
+}
+
+// Form feedback text (modals, settings forms).
+.form-warning-text {
+    margin-top: var(--space-4);
+    margin-bottom: var(--space-3);
+    color: var(--fail-color);
+    font-weight: var(--font-weight-bold);
+}
+
+.form-error-text {
+    color: var(--fail-color);
+}
+
+.token-input {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+// Row action links (tables, lists).
+.link-action {
+    color: var(--link-color-1);
+
+    &:hover,
+    &:focus {
+        color: var(--link-color-1-focus);
+    }
+}
+
+.link-danger {
+    color: var(--fail-color);
+
+    &:hover,
+    &:focus {
+        opacity: 0.8;
+    }
+}
+
+.link-separator {
+    color: var(--main-panel-font-color);
+    padding: 0 var(--space-1);
+}
+
+// ── Detail page header (test-run, test-execution-history) ───────────────────
+.page-detail-header {
+    color: var(--main-panel-font-color);
+    background-color: var(--main-panel-background);
+    max-width: 1300px;
+    margin: auto;
+    padding-bottom: 0;
+
+    .rs-panel-header {
+        padding: 0;
+    }
+
+    .rs-panel-body {
+        padding-bottom: 0;
+    }
+}
+
+.page-detail-header-title {
+    background-color: var(--main-panel-background);
+    color: var(--main-panel-font-color);
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    text-align: center;
+}
+
+// Content rows on detail pages (charts, suites).
+.detail-row {
+    background-color: var(--main-panel-background);
+    border-radius: var(--radius-lg);
+    margin: var(--space-4);
+    padding: var(--space-4);
+}
+
+// ── Brand logo (sidebar + login) ─────────────────────────────────────────────
+.brand-logo-icon {
+    height: 50px;
+    display: inline;
+    margin-top: -3px;
+}
+
+.brand-logo-text {
+    height: 55px;
+    padding-left: 6px;
+    vertical-align: middle;
+    display: inline;
+}
+
+// ── Password requirements checklist (PasswordRequirements component) ─────────
+.password-requirements {
+    list-style: none;
+    margin: var(--space-2) 0;
+    padding: 0;
+    font-size: var(--font-size-sm);
+
+    .password-requirement {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        color: var(--main-panel-secondary-font-color);
+
+        &.met {
+            color: var(--pass-color);
+        }
+    }
+
+    .password-requirement-icon {
+        font-weight: var(--font-weight-bold);
     }
 }
 
@@ -129,46 +351,56 @@
     }
 }
 
-// ── Tabs ─────────────────────────────────────────────────────────────────────
+// ── Tabs (rsuite Tabs) ───────────────────────────────────────────────────────
 .tabs-container {
     margin-left: var(--space-2);
     position: relative;
 
-    .nav-tabs {
+    // rsuite lays the Tabs out as a flex column with a 10px `gap`, which
+    // disconnects the tab strip from the panel. Remove it so the content sits
+    // flush under the tabs.
+    .rs-tabs {
+        gap: 0;
+    }
+
+    .rs-nav-tabs {
         border-bottom: 0;
         margin-left: var(--space-5);
 
-        .nav-item {
-            margin-bottom: 0;
-        }
-
-        .nav-link {
+        .rs-nav-item {
             border: 0;
             position: relative;
             border-radius: var(--radius-md) var(--radius-md) 0 0;
             background-color: var(--inactive-tab-background);
             color: var(--inactive-tab-font-color);
             transition: background-color var(--transition-fast), color var(--transition-fast);
+
+            &:hover {
+                color: var(--active-tab-font-color-hover);
+            }
+
+            // Keyboard focus only — avoid the orange ring wrapping a tab on
+            // mouse click while keeping the outline for keyboard navigation.
+            &:focus-visible {
+                .focus-ring();
+            }
         }
 
-        .nav-link:hover {
-            border-bottom: 0;
-            color: var(--active-tab-font-color-hover);
-        }
-
-        .nav-link.active {
+        .rs-nav-item.rs-nav-item-active {
             border: 0;
             font-weight: var(--font-weight-semibold);
             background-color: var(--active-tab-background);
             color: var(--active-tab-font-color);
         }
 
-        .nav-link:focus {
-            .focus-ring();
+        // rsuite draws a full-width border line between the tab strip and the
+        // panel; remove it so the tabs read as connected to the content.
+        .rs-nav-bar {
+            border: 0;
         }
     }
 
-    .tab-content {
+    .rs-tab-panel {
         border-radius: var(--radius-lg);
         background: var(--tabs-overall-background);
         color: var(--main-panel-font-color);

@@ -1,10 +1,12 @@
 import React from 'react';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { Table } from 'rsuite';
 // import '../pages/Default.css';
 import { getDuration } from '../../../utility/TimeUtilities';
 
 const TestDetailsTable = function (props) {
   const { execution } = props;
+  const intl = useIntl();
   const { Column, HeaderCell, Cell } = Table;
 
   const getFirstTestStepByStatus = (executionWithSteps, status) => {
@@ -27,11 +29,11 @@ const TestDetailsTable = function (props) {
     const dataArray = [];
     const { platforms, status } = currentExecution;
     dataArray.push({
-      property: 'Status',
+      property: intl.formatMessage({ id: 'page.test-run-compare.details-popover.property.status' }),
       value: status,
     });
     dataArray.push({
-      property: 'Duration',
+      property: intl.formatMessage({ id: 'page.test-run-compare.details-popover.property.duration' }),
       value: getDuration(currentExecution),
     });
 
@@ -45,13 +47,13 @@ const TestDetailsTable = function (props) {
         }
       });
       dataArray.push({
-        property: 'Platform',
+        property: intl.formatMessage({ id: 'page.test-run-compare.details-popover.property.platform' }),
         value: platformIdentifier,
       });
     }
     if (status && (status === 'ERROR' || status === 'FAIL')) {
       dataArray.push({
-        property: 'Failing Step',
+        property: intl.formatMessage({ id: 'page.test-run-compare.details-popover.property.failing-step' }),
         value: getFirstTestStepByStatus(currentExecution, status),
       });
     }
@@ -65,11 +67,11 @@ const TestDetailsTable = function (props) {
       autoHeight
     >
       <Column flexGrow={1}>
-        <HeaderCell>Property</HeaderCell>
+        <HeaderCell><FormattedMessage id="page.test-run-compare.details-popover.header.property" /></HeaderCell>
         <Cell dataKey="property" />
       </Column>
       <Column flexGrow={2}>
-        <HeaderCell>Value</HeaderCell>
+        <HeaderCell><FormattedMessage id="page.test-run-compare.details-popover.header.value" /></HeaderCell>
         <Cell dataKey="value" />
       </Column>
     </Table>
