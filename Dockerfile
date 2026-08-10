@@ -5,7 +5,7 @@ ARG PORT=3001
 FROM node:24.12.0-alpine AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm install --legacy-peer-deps
+RUN npm install
 
 # ---- builder: build the application ----
 FROM node:24.12.0-alpine AS builder
