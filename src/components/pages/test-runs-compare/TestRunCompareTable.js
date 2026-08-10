@@ -186,7 +186,11 @@ const TestRunCompareTable = function (props) {
       detailName: intl.formatMessage({ id: 'page.test-run-compare.detail.environment' }),
     };
     testRunCompareBuilds.forEach((build) => {
-      names[build._id] = build.name;
+      names[build._id] = (
+        <a href={`/test-run/?buildId=${build._id}`} target="_self" title={build._id}>
+          {build.name}
+        </a>
+      );
       startDates[build._id] = <Moment utc format="DD-MM-YYYY HH:mm">{build.start}</Moment>;
       environments[build._id] = build.environment.name;
     });
@@ -222,9 +226,7 @@ const TestRunCompareTable = function (props) {
               <Column width={200} flexGrow={1}>
                 <HeaderCell>
                   <div>
-                    <a href={`/test-run/?buildId=${matrixBuild._id}`} target="_self" title={matrixBuild._id}>
-                      <FormattedMessage id="page.test-run-compare.header.test-run" values={{ number: index + 1 }} />
-                    </a>
+                    <FormattedMessage id="page.test-run-compare.header.test-run" values={{ number: index + 1 }} />
                   </div>
                 </HeaderCell>
                 <Cell dataKey={`${matrixBuild._id}`} />
