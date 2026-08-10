@@ -41,6 +41,7 @@
   "page.dashboard.chart.barchart.error": "ผิดพลาด",
   "page.dashboard.chart.barchart.fail": "ล้มเหลว",
   "page.dashboard.chart.barchart.execution-time-seconds": "เวลาดำเนินการ (วินาที)",
+  "page.dashboard.chart.barchart.yaxis.number-of-tests": "จำนวนการทดสอบ",
   "page.dashboard.builds-table.header.build-details": "รายละเอียดบิลด์",
   "page.dashboard.builds-table.header.date-time": "วันที่/เวลา",
   "page.dashboard.builds-table.header.component": "ส่วนประกอบ",

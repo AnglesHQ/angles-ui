@@ -21,7 +21,7 @@ const defaultOptions = {
   },
   colors: STATUS_COLORS,
   legend: {
-    show: true,
+    show: false,
     fontSize: '15px',
     formatter: (seriesName, opts) => `${seriesName}: <strong> ${opts.w.config.series[opts.seriesIndex]}</strong>`,
   },

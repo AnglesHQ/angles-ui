@@ -41,6 +41,7 @@
   "page.dashboard.chart.barchart.error": "Fout",
   "page.dashboard.chart.barchart.fail": "Mislukt",
   "page.dashboard.chart.barchart.execution-time-seconds": "Executie tijd (seconden)",
+  "page.dashboard.chart.barchart.yaxis.number-of-tests": "Aantal tests",
   "page.dashboard.builds-table.header.build-details": "Details van testuitvoering",
   "page.dashboard.builds-table.header.date-time": "Datum/Tijd",
   "page.dashboard.builds-table.header.component": "Onderdeel",

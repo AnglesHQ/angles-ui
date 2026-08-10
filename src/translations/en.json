@@ -41,6 +41,7 @@
   "page.dashboard.chart.barchart.error": "Error",
   "page.dashboard.chart.barchart.fail": "Fail",
   "page.dashboard.chart.barchart.execution-time-seconds": "Execution Time (Seconds)",
+  "page.dashboard.chart.barchart.yaxis.number-of-tests": "Number of Tests",
   "page.dashboard.builds-table.header.build-details": "Build Details",
   "page.dashboard.builds-table.header.date-time": "Date/Time",
   "page.dashboard.builds-table.header.component": "Component",

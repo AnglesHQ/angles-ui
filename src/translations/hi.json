@@ -41,6 +41,7 @@
   "page.dashboard.chart.barchart.error": "त्रुटि",
   "page.dashboard.chart.barchart.fail": "फेल",
   "page.dashboard.chart.barchart.execution-time-seconds": "निष्पादन समय (सेकंड)",
+  "page.dashboard.chart.barchart.yaxis.number-of-tests": "परीक्षणों की संख्या",
   "page.dashboard.builds-table.header.build-details": "बिल्ड विवरण",
   "page.dashboard.builds-table.header.date-time": "दिनांक/समय",
   "page.dashboard.builds-table.header.component": "घटक",

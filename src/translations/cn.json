@@ -41,6 +41,7 @@
   "page.dashboard.chart.barchart.error": "錯誤",
   "page.dashboard.chart.barchart.fail": "失敗",
   "page.dashboard.chart.barchart.execution-time-seconds": "執行時間（秒）",
+  "page.dashboard.chart.barchart.yaxis.number-of-tests": "測試數量",
   "page.dashboard.builds-table.header.build-details": "建構的詳細資料",
   "page.dashboard.builds-table.header.date-time": "日期/時間",
   "page.dashboard.builds-table.header.component": "元件",
