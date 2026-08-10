@@ -7,6 +7,11 @@
   // header. Carry the themed surface + rounded top corners here, and it's a
   // single flex row with three zones: info (name + meta, grows), the results
   // bar, and the action icons.
+  
+  .rs-panel-header {
+    padding-bottom: 0;
+  }
+  
   .suite-header-inner {
     display: flex;
     align-items: center;
@@ -80,8 +85,13 @@
   .test-run-suite-body {
     background-color: var(--sub-table-body-background);
     padding: var(--space-3) var(--space-5);
-    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
     border-top: none;
+
+    // Only the final execution body closes off the panel, so it alone carries
+    // the rounded bottom corners.
+    &:last-child {
+      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    }
 
     .test-row {
       padding: var(--space-1) var(--space-2);
