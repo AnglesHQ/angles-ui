@@ -2,6 +2,74 @@
     background: var(--main-panel-background);
 }
 
+.compare-toolbar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+}
+
+.compare-status-filter {
+    width: 220px;
+}
+
+// Run column headers: name + start date (+ pass/total summary on the matrix)
+// so a horizontally scrolled column always identifies its run.
+.compare-run-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    line-height: var(--line-height-tight);
+    min-width: 0;
+}
+
+.compare-run-header-name {
+    color: var(--main-table-header-font-color);
+    font-weight: var(--font-weight-semibold);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &:hover,
+    &:focus {
+        color: var(--main-table-header-font-color);
+        text-decoration: underline;
+    }
+}
+
+.compare-run-header-date {
+    font-size: var(--font-size-xs);
+    opacity: 0.85;
+}
+
+.compare-run-header-counts {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-1);
+    font-size: var(--font-size-xs);
+}
+
+.compare-run-count-pill {
+    padding: 0 var(--space-1);
+    border-radius: var(--radius-pill);
+    color: var(--main-table-header-font-color);
+    font-weight: var(--font-weight-semibold);
+}
+
+.compare-run-popover {
+    min-width: 260px;
+}
+
+.compare-run-popover-name {
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--space-1);
+}
+
+.compare-details-popover {
+    width: 500px;
+    max-width: 90vw;
+}
+
 .test-run-compare-table {
     margin-bottom: var(--space-5);
 
@@ -14,5 +82,92 @@
 
     .rs-table-cell-content {
         padding: var(--space-2) var(--space-3);
+    }
+
+    // "Did not run" cells stay quiet so the statuses carry the page.
+    .compare-cell-missing {
+        color: var(--icon-disabled-color);
+    }
+
+    // Artifact versions that differ from the previous run.
+    .compare-version-changed {
+        color: var(--color-primary);
+        font-weight: var(--font-weight-semibold);
+    }
+}
+
+.test-run-compare-matrix {
+    // Suite header rows sit on a raised surface to read as group dividers.
+    .compare-suite-row .rs-table-cell {
+        background-color: var(--surface-raised);
+    }
+
+    .compare-suite-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: 0;
+        border: none;
+        background: transparent;
+        color: var(--main-table-body-font-color);
+        font-size: var(--font-size-sm);
+        cursor: pointer;
+
+        &:focus-visible {
+            .focus-ring();
+        }
+    }
+
+    .compare-suite-name {
+        font-weight: var(--font-weight-semibold);
+    }
+
+    .compare-suite-count {
+        color: var(--main-panel-secondary-font-color);
+        font-size: var(--font-size-xs);
+    }
+
+    .compare-suite-rollup {
+        font-size: var(--font-size-sm);
+    }
+
+    // Compact status icon per run (check = pass, cross = fail, etc.); click
+    // opens the details popover. Changed-from-previous-run icons get a ring in
+    // the text colour.
+    .compare-chip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border: none;
+        border-radius: var(--radius-xs);
+        background: transparent;
+        font-size: var(--font-size-lg);
+        line-height: var(--line-height-tight);
+        cursor: pointer;
+        position: relative;
+        vertical-align: middle;
+
+        &:focus-visible {
+            .focus-ring();
+        }
+    }
+
+    .compare-chip-changed {
+        outline: 2px solid var(--main-panel-font-color);
+        outline-offset: 2px;
+    }
+
+    // Corner dot marking duplicate suite/test-name executions in a run.
+    .compare-chip-multi::after {
+        content: '';
+        position: absolute;
+        top: -3px;
+        right: -3px;
+        width: 7px;
+        height: 7px;
+        border-radius: var(--radius-pill);
+        background-color: var(--main-panel-font-color);
+        border: 1px solid var(--main-panel-background);
     }
 }

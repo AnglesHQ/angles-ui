@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { FormattedMessage } from 'react-intl';
 import { Loader } from 'rsuite';
 import { useSearchParams } from 'next/navigation';
 import axios from 'axios';
@@ -31,7 +32,7 @@ const TestRunsComparePage = function (props) {
     (testRunCompareBuilds.length === 0) ? (
       <div className="app-alert app-alert-info" role="alert">
         <Loader />
-        <span> Retrieving build details to generate the matrix view.</span>
+        <span><FormattedMessage id="page.test-run-compare.loading" /></span>
       </div>
     ) : (
       <TestRunCompareTable testRunCompareBuilds={testRunCompareBuilds} />
