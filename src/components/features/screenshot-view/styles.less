@@ -227,3 +227,64 @@
   flex-shrink: 1;
   width: 100%;
 }
+
+// ── Find image (template matching) tab ─────────────────────────────────────
+.find-image-screenshot-container {
+  position: relative;
+  display: block;
+}
+
+.find-image-match-box {
+  position: absolute;
+  border: 2px solid #ff00ff;
+  z-index: 10;
+  pointer-events: none;
+
+  .find-image-match-label {
+    position: absolute;
+    top: -1.4em;
+    left: 0;
+    background: #ff00ff;
+    color: #ffffff;
+    font-size: var(--font-size-sm, 12px);
+    padding: 0 var(--space-1);
+    white-space: nowrap;
+  }
+}
+
+.find-image-controls {
+  margin-top: var(--space-3);
+
+  .find-image-control-label {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    font-weight: var(--font-weight-bold);
+    color: var(--sub-panel-font-color);
+  }
+
+  .rs-input-number {
+    max-width: 140px;
+  }
+}
+
+.find-image-template-preview {
+  max-width: 280px;
+  max-height: 160px;
+  border: 1px solid var(--sub-panel-font-color);
+}
+
+.find-image-matches-table {
+  margin-top: var(--space-3);
+  border-collapse: collapse;
+
+  th,
+  td {
+    padding: var(--space-1) var(--space-2);
+    text-align: left;
+  }
+
+  th {
+    font-weight: var(--font-weight-bold);
+  }
+}
