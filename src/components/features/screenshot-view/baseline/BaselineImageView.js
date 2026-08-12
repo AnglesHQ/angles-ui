@@ -4,6 +4,8 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import {
   Loader,
   Button,
+  Radio,
+  RadioGroup,
   Stack,
 } from 'rsuite';
 import { IoGitCompareOutline } from 'react-icons/io5';
@@ -26,12 +28,17 @@ const BaselineImageView = (props) => {
     currentBaseLineDetails,
     currentBaselineCompare,
     currentBaselineCompareJson,
+    compareAlgorithm,
+    setCompareAlgorithm,
   } = useContext(CurrentScreenshotContext);
 
   const [regions, setRegions] = useState([]);
   const [editing, setEditing] = useState(false);
   const [crop, setCrop] = useState();
   const [activeIndex, setActiveIndex] = useState(null);
+  // Natural pixel size of the displayed compare image; needed to convert the API's
+  // pixel-coordinate diff regions into percentage overlays.
+  const [naturalSize, setNaturalSize] = useState(null);
   const imgRef = useRef(null);
 
   // Load initial regions from baseline details
@@ -122,6 +129,64 @@ const BaselineImageView = (props) => {
     } else if (activeIndex > index) {
       setActiveIndex(activeIndex - 1);
     }
+  };
+
+  const onCompareImageLoad = (event) => {
+    setNaturalSize({
+      width: event.target.naturalWidth,
+      height: event.target.naturalHeight,
+    });
+  };
+
+  // Convert an API diff region (pixels) to the percentage crop format ignore boxes use.
+  const toPercentRegion = (region) => ({
+    unit: '%',
+    x: (region.x / naturalSize.width) * 100,
+    y: (region.y / naturalSize.height) * 100,
+    width: (region.width / naturalSize.width) * 100,
+    height: (region.height / naturalSize.height) * 100,
+  });
+
+  const addSuggestedRegion = (region, e) => {
+    e.stopPropagation();
+    setRegions([...regions, toPercentRegion(region)]);
+  };
+
+  // While editing, the diff regions the comparison found are offered as one-click
+  // ignore-box suggestions (the pixel algorithm returns them; ssim does not).
+  const renderSuggestedRegions = () => {
+    if (!editing || !naturalSize
+      || !currentBaselineCompareJson || !currentBaselineCompareJson.regions) {
+      return null;
+    }
+    return currentBaselineCompareJson.regions.map((region, index) => {
+      const percent = toPercentRegion(region);
+      return (
+        <div
+          // eslint-disable-next-line react/no-array-index-key
+          key={`suggested-${index}`}
+          className="suggested-region"
+          style={{
+            position: 'absolute',
+            left: `${percent.x}%`,
+            top: `${percent.y}%`,
+            width: `${percent.width}%`,
+            height: `${percent.height}%`,
+            border: '2px dashed #ff9800',
+            zIndex: 9,
+          }}
+        >
+          <span
+            className="suggested-region-add"
+            type="button"
+            title={intl.formatMessage({ id: 'common.component.screenshot-view.tabs.baseline.button.add-suggested-region' })}
+            onClick={(e) => addSuggestedRegion(region, e)}
+          >
+            +
+          </span>
+        </div>
+      );
+    });
   };
 
   const renderOverlayRegions = () => regions.map((region, index) => {
@@ -216,8 +281,10 @@ const BaselineImageView = (props) => {
                         src={imageToDisplay}
                         alt="Compare"
                         width="100%"
+                        onLoad={onCompareImageLoad}
                       />
                       {renderOverlayRegions()}
+                      {renderSuggestedRegions()}
                     </ReactCrop>
                   ) : (
                     <div style={{ position: 'relative' }}>
@@ -226,6 +293,7 @@ const BaselineImageView = (props) => {
                         src={imageToDisplay}
                         alt="Compare"
                         width="100%"
+                        onLoad={onCompareImageLoad}
                       />
                       {renderOverlayRegions()}
                     </div>
@@ -237,6 +305,22 @@ const BaselineImageView = (props) => {
           <tr>
             <td colSpan="100%">
               <Stack spacing={10}>
+                <span className="screenshot-details-label">
+                  <FormattedMessage id="common.component.screenshot-view.tabs.baseline.label.algorithm" />
+                </span>
+                <RadioGroup
+                  inline
+                  name="compare-algorithm"
+                  value={compareAlgorithm}
+                  onChange={(value) => setCompareAlgorithm(value)}
+                >
+                  <Radio value="pixel">
+                    <FormattedMessage id="common.component.screenshot-view.tabs.baseline.algorithm.pixel" />
+                  </Radio>
+                  <Radio value="ssim">
+                    <FormattedMessage id="common.component.screenshot-view.tabs.baseline.algorithm.ssim" />
+                  </Radio>
+                </RadioGroup>
                 <Button
                   type="button"
                   className="btn-primary"

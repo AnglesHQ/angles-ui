@@ -70,6 +70,27 @@ const ScreenshotDetailsTable = function (props) {
             </div>
           ) : null
         }
+        {
+          currentBaselineCompareJson && currentBaselineCompareJson.misMatchPercentage ? (
+            <div className="screenshot-details-row">
+              <span className="screenshot-details-label">
+                <FormattedMessage id="common.component.screenshot-details-table.label.algorithm" />
+              </span>
+              <span>: </span>
+              {/* Older API versions did not report the algorithm; those were pixel. */}
+              <span>{currentBaselineCompareJson.algorithm || 'pixel'}</span>
+              {
+                currentBaselineCompareJson.ssim !== undefined ? (
+                  <span>
+                    {' ('}
+                    <FormattedMessage id="common.component.screenshot-details-table.label.ssim-score" />
+                    {`: ${currentBaselineCompareJson.ssim})`}
+                  </span>
+                ) : null
+              }
+            </div>
+          ) : null
+        }
         <div className="screenshot-details-row">
           <span className="screenshot-details-label">
             <FormattedMessage id="common.component.screenshot-details-table.label.resolution" />
