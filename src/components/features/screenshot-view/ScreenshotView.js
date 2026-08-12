@@ -8,6 +8,7 @@ import ImageCarousel from './ImageCarousel';
 import CurrentImageView from './image/CurrentImageView';
 import BaselineImageView from './baseline/BaselineImageView';
 import ImageSideBySideView from './side-by-side/ImageSideBySideView';
+import FindImageView from './find-image/FindImageView';
 import ScreenshotHistoryView from './history/ScreenshotHistoryView';
 import 'react-multi-carousel/lib/styles.css';
 import { storeCurrentErrorMessage, storeCurrentInfoMessage, storeCurrentLoaderMessage } from '../../../redux/notificationActions';
@@ -35,7 +36,7 @@ const ScreenshotView = function (props) {
   } = useContext(CurrentScreenshotContext);
 
   const handleSelect = (value) => {
-    if (['image', 'history', 'baseline', 'sidebyside'].includes(value)) {
+    if (['image', 'history', 'baseline', 'sidebyside', 'find'].includes(value)) {
       setKey(value);
     }
   };
@@ -215,6 +216,15 @@ const ScreenshotView = function (props) {
             <Tabs.Tab eventKey="sidebyside" title={intl.formatMessage({ id: 'common.component.screenshot-view.tabs.label.side-by-side' })} disabled={!currentScreenshotDetails.platform || !currentScreenshotDetails.view}>
               <div className="image-page-holder">
                 <ImageSideBySideView
+                  isBaseline={isBaseline}
+                />
+              </div>
+            </Tabs.Tab>
+            {/* Template matching needs neither a view nor platform details, so this tab
+                stays enabled for every screenshot. */}
+            <Tabs.Tab eventKey="find" title={intl.formatMessage({ id: 'common.component.screenshot-view.tabs.label.find-image' })}>
+              <div className="image-page-holder">
+                <FindImageView
                   isBaseline={isBaseline}
                 />
               </div>
