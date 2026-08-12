@@ -16,6 +16,8 @@ export function CurrentScreenshotProvider({ children }) {
   const [currentBaseLineDetails, setCurrentBaseLineDetails] = useState(null);
   const [currentBaselineCompare, setCurrentBaselineCompare] = useState(null);
   const [currentBaselineCompareJson, setCurrentBaselineCompareJson] = useState(null);
+  // Comparison algorithm used for baseline compares ('pixel' or 'ssim').
+  const [compareAlgorithm, setCompareAlgorithm] = useState('pixel');
 
   const isBaseline = (screenshotId) => (currentBaseLineDetails && currentBaseLineDetails.screenshot
     && currentBaseLineDetails.screenshot._id === screenshotId);
@@ -103,11 +105,16 @@ export function CurrentScreenshotProvider({ children }) {
     }
   };
 
+  // These two call axios directly (rather than the published angles-javascript-client)
+  // because the algorithm/regions parameters are newer than the released client.
   const getBaselineCompare = (screenshotId, useCache) => {
-    screenshotRequests.getBaselineCompareImage(screenshotId, useCache)
-      .then((screenshot) => {
+    axios.get(`screenshot/${screenshotId}/baseline/compare/image`, {
+      params: { useCache: useCache || false, algorithm: compareAlgorithm },
+      responseType: 'arraybuffer',
+    })
+      .then((response) => {
         const base64 = btoa(
-          new Uint8Array(screenshot).reduce(
+          new Uint8Array(response.data).reduce(
             (data, byte) => data + String.fromCharCode(byte),
             '',
           ),
@@ -121,9 +128,13 @@ export function CurrentScreenshotProvider({ children }) {
   };
 
   const getBaselineCompareJson = (screenshotId) => {
-    screenshotRequests.getBaselineCompare(screenshotId)
-      .then((retrievedBaselineCompareJson) => {
-        setCurrentBaselineCompareJson(retrievedBaselineCompareJson);
+    // regions=true only has an effect for the pixel algorithm; the API ignores it
+    // for the others.
+    axios.get(`screenshot/${screenshotId}/baseline/compare`, {
+      params: { algorithm: compareAlgorithm, regions: true },
+    })
+      .then((response) => {
+        setCurrentBaselineCompareJson(response.data);
       })
       .catch(() => {
         // failed to retrieve baseline.
@@ -180,6 +191,8 @@ export function CurrentScreenshotProvider({ children }) {
         updateBaseline,
         loadScreenshot,
         isBaseline,
+        compareAlgorithm,
+        setCompareAlgorithm,
       }
     ),
     [
@@ -191,6 +204,7 @@ export function CurrentScreenshotProvider({ children }) {
       currentBaseLineDetails,
       currentBaselineCompare,
       currentBaselineCompareJson,
+      compareAlgorithm,
     ],
   );
   return (

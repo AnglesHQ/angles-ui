@@ -33,6 +33,7 @@ const ScreenshotView = function (props) {
     makeUpdateBaselineRequest,
     loadScreenshot,
     isBaseline,
+    compareAlgorithm,
   } = useContext(CurrentScreenshotContext);
 
   const handleSelect = (value) => {
@@ -147,14 +148,14 @@ const ScreenshotView = function (props) {
   }, [propsBuildScreenshots]);
 
   useEffect(() => {
-    // if baseline details have changed, load the new image
+    // if baseline details or the comparison algorithm have changed, load the new image
     if (currentBaseLineDetails && currentBaseLineDetails.screenshot) {
       getBaselineCompare(currentScreenshotDetails._id, true);
       getBaselineCompareJson(currentScreenshotDetails._id);
     } else {
       setCurrentBaselineCompare(null);
     }
-  }, [currentBaseLineDetails]);
+  }, [currentBaseLineDetails, compareAlgorithm]);
 
   // eslint-disable-next-line no-unused-vars
   const navigateToImage = (screenshotDetails) => {
