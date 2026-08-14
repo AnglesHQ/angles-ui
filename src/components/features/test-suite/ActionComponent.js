@@ -1,5 +1,6 @@
 import React from 'react';
 import { BiSolidDownArrow, BiSolidRightArrow } from 'react-icons/bi';
+import { FormattedMessage } from 'react-intl';
 import StepsTimeline from '../execution-timeline';
 import ExecutionStateContext from '../../../context/ExecutionStateContext';
 
@@ -15,28 +16,57 @@ const ActionComponent = function (props) {
     showScreenshots,
   } = props;
 
+  const expanded = isActionExpanded(execution._id, actionIndex);
+  const status = action.status.toLowerCase();
+  const stepCount = action.steps ? action.steps.length : 0;
+
   return (
-    <>
-      <div className="action-description" onClick={() => toggleAction(execution._id, actionIndex)}>
-        <div className={`status-${action.status.toLowerCase()}`} key={`action_${actionIndex}_${isActionExpanded(execution._id, actionIndex)}`}>
+    <div className={`action-block action-block-${status} ${expanded ? 'action-block-expanded' : ''}`}>
+      <div
+        className="action-description"
+        onClick={() => toggleAction(execution._id, actionIndex)}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            toggleAction(execution._id, actionIndex);
+          }
+        }}
+      >
+        <span className="action-toggle">
           {
-            isActionExpanded(execution._id, actionIndex) ? (
-              <BiSolidDownArrow key="" className="action-icon" />
+            expanded ? (
+              <BiSolidDownArrow className="action-icon" />
             ) : (
               <BiSolidRightArrow className="action-icon" />
             )
           }
-          <span>{action.name}</span>
-        </div>
-      </div>
-      <div key={`steps_tables_${actionIndex}`}>
-        { isActionExpanded(execution._id, actionIndex) ? (
-          <div className="action-steps" key={Math.random().toString(36).substring(7)}>
-            <StepsTimeline key={`step_tables_tr_${index}`} index={index} action={action} screenshots={screenshots} openModal={openModal} showScreenshots={showScreenshots} />
-          </div>
+        </span>
+        <span className="action-index">{actionIndex + 1}</span>
+        <span className={`action-name status-${status}`}>{action.name}</span>
+        { stepCount > 0 ? (
+          <span className="action-step-count">
+            <FormattedMessage
+              id="common.component.suite-table.action.step-count"
+              values={{ count: stepCount }}
+            />
+          </span>
         ) : null }
       </div>
-    </>
+      { expanded ? (
+        <div className="action-steps">
+          <StepsTimeline
+            key={`step_tables_tr_${index}`}
+            index={index}
+            action={action}
+            screenshots={screenshots}
+            openModal={openModal}
+            showScreenshots={showScreenshots}
+          />
+        </div>
+      ) : null }
+    </div>
   );
 };
 

@@ -266,11 +266,21 @@
 }
 
 // Content rows on detail pages (charts, suites).
+// These are rsuite `<Row gutter={30}>` elements, and rsuite applies the gutter
+// as an inline `margin-left/right: -15px`, which beats a class selector and
+// pulls the row past the viewport edge — clipping the rounded corners. The
+// horizontal margin is therefore set as a padding-box inset instead, so the
+// gutter only offsets the columns inside the row, never the row itself.
 .detail-row {
     background-color: var(--main-panel-background);
     border-radius: var(--radius-lg);
     margin: var(--space-4);
     padding: var(--space-4);
+}
+
+.detail-row.rs-row {
+    margin-left: var(--space-4) !important;
+    margin-right: var(--space-4) !important;
 }
 
 // ── Brand logo (sidebar + login) ─────────────────────────────────────────────

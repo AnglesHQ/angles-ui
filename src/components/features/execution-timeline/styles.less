@@ -1,26 +1,36 @@
+// The timeline sits inside an expanded action, which already supplies its own
+// surface and indent — keep the panel padding tight so the steps do not drift
+// far from the action they belong to.
+.steps-timeline-panel {
+  .rs-panel-body {
+    padding: var(--space-3) var(--space-2);
+  }
+}
+
 .test-steps-timeline {
 
   .rs-timeline-item-custom-dot {
 
+    // RSuite draws the tail as a 2px line at `left: 4px` (centre x = 5). Centre
+    // the dot on that same axis so the line runs cleanly through it.
     .rs-icon {
       position: absolute;
       background: var(--timeline-dot-background);
       top: 0;
-      left: -2px;
+      left: -9px;
       border: 2px solid var(--timeline-dot-border);
-      width: 40px;
-      height: 40px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
-      font-size: 18px;
-      margin-left: -13px;
+      font-size: 14px;
       justify-content: center;
-      padding: var(--space-2);
+      padding: var(--space-1);
     }
   }
 
   .timeline-step {
-    margin-left: 24px;
-    padding-bottom: var(--space-3);
+    margin-left: var(--space-4);
+    padding-bottom: var(--space-2);
 
     .step-row {
       display: flex;

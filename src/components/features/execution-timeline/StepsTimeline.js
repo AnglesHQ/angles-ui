@@ -117,7 +117,7 @@ const StepsTimeline = function (props) {
     );
   };
 
-  return [
+  return (
     <Panel className="steps-timeline-panel">
       <Timeline className="test-steps-timeline" key={action._id}>
         {
@@ -137,8 +137,8 @@ const StepsTimeline = function (props) {
           ))
         }
       </Timeline>
-    </Panel>,
-  ];
+    </Panel>
+  );
 };
 
 export default StepsTimeline;
