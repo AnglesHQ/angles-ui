@@ -2,7 +2,7 @@ import React from 'react';
 import Chart from 'react-apexcharts';
 import { Panel, Stack } from 'rsuite';
 import { useIntl } from 'react-intl';
-import { STATUS_COLORS, getPlatformLabel } from '../../../../utility/ChartConfig';
+import { STATUS_COLORS, getPlatformLabel } from '../../../utility/ChartConfig';
 
 // One series per status, in the same order as STATUS_COLORS, so each platform's
 // bar is split into its pass/fail/error/skipped make-up.
@@ -44,12 +44,37 @@ const generatePlatformStatusData = (executions) => {
   return { platforms, perPlatform };
 };
 
-const TestExecutionPlatformBarChart = function (props) {
+// Ticks must divide the range exactly, or apex interpolates fractional values
+// that collapse into duplicate labels ("0 1 1 2 2 3") once rounded. Rather than
+// accept whatever divisor the raw total happens to have (a prime like 11 would
+// leave a single tick), round the axis up to the nearest cleanly-divisible
+// value — at most 4 over, so the bars still fill the plot.
+const TICK_DIVISORS = [10, 8, 6, 5, 4, 3, 2];
+
+const niceMax = (value) => {
+  if (value <= 1) return 1;
+  for (let candidate = value; candidate <= value + 4; candidate += 1) {
+    if (TICK_DIVISORS.some((divisor) => candidate % divisor === 0)) return candidate;
+  }
+  return value;
+};
+
+/**
+ * Executions per platform, each bar stacked by result status so the pass/fail
+ * rate of a platform is readable at a glance.
+ *
+ * Shared by the test-execution-history page and the metrics platform tab. Both
+ * pass a flat `executions` array; metrics flattens its periods/phases first.
+ */
+const PlatformStatusBarChart = function (props) {
   const {
     executions,
     title,
     yaxisTitle,
     xaxisTitle,
+    panelClassName = 'chart-panel',
+    background = 'var(--main-panel-background)',
+    foreColor = 'var(--main-panel-font-color)',
   } = props;
   const intl = useIntl();
 
@@ -67,30 +92,12 @@ const TestExecutionPlatformBarChart = function (props) {
 
   const colors = activeStatuses.map((status) => STATUS_COLORS[STATUS_ORDER.indexOf(status)]);
 
-  // Largest stack total, used to pin the axis. Apex otherwise interpolates
-  // fractional ticks on small ranges which, once rounded for display, render as
-  // duplicate labels ("0 1 1 2 2 3"). Pinning `max` also stops it padding the
-  // axis to roughly double the data and leaving the bars using half the width.
   const largestStack = platforms.reduce((max, platform) => {
     const total = STATUS_ORDER.reduce((sum, key) => sum + perPlatform[platform][key], 0);
     return Math.max(max, total);
   }, 0);
-
-  // Ticks must divide the range exactly, or the interpolated values are
-  // fractional and collapse into duplicates once rounded. Rather than accept
-  // whatever divisor the raw total happens to have (a prime like 11 would
-  // leave a single tick), round the axis up to the nearest value that divides
-  // cleanly — at most 4 over, so the bars still fill the plot.
-  const niceMax = (value) => {
-    if (value <= 1) return 1;
-    for (let candidate = value; candidate <= value + 4; candidate += 1) {
-      if ([10, 8, 6, 5, 4, 3, 2].some((d) => candidate % d === 0)) return candidate;
-    }
-    return value;
-  };
   const maxTotal = niceMax(largestStack);
-  const tickAmount = [10, 8, 6, 5, 4, 3, 2]
-    .find((candidate) => maxTotal % candidate === 0) || 1;
+  const tickAmount = TICK_DIVISORS.find((candidate) => maxTotal % candidate === 0) || 1;
 
   const options = {
     chart: {
@@ -98,8 +105,8 @@ const TestExecutionPlatformBarChart = function (props) {
       zoom: { enabled: false },
       animations: { enabled: false },
       stacked: true,
-      background: 'var(--main-panel-background)',
-      foreColor: 'var(--main-panel-font-color)',
+      background,
+      foreColor,
     },
     plotOptions: {
       bar: {
@@ -143,7 +150,7 @@ const TestExecutionPlatformBarChart = function (props) {
 
   return (
     <Panel
-      className="chart-panel"
+      className={panelClassName}
       header={(
         <Stack justifyContent="space-between">
           {title}
@@ -160,4 +167,4 @@ const TestExecutionPlatformBarChart = function (props) {
   );
 };
 
-export default TestExecutionPlatformBarChart;
+export default PlatformStatusBarChart;

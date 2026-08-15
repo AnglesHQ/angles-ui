@@ -13,7 +13,7 @@ import { useSearchParams } from 'next/navigation';
 import { ExecutionRequests, ScreenshotRequests } from 'angles-javascript-client';
 import TestExecutionsResultPieChart from './charts/TestExecutionsResultPieChart';
 import TestExecutionTimelineChart from './charts/TestExecutionTimelineChart';
-import TestExecutionPlatformBarChart from './charts/TestExecutionPlatformBarChart';
+import PlatformStatusBarChart from '../../features/platform-status-chart';
 import ScreenshotView from '../../features/screenshot-view/ScreenshotView';
 import SuiteTable from '../../features/test-suite/SuiteTable';
 import { ExecutionStateProvider } from '../../../context/ExecutionStateContext';
@@ -214,7 +214,7 @@ const SummaryPage = function () {
           </Row>
           <Row gutter={30} className="detail-row">
             <Col xs={24}>
-              <TestExecutionPlatformBarChart
+              <PlatformStatusBarChart
                 title={intl.formatMessage({ id: 'page.test-execution-history.charts.execution-platform-bar-chart.title' })}
                 yaxisTitle={intl.formatMessage({ id: 'page.test-execution-history.charts.execution-platform-bar-chart.yaxis-title' })}
                 xaxisTitle={intl.formatMessage({ id: 'page.test-execution-history.charts.execution-platform-bar-chart.xaxis-title' })}
