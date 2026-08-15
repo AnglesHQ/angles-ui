@@ -4,11 +4,11 @@
     }
 
     .test-run-lock-icon {
-        font-size: 1.5em;
+        font-size: 1.4em;
     }
 
     .test-run-unlock-icon {
-        font-size: 1.5em;
+        font-size: 1.4em;
         opacity: 0.3;
     }
 
@@ -19,6 +19,81 @@
 
     .dashboard-builds-table-date-icon {
         padding-right: var(--space-2);
+    }
+
+    // Build status pill — same shape/scale as the test-run header pill, so a
+    // row reads the same as the page it links to. Fill comes from .status-bg-*.
+    .builds-table-status-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 2px var(--space-3);
+        border-radius: var(--radius-pill);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-bold);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--master-font-color-2);
+    }
+
+    // Fallback fill for a status the app does not have a colour/label for.
+    .builds-table-status-pill-unknown {
+        background-color: var(--skipped-color);
+    }
+
+    // Identity cell: build name over its qualifying metadata.
+    .builds-table-details {
+        min-width: 0;
+    }
+
+    .builds-table-build-name {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-weight: var(--font-weight-medium);
+    }
+
+    // Component / environment / phase, separated by a thin middot so they read
+    // as one line of context rather than three unlabelled columns.
+    .builds-table-meta {
+        display: flex;
+        align-items: baseline;
+        min-width: 0;
+        font-size: var(--font-size-sm);
+        color: var(--sub-table-body-secondary-font-color);
+
+        .builds-table-meta-item {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+
+            & + .builds-table-meta-item::before {
+                content: '·';
+                padding: 0 var(--space-2);
+                opacity: 0.6;
+            }
+        }
+    }
+
+    .builds-table-empty {
+        color: var(--sub-table-body-secondary-font-color);
+    }
+
+    // Trailing flag column: keep lock + artifacts badge.
+    .builds-table-flags-cell {
+        .rs-table-cell-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-4);
+        }
+
+        .builds-table-flag {
+            display: inline-flex;
+            align-items: center;
+            color: var(--main-panel-icon-color);
+            cursor: pointer;
+        }
     }
 }
 
@@ -124,4 +199,12 @@
 .builds-table-result-cell {
     padding-right: var(--space-3);
     display: flex;
+
+    // Centre the results bar in the taller row rather than letting it sit on
+    // the cell's top padding line, so it aligns with the status pill beside it.
+    .rs-table-cell-content {
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
 }
