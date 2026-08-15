@@ -23,7 +23,7 @@ import {
 } from 'rsuite';
 import ExecutionMetricsSummary from './ExecutionMetricsSummary';
 import PlatformDistributionPieChart from './charts/PlatformDistributionPieChart';
-import PlatformDistributionBarChart from './charts/PlatformDistributionBarChart';
+import PlatformStatusBarChart from '../../features/platform-status-chart';
 import PlatformMetricsSummary from './PlatformMetricsSummary';
 import { getPaletteColor, getPlatformLabel } from '../../../utility/ChartConfig';
 import { getDateRangesPicker } from '../../../utility/TimeUtilities';
@@ -53,6 +53,15 @@ const MetricsPage = function (props) {
   const [platformColors, setPlatformColors] = useState({});
   const metricRequests = new MetricRequests(axios);
   const { afterToday } = DateRangePicker;
+
+  // The shared platform chart takes a flat execution list; metrics nests them
+  // under periods → phases.
+  const flattenExecutions = (metricsToUse) => (
+    (metricsToUse && metricsToUse.periods)
+      ? metricsToUse.periods.flatMap((period) => period.phases
+        .flatMap((phase) => phase.executions))
+      : []
+  );
 
   const getPlatformArrayColors = (metricsToUse) => {
     const result = { colors: [] };
@@ -333,12 +342,14 @@ const MetricsPage = function (props) {
                           />
                         </Col>
                         <Col xs={12}>
-                          <PlatformDistributionBarChart
+                          <PlatformStatusBarChart
                             title={<FormattedMessage id="page.metrics.platform-distribution-bar-chart.title" />}
                             yaxisTitle={intl.formatMessage({ id: 'page.metrics.platform-distribution-bar-chart.yaxis-title' })}
                             xaxisTitle={intl.formatMessage({ id: 'page.metrics.platform-distribution-bar-chart.xaxis-title' })}
-                            metrics={metrics}
-                            platformColors={platformColors}
+                            executions={flattenExecutions(metrics)}
+                            panelClassName="execution-metrics-chart-panel"
+                            background="var(--sub-panel-background)"
+                            foreColor="var(--sub-panel-font-color)"
                           />
                         </Col>
                       </Row>
