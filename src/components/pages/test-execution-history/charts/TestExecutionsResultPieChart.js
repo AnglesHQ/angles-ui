@@ -1,11 +1,17 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
-import { STATUS_COLORS } from '../../../../utility/ChartConfig';
 import { Panel, Stack } from 'rsuite';
+import { useIntl } from 'react-intl';
+import {
+  STATUS_COLORS,
+  buildBaseOptions,
+  buildStatusDonutPlotOptions,
+  resultLegendFormatter,
+} from '../../../../utility/ChartConfig';
 
 const STATUS_ORDER = ['PASS', 'FAIL', 'ERROR', 'SKIPPED'];
 
-const generateExecutionMetricsPieChartData = (executions) => {
+const generateExecutionMetricsPieChartData = (executions, intl) => {
   const result = {
     PASS: 0,
     FAIL: 0,
@@ -21,58 +27,52 @@ const generateExecutionMetricsPieChartData = (executions) => {
     SKIPPED,
     ERROR,
   } = result;
-  const data = [PASS, FAIL, ERROR, SKIPPED];
-  const graphData = {
-    data,
-    labels: STATUS_ORDER,
-    colors: STATUS_COLORS,
+  return {
+    data: [PASS, FAIL, ERROR, SKIPPED],
+    labels: [
+      intl.formatMessage({ id: 'page.dashboard.chart.barchart.pass' }),
+      intl.formatMessage({ id: 'page.dashboard.chart.barchart.fail' }),
+      intl.formatMessage({ id: 'page.dashboard.chart.barchart.error' }),
+      intl.formatMessage({ id: 'page.dashboard.chart.barchart.skipped' }),
+    ],
   };
-  return graphData;
 };
 
-const buildOptions = (labels, onStatusClick) => ({
-  chart: {
-    toolbar: { show: false },
-    animations: { enabled: false },
-    background: 'var(--main-panel-background)',
-    foreColor: 'var(--main-panel-font-color)',
-    events: {
-      dataPointSelection: (event, chartContext, config) => {
-        if (onStatusClick) {
-          const { dataPointIndex, selectedDataPoints } = config;
-          const isNowSelected = selectedDataPoints
-            && selectedDataPoints[0]
-            && selectedDataPoints[0].includes(dataPointIndex);
-          onStatusClick(isNowSelected ? STATUS_ORDER[dataPointIndex] : null);
-        }
-      },
+const buildOptions = (labels, onStatusClick, passRateLabel) => {
+  const options = buildBaseOptions();
+  options.chart.events = {
+    dataPointSelection: (event, chartContext, config) => {
+      if (onStatusClick) {
+        const { dataPointIndex, selectedDataPoints } = config;
+        const isNowSelected = selectedDataPoints
+          && selectedDataPoints[0]
+          && selectedDataPoints[0].includes(dataPointIndex);
+        onStatusClick(isNowSelected ? STATUS_ORDER[dataPointIndex] : null);
+      }
     },
-  },
-  xaxis: {
-    tooltip: {
-      enabled: true,
-    },
-    axisBorder: {
+  };
+  return {
+    ...options,
+    colors: STATUS_COLORS,
+    labels,
+    plotOptions: buildStatusDonutPlotOptions(STATUS_ORDER, passRateLabel),
+    dataLabels: { enabled: false },
+    legend: {
       show: true,
+      position: 'bottom',
+      fontSize: '14px',
+      formatter: resultLegendFormatter,
     },
-  },
-  colors: STATUS_COLORS,
-  labels,
-  legend: {
-    show: true,
-    fontSize: '14px',
-    formatter: (seriesName, opts) => `${seriesName}: <strong> ${opts.w.config.series[opts.seriesIndex]}</strong>`,
-
-  },
-  states: {
-    active: {
-      filter: {
-        type: 'darken',
-        value: 0.75,
+    states: {
+      active: {
+        filter: {
+          type: 'darken',
+          value: 0.75,
+        },
       },
     },
-  },
-});
+  };
+};
 
 const TestExecutionsResultPieChart = function (props) {
   const {
@@ -80,7 +80,10 @@ const TestExecutionsResultPieChart = function (props) {
     title,
     onStatusClick,
   } = props;
-  const { data, labels } = generateExecutionMetricsPieChartData(executions);
+  const intl = useIntl();
+  const { data, labels } = generateExecutionMetricsPieChartData(executions, intl);
+  const passRateLabel = intl.formatMessage({ id: 'page.test-run.execution-pie-chart.pass-rate' });
+
   return (
     <Panel
       className="chart-panel"
@@ -92,10 +95,9 @@ const TestExecutionsResultPieChart = function (props) {
     >
       <Chart
         series={data}
-        type="pie"
-        height={350}
-        max-width={500}
-        options={buildOptions(labels, onStatusClick)}
+        type="donut"
+        height={280}
+        options={buildOptions(labels, onStatusClick, passRateLabel)}
       />
     </Panel>
   );

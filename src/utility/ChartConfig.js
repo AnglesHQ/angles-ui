@@ -48,6 +48,47 @@ export const getPlatformLabel = (platform) => {
 // Legend formatter shared by the result charts — renders "Label: <strong>N</strong>".
 export const resultLegendFormatter = (seriesName, opts) => `${seriesName}: <strong> ${opts.w.config.series[opts.seriesIndex]}</strong>`;
 
+// Donut `plotOptions` for the status result charts (test-run, execution history,
+// dashboard). The centre of the ring carries the pass rate — the one number
+// people actually want from a results breakdown — instead of apex's built-in
+// "total", which would just re-sum every slice.
+//
+// `statusOrder` maps slice index -> status key, so the pass slice can be found
+// even when zero-valued statuses have been filtered out of the series.
+// Font sizes are concrete px: apex writes these into an inline style attribute,
+// where a var() reference would not resolve.
+export const buildStatusDonutPlotOptions = (statusOrder, passRateLabel) => ({
+  pie: {
+    donut: {
+      size: '68%',
+      labels: {
+        show: true,
+        value: {
+          fontSize: '30px',
+          fontWeight: 700,
+          offsetY: 0,
+        },
+        total: {
+          show: true,
+          showAlways: true,
+          label: passRateLabel,
+          fontSize: '12px',
+          formatter: (w) => {
+            const series = w.globals.seriesTotals;
+            const total = series.reduce((sum, value) => sum + value, 0);
+            if (total === 0) {
+              return '0%';
+            }
+            const passIndex = statusOrder.indexOf('PASS');
+            const passed = passIndex === -1 ? 0 : series[passIndex];
+            return `${Math.round((passed / total) * 100)}%`;
+          },
+        },
+      },
+    },
+  },
+});
+
 // Returns a FRESH base options object each call, so callers may safely mutate
 // their copy (fixes the previous shared module-level `defaultOptions` bug where
 // charts leaked yaxis/events state into one another).

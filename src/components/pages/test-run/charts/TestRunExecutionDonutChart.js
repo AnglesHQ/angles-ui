@@ -2,7 +2,11 @@ import React from 'react';
 import Chart from 'react-apexcharts';
 import { Panel, Stack } from 'rsuite';
 import { useIntl } from 'react-intl';
-import { buildBaseOptions, resultLegendFormatter } from '../../../../utility/ChartConfig';
+import {
+  buildBaseOptions,
+  buildStatusDonutPlotOptions,
+  resultLegendFormatter,
+} from '../../../../utility/ChartConfig';
 
 const STATUS_DEFINITIONS = [
   { key: 'PASS', colorVar: 'var(--pass-color)', labelId: 'page.dashboard.chart.barchart.pass' },
@@ -54,44 +58,7 @@ const buildOptions = (labels, colors, statusOrder, onStatusClick, passRateLabel)
     ...options,
     labels,
     colors,
-    // The centre of the donut carries the pass rate — the single number most
-    // people want from this chart, and one the surrounding page never states.
-    plotOptions: {
-      pie: {
-        donut: {
-          size: '68%',
-          labels: {
-            show: true,
-            // ApexCharts writes these straight into an inline style attribute,
-            // so they need concrete units — a var() reference is not resolved
-            // here the way it is in a stylesheet.
-            value: {
-              fontSize: '30px',
-              fontWeight: 700,
-              offsetY: 0,
-            },
-            total: {
-              show: true,
-              showAlways: true,
-              label: passRateLabel,
-              fontSize: '12px',
-              // The donut's built-in "total" sums every slice; we want the
-              // pass share instead, so compute it from the raw series.
-              formatter: (w) => {
-                const series = w.globals.seriesTotals;
-                const total = series.reduce((sum, value) => sum + value, 0);
-                if (total === 0) {
-                  return '0%';
-                }
-                const passIndex = statusOrder.indexOf('PASS');
-                const passed = passIndex === -1 ? 0 : series[passIndex];
-                return `${Math.round((passed / total) * 100)}%`;
-              },
-            },
-          },
-        },
-      },
-    },
+    plotOptions: buildStatusDonutPlotOptions(statusOrder, passRateLabel),
     dataLabels: { enabled: false },
     legend: {
       show: true,
