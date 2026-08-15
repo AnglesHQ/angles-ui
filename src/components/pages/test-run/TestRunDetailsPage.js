@@ -30,13 +30,10 @@ import {
   Row,
   Col,
   Grid,
-  Steps,
   Dropdown,
   IconButton,
-  FlexboxGrid,
   Whisper,
   Tooltip,
-  Badge,
   Loader,
   Message,
   Modal,
@@ -55,8 +52,8 @@ import { useConstructor } from '../../../utility/GeneralUtilities';
 import { useAuth } from '../../../context/AuthContext';
 import CurrentScreenshotContext from '../../../context/CurrentScreenshotContext';
 import { getDuration } from '../../../utility/TimeUtilities';
-import TestRunExecutionPieChart from './charts/TestRunExecutionPieChart';
-import FeaturePieChart from './charts/FeaturePieChart';
+import TestRunExecutionDonutChart from './charts/TestRunExecutionDonutChart';
+import FeatureDistributionBarChart from './charts/FeatureDistributionBarChart';
 
 
 const TestRunDetailsPage = function (props) {
@@ -253,295 +250,235 @@ const TestRunDetailsPage = function (props) {
     setDisplayArtifacts(!displayArtifacts);
   };
 
+  const countExecutions = (build) => (build.suites || [])
+    .reduce((total, suite) => total + (suite.executions ? suite.executions.length : 0), 0);
+
+  // One labelled cell of the metadata strip. A null value renders the cell in a
+  // muted "not set" state rather than dropping it, so the strip keeps its rhythm.
+  const renderFact = (labelId, icon, value, modifierClass = '') => (
+    <div className={`test-run-fact ${value ? '' : 'test-run-fact-empty'} ${modifierClass}`} key={labelId}>
+      <span className="test-run-fact-icon">{icon}</span>
+      <span className="test-run-fact-body">
+        <span className="test-run-fact-label">
+          <FormattedMessage id={labelId} />
+        </span>
+        <span className="test-run-fact-value">
+          {value || <FormattedMessage id="page.test-run.header.fact.not-set" />}
+        </span>
+      </span>
+    </div>
+  );
+
+  // Header action icon. `onClick` of null renders it inert; `count` adds a
+  // badge; `active` marks a toggled-on state. A disabled <button> swallows
+  // mouse events, which would suppress the tooltip, so inert actions stay
+  // enabled and are marked with aria-disabled + a "no-op" class instead.
+  const renderHeaderAction = (whisperId, icon, onClick, count = null, active = false) => (
+    <Whisper
+      placement="bottom"
+      controlId="control-id-hover"
+      trigger="hover"
+      speaker={(
+        <Tooltip>
+          {intl.formatMessage({ id: whisperId }, { numberOfScreenshots: screenshots.length })}
+        </Tooltip>
+      )}
+    >
+      <button
+        type="button"
+        className={`test-run-action ${active ? 'test-run-action-active' : ''} ${onClick ? '' : 'test-run-action-disabled'}`}
+        aria-disabled={!onClick}
+        onClick={onClick || undefined}
+      >
+        {icon}
+        {count ? <span className="test-run-action-count">{count}</span> : null}
+      </button>
+    </Whisper>
+  );
+
+  const totalExecutions = countExecutions(currentBuild || {});
+
   return (
     // eslint-disable-next-line no-nested-ternary
     (!currentBuild || !screenshots) ? (
       <div className="app-alert app-alert-info" role="alert">
         <Loader />
-        <span> Retrieving build details.</span>
+        <span><FormattedMessage id="page.test-run.loading" /></span>
       </div>
     ) : (
       (Object.keys(currentBuild).length === 0) ? (
         <div>
           <div className="app-alert app-alert-error" role="alert">
-            <span>
-              {
-                'Unable to retrieve build details. '
-                + 'Please refresh the page and try again and/or check if the build id is valid.'
-              }
-            </span>
+            <span><FormattedMessage id="page.test-run.error.load-failed" /></span>
           </div>
         </div>
       ) : (
         <div>
           <Grid fluid>
-            <Row gutter={30} className="detail-row">
-              <div className="test-run-download-icon">
-                <Dropdown
-                  className="test-run-download-button"
-                  renderToggle={renderIconButton}
-                  placement="bottomEnd"
-                >
-                  <Dropdown.Item
-                    icon={<FileDownloadIcon />}
-                    disabled={!downloadReportButtonEnabled}
-                    onClick={() => { downloadReport(currentBuild._id); }}
-                  >
-                    {intl.formatMessage({ id: 'page.test-run.menu.download-report' })}
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    icon={<BsLockFill />}
-                    onClick={() => { toggleKeep(currentBuild); }}
-                  >
-                    {
-                      (!currentBuild.keep) ? (
-                        intl.formatMessage({ id: 'page.test-run.menu.enable-keep-flag' })
-                      ) : (
-                        intl.formatMessage({ id: 'page.test-run.menu.disable-keep-flag' })
-                      )
-                    }
-                  </Dropdown.Item>
-                  {canDeleteBuild(currentBuild) && (
-                    <Dropdown.Item
-                      icon={<TrashIcon />}
-                      onClick={() => handleDeleteBuild()}
-                    >
-                      {intl.formatMessage({ id: 'page.test-run.menu.delete-build' })}
-                    </Dropdown.Item>
-                  )}
-                </Dropdown>
-              </div>
+            <Row gutter={30} className="detail-row test-run-header-row">
               <Col xs={24}>
-                <Panel
-                  className="page-detail-header test-run-header"
-                  header={(
-                    <div className="page-detail-header-title test-run-header-panel">
-                      <Whisper
-                        placement="bottomStart"
-                        controlId="control-id-hover"
-                        trigger="hover"
-                        speaker={(
-                          <Tooltip>
-                            {`Status: ${currentBuild.status}`}
-                          </Tooltip>
-                        )}
-                      >
-                        <span>{getTestRunEndIcon(currentBuild)}</span>
-                      </Whisper>
-                      {`${currentBuild.name}`}
-                    </div>
-                  )}
-                >
-                  <div className="test-run-steps">
-                    <Steps current={3}>
-                      <Steps.Item
-                        title={intl.formatMessage({ id: 'page.test-run.steps-header.start' })}
-                        description={moment.utc(moment(currentBuild.start)).format('DD MMM - HH:mm:ss')}
-                        icon={
-                          <GiTrafficLightsGreen className="test-run-step-icon" />
-                        }
-                      />
-                      <Steps.Item
-                        title={intl.formatMessage({ id: 'page.test-run.steps-header.duration' })}
-                        description={getDuration(currentBuild)}
-                        className="test-run-duration"
-                        icon={
-                          <GiSandsOfTime className="test-run-step-icon" />
-                        }
-                      />
-                      <Steps.Item
-                        title={intl.formatMessage({ id: 'page.test-run.steps-header.end' })}
-                        className="test-run-end"
-                        description={moment.utc(moment(currentBuild.end)).format('DD MMM - HH:mm:ss')}
-                        icon={
-                          <BiSolidFlagCheckered className="test-run-step-icon" />
-                        }
-                      />
-                    </Steps>
-                  </div>
-                  <FlexboxGrid className="test-run-details-grid" justify="space-between">
-                    <FlexboxGrid.Item colspan={6} className="test-run-details-grid-item">
-                      <Whisper
-                        placement="topStart"
-                        controlId="control-id-hover"
-                        trigger="hover"
-                        speaker={(
-                          <Tooltip>
-                            {intl.formatMessage({ id: 'page.test-run.icons.environment.whisper' })}
-                          </Tooltip>
-                        )}
-                      >
-                        <span>
-                          <PiMapPinDuotone className="test-run-details-icon" />
-                          {currentBuild.environment.name}
-                        </span>
-                      </Whisper>
-                    </FlexboxGrid.Item>
-                    <FlexboxGrid.Item colspan={6} className="test-run-details-grid-item">
-                      <Whisper
-                        placement="topStart"
-                        controlId="control-id-hover"
-                        trigger="hover"
-                        speaker={(
-                          <Tooltip>
-                            {intl.formatMessage({ id: 'page.test-run.icons.component.whisper' })}
-                          </Tooltip>
-                        )}
-                      >
-                        <span>
-                          <CgExtension className="test-run-details-icon" />
-                          {getComponentName(currentBuild).name}
-                        </span>
-                      </Whisper>
-                    </FlexboxGrid.Item>
-                    <FlexboxGrid.Item colspan={6} className="test-run-details-grid-item">
-                      <Whisper
-                        placement="topStart"
-                        controlId="control-id-hover"
-                        trigger="hover"
-                        speaker={(
-                          <Tooltip>
-                            {intl.formatMessage({ id: 'page.test-run.icons.team.whisper' })}
-                          </Tooltip>
-                        )}
-                      >
-                        <span>
-                          <AiOutlineTeam className="test-run-details-icon" />
-                          {currentBuild.team.name}
-                        </span>
-                      </Whisper>
-                    </FlexboxGrid.Item>
-                    <FlexboxGrid.Item colspan={6} className="test-run-details-grid-item">
-                      <Whisper
-                        placement="topEnd"
-                        controlId="control-id-hover"
-                        trigger="hover"
-                        speaker={(
-                          <Tooltip>
-                            {intl.formatMessage({ id: 'page.test-run.icons.phase.whisper' })}
-                          </Tooltip>
-                        )}
-                      >
-                        <span>
-                          {
-                            (currentBuild.phase) ? (
-                              <>
-                                <TbTimelineEventText className="test-run-details-icon" />
-                                {currentBuild.phase.name}
-                              </>
-                            ) : (
-                              <>
-                                <TbTimelineEventText className="test-run-details-icon-disabled" />
-                                none
-                              </>
-                            )
-                          }
-                        </span>
-                      </Whisper>
-                    </FlexboxGrid.Item>
-                  </FlexboxGrid>
-                </Panel>
-                <FlexboxGrid className="test-run-icons-grid">
-                  <FlexboxGrid.Item colspan={6}>
+                <div className="test-run-header">
+                  {/* Identity row: status + name on the left, actions on the right. */}
+                  <div className="test-run-identity">
                     <Whisper
-                      placement="topStart"
+                      placement="bottomStart"
                       controlId="control-id-hover"
                       trigger="hover"
                       speaker={(
                         <Tooltip>
-                          {intl.formatMessage({ id: 'page.test-run.icons.artifacts.whisper' })}
+                          <FormattedMessage
+                            id="page.test-run.header.status.whisper"
+                            values={{ status: currentBuild.status }}
+                          />
                         </Tooltip>
                       )}
                     >
-                      <Badge content={currentBuild.artifacts.length}>
-                        {
-                          (currentBuild.artifacts.length > 0) ? (
-                            <AiOutlinePartition className="test-run-details-icon" onClick={toggleDisplayArtifacts} />
-                          ) : (
-                            <AiOutlinePartition className="test-run-details-icon-disabled" />
-                          )
-                        }
-                      </Badge>
-                    </Whisper>
-                  </FlexboxGrid.Item>
-                  <FlexboxGrid.Item colspan={6} onClick={() => { toggleKeep(currentBuild); }}>
-                    <Whisper
-                      placement="topStart"
-                      controlId="control-id-hover"
-                      trigger="hover"
-                      speaker={(
-                        <Tooltip>
-                          {intl.formatMessage({ id: 'page.test-run.icons.keep-lock.whisper' })}
-                        </Tooltip>
-                      )}
-                    >
-                      <span>
-                        {
-                          currentBuild.keep ? <BsLockFill className="test-run-details-icon test-run-details-lock-icon" /> : <BsFillUnlockFill className="test-run-details-icon test-run-details-unlock-icon" />
-                        }
+                      <span className="test-run-identity-icon">
+                        {getTestRunEndIcon(currentBuild)}
                       </span>
                     </Whisper>
-                  </FlexboxGrid.Item>
-                  <FlexboxGrid.Item colspan={6}>
-                    <Whisper
-                      placement="topStart"
-                      controlId="control-id-hover"
-                      trigger="hover"
-                      speaker={(
-                        <Tooltip>
-                          {intl.formatMessage({ id: 'page.test-run.icons.screenshots.whisper' }, { numberOfScreenshots: screenshots.length })}
-                        </Tooltip>
+                    <div className="test-run-identity-text">
+                      <h1 className="test-run-title" title={currentBuild.name}>
+                        {currentBuild.name}
+                      </h1>
+                      <div className="test-run-identity-meta">
+                        <span
+                          className={`test-run-status-pill status-bg-${currentBuild.status.toLowerCase()}`}
+                        >
+                          {currentBuild.status}
+                        </span>
+                        <span className="test-run-identity-count">
+                          <FormattedMessage
+                            id="page.test-run.header.execution-count"
+                            values={{ count: totalExecutions }}
+                          />
+                        </span>
+                      </div>
+                    </div>
+                    <div className="test-run-actions">
+                      {renderHeaderAction(
+                        'page.test-run.icons.artifacts.whisper',
+                        <AiOutlinePartition />,
+                        currentBuild.artifacts.length > 0 ? toggleDisplayArtifacts : null,
+                        currentBuild.artifacts.length,
+                        displayArtifacts,
                       )}
-                    >
-                      <Badge content={screenshots.length}>
-                        {
-                          (screenshots.length > 0) ? (
-                            <IoImagesSharp className="test-run-details-icon" onClick={() => { openModal(screenshots[0]._id); }} />
-                          ) : (
-                            <IoImagesSharp className="test-run-details-icon-disabled" />
-                          )
-                        }
-                      </Badge>
-                    </Whisper>
-                  </FlexboxGrid.Item>
-                  <FlexboxGrid.Item colspan={6}>
-                    <Whisper
-                      placement="topStart"
-                      controlId="control-id-hover"
-                      trigger="hover"
-                      speaker={(
-                        <Tooltip>
-                          {intl.formatMessage({ id: 'page.test-run.icons.download-report.whisper' })}
-                        </Tooltip>
+                      {renderHeaderAction(
+                        'page.test-run.icons.screenshots.whisper',
+                        <IoImagesSharp />,
+                        screenshots.length > 0 ? () => openModal(screenshots[0]._id) : null,
+                        screenshots.length,
                       )}
-                    >
-                      <FileDownloadIcon className="test-run-details-icon" disabled={!downloadReportButtonEnabled} onClick={() => { downloadReport(currentBuild._id); }} />
-                    </Whisper>
-                  </FlexboxGrid.Item>
-                </FlexboxGrid>
-                <FlexboxGrid>
-                  <FlexboxGrid.Item colspan={24}>
-                    {
-                      displayArtifacts ? (
-                        <Panel className="test-run-details-artifact-panel">
-                          <BuildArtifacts build={currentBuild} />
-                        </Panel>
-                      ) : null
-                    }
-                  </FlexboxGrid.Item>
-                </FlexboxGrid>
+                      {renderHeaderAction(
+                        'page.test-run.icons.keep-lock.whisper',
+                        currentBuild.keep ? <BsLockFill /> : <BsFillUnlockFill />,
+                        () => toggleKeep(currentBuild),
+                        null,
+                        currentBuild.keep,
+                      )}
+                      {renderHeaderAction(
+                        'page.test-run.icons.download-report.whisper',
+                        <FileDownloadIcon />,
+                        downloadReportButtonEnabled
+                          ? () => downloadReport(currentBuild._id) : null,
+                      )}
+                      <Dropdown
+                        className="test-run-menu"
+                        renderToggle={renderIconButton}
+                        placement="bottomEnd"
+                      >
+                        <Dropdown.Item
+                          icon={<FileDownloadIcon />}
+                          disabled={!downloadReportButtonEnabled}
+                          onClick={() => { downloadReport(currentBuild._id); }}
+                        >
+                          {intl.formatMessage({ id: 'page.test-run.menu.download-report' })}
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                          icon={<BsLockFill />}
+                          onClick={() => { toggleKeep(currentBuild); }}
+                        >
+                          {
+                            (!currentBuild.keep) ? (
+                              intl.formatMessage({ id: 'page.test-run.menu.enable-keep-flag' })
+                            ) : (
+                              intl.formatMessage({ id: 'page.test-run.menu.disable-keep-flag' })
+                            )
+                          }
+                        </Dropdown.Item>
+                        {canDeleteBuild(currentBuild) && (
+                          <Dropdown.Item
+                            icon={<TrashIcon />}
+                            onClick={() => handleDeleteBuild()}
+                          >
+                            {intl.formatMessage({ id: 'page.test-run.menu.delete-build' })}
+                          </Dropdown.Item>
+                        )}
+                      </Dropdown>
+                    </div>
+                  </div>
+                  {/* Metadata strip: one labelled cell per fact, wraps on narrow screens. */}
+                  <div className="test-run-facts">
+                    {renderFact(
+                      'page.test-run.icons.environment.whisper',
+                      <PiMapPinDuotone />,
+                      currentBuild.environment.name,
+                    )}
+                    {renderFact(
+                      'page.test-run.icons.component.whisper',
+                      <CgExtension />,
+                      getComponentName(currentBuild).name,
+                    )}
+                    {renderFact(
+                      'page.test-run.icons.team.whisper',
+                      <AiOutlineTeam />,
+                      currentBuild.team.name,
+                    )}
+                    {renderFact(
+                      'page.test-run.icons.phase.whisper',
+                      <TbTimelineEventText />,
+                      currentBuild.phase ? currentBuild.phase.name : null,
+                    )}
+                    {renderFact(
+                      'page.test-run.steps-header.start',
+                      <GiTrafficLightsGreen />,
+                      moment.utc(moment(currentBuild.start)).format('DD MMM - HH:mm:ss'),
+                    )}
+                    {renderFact(
+                      'page.test-run.steps-header.duration',
+                      <GiSandsOfTime />,
+                      getDuration(currentBuild),
+                      'test-run-fact-emphasis',
+                    )}
+                    {renderFact(
+                      'page.test-run.steps-header.end',
+                      <BiSolidFlagCheckered />,
+                      moment.utc(moment(currentBuild.end)).format('DD MMM - HH:mm:ss'),
+                    )}
+                  </div>
+                  {
+                    displayArtifacts ? (
+                      <div className="test-run-artifacts">
+                        <div className="test-run-artifacts-title">
+                          <FormattedMessage id="page.test-run.header.artifacts-title" />
+                        </div>
+                        <BuildArtifacts build={currentBuild} />
+                      </div>
+                    ) : null
+                  }
+                </div>
               </Col>
             </Row>
             <Row gutter={30} className="detail-row">
               <Col xs={12}>
-                <TestRunExecutionPieChart
+                <TestRunExecutionDonutChart
                   title={<FormattedMessage id="page.test-run.execution-pie-chart.title" />}
                   currentBuild={currentBuild}
                   onStatusClick={filterByStatus}
                 />
               </Col>
               <Col xs={12}>
-                <FeaturePieChart
+                <FeatureDistributionBarChart
                   title={<FormattedMessage id="page.test-run.feature-distribution-pie-chart.title" />}
                   currentBuild={currentBuild}
                 />
@@ -549,6 +486,25 @@ const TestRunDetailsPage = function (props) {
             </Row>
             <Row gutter={30} className="detail-row">
               <Col xs={24}>
+                <div className="test-run-suites-toolbar">
+                  <span className="page-section-title test-run-suites-title">
+                    <FormattedMessage id="page.test-run.suites.title" />
+                  </span>
+                  {
+                    selectedStatus ? (
+                      <button
+                        type="button"
+                        className="filter-chip"
+                        onClick={() => filterByStatus(selectedStatus)}
+                      >
+                        <span className={`status-${selectedStatus.toLowerCase()}`}>
+                          {selectedStatus}
+                        </span>
+                        <span className="filter-chip-clear">×</span>
+                      </button>
+                    ) : null
+                  }
+                </div>
                 <div>
                   {
                     filteredSuites.map((suite, index) => (

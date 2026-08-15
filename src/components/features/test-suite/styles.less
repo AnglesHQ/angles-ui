@@ -1,5 +1,5 @@
 .test-run-suite-panel {
-  padding: var(--space-5) 0 var(--space-3) 0;
+  padding: var(--space-0) 0 var(--space-0) 0;
 
   // RSuite's PanelHeader receives our header as a single valid element, so it
   // clones it (merging `test-run-suite-title`) rather than wrapping it in its
@@ -7,7 +7,7 @@
   // header. Carry the themed surface + rounded top corners here, and it's a
   // single flex row with three zones: info (name + meta, grows), the results
   // bar, and the action icons.
-  
+
   .rs-panel-header {
     padding-bottom: 0;
   }
@@ -43,6 +43,7 @@
     .suite-header-meta {
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
       gap: var(--space-2);
       margin-top: var(--space-1);
       font-size: var(--font-size-sm);
@@ -53,10 +54,11 @@
       opacity: 0.6;
     }
 
-    // Middle zone: results bar, fixed sensible width.
+    // Middle zone: results bar. Wide enough that small segments still have
+    // room for their percentage label.
     .suite-header-results {
       flex: 0 0 auto;
-      width: 200px;
+      width: 280px;
     }
 
     // Right zone: action icons, evenly spaced on one line.
@@ -84,81 +86,223 @@
 
   .test-run-suite-body {
     background-color: var(--sub-table-body-background);
-    padding: var(--space-3) var(--space-5);
+    padding: var(--space-2) var(--space-4);
     border-top: none;
-    border-bottom: 2px solid var(--main-panel-background);
 
     // Only the final execution body closes off the panel, so it alone carries
     // the rounded bottom corners.
     &:last-child {
+      padding-bottom: var(--space-4);
       border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-    }
-
-    .test-row {
-      padding: var(--space-1) var(--space-2);
-      font-size: var(--font-size-md);
-      color: var(--sub-table-body-font-color);
-      border-radius: var(--radius-md);
-      transition: background-color var(--transition-fast);
-
-      &:hover {
-        background-color: var(--surface-sunken);
-      }
-
-      // Result labels use the shared .status-* classes (components.less).
-      .execution-test-name {
-        font-size: var(--font-size-md);
-        cursor: pointer;
-      }
-
-      .execution-details-container {
-        color: var(--sub-table-body-secondary-font-color);
-        font-size: var(--font-size-sm);
-
-        .rs-icon {
-          margin-right: var(--space-1);
-          font-size: 1.1em;
-        }
-
-        .date-details {
-          margin-left: var(--space-3);
-        }
-
-        .device-details {
-          margin-left: var(--space-4);
-        }
-      }
-    }
-
-    .actions-row {
-      padding: var(--space-3) var(--space-6);
-      border-radius: var(--radius-sm);
-      background-color: var(--body-background);
-      color: var(--sub-panel-font-color);
-      cursor: pointer;
-
-      .action-description {
-        font-size: var(--font-size-md);
-        margin-bottom: var(--space-3);
-      }
-
-      .action-steps {
-        background: var(--main-panel-background);
-        border-radius: var(--radius-sm);
-      }
     }
   }
 
-  .action-icon {
-    font-size: 1em;
+  // ── Execution ───────────────────────────────────────────────────────────────
+  // Each execution is a card with a status-coloured left rail so a column of
+  // them can be scanned for failures without reading any text.
+  .execution-row {
+    border: 1px solid var(--border-subtle);
+    border-left: 4px solid var(--border-color);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    color: var(--sub-table-body-font-color);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+
+    & + .execution-row {
+      margin-top: var(--space-2);
+    }
+  }
+
+  .execution-row-pass {
+    border-left-color: var(--pass-color);
+  }
+
+  .execution-row-fail {
+    border-left-color: var(--fail-color);
+  }
+
+  .execution-row-error {
+    border-left-color: var(--error-color);
+  }
+
+  .execution-row-skipped {
+    border-left-color: var(--skipped-color);
+  }
+
+  .execution-row-expanded {
+    box-shadow: var(--shadow-sm);
+  }
+
+  .execution-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
     cursor: pointer;
-    margin-right: var(--space-3);
+    transition: background-color var(--transition-fast);
+
+    &:hover {
+      background-color: var(--surface-sunken);
+    }
+
+    &:focus-visible {
+      .focus-ring();
+    }
+  }
+
+  .execution-toggle {
+    display: inline-flex;
+    flex: 0 0 auto;
+  }
+
+  .execution-header-main {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .execution-title-line {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-width: 0;
+  }
+
+  .execution-test-name {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  // Result label uses the shared .status-* classes for its colour; the chip
+  // adds a tinted pill around it built from that same colour.
+  .execution-status-chip {
+    flex: 0 0 auto;
+    padding: 1px var(--space-2);
+    border: 1px solid currentcolor;
+    border-radius: var(--radius-pill);
+    font-size: var(--font-size-xs);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background-color: color-mix(in srgb, currentcolor 12%, transparent);
+  }
+
+  .execution-details-container {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-4);
+    margin-top: var(--space-1);
+    color: var(--sub-table-body-secondary-font-color);
+    font-size: var(--font-size-sm);
+
+    .execution-detail {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      min-width: 0;
+    }
+
+    .rs-icon {
+      font-size: 1.1em;
+    }
+  }
+
+  // ── Actions ─────────────────────────────────────────────────────────────────
+  // Actions are indented under their execution and hang off a vertical guide
+  // line, so the action → steps hierarchy is visible at a glance.
+  .actions-row {
+    padding: var(--space-2) var(--space-3) var(--space-3) var(--space-6);
+    background-color: var(--body-background);
+    border-top: 1px solid var(--border-subtle);
+    color: var(--sub-panel-font-color);
+  }
+
+  .action-block {
+    position: relative;
+    padding-left: var(--space-3);
+    border-left: 2px solid var(--border-subtle);
+
+    & + .action-block {
+      margin-top: var(--space-1);
+    }
+  }
+
+  .action-block-fail {
+    border-left-color: var(--fail-color);
+  }
+
+  .action-block-error {
+    border-left-color: var(--error-color);
+  }
+
+  .action-description {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-md);
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+
+    &:hover {
+      background-color: var(--surface-sunken);
+    }
+
+    &:focus-visible {
+      .focus-ring();
+    }
+  }
+
+  .action-toggle {
+    display: inline-flex;
+    flex: 0 0 auto;
+  }
+
+  // Sequence number — gives long action lists a scannable spine.
+  .action-index {
+    flex: 0 0 auto;
+    min-width: 20px;
+    padding: 0 var(--space-1);
+    border-radius: var(--radius-xs);
+    background-color: var(--surface-raised);
+    color: var(--sub-panel-secondary-font-color);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+  }
+
+  .action-name {
+    flex: 1 1 auto;
+    min-width: 0;
+    word-break: break-word;
+  }
+
+  .action-step-count {
+    flex: 0 0 auto;
+    color: var(--sub-panel-secondary-font-color);
+    font-size: var(--font-size-xs);
+  }
+
+  .action-steps {
+    margin: var(--space-1) 0 var(--space-2) var(--space-3);
+    background: var(--main-panel-background);
+    border-radius: var(--radius-sm);
+  }
+
+  .action-icon {
+    font-size: 0.75em;
+    cursor: pointer;
     color: var(--link-color-1);
   }
 
   .execution-icon {
-    font-size: 1.5em;
+    font-size: 1.4em;
     cursor: pointer;
+    color: var(--icon-action-color);
   }
 
   .execution-history-icon {

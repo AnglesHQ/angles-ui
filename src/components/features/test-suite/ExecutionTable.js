@@ -3,12 +3,14 @@ import { FormattedMessage } from 'react-intl';
 import HistoryIcon from '@rsuite/icons/History';
 import ExpandOutlineIcon from '@rsuite/icons/ExpandOutline';
 import CollaspedOutlineIcon from '@rsuite/icons/CollaspedOutline';
-import { FlexboxGrid, Tooltip, Whisper } from 'rsuite';
+import { Tooltip, Whisper } from 'rsuite';
 import DeviceIcon from '@rsuite/icons/Device';
 import CalendarIcon from '@rsuite/icons/Calendar';
+import TimeIcon from '@rsuite/icons/Time';
 import Moment from 'react-moment';
 import ActionComponent from './ActionComponent';
 import ExecutionStateContext from '../../../context/ExecutionStateContext';
+import { getDuration } from '../../../utility/TimeUtilities';
 
 const ExecutionTable = function (props) {
   const { isExecutionExpanded, toggleExecution } = useContext(ExecutionStateContext);
@@ -35,69 +37,88 @@ const ExecutionTable = function (props) {
     return platformsToDisplay.join(', ');
   };
 
+  const status = execution.status.toLowerCase();
+  const expanded = isExecutionExpanded(execution._id);
+  const actionCount = execution.actions ? execution.actions.length : 0;
+
   return (
     <div className="test-run-suite-body">
-      <div key={`execution_${index}`} className="test-row">
-        <div className={`${execution.status}`}>
-          <FlexboxGrid justify="space-between">
-            <FlexboxGrid.Item colspan={1}>
-              <span
-                key={isExecutionExpanded(execution._id)}
-                onClick={() => toggleExecution(execution._id)}
-              >
-                {
-                isExecutionExpanded(execution._id) ? (
-                  <CollaspedOutlineIcon className="execution-icon" />
-                ) : <ExpandOutlineIcon className="execution-icon" />
-              }
+      <div
+        key={`execution_${index}`}
+        className={`execution-row execution-row-${status} ${expanded ? 'execution-row-expanded' : ''}`}
+      >
+        {/* Header line: toggle, test name + status chip, meta, history link. */}
+        <div
+          className="execution-header"
+          onClick={() => toggleExecution(execution._id)}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              toggleExecution(execution._id);
+            }
+          }}
+        >
+          <span className="execution-toggle">
+            {
+              expanded ? (
+                <CollaspedOutlineIcon className="execution-icon" />
+              ) : <ExpandOutlineIcon className="execution-icon" />
+            }
+          </span>
+          <div className="execution-header-main">
+            <div className="execution-title-line">
+              <span className="execution-test-name">{execution.title}</span>
+              <span className={`execution-status-chip status-${status}`}>
+                {execution.status}
               </span>
-            </FlexboxGrid.Item>
-            <FlexboxGrid.Item colspan={showHistoryLink === false ? 23 : 22}>
-              <div className="execution-test-name" onClick={() => toggleExecution(execution._id)}>
-                <span><FormattedMessage id="common.component.suite-table.header.test" /></span>
-                <span>: </span>
-                <span>{`${execution.title} - `}</span>
-                <span className={`status-${execution.status.toLowerCase()}`}>{`${execution.status}`}</span>
-              </div>
-              <div className="execution-details-container">
-                <span className="date-details">
-                  <CalendarIcon />
-                  <Moment utc format="DD-MM-YYYY HH:mm:ss">
-                    {execution.start}
-                  </Moment>
+            </div>
+            <div className="execution-details-container">
+              <span className="execution-detail">
+                <CalendarIcon />
+                <Moment utc format="DD-MM-YYYY HH:mm:ss">
+                  {execution.start}
+                </Moment>
+              </span>
+              <span className="execution-detail">
+                <TimeIcon />
+                <span>{getDuration(execution)}</span>
+              </span>
+              { execution.platforms && execution.platforms.length > 0 ? (
+                <span className="execution-detail">
+                  <DeviceIcon />
+                  <span>{getPlatformName(execution)}</span>
                 </span>
-                <span>
-                  { execution.platforms && execution.platforms.length > 0 ? (
-                    <span className="device-details">
-                      <DeviceIcon />
-                      <span>{getPlatformName(execution)}</span>
-                    </span>
-                  ) : null }
+              ) : null }
+              { actionCount > 0 ? (
+                <span className="execution-detail">
+                  <FormattedMessage
+                    id="common.component.suite-table.execution.action-count"
+                    values={{ count: actionCount }}
+                  />
                 </span>
-              </div>
-            </FlexboxGrid.Item>
-            { showHistoryLink !== false ? (
-              <FlexboxGrid.Item colspan={1}>
-                <Whisper
-                  placement="top"
-                  trigger="hover"
-                  speaker={<Tooltip><FormattedMessage id="common.component.suite-table.icon.test-history" /></Tooltip>}
-                >
-                  <a
-                    className="test-history-link"
-                    href={`/test-execution-history?executionId=${execution._id}`}
-                  >
-                    <HistoryIcon className="execution-history-icon" />
-                  </a>
-                </Whisper>
-              </FlexboxGrid.Item>
-            ) : null }
-          </FlexboxGrid>
+              ) : null }
+            </div>
+          </div>
+          { showHistoryLink !== false ? (
+            <Whisper
+              placement="top"
+              trigger="hover"
+              speaker={<Tooltip><FormattedMessage id="common.component.suite-table.icon.test-history" /></Tooltip>}
+            >
+              <a
+                className="test-history-link"
+                href={`/test-execution-history?executionId=${execution._id}`}
+                onClick={(event) => event.stopPropagation()}
+              >
+                <HistoryIcon className="execution-history-icon" />
+              </a>
+            </Whisper>
+          ) : null }
         </div>
-      </div>
-      { isExecutionExpanded(execution._id) ? (
-        <div key={`execution_actions_${index}`} className="actions-row">
-          <div className="actions-wrapper">
+        { expanded ? (
+          <div key={`execution_actions_${index}`} className="actions-row">
             { execution.actions.map((action, actionIndex) => [
               <ActionComponent
                 key={index}
@@ -111,8 +132,8 @@ const ExecutionTable = function (props) {
               />,
             ])}
           </div>
-        </div>
-      ) : null}
+        ) : null}
+      </div>
     </div>
   );
 };

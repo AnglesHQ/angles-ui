@@ -81,6 +81,13 @@ const SuiteTable = function (props) {
                 <span>: </span>
                 {sum(suite.result)}
               </span>
+              <span className="suite-header-meta-sep">•</span>
+              <span className="suite-header-meta-item">
+                <FormattedMessage
+                  id="common.component.suite-table.header.execution-count"
+                  values={{ count: suite.executions.length }}
+                />
+              </span>
             </div>
           </div>
           <div className="suite-header-results">

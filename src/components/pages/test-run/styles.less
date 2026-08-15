@@ -1,121 +1,262 @@
-// Test-run detail page. Generic header chrome comes from .page-detail-header /
-// .page-detail-header-title / .detail-row (components.less); only the
-// test-run-specific pieces live here.
-.test-run-download-icon {
-  position: relative;
+// Test-run detail page.
+// The header is a single card with two bands: an identity row (status icon,
+// build name, status pill, action icons) and a metadata strip of labelled
+// facts. Generic row chrome comes from `.detail-row` (components.less).
 
-  .test-run-download-button {
-    position: absolute;
-    right: 0;
-    z-index: 2;
-  }
-}
+// The header row is a plain `.detail-row` + `<Row gutter={30}>`, exactly like
+// the charts and suites rows below it, so all three line up at the same edges.
+// It deliberately does NOT zero the row padding: that 16px is what aligns the
+// header card with the chart panels.
 
 .test-run-header {
-  .test-run-header-panel {
-    font-size: var(--font-size-4xl);
+  color: var(--main-panel-font-color);
+
+  // ── Band 1: identity ──────────────────────────────────────────────────────
+  .test-run-identity {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-5);
+  }
+
+  .test-run-identity-icon {
+    display: inline-flex;
+    flex: 0 0 auto;
 
     .test-run-end-icon {
-      margin-right: var(--space-3);
-      font-size: 35px;
-    }
-
-  }
-
-  .test-run-steps {
-    padding-top: var(--space-3);
-    padding-bottom: var(--space-5);
-    width: 90%;
-    margin: auto;
-
-    .rs-steps-item-description {
-      color: var(--main-panel-font-color);
-      margin-left: -40px;
-    }
-
-    .rs-steps-item-title {
-      color: var(--main-panel-font-color);
-    }
-
-    .test-run-step-icon {
-      font-size: 28px;
-    }
-
-    .test-run-duration {
-      .rs-steps-item-description {
-        font-size: var(--font-size-2xl);
-      }
+      font-size: 40px;
     }
   }
 
-  .test-run-details-grid {
-    padding: var(--space-3) 0 var(--space-5) 0;
+  .test-run-identity-text {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .test-run-title {
+    margin: 0;
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+    color: var(--main-panel-font-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .test-run-identity-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+  }
+
+  // Status pill takes its fill from the shared .status-bg-* classes.
+  .test-run-status-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px var(--space-3);
+    border-radius: var(--radius-pill);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--master-font-color-2);
+  }
+
+  .test-run-identity-count {
+    font-size: var(--font-size-sm);
+    color: var(--main-panel-secondary-font-color);
+  }
+
+  // ── Header actions ────────────────────────────────────────────────────────
+  .test-run-actions {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .test-run-action {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--icon-action-color);
+    font-size: 1.3em;
+    cursor: pointer;
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+
+    &:hover:not(.test-run-action-disabled) {
+      background-color: var(--surface-sunken);
+      border-color: var(--border-subtle);
+    }
+
+    &:focus-visible {
+      .focus-ring();
+    }
+  }
+
+  // Inert action — still hoverable so its tooltip explains why.
+  .test-run-action-disabled {
+    color: var(--icon-disabled-color);
+    cursor: not-allowed;
+  }
+
+  // Toggled-on state (artifacts panel open, keep flag set).
+  .test-run-action-active {
+    color: var(--color-primary);
+    background-color: var(--surface-sunken);
+    border-color: var(--border-subtle);
+  }
+
+  // Small count badge on the artifact / screenshot actions.
+  .test-run-action-count {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    min-width: 16px;
+    padding: 0 4px;
+    border-radius: var(--radius-pill);
+    background-color: var(--color-primary);
+    color: var(--color-primary-contrast);
+    font-size: 10px;
+    font-weight: var(--font-weight-bold);
+    line-height: 16px;
+    text-align: center;
+  }
+
+  .test-run-menu {
+    margin-left: var(--space-1);
+  }
+
+  // ── Band 2: metadata strip ────────────────────────────────────────────────
+  // Auto-fitting columns so the facts stay on one line on wide screens and
+  // wrap into a tidy grid on narrow ones, without media queries.
+  // The strip always holds the same 7 facts, so the columns are stepped
+  // explicitly rather than left to `auto-fit` — auto-fit maximises the column
+  // count and 7 items divided by 5 or 6 columns leaves a lone orphan on the
+  // second row. Each step divides 7 into balanced rows and keeps the track wide
+  // enough for a full timestamp.
+  .test-run-facts {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-5);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  // 7-across only once each track can hold a full "DD MMM - HH:mm:ss" value.
+  @media (min-width: 1800px) {
+    .test-run-facts {
+      grid-template-columns: repeat(7, 1fr);
+    }
+  }
+
+  @media (max-width: 900px) {
+    .test-run-facts {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 560px) {
+    .test-run-facts {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .test-run-fact {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-width: 0;
+  }
+
+  .test-run-fact-icon {
+    display: inline-flex;
+    flex: 0 0 auto;
+    font-size: 1.5em;
+    color: var(--icon-action-color);
+  }
+
+  .test-run-fact-body {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .test-run-fact-label {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--main-panel-secondary-font-color);
+  }
+
+  .test-run-fact-value {
     font-size: var(--font-size-md);
-    border-bottom: 1px solid var(--border-subtle);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-snug);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-    .test-run-details-grid-item>span {
-      font-weight: var(--font-weight-bold);
-    }
+  // Duration is the headline number of the strip.
+  .test-run-fact-emphasis .test-run-fact-value {
+    font-size: var(--font-size-lg);
+    color: var(--color-primary);
+  }
 
-    :nth-child(2) {
-      text-align: center;
-    }
-
-    :nth-child(3) {
-      text-align: center;
-    }
-
-    :last-child {
-      text-align: right;
-    }
-
-    .test-run-details-icon {
-      font-size: 2em;
-      margin-right: var(--space-3);
-      color: var(--icon-action-color);
-    }
-
-    .test-run-details-icon-disabled {
-      font-size: 2em;
+  .test-run-fact-empty {
+    .test-run-fact-icon {
       color: var(--icon-disabled-color);
     }
+
+    .test-run-fact-value {
+      font-weight: var(--font-weight-regular);
+      color: var(--main-panel-secondary-font-color);
+    }
   }
 
-  .test-run-details-artifact-panel {
+  // ── Artifacts drawer (toggled from the header actions) ────────────────────
+  .test-run-artifacts {
+    padding: var(--space-4) var(--space-5);
+    border-top: 1px solid var(--border-subtle);
     background-color: var(--body-background);
-    padding: var(--space-3) 0 var(--space-5) 0;
-    font-size: var(--font-size-md);
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
 
     .build-artifacts-table {
       width: 100%;
     }
   }
+
+  .test-run-artifacts-title {
+    margin-bottom: var(--space-3);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--main-panel-secondary-font-color);
+  }
 }
 
-.test-run-icons-grid {
-  padding: var(--space-4) 0 0 0;
-  width: 150px;
+// ── Suites section heading ──────────────────────────────────────────────────
+// The active-status chip beside the title uses the shared `.filter-chip`
+// pattern in components.less.
+.test-run-suites-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
 
-  .test-run-details-icon {
-    font-size: 1.7em;
-    color: var(--icon-action-color);
-    cursor: pointer;
-  }
-
-  .test-run-details-icon-disabled {
-    font-size: 1.7em;
-    color: var(--icon-disabled-color);
-    cursor: not-allowed;
-  }
-
-  .test-run-details-lock-icon {
-    position: relative;
-    top: -2px;
-  }
-
-  .test-run-details-unlock-icon {
-    position: relative;
-    top: -2px;
-    color: var(--icon-disabled-color);
-  }
+.test-run-suites-title {
+  margin: 0;
+  font-weight: var(--font-weight-semibold);
 }

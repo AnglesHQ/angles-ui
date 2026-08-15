@@ -7,10 +7,14 @@
   overflow: hidden;
 
   // Segment fills use the shared .status-bg-* classes (components.less).
+  // `min-width: 0` lets a narrow segment shrink to its true share of the bar
+  // instead of being propped open by its own label, which otherwise makes
+  // adjacent percentages overlap and read as one run-together number.
   .test-result-segment {
     display: flex;
     align-items: center;
     justify-content: center;
+    min-width: 0;
     overflow: hidden;
     white-space: nowrap;
     color: var(--master-font-color-2);

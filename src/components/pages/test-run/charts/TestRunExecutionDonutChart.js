@@ -2,6 +2,11 @@ import React from 'react';
 import Chart from 'react-apexcharts';
 import { Panel, Stack } from 'rsuite';
 import { useIntl } from 'react-intl';
+import {
+  buildBaseOptions,
+  buildStatusDonutPlotOptions,
+  resultLegendFormatter,
+} from '../../../../utility/ChartConfig';
 
 const STATUS_DEFINITIONS = [
   { key: 'PASS', colorVar: 'var(--pass-color)', labelId: 'page.dashboard.chart.barchart.pass' },
@@ -33,45 +38,48 @@ const generateExecutionMetricsPieChartData = (currentBuild, intl) => {
   return null;
 };
 
-const buildOptions = (labels, colors, statusOrder, onStatusClick) => ({
-  chart: {
-    toolbar: { show: false },
-    animations: { enabled: false },
-    background: 'var(--main-panel-background)',
-    foreColor: 'var(--main-panel-font-color)',
-    events: {
-      dataPointSelection: (event, chartContext, config) => {
-        if (onStatusClick) {
-          const { dataPointIndex, selectedDataPoints } = config;
-          // selectedDataPoints[0] lists the currently-selected indices.
-          // If the clicked slice is now de-selected, the array won't contain
-          // dataPointIndex, so we clear the filter.
-          const isNowSelected = selectedDataPoints
-            && selectedDataPoints[0]
-            && selectedDataPoints[0].includes(dataPointIndex);
-          onStatusClick(isNowSelected ? statusOrder[dataPointIndex] : null);
-        }
+const buildOptions = (labels, colors, statusOrder, onStatusClick, passRateLabel) => {
+  const options = buildBaseOptions();
+  options.chart.events = {
+    dataPointSelection: (event, chartContext, config) => {
+      if (onStatusClick) {
+        const { dataPointIndex, selectedDataPoints } = config;
+        // selectedDataPoints[0] lists the currently-selected indices.
+        // If the clicked slice is now de-selected, the array won't contain
+        // dataPointIndex, so we clear the filter.
+        const isNowSelected = selectedDataPoints
+          && selectedDataPoints[0]
+          && selectedDataPoints[0].includes(dataPointIndex);
+        onStatusClick(isNowSelected ? statusOrder[dataPointIndex] : null);
+      }
+    },
+  };
+  return {
+    ...options,
+    labels,
+    colors,
+    plotOptions: buildStatusDonutPlotOptions(statusOrder, passRateLabel),
+    dataLabels: { enabled: false },
+    legend: {
+      show: true,
+      position: 'bottom',
+      fontSize: '14px',
+      formatter: resultLegendFormatter,
+    },
+    // Apex's default `darken` turns the selected slice near-black, which reads
+    // as a different status rather than as "selected".
+    states: {
+      active: {
+        filter: { type: 'none' },
+      },
+      hover: {
+        filter: { type: 'lighten', value: 0.1 },
       },
     },
-  },
-  labels,
-  colors,
-  legend: {
-    show: true,
-    fontSize: '15px',
-    formatter: (seriesName, opts) => `${seriesName}: <strong> ${opts.w.config.series[opts.seriesIndex]}</strong>`,
-  },
-  states: {
-    active: {
-      filter: {
-        type: 'darken',
-        value: 0.75,
-      },
-    },
-  },
-});
+  };
+};
 
-const TestRunExecutionPieChart = function (props) {
+const TestRunExecutionDonutChart = function (props) {
   const {
     currentBuild,
     title,
@@ -85,6 +93,7 @@ const TestRunExecutionPieChart = function (props) {
   const {
     data, labels, colors, statusOrder,
   } = metrics;
+  const passRateLabel = intl.formatMessage({ id: 'page.test-run.execution-pie-chart.pass-rate' });
 
   return (
     <Panel
@@ -97,13 +106,12 @@ const TestRunExecutionPieChart = function (props) {
     >
       <Chart
         series={data}
-        type="pie"
-        height={350}
-        max-width={500}
-        options={buildOptions(labels, colors, statusOrder, onStatusClick)}
+        type="donut"
+        height={280}
+        options={buildOptions(labels, colors, statusOrder, onStatusClick, passRateLabel)}
       />
     </Panel>
   );
 };
 
-export default TestRunExecutionPieChart;
+export default TestRunExecutionDonutChart;

@@ -1,41 +1,26 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
-import { STATUS_COLORS } from '../../../../utility/ChartConfig';
 import { Panel, Stack } from 'rsuite';
 import { useIntl } from 'react-intl';
+import {
+  STATUS_COLORS,
+  buildBaseOptions,
+  buildStatusDonutPlotOptions,
+  resultLegendFormatter,
+} from '../../../../utility/ChartConfig';
 
-const defaultOptions = {
-  chart: {
-    toolbar: { show: false },
-    animations: { enabled: false },
-    background: 'var(--main-panel-background)',
-    foreColor: 'var(--main-panel-font-color)',
-  },
-  xaxis: {
-    tooltip: {
-      enabled: true,
-    },
-    axisBorder: {
-      show: true,
-    },
-  },
-  colors: STATUS_COLORS,
-  legend: {
-    show: false,
-    fontSize: '15px',
-    formatter: (seriesName, opts) => `${seriesName}: <strong> ${opts.w.config.series[opts.seriesIndex]}</strong>`,
-  },
-};
+// Slice order must match STATUS_COLORS (PASS, FAIL, ERROR, SKIPPED) so the
+// donut's centre label can locate the pass slice by index.
+const STATUS_ORDER = ['PASS', 'FAIL', 'ERROR', 'SKIPPED'];
 
-const generatePieChartData = (testRunMetrics) => {
-  const intl = useIntl();
+const generatePieChartData = (testRunMetrics, intl) => {
   const {
     pass,
     fail,
     skipped,
     error,
   } = testRunMetrics;
-  const graphData = {
+  return {
     data: [pass || 0, fail || 0, error || 0, skipped || 0],
     labels: [
       intl.formatMessage({ id: 'page.dashboard.chart.barchart.pass' }),
@@ -44,7 +29,6 @@ const generatePieChartData = (testRunMetrics) => {
       intl.formatMessage({ id: 'page.dashboard.chart.barchart.skipped' }),
     ],
   };
-  return graphData;
 };
 
 const BuildExecutionPieChart = function (props) {
@@ -52,9 +36,28 @@ const BuildExecutionPieChart = function (props) {
     title,
     testRunMetrics,
   } = props;
-  const { data, labels } = generatePieChartData(testRunMetrics);
+  const intl = useIntl();
+  const { data, labels } = generatePieChartData(testRunMetrics, intl);
+  const passRateLabel = intl.formatMessage({ id: 'page.test-run.execution-pie-chart.pass-rate' });
+
+  const options = {
+    ...buildBaseOptions(),
+    colors: STATUS_COLORS,
+    labels,
+    plotOptions: buildStatusDonutPlotOptions(STATUS_ORDER, passRateLabel),
+    dataLabels: { enabled: false },
+    legend: {
+      show: true,
+      position: 'bottom',
+      fontSize: '14px',
+      formatter: resultLegendFormatter,
+    },
+  };
+
   return (
     <Panel
+      // Matches the ExecutionBarChart sharing this row, so the two panels
+      // line up.
       style={{ height: '500px' }}
       className="chart-panel"
       header={(
@@ -65,10 +68,9 @@ const BuildExecutionPieChart = function (props) {
     >
       <Chart
         series={data}
-        type="pie"
+        type="donut"
         height={400}
-        /* eslint-disable-next-line prefer-object-spread */
-        options={Object.assign({}, defaultOptions, { labels })}
+        options={options}
       />
     </Panel>
   );
