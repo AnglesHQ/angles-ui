@@ -494,13 +494,13 @@ const TestRunDetailsPage = function (props) {
                     selectedStatus ? (
                       <button
                         type="button"
-                        className="test-run-filter-chip"
+                        className="filter-chip"
                         onClick={() => filterByStatus(selectedStatus)}
                       >
                         <span className={`status-${selectedStatus.toLowerCase()}`}>
                           {selectedStatus}
                         </span>
-                        <span className="test-run-filter-chip-clear">×</span>
+                        <span className="filter-chip-clear">×</span>
                       </button>
                     ) : null
                   }

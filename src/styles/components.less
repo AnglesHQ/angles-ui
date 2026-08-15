@@ -283,6 +283,50 @@
     margin-right: var(--space-4) !important;
 }
 
+// ── Status filter toolbar (charts that filter the page below them) ──────────
+// Used on the test-run and test-execution-history pages, where clicking a slice
+// of a status donut narrows every chart and table on the page. The chip shows
+// what is currently filtered and clears it when clicked.
+.filter-toolbar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+}
+
+.filter-toolbar-hint {
+    color: var(--main-panel-secondary-font-color);
+    font-size: var(--font-size-sm);
+}
+
+.filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 2px var(--space-3);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--main-panel-font-color);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+
+    &:hover {
+        background-color: var(--surface-sunken);
+    }
+
+    &:focus-visible {
+        .focus-ring();
+    }
+}
+
+.filter-chip-clear {
+    color: var(--main-panel-secondary-font-color);
+    font-size: var(--font-size-md);
+    line-height: 1;
+}
+
 // ── Brand logo (sidebar + login) ─────────────────────────────────────────────
 .brand-logo-icon {
     height: 50px;

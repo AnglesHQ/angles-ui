@@ -66,12 +66,14 @@ const buildOptions = (labels, colors, statusOrder, onStatusClick, passRateLabel)
       fontSize: '14px',
       formatter: resultLegendFormatter,
     },
+    // Apex's default `darken` turns the selected slice near-black, which reads
+    // as a different status rather than as "selected".
     states: {
       active: {
-        filter: {
-          type: 'darken',
-          value: 0.75,
-        },
+        filter: { type: 'none' },
+      },
+      hover: {
+        filter: { type: 'lighten', value: 0.1 },
       },
     },
   };

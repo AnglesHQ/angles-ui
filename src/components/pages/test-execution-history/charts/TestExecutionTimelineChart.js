@@ -4,7 +4,10 @@ import { Panel, Stack } from 'rsuite';
 import moment from 'moment';
 import { getBuildDurationInSeconds } from '../../../../utility/TimeUtilities';
 
-const defaultOptions = {
+// Returns a fresh options object per render. This used to be a module-level
+// constant that the component pushed a new entry onto (`defaultOptions.yaxis
+// .push(...)`), so the yaxis array grew on every single render.
+const buildOptions = (yaxisTitle, labels) => ({
   chart: {
     fontFamily: 'inherit',
     parentHeightOffset: 0,
@@ -14,7 +17,6 @@ const defaultOptions = {
     background: 'var(--main-panel-background)',
     foreColor: 'var(--main-panel-font-color)',
   },
-  plotOptions: {},
   dataLabels: {
     enabled: false,
   },
@@ -33,15 +35,12 @@ const defaultOptions = {
   yaxis: [
     {
       seriesName: 'ExecutionTime',
-      // opposite: true,
-      // title: {
-      //   text: 'Execution Time (seconds)',
-      // },
+      title: { text: yaxisTitle },
     },
   ],
   colors: ['var(--color-primary)'],
-  // legend: { show: true },
-};
+  labels,
+});
 
 const generateResultsData = (executions) => {
   const graphData = {
@@ -62,9 +61,7 @@ const generateResultsData = (executions) => {
 
 const TestExecutionTimelineChart = function (props) {
   const { executions, title, yaxisTitle } = props;
-  defaultOptions.yaxis.push({ title: { text: yaxisTitle } });
-  const graphData = generateResultsData(executions);
-  const { data, labels } = graphData;
+  const { data, labels } = generateResultsData(executions);
   return (
     <Panel
       className="chart-panel"
@@ -78,9 +75,7 @@ const TestExecutionTimelineChart = function (props) {
         series={data}
         type="line"
         height={350}
-        max-width={500}
-        /* eslint-disable-next-line prefer-object-spread */
-        options={Object.assign({}, defaultOptions, undefined, { labels })}
+        options={buildOptions(yaxisTitle, labels)}
       />
     </Panel>
   );

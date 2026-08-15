@@ -97,11 +97,16 @@ const SummaryPage = function () {
     status: 'N/A',
   });
 
+  // Every chart and the table below read from this one filtered list, so
+  // selecting a status in the donut narrows the whole page consistently. The
+  // donut itself is always fed the UNfiltered executions — otherwise selecting
+  // a status would erase the other slices and leave no way back.
+  const filteredExecutions = selectedStatus
+    ? executions.filter((execution) => execution.status === selectedStatus)
+    : executions;
+
   useEffect(() => {
     if (executions.length > 0) {
-      const filteredExecutions = selectedStatus
-        ? executions.filter((execution) => execution.status === selectedStatus)
-        : executions;
       const suite = generateSuiteResult(filteredExecutions, executions[0].suite);
       setSuiteResult(suite);
     }
@@ -109,6 +114,10 @@ const SummaryPage = function () {
 
   const filterByStatus = (status) => {
     setSelectedStatus(status === selectedStatus ? null : status);
+  };
+
+  const clearStatusFilter = () => {
+    setSelectedStatus(null);
   };
 
   const closeModal = () => {
@@ -154,6 +163,40 @@ const SummaryPage = function () {
             </Col>
           </Row>
           <Row gutter={30} className="detail-row">
+            <Col xs={24}>
+              <div className="filter-toolbar">
+                <span className="filter-toolbar-hint">
+                  <FormattedMessage id="page.test-execution-history.filter.hint" />
+                </span>
+                {
+                  selectedStatus ? (
+                    <button
+                      type="button"
+                      className="filter-chip"
+                      onClick={clearStatusFilter}
+                    >
+                      {/* The status word is coloured, so it is rendered as its
+                          own element between the two message parts rather than
+                          injected into one — embedding markup in a message
+                          makes react-intl emit a keyless array and warn. */}
+                      <span>
+                        <FormattedMessage id="page.test-execution-history.filter.showing" />
+                      </span>
+                      <span className={`status-${selectedStatus.toLowerCase()}`}>
+                        {selectedStatus}
+                      </span>
+                      <span>
+                        <FormattedMessage
+                          id="page.test-execution-history.filter.active"
+                          values={{ count: filteredExecutions.length }}
+                        />
+                      </span>
+                      <span className="filter-chip-clear">×</span>
+                    </button>
+                  ) : null
+                }
+              </div>
+            </Col>
             <Col xs={12}>
               <TestExecutionsResultPieChart
                 title={intl.formatMessage({ id: 'page.test-execution-history.charts.execution-pie-chart.title' })}
@@ -165,7 +208,7 @@ const SummaryPage = function () {
               <TestExecutionTimelineChart
                 title={intl.formatMessage({ id: 'page.test-execution-history.charts.execution-timeline-chart.title' })}
                 yaxisTitle={intl.formatMessage({ id: 'page.test-execution-history.charts.execution-timeline-chart.yaxis-label' })}
-                executions={executions}
+                executions={filteredExecutions}
               />
             </Col>
           </Row>
@@ -181,15 +224,25 @@ const SummaryPage = function () {
           </Row>
           <Row gutter={30} className="detail-row">
             <Col xs={24}>
-              <ExecutionStateProvider key={`state-provider-${suiteResult.name}`}>
-                <SuiteTable
-                  key={`${suiteResult.name}`}
-                  suite={suiteResult}
-                  screenshots={screenshots}
-                  openModal={openModal}
-                  showHistoryLink={false}
-                />
-              </ExecutionStateProvider>
+              {
+                filteredExecutions.length === 0 ? (
+                  <div className="app-alert app-alert-info" role="alert">
+                    <span>
+                      <FormattedMessage id="page.test-execution-history.filter.no-results" />
+                    </span>
+                  </div>
+                ) : (
+                  <ExecutionStateProvider key={`state-provider-${suiteResult.name}-${selectedStatus || 'all'}`}>
+                    <SuiteTable
+                      key={`${suiteResult.name}-${selectedStatus || 'all'}`}
+                      suite={suiteResult}
+                      screenshots={screenshots}
+                      openModal={openModal}
+                      showHistoryLink={false}
+                    />
+                  </ExecutionStateProvider>
+                )
+              }
             </Col>
           </Row>
         </Grid>

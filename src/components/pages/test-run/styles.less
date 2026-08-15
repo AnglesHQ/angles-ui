@@ -247,7 +247,9 @@
   }
 }
 
-// ── Suites section heading + active status filter ───────────────────────────
+// ── Suites section heading ──────────────────────────────────────────────────
+// The active-status chip beside the title uses the shared `.filter-chip`
+// pattern in components.less.
 .test-run-suites-toolbar {
   display: flex;
   align-items: center;
@@ -257,32 +259,4 @@
 .test-run-suites-title {
   margin: 0;
   font-weight: var(--font-weight-semibold);
-}
-
-// Shown when a status is selected in the execution pie chart; clicking clears it.
-.test-run-filter-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: 2px var(--space-3);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-pill);
-  background: transparent;
-  font-size: var(--font-size-sm);
-  cursor: pointer;
-  transition: background-color var(--transition-fast);
-
-  &:hover {
-    background-color: var(--surface-sunken);
-  }
-
-  &:focus-visible {
-    .focus-ring();
-  }
-}
-
-.test-run-filter-chip-clear {
-  color: var(--main-panel-secondary-font-color);
-  font-size: var(--font-size-md);
-  line-height: 1;
 }
