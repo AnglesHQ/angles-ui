@@ -1,18 +1,43 @@
 // Admin settings — page-specific styles only; generic chrome comes from the
 // shared .page / .page-panel / .page-section-title classes (components.less).
-.okta-config-panel {
-    margin-top: var(--space-5);
-    background-color: var(--sub-panel-background);
-    color: var(--sub-panel-font-color);
-    border: none;
-}
-
-.okta-groups-help {
-    margin-bottom: var(--space-4);
-    opacity: 0.8;
-    font-size: var(--font-size-sm);
-}
-
 .admin-settings-actions {
     margin-top: var(--space-5);
+}
+
+.provider-status-tag {
+    font-size: var(--font-size-xs);
+}
+
+// Provider add/edit dialog.
+.provider-modal {
+    // Read-only callback / metadata URLs are copied into the identity provider's
+    // configuration, so they must be selectable and never wrap mid-URL.
+    .provider-readonly-url {
+        background-color: var(--sub-panel-background);
+        color: var(--sub-panel-font-color);
+    }
+
+    // One group value mapped onto one Angles role, with a control to remove the row.
+    .role-mapping-row {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        margin-bottom: var(--space-3);
+
+        .role-mapping-value {
+            flex: 1 1 auto;
+        }
+
+        .role-mapping-role {
+            flex: 0 0 160px;
+        }
+    }
+
+    .role-mapping-add {
+        margin-bottom: var(--space-5);
+    }
+
+    .provider-default-role {
+        margin-top: var(--space-5);
+    }
 }

@@ -35,8 +35,10 @@ export default function UserSettingsPage() {
     const [passwordError, setPasswordError] = useState(null);
     const [passwordSuccess, setPasswordSuccess] = useState(false);
 
-    // SSO users authenticate through the identity provider and have no local password to change.
-    const canChangePassword = user && user.authProvider !== 'okta';
+    // SSO users authenticate through the identity provider and have no local password to
+    // change. `authProvider` is 'local' for password accounts and the provider's id for
+    // every other, so anything but 'local' is a federated account.
+    const canChangePassword = user && (!user.authProvider || user.authProvider === 'local');
 
     const expiryOptions = [
         { label: intl.formatMessage({ id: 'page.user-settings.expiry.1-day' }), value: '1' },
