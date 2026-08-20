@@ -357,7 +357,9 @@ const BaselineImageView = (props) => {
     if (!currentBaseLineDetails) {
       return <FormattedMessage id="common.component.screenshot-view.tabs.baseline.message.no-baseline-set" />;
     }
-    if (currentBaseLineDetails.screenshot._id === currentScreenshotDetails._id) {
+    const baselineScreenshotId = currentBaseLineDetails.screenshot
+      && currentBaseLineDetails.screenshot._id;
+    if (baselineScreenshotId === currentScreenshotDetails._id) {
       return generateBaselineCompareTable();
     }
     if (!currentBaselineCompare) {

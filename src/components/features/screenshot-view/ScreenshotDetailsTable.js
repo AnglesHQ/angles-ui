@@ -43,7 +43,8 @@ const ScreenshotDetailsTable = function (props) {
           </span>
         </div>
         {
-          currentBaseLineDetails ? (
+          currentBaseLineDetails && currentBaseLineDetails.screenshot
+            && currentBaseLineDetails.screenshot.timestamp ? (
             <div className="screenshot-details-row">
               <span className="screenshot-details-label">
                 <FormattedMessage id="common.component.screenshot-details-table.label.baseline-date" />

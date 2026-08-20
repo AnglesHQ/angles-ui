@@ -34,11 +34,12 @@ const ScreenshotHistoryView = function (props) {
   const getScreenshotArray = () => {
     // ensure that the baseline is added if not in the history.
     const screenshotArray = currentScreenshotHistory.map((screenshot) => ({ ...screenshot }));
-    if (currentBaseLineDetails && !doesArrayContainImage(
-      screenshotArray,
-      currentBaseLineDetails.screenshot,
-    )) {
-      screenshotArray.push(currentBaseLineDetails.screenshot);
+    const baselineScreenshot = currentBaseLineDetails ? currentBaseLineDetails.screenshot : null;
+    // the baseline screenshot may come back unpopulated (just an id), in which case
+    // there is nothing to render a card from.
+    const isPopulated = baselineScreenshot !== null && typeof baselineScreenshot === 'object';
+    if (isPopulated && !doesArrayContainImage(screenshotArray, baselineScreenshot)) {
+      screenshotArray.push(baselineScreenshot);
     }
     return screenshotArray;
   };

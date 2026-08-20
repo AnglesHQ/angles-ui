@@ -30,7 +30,7 @@
         margin-bottom: var(--space-5);
     }
 
-    .okta-login-section {
+    .sso-login-section {
         margin-top: var(--space-5);
         text-align: center;
 
@@ -51,6 +51,12 @@
                 padding: 0 var(--space-3);
                 background-color: var(--main-panel-background);
             }
+        }
+
+        // Each configured identity provider gets its own button, so they need
+        // separating rather than sitting flush against one another.
+        .sso-login-button + .sso-login-button {
+            margin-top: var(--space-3);
         }
     }
 }
