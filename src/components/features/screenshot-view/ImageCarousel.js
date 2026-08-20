@@ -70,10 +70,14 @@ class ImageCarousel extends Component {
   };
 
   grabThumbnail = (screenshot) => {
-    if (screenshot.thumbnail.startsWith('data:image')) {
-      return screenshot.thumbnail;
+    const { thumbnail } = screenshot || {};
+    if (!thumbnail) {
+      return undefined;
     }
-    return `data:image/png;base64, ${screenshot.thumbnail}`;
+    if (thumbnail.startsWith('data:image')) {
+      return thumbnail;
+    }
+    return `data:image/png;base64, ${thumbnail}`;
   };
 
   render() {

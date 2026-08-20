@@ -52,7 +52,7 @@ export function CurrentScreenshotProvider({ children }) {
         const baseline = baselines[0];
         // to handle better in the future
         setCurrentBaseLineDetails(baseline);
-        if (baseline && baseline.screenshot._id) {
+        if (baseline && baseline.screenshot && baseline.screenshot._id) {
           getBaselineScreenshot(baseline.screenshot._id);
         }
       });

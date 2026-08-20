@@ -4,10 +4,15 @@ import React from 'react';
 import { VscVerified } from 'react-icons/vsc';
 
 const grabThumbnail = (screenshot) => {
-  if (screenshot.thumbnail.startsWith('data:image')) {
-    return screenshot.thumbnail;
+  const { thumbnail } = screenshot || {};
+  if (!thumbnail) {
+    // the screenshot may not be populated yet (e.g. straight after setting a baseline)
+    return undefined;
   }
-  return `data:image/png;base64, ${screenshot.thumbnail}`;
+  if (thumbnail.startsWith('data:image')) {
+    return thumbnail;
+  }
+  return `data:image/png;base64, ${thumbnail}`;
 };
 const ScreenshotCard = function (props) {
   const {

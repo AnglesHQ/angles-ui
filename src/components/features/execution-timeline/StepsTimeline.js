@@ -24,7 +24,7 @@ const StepsTimeline = function (props) {
   const getScreenShot = (screenshotId) => {
     if (screenshots !== undefined && screenshotId !== undefined) {
       const image = screenshots.filter((screenshot) => screenshot._id === screenshotId)[0];
-      if (image !== undefined) {
+      if (image !== undefined && image.thumbnail) {
         if (image.thumbnail.startsWith('data:image')) {
           // to handle move to jimp
           return image.thumbnail;
