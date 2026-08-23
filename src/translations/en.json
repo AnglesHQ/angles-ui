@@ -546,8 +546,6 @@
   "app.manual.step-editor.data-placeholder": "Test data (optional)",
   "app.manual.step-editor.add-step": "Add step",
   "app.manual.step-editor.add-shared-step": "Include shared step",
-  "app.manual.step-editor.move-up": "Move step up",
-  "app.manual.step-editor.move-down": "Move step down",
   "app.manual.step-editor.remove": "Remove step",
   "app.manual.step-editor.empty": "No steps yet. Add the first one below.",
   "app.manual.custom-field.archived": "(archived)",
@@ -779,5 +777,10 @@
   "page.manual-test-cases.toast.folder-delete-error": "Could not delete the folder.",
   "page.manual-test-case-detail.field.folder": "Folder",
   "page.manual-test-case-detail.folder-root": "Not in a folder",
-  "app.manual.history.action.move": "Moved to a folder"
+  "app.manual.history.action.move": "Moved to a folder",
+  "app.manual.step-editor.action": "Action",
+  "app.manual.step-editor.attachments": "Attachments",
+  "app.manual.step-editor.attachments-need-save": "Save the test case first, then images can be attached to its steps.",
+  "app.manual.step-editor.drag-handle": "Drag to reorder",
+  "app.manual.step-editor.drag-help": "Drag a step to change its order."
 }

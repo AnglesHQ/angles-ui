@@ -546,8 +546,6 @@
   "app.manual.step-editor.data-placeholder": "Testgegevens (optioneel)",
   "app.manual.step-editor.add-step": "Stap toevoegen",
   "app.manual.step-editor.add-shared-step": "Gedeelde stap opnemen",
-  "app.manual.step-editor.move-up": "Stap omhoog",
-  "app.manual.step-editor.move-down": "Stap omlaag",
   "app.manual.step-editor.remove": "Stap verwijderen",
   "app.manual.step-editor.empty": "Nog geen stappen. Voeg hieronder de eerste toe.",
   "app.manual.custom-field.archived": "(gearchiveerd)",
@@ -779,5 +777,10 @@
   "page.manual-test-cases.toast.folder-delete-error": "Kon de map niet verwijderen.",
   "page.manual-test-case-detail.field.folder": "Map",
   "page.manual-test-case-detail.folder-root": "Niet in een map",
-  "app.manual.history.action.move": "Naar een map verplaatst"
+  "app.manual.history.action.move": "Naar een map verplaatst",
+  "app.manual.step-editor.action": "Actie",
+  "app.manual.step-editor.attachments": "Bijlagen",
+  "app.manual.step-editor.attachments-need-save": "Sla eerst het testgeval op; daarna kunnen er afbeeldingen aan de stappen worden toegevoegd.",
+  "app.manual.step-editor.drag-handle": "Sleep om te herschikken",
+  "app.manual.step-editor.drag-help": "Sleep een stap om de volgorde te wijzigen."
 }

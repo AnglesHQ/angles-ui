@@ -546,8 +546,6 @@
   "app.manual.step-editor.data-placeholder": "测试数据（可选）",
   "app.manual.step-editor.add-step": "添加步骤",
   "app.manual.step-editor.add-shared-step": "引用共享步骤",
-  "app.manual.step-editor.move-up": "上移步骤",
-  "app.manual.step-editor.move-down": "下移步骤",
   "app.manual.step-editor.remove": "删除步骤",
   "app.manual.step-editor.empty": "尚无步骤，请在下方添加。",
   "app.manual.custom-field.archived": "（已归档）",
@@ -779,5 +777,10 @@
   "page.manual-test-cases.toast.folder-delete-error": "无法删除文件夹。",
   "page.manual-test-case-detail.field.folder": "文件夹",
   "page.manual-test-case-detail.folder-root": "未归入文件夹",
-  "app.manual.history.action.move": "移动到文件夹"
+  "app.manual.history.action.move": "移动到文件夹",
+  "app.manual.step-editor.action": "操作",
+  "app.manual.step-editor.attachments": "附件",
+  "app.manual.step-editor.attachments-need-save": "请先保存测试用例，然后才能为其步骤添加图片。",
+  "app.manual.step-editor.drag-handle": "拖动以重新排序",
+  "app.manual.step-editor.drag-help": "拖动步骤即可更改顺序。"
 }

@@ -412,6 +412,7 @@ function ManualTestCaseDetailPage(props) {
                             steps={draft.steps}
                             onChange={(steps) => updateDraft({ steps })}
                             sharedSteps={sharedSteps}
+                            attachmentOwner={{ testCaseId: caseId }}
                         />
                     </div>
                 )}

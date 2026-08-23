@@ -546,8 +546,6 @@
   "app.manual.step-editor.data-placeholder": "ข้อมูลทดสอบ (ไม่บังคับ)",
   "app.manual.step-editor.add-step": "เพิ่มขั้นตอน",
   "app.manual.step-editor.add-shared-step": "เพิ่มขั้นตอนที่ใช้ร่วมกัน",
-  "app.manual.step-editor.move-up": "เลื่อนขั้นตอนขึ้น",
-  "app.manual.step-editor.move-down": "เลื่อนขั้นตอนลง",
   "app.manual.step-editor.remove": "ลบขั้นตอน",
   "app.manual.step-editor.empty": "ยังไม่มีขั้นตอน เพิ่มขั้นตอนแรกด้านล่าง",
   "app.manual.custom-field.archived": "(เก็บถาวร)",
@@ -779,5 +777,10 @@
   "page.manual-test-cases.toast.folder-delete-error": "ไม่สามารถลบโฟลเดอร์ได้",
   "page.manual-test-case-detail.field.folder": "โฟลเดอร์",
   "page.manual-test-case-detail.folder-root": "ไม่อยู่ในโฟลเดอร์",
-  "app.manual.history.action.move": "ย้ายไปยังโฟลเดอร์"
+  "app.manual.history.action.move": "ย้ายไปยังโฟลเดอร์",
+  "app.manual.step-editor.action": "การกระทำ",
+  "app.manual.step-editor.attachments": "ไฟล์แนบ",
+  "app.manual.step-editor.attachments-need-save": "กรุณาบันทึกเคสทดสอบก่อน จากนั้นจึงแนบรูปภาพกับขั้นตอนได้",
+  "app.manual.step-editor.drag-handle": "ลากเพื่อจัดลำดับใหม่",
+  "app.manual.step-editor.drag-help": "ลากขั้นตอนเพื่อเปลี่ยนลำดับ"
 }

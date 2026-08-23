@@ -1,37 +1,91 @@
 // ── Manual step editor ───────────────────────────────────────────────────────
 // Ordered list of a test case's steps. A step is either literal or an inclusion of a
 // shared step; the two look different so an author can see which content they own here.
+//
+// Action and expected sit side by side: a step is one "do this, expect that" pair, and
+// stacking them made a long case scroll for no reason.
 .manual-step-editor {
+  // Column headings, so the two inputs on each row are labelled once rather than carrying
+  // a label each.
+  .manual-step-heading {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: 0 var(--space-3) var(--space-1);
+    color: var(--modal-secondary-font-color);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    text-transform: uppercase;
+  }
+
+  .manual-step-heading-number {
+    flex: 0 0 auto;
+    min-width: var(--space-5);
+  }
+
+  .manual-step-heading-action,
+  .manual-step-heading-expected {
+    flex: 1 1 50%;
+    min-width: 0;
+  }
+
+  .manual-step-heading-controls {
+    flex: 0 0 auto;
+    width: 64px;
+  }
+
   .manual-step-list {
     list-style: none;
     margin: 0;
     padding: 0;
-    counter-reset: manual-step;
   }
 
   .manual-step {
     display: flex;
+    align-items: flex-start;
     gap: var(--space-3);
     padding: var(--space-3);
     margin-bottom: var(--space-2);
     background: var(--sub-panel-background);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-md);
-    counter-increment: manual-step;
+    // The whole row is the drag handle, so the cursor has to say so everywhere on it.
+    cursor: grab;
+    transition: opacity var(--transition-fast), border-color var(--transition-fast);
+  }
 
-    &::before {
-      content: counter(manual-step);
-      flex: 0 0 auto;
-      min-width: var(--space-5);
-      color: var(--modal-secondary-font-color);
-      font-weight: var(--font-weight-medium);
-    }
+  // The row being dragged fades so the gap it will leave is legible.
+  .manual-step-dragging {
+    opacity: 0.4;
+    cursor: grabbing;
+  }
+
+  // Where the row will land. A top border rather than a filled background: the marker has
+  // to read as a position between rows, not as another selected row.
+  .manual-step-drop-target {
+    border-top: 2px solid var(--button-background);
+  }
+
+  .manual-step-handle {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: var(--space-5);
+    padding-top: var(--space-1);
+    color: var(--modal-secondary-font-color);
+  }
+
+  .manual-step-number {
+    font-weight: var(--font-weight-medium);
   }
 
   .manual-step-controls {
+    flex: 0 0 auto;
     display: flex;
-    flex-direction: column;
     gap: var(--space-1);
+    width: 64px;
+    justify-content: flex-end;
   }
 
   .manual-step-body {
@@ -40,6 +94,23 @@
     flex-direction: column;
     gap: var(--space-2);
     min-width: 0;
+  }
+
+  // The side-by-side pair.
+  .manual-step-row {
+    display: flex;
+    gap: var(--space-3);
+    align-items: flex-start;
+  }
+
+  .manual-step-action-input,
+  .manual-step-expected-input {
+    flex: 1 1 50%;
+    min-width: 0;
+  }
+
+  .manual-step-attachments {
+    padding-top: var(--space-1);
   }
 
   .manual-step-label {
@@ -86,6 +157,20 @@
   }
 }
 
+// Narrow screens have no room for two columns, so the pair stacks. The editor stays
+// usable rather than squeezing two textareas into half a phone width each.
+@media (max-width: 768px) {
+  .manual-step-editor {
+    .manual-step-row {
+      flex-direction: column;
+    }
+
+    .manual-step-heading-expected {
+      display: none;
+    }
+  }
+}
+
 .manual-step-editor-readonly {
   list-style: none;
   margin: 0;
@@ -108,5 +193,20 @@
       color: var(--modal-secondary-font-color);
       font-weight: var(--font-weight-medium);
     }
+  }
+
+  // The read-only view shows the same pairing, so a frozen version reads the way the
+  // editor looked when it was written.
+  .manual-step-row {
+    display: flex;
+    gap: var(--space-3);
+    align-items: flex-start;
+  }
+
+  .manual-step-action,
+  .manual-step-expected {
+    flex: 1 1 50%;
+    min-width: 0;
+    white-space: pre-wrap;
   }
 }

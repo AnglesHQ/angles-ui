@@ -292,6 +292,8 @@ const SharedStepsPage = function (props) {
                             <ManualStepEditor
                                 steps={editing.steps || []}
                                 onChange={(steps) => setEditing({ ...editing, steps })}
+                                attachmentOwner={editing._id
+                                    ? { sharedStepId: editing._id } : undefined}
                             />
                         </>
                     )}
