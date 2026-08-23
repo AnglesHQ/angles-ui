@@ -113,10 +113,22 @@ function ManualTestCaseDetailPage(props) {
         loadHistory();
     }, [activeTab, caseId]);
 
+    // A shared step inclusion has no action of its own - the shared step's contents are
+    // expanded in its place - so the empty string the editor holds for the disabled input
+    // is stripped rather than sent as content.
+    const toPayload = (current) => ({
+        ...current,
+        steps: (current.steps || []).map((step) => {
+            if (!('sharedStep' in step)) return step;
+            const { action, expected, ...rest } = step;
+            return action ? { ...rest, action, expected } : rest;
+        }),
+    });
+
     const handleSave = async () => {
         setSaving(true);
         try {
-            const saved = await manualTestCaseRequests.updateTestCase(caseId, draft);
+            const saved = await manualTestCaseRequests.updateTestCase(caseId, toPayload(draft));
             setTestCase(saved);
             // The version may or may not have moved - only a content change burns one - so
             // the list is refetched rather than assumed.
