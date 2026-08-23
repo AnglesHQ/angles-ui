@@ -1,0 +1,54 @@
+// ── Version diff ─────────────────────────────────────────────────────────────
+// Side-by-side comparison of two frozen test case versions.
+.version-diff {
+  .version-diff-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+  }
+
+  .version-diff-arrow {
+    color: var(--main-panel-secondary-font-color);
+  }
+
+  .version-diff-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th,
+    td {
+      text-align: left;
+      padding: var(--space-2);
+      border-bottom: 1px solid var(--border-subtle);
+      vertical-align: top;
+      font-size: var(--font-size-sm);
+    }
+
+    th {
+      color: var(--main-panel-secondary-font-color);
+      font-weight: var(--font-weight-medium);
+    }
+  }
+
+  // The two sides borrow the fail/pass hues to read as removed/added without
+  // introducing a diff-specific palette.
+  .version-diff-before {
+    color: var(--fail-color);
+  }
+
+  .version-diff-after {
+    color: var(--pass-color);
+  }
+
+  .version-diff-expected {
+    color: var(--main-panel-secondary-font-color);
+    font-size: var(--font-size-xs);
+    margin-top: var(--space-1);
+  }
+
+  .version-diff-empty {
+    color: var(--main-panel-secondary-font-color);
+    font-style: italic;
+  }
+}

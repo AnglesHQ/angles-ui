@@ -220,13 +220,17 @@ const Shell = function (props) {
                                             />
                                         </span>
                                     </Nav.Item>
-                                    <Nav.Item as={Link} eventKey="9" icon={<TaskIcon className="nav-item-icon" />} href="/manual-test-cases">
-                                        <span>
-                                            <FormattedMessage
-                                                id="nav.manual-test-cases"
-                                            />
-                                        </span>
-                                    </Nav.Item>
+                                    <Nav.Menu eventKey="9" icon={<TaskIcon className="nav-item-icon" />} title={<FormattedMessage id="nav.manual-testing" />}>
+                                        <Nav.Item as={Link} eventKey="9-1" href="/manual-test-cases">
+                                            <FormattedMessage id="nav.manual-test-cases" />
+                                        </Nav.Item>
+                                        <Nav.Item as={Link} eventKey="9-2" href="/manual-test-runs">
+                                            <FormattedMessage id="nav.manual-test-runs" />
+                                        </Nav.Item>
+                                        <Nav.Item as={Link} eventKey="9-3" href="/shared-steps">
+                                            <FormattedMessage id="nav.shared-steps" />
+                                        </Nav.Item>
+                                    </Nav.Menu>
                                     <Nav.Item as={Link} eventKey="3" icon={<Image className="nav-item-icon" />} href="/screenshot-library">
                                         <span>
                                             <FormattedMessage
@@ -247,6 +251,7 @@ const Shell = function (props) {
                                         <Nav.Menu eventKey="7" icon={<AdminIcon className="nav-item-icon" />} title={<FormattedMessage id="nav.admin" />}>
                                             <Nav.Item as={Link} eventKey="7-1" href="/admin/users"><FormattedMessage id="nav.admin.users" /></Nav.Item>
                                             <Nav.Item as={Link} eventKey="7-2" href="/admin/settings"><FormattedMessage id="nav.admin.settings" /></Nav.Item>
+                                            <Nav.Item as={Link} eventKey="7-3" href="/admin/custom-fields"><FormattedMessage id="nav.admin.custom-fields" /></Nav.Item>
                                         </Nav.Menu>
                                     )}
                                     <Nav.Item as={Link} eventKey="6" icon={<InfoOutline className="nav-item-icon" />} href="/about">
