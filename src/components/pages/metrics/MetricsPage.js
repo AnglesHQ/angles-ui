@@ -29,7 +29,7 @@ import { getPaletteColor, getPlatformLabel } from '../../../utility/ChartConfig'
 import { getDateRangesPicker } from '../../../utility/TimeUtilities';
 import ExecutionMetricsResultsBarChart from './charts/ExecutionMetricsResultsBarChart';
 import PhaseMetricsResultsBarChart from './charts/PhaseMetricsResultsBarChart';
-import { getExecutionTypeOptions, toExecutionTypeParam } from '../../../utility/GeneralUtilities';
+import { ALL_EXECUTION_TYPES, getExecutionTypeOptions, toExecutionTypeParam } from '../../../utility/GeneralUtilities';
 
 const MetricsPage = function (props) {
   const router = useRouter();

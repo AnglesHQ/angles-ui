@@ -43,7 +43,7 @@ import { getDateRangesPicker, getDurationAsString } from '../../../utility/TimeU
 import ExecutionBarChart from './charts/ExecutionBarChart';
 import BuildExecutionPieChart from './charts/BuildExecutionPieChart';
 import ConfirmModal from '../../common/ConfirmModal';
-import { getExecutionTypeOptions, toExecutionTypeParam } from '../../../utility/GeneralUtilities';
+import { ALL_EXECUTION_TYPES, getExecutionTypeOptions, toExecutionTypeParam } from '../../../utility/GeneralUtilities';
 
 const generateFilterMenuData = function (environments, components) {
   const data = [];
