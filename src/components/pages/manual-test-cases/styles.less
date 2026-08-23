@@ -101,3 +101,76 @@
     width: 100%;
   }
 }
+
+// ── Grouped suites ───────────────────────────────────────────────────────────
+// One table per folder, mirroring the tree. The drop states are deliberately loud:
+// a drag has no undo, so the target has to be unambiguous before the pointer is released.
+.test-case-suites {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.test-case-suite {
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+
+  &.test-case-suite-drop {
+    border-color: var(--pass-color);
+    background: var(--sub-panel-background);
+  }
+}
+
+.test-case-suite-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-2);
+  cursor: pointer;
+  border-radius: var(--radius-md);
+
+  &:hover {
+    background: var(--sub-panel-background);
+  }
+}
+
+.test-case-suite-icon {
+  color: var(--modal-secondary-font-color);
+}
+
+.test-case-suite-title {
+  font-weight: var(--font-weight-medium);
+  color: var(--main-panel-font-color);
+}
+
+.test-case-suite-count {
+  color: var(--modal-secondary-font-color);
+  font-size: var(--font-size-xs);
+}
+
+// The grip is the affordance that says a row can be dragged at all; without it the
+// only discoverable way to move a case is to find the folder field on the detail page.
+.test-case-suite-row {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.test-case-suite-grip {
+  color: var(--modal-secondary-font-color);
+  font-size: var(--font-size-xs);
+  letter-spacing: -2px;
+}
+
+// A folder in the tree lit up as the pending destination.
+.folder-tree-node-drop {
+  outline: 1px solid var(--pass-color);
+  border-radius: var(--radius-sm);
+  background: var(--sub-panel-background);
+}

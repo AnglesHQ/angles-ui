@@ -1,18 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Table, Input, InputGroup, SelectPicker, TagPicker, Button, Loader, Pagination, Tag, Message, useToaster } from 'rsuite';
+import { Input, InputGroup, TagPicker, Button, Loader, Pagination, Message, useToaster } from 'rsuite';
 import SearchIcon from '@rsuite/icons/Search';
 import PlusIcon from '@rsuite/icons/Plus';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { ManualTestCaseRequests, ManualFolderRequests } from 'angles-javascript-client';
 import { getApiErrorMessage } from '../../../utility/ApiUtilities';
 import FolderTree, { ALL_FOLDERS, UNFILED } from '../../features/folder-tree/FolderTree';
+import TestCaseSuites from '../../features/test-case-suites/TestCaseSuites';
 import ConfirmModal from '../../common/ConfirmModal';
-
-const { Column, HeaderCell, Cell } = Table;
 
 const STATUS_VALUES = ['DRAFT', 'ACTIVE', 'DEPRECATED'];
 const PRIORITY_VALUES = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'];
@@ -38,6 +36,9 @@ function ManualTestCasesPage(props) {
     // ALL_FOLDERS shows everything; a real id narrows to that branch.
     const [selectedFolder, setSelectedFolder] = useState(ALL_FOLDERS);
     const [deleteFolderState, setDeleteFolderState] = useState({ open: false, folder: undefined });
+    // Folder sections the user has collapsed. Kept by id so collapsing survives a reload
+    // of the list, which happens on every filter change and after every move.
+    const [collapsedIds, setCollapsedIds] = useState([]);
 
     const manualTestCaseRequests = new ManualTestCaseRequests(axios);
     const manualFolderRequests = new ManualFolderRequests(axios);
@@ -173,6 +174,37 @@ function ManualTestCasesPage(props) {
         }
     };
 
+    /*
+    Files a test case into a folder by drag and drop.
+
+    Filing is organisation rather than content, so the API records it in the change
+    history without burning a new test case version - dragging a case between folders
+    must not make every bound execution point at a stale version.
+
+    The list and the tree are both reloaded afterwards: the case moves between sections,
+    and the per-folder counts in the tree change with it.
+     */
+    const handleMoveCase = async (caseId, folder) => {
+        try {
+            await manualFolderRequests.moveTestCases({ testCaseIds: [caseId], folder });
+            await Promise.all([loadTestCases(), loadFolders()]);
+            toaster.push(
+                <Message type="success" showIcon closable>
+                    <FormattedMessage id="page.manual-test-cases.toast.move-success" />
+                </Message>,
+                { placement: 'topEnd' },
+            );
+        } catch (error) {
+            pushError(error, 'page.manual-test-cases.toast.move-error');
+        }
+    };
+
+    const toggleCollapse = (key) => {
+        setCollapsedIds((current) => (current.includes(key)
+            ? current.filter((id) => id !== key)
+            : [...current, key]));
+    };
+
     if (!currentTeam || !currentTeam._id) {
         return (
             <div className="page">
@@ -197,6 +229,7 @@ function ManualTestCasesPage(props) {
                     onCreate={handleCreateFolder}
                     onRename={handleRenameFolder}
                     onDelete={(folder) => setDeleteFolderState({ open: true, folder })}
+                    onDropCase={handleMoveCase}
                 />
             </div>
             <div className="page-panel manual-test-cases-main">
@@ -245,55 +278,14 @@ function ManualTestCasesPage(props) {
                     </div>
                 ) : (
                     <>
-                        <Table
-                            data={testCases}
-                            autoHeight
-                            rowHeight={48}
-                            onRowClick={(row) => router.push(`/manual-test-cases/${row._id}`)}
-                        >
-                            <Column flexGrow={3} align="left">
-                                <HeaderCell><FormattedMessage id="page.manual-test-cases.table.title" /></HeaderCell>
-                                <Cell>
-                                    {(row) => (
-                                        <Link className="link-action" href={`/manual-test-cases/${row._id}`}>
-                                            {row.title}
-                                        </Link>
-                                    )}
-                                </Cell>
-                            </Column>
-                            <Column width={120} align="left">
-                                <HeaderCell><FormattedMessage id="page.manual-test-cases.table.status" /></HeaderCell>
-                                <Cell>
-                                    {(row) => (
-                                        <Tag className={`manual-status-tag manual-status-${row.status.toLowerCase()}`}>
-                                            <FormattedMessage id={`app.manual.status.${row.status.toLowerCase()}`} />
-                                        </Tag>
-                                    )}
-                                </Cell>
-                            </Column>
-                            <Column width={110} align="left">
-                                <HeaderCell><FormattedMessage id="page.manual-test-cases.table.priority" /></HeaderCell>
-                                <Cell>
-                                    {(row) => (
-                                        <FormattedMessage id={`app.manual.priority.${row.priority.toLowerCase()}`} />
-                                    )}
-                                </Cell>
-                            </Column>
-                            <Column width={80} align="center">
-                                <HeaderCell><FormattedMessage id="page.manual-test-cases.table.version" /></HeaderCell>
-                                <Cell>{(row) => `v${row.version}`}</Cell>
-                            </Column>
-                            <Column width={160} align="left">
-                                <HeaderCell><FormattedMessage id="page.manual-test-cases.table.updated-by" /></HeaderCell>
-                                <Cell>
-                                    {(row) => (row.updatedBy ? row.updatedBy.username : '—')}
-                                </Cell>
-                            </Column>
-                            <Column width={80} align="center">
-                                <HeaderCell><FormattedMessage id="page.manual-test-cases.table.steps" /></HeaderCell>
-                                <Cell>{(row) => (row.steps ? row.steps.length : 0)}</Cell>
-                            </Column>
-                        </Table>
+                        <TestCaseSuites
+                            testCases={testCases}
+                            folders={folders}
+                            onOpen={(id) => router.push(`/manual-test-cases/${id}`)}
+                            onMoveCase={handleMoveCase}
+                            collapsedIds={collapsedIds}
+                            onToggleCollapse={toggleCollapse}
+                        />
 
                         {testCases.length === 0 && (
                             <div className="app-alert app-alert-info">

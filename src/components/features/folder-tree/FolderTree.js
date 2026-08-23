@@ -5,6 +5,7 @@ import PlusIcon from '@rsuite/icons/Plus';
 import EditIcon from '@rsuite/icons/Edit';
 import TrashIcon from '@rsuite/icons/Trash';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { CASE_MIME } from '../test-case-suites/dragTypes';
 
 /*
 Folder tree for manual test cases.
@@ -22,11 +23,42 @@ export const UNFILED = 'none';
 
 const FolderTree = ({
     folders, unfiledCount, totalCount, value, onSelect, onCreate, onRename, onDelete, loading,
+    onDropCase,
 }) => {
     const intl = useIntl();
     const [dialog, setDialog] = useState(undefined);
     const [name, setName] = useState('');
     const [busy, setBusy] = useState(false);
+    const [dropTarget, setDropTarget] = useState(undefined);
+
+    // Only a dragged test case is a valid drop; anything else dragged over the tree (a
+    // file, selected text) has to keep its default browser behaviour.
+    const isCaseDrag = (event) => event.dataTransfer.types.includes(CASE_MIME);
+
+    const handleDragOver = (event, key) => {
+        if (!onDropCase || !isCaseDrag(event)) return;
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'move';
+        setDropTarget(key);
+    };
+
+    const handleDrop = (event, key) => {
+        if (!onDropCase || !isCaseDrag(event)) return;
+        event.preventDefault();
+        // Stop the drop bubbling to an ancestor folder row, which would otherwise file
+        // the case into the parent as well as the folder actually aimed at.
+        event.stopPropagation();
+        setDropTarget(undefined);
+        const caseId = event.dataTransfer.getData(CASE_MIME);
+        if (caseId) onDropCase(caseId, key === UNFILED ? null : key);
+    };
+
+    // Shared by every droppable row, real or synthetic.
+    const dropProps = (key) => ({
+        onDragOver: (event) => handleDragOver(event, key),
+        onDragLeave: () => setDropTarget(undefined),
+        onDrop: (event) => handleDrop(event, key),
+    });
 
     // RSuite's Tree wants a uniform node shape, so the two synthetic rows are mapped into
     // the same shape as a real folder rather than rendered separately.
@@ -83,15 +115,24 @@ const FolderTree = ({
 
     const renderNode = (node) => {
         if (node.synthetic) {
+            // "All test cases" is a view, not a place - there is nothing to file into, so
+            // only the unfiled row accepts a drop (it means "take this out of its folder").
+            const droppable = node.value === UNFILED;
             return (
-                <span className="folder-tree-node">
+                <span
+                    className={`folder-tree-node${dropTarget === node.value ? ' folder-tree-node-drop' : ''}`}
+                    {...(droppable ? dropProps(node.value) : {})}
+                >
                     <span className="folder-tree-label">{node.label}</span>
                     <span className="folder-tree-count">{node.count}</span>
                 </span>
             );
         }
         return (
-            <span className="folder-tree-node">
+            <span
+                className={`folder-tree-node${dropTarget === node.value ? ' folder-tree-node-drop' : ''}`}
+                {...dropProps(node.value)}
+            >
                 <FolderFillIcon className="folder-tree-icon" />
                 <span className="folder-tree-label">{node.label}</span>
                 <span className="folder-tree-count">{node.count}</span>
