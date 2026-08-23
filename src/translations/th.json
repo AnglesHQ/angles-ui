@@ -589,7 +589,6 @@
   "page.manual-test-case-detail.versions-help": "เลือกเวอร์ชันเพื่อดูสิ่งที่ผู้ทดสอบเห็นตอนรัน",
   "page.manual-test-case-detail.delete-confirm-title": "ลบเทสต์เคส",
   "page.manual-test-case-detail.delete-confirm-message": "การดำเนินการนี้จะลบเทสต์เคสและประวัติเวอร์ชันทั้งหมด และไม่สามารถย้อนกลับได้",
-  "page.manual-test-case-detail.toast.saved": "บันทึกเทสต์เคสแล้ว",
   "page.manual-test-case-detail.toast.fetch-error": "ไม่สามารถโหลดเทสต์เคสได้",
   "page.manual-test-case-detail.toast.save-error": "ไม่สามารถบันทึกเทสต์เคสได้",
   "page.manual-test-case-detail.toast.clone-error": "ไม่สามารถโคลนเทสต์เคสได้",
@@ -754,5 +753,11 @@
   "page.manual-test-case-version.frozen-notice": "นี่คือเวอร์ชันที่ถูกตรึงไว้ แสดงเนื้อหาตามที่เขียนไว้ ณ ขณะนั้น และจะไม่เปลี่ยนแปลง",
   "page.manual-test-case-version.compare-with": "เปรียบเทียบกับ",
   "page.manual-test-case-version.toast.fetch-error": "ไม่สามารถโหลดเวอร์ชันนี้ได้",
-  "page.manual-test-case-version.toast.compare-error": "ไม่สามารถโหลดเวอร์ชันสำหรับเปรียบเทียบได้"
+  "page.manual-test-case-version.toast.compare-error": "ไม่สามารถโหลดเวอร์ชันสำหรับเปรียบเทียบได้",
+  "page.manual-test-case-detail.toast.saved-new-version": "บันทึกเป็นเวอร์ชัน {version} แล้ว",
+  "page.manual-test-case-detail.toast.saved-no-change": "บันทึกแล้ว เนื้อหาไม่เปลี่ยนแปลง จึงไม่มีการสร้างเวอร์ชันใหม่",
+  "page.shared-steps.toast.saved": "บันทึกขั้นตอนที่ใช้ร่วมกันแล้ว",
+  "page.shared-steps.toast.created": "สร้างขั้นตอนที่ใช้ร่วมกันแล้ว",
+  "page.admin-custom-fields.toast.created": "สร้างฟิลด์ที่กำหนดเองแล้ว",
+  "page.admin-custom-fields.toast.updated": "อัปเดตฟิลด์ที่กำหนดเองแล้ว"
 }

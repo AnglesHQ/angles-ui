@@ -589,7 +589,6 @@
   "page.manual-test-case-detail.versions-help": "Select a version to see exactly what a tester saw when it was executed.",
   "page.manual-test-case-detail.delete-confirm-title": "Delete test case",
   "page.manual-test-case-detail.delete-confirm-message": "This removes the test case and its whole version history. This cannot be undone.",
-  "page.manual-test-case-detail.toast.saved": "Test case saved.",
   "page.manual-test-case-detail.toast.fetch-error": "Could not load the test case.",
   "page.manual-test-case-detail.toast.save-error": "Could not save the test case.",
   "page.manual-test-case-detail.toast.clone-error": "Could not clone the test case.",
@@ -754,5 +753,11 @@
   "page.manual-test-case-version.frozen-notice": "This is a frozen version. It shows exactly what was authored at the time and never changes.",
   "page.manual-test-case-version.compare-with": "Compare with",
   "page.manual-test-case-version.toast.fetch-error": "Could not load that version.",
-  "page.manual-test-case-version.toast.compare-error": "Could not load the version to compare against."
+  "page.manual-test-case-version.toast.compare-error": "Could not load the version to compare against.",
+  "page.manual-test-case-detail.toast.saved-new-version": "Saved as version {version}.",
+  "page.manual-test-case-detail.toast.saved-no-change": "Saved. The content did not change, so no new version was created.",
+  "page.shared-steps.toast.saved": "Shared step saved.",
+  "page.shared-steps.toast.created": "Shared step created.",
+  "page.admin-custom-fields.toast.created": "Custom field created.",
+  "page.admin-custom-fields.toast.updated": "Custom field updated."
 }

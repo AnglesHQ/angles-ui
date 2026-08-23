@@ -35,6 +35,10 @@ function ManualTestCaseDetailPage(props) {
     const [activeTab, setActiveTab] = useState('details');
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    // Inline save feedback. A toast alone is easy to miss - it is a small transient corner
+    // popup - and it cannot say whether the save burned a version, which is the thing an
+    // author most needs to know about a manual test case.
+    const [saveResult, setSaveResult] = useState(undefined);
     const [historyLoading, setHistoryLoading] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState(false);
 
@@ -127,6 +131,8 @@ function ManualTestCaseDetailPage(props) {
 
     const handleSave = async () => {
         setSaving(true);
+        setSaveResult(undefined);
+        const previousVersion = testCase ? testCase.version : undefined;
         try {
             const saved = await manualTestCaseRequests.updateTestCase(caseId, toPayload(draft));
             setTestCase(saved);
@@ -135,17 +141,48 @@ function ManualTestCaseDetailPage(props) {
             const versionResponse = await manualTestCaseRequests.getVersions(caseId);
             setVersions(versionResponse.versions || []);
             setHistory([]);
+
+            // Saying which of the two happened matters: "saved as v4" and "saved, still v3"
+            // are both successes, but they mean different things to whoever reads the
+            // history or runs a test against this case later.
+            const versionBurned = saved.version !== previousVersion;
+            const message = versionBurned
+                ? intl.formatMessage(
+                    { id: 'page.manual-test-case-detail.toast.saved-new-version' },
+                    { version: saved.version },
+                )
+                : intl.formatMessage({ id: 'page.manual-test-case-detail.toast.saved-no-change' });
+            setSaveResult({ type: 'success', message });
             toaster.push(
-                <Message type="success">
-                    {intl.formatMessage({ id: 'page.manual-test-case-detail.toast.saved' })}
+                <Message type="success" showIcon closable duration={4000}>
+                    {message}
                 </Message>,
                 { placement: 'topEnd' },
             );
         } catch (error) {
-            pushError(error, 'page.manual-test-case-detail.toast.save-error');
+            // The API's own message is far more useful than a generic failure - it names
+            // the offending custom field, the missing shared step, or the invalid value.
+            const message = getApiErrorMessage(
+                error,
+                intl.formatMessage({ id: 'page.manual-test-case-detail.toast.save-error' }),
+            );
+            setSaveResult({ type: 'error', message });
+            toaster.push(
+                <Message type="error" showIcon closable>
+                    {message}
+                </Message>,
+                { placement: 'topEnd' },
+            );
         } finally {
             setSaving(false);
         }
+    };
+
+    // Any further edit makes the previous save result stale, so it is dismissed rather
+    // than left sitting above a form that has since changed.
+    const updateDraft = (changes) => {
+        setSaveResult(undefined);
+        setDraft((current) => ({ ...current, ...changes }));
     };
 
     const handleClone = async () => {
@@ -217,6 +254,17 @@ function ManualTestCaseDetailPage(props) {
                     </div>
                 </div>
 
+                {saveResult && (
+                    <div
+                        className={saveResult.type === 'error'
+                            ? 'app-alert app-alert-error manual-test-case-save-result'
+                            : 'app-alert app-alert-success manual-test-case-save-result'}
+                        role="status"
+                    >
+                        {saveResult.message}
+                    </div>
+                )}
+
                 <Nav appearance="subtle" activeKey={activeTab} onSelect={setActiveTab} className="tabs-container">
                     <Nav.Item eventKey="details">
                         <FormattedMessage id="page.manual-test-case-detail.tab.details" />
@@ -241,7 +289,7 @@ function ManualTestCaseDetailPage(props) {
                             <Input
                                 id="case-title"
                                 value={draft.title}
-                                onChange={(value) => setDraft({ ...draft, title: value })}
+                                onChange={(value) => updateDraft({ title: value })}
                             />
                         </div>
                         <div className="detail-row">
@@ -253,7 +301,7 @@ function ManualTestCaseDetailPage(props) {
                                 as="textarea"
                                 rows={3}
                                 value={draft.description}
-                                onChange={(value) => setDraft({ ...draft, description: value })}
+                                onChange={(value) => updateDraft({ description: value })}
                             />
                         </div>
                         <div className="detail-row">
@@ -265,7 +313,7 @@ function ManualTestCaseDetailPage(props) {
                                 as="textarea"
                                 rows={2}
                                 value={draft.preconditions}
-                                onChange={(value) => setDraft({ ...draft, preconditions: value })}
+                                onChange={(value) => updateDraft({ preconditions: value })}
                             />
                         </div>
                         <div className="manual-test-case-detail-grid">
@@ -277,7 +325,7 @@ function ManualTestCaseDetailPage(props) {
                                     id="case-status"
                                     data={statusOptions}
                                     value={draft.status}
-                                    onChange={(value) => setDraft({ ...draft, status: value })}
+                                    onChange={(value) => updateDraft({ status: value })}
                                     cleanable={false}
                                     block
                                 />
@@ -295,7 +343,7 @@ function ManualTestCaseDetailPage(props) {
                                     id="case-priority"
                                     data={priorityOptions}
                                     value={draft.priority}
-                                    onChange={(value) => setDraft({ ...draft, priority: value })}
+                                    onChange={(value) => updateDraft({ priority: value })}
                                     cleanable={false}
                                     block
                                 />
@@ -308,7 +356,7 @@ function ManualTestCaseDetailPage(props) {
                             <TagInput
                                 id="case-tags"
                                 value={draft.tags}
-                                onChange={(value) => setDraft({ ...draft, tags: value })}
+                                onChange={(value) => updateDraft({ tags: value })}
                                 block
                             />
                         </div>
@@ -321,7 +369,7 @@ function ManualTestCaseDetailPage(props) {
                                 <CustomFieldForm
                                     definitions={fieldDefinitions}
                                     values={draft.customFields}
-                                    onChange={(values) => setDraft({ ...draft, customFields: values })}
+                                    onChange={(values) => updateDraft({ customFields: values })}
                                 />
                             </Panel>
                         )}
@@ -332,7 +380,7 @@ function ManualTestCaseDetailPage(props) {
                     <div className="page-section">
                         <ManualStepEditor
                             steps={draft.steps}
-                            onChange={(steps) => setDraft({ ...draft, steps })}
+                            onChange={(steps) => updateDraft({ steps })}
                             sharedSteps={sharedSteps}
                         />
                     </div>

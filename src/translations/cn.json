@@ -589,7 +589,6 @@
   "page.manual-test-case-detail.versions-help": "选择一个版本，查看执行时测试人员所看到的内容。",
   "page.manual-test-case-detail.delete-confirm-title": "删除测试用例",
   "page.manual-test-case-detail.delete-confirm-message": "这将删除该测试用例及其全部版本历史，且无法撤销。",
-  "page.manual-test-case-detail.toast.saved": "测试用例已保存。",
   "page.manual-test-case-detail.toast.fetch-error": "无法加载测试用例。",
   "page.manual-test-case-detail.toast.save-error": "无法保存测试用例。",
   "page.manual-test-case-detail.toast.clone-error": "无法克隆测试用例。",
@@ -754,5 +753,11 @@
   "page.manual-test-case-version.frozen-notice": "这是一个已冻结的版本。它准确显示当时编写的内容，且永不改变。",
   "page.manual-test-case-version.compare-with": "比较版本",
   "page.manual-test-case-version.toast.fetch-error": "无法加载该版本。",
-  "page.manual-test-case-version.toast.compare-error": "无法加载用于比较的版本。"
+  "page.manual-test-case-version.toast.compare-error": "无法加载用于比较的版本。",
+  "page.manual-test-case-detail.toast.saved-new-version": "已保存为版本 {version}。",
+  "page.manual-test-case-detail.toast.saved-no-change": "已保存。内容未发生变化，因此未创建新版本。",
+  "page.shared-steps.toast.saved": "共享步骤已保存。",
+  "page.shared-steps.toast.created": "共享步骤已创建。",
+  "page.admin-custom-fields.toast.created": "自定义字段已创建。",
+  "page.admin-custom-fields.toast.updated": "自定义字段已更新。"
 }

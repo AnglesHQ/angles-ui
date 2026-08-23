@@ -36,7 +36,7 @@ const AdminCustomFieldsPage = function (props) {
 
     const pushError = (error, fallbackId) => {
         toaster.push(
-            <Message type="error">
+            <Message type="error" showIcon closable>
                 {getApiErrorMessage(error, intl.formatMessage({ id: fallbackId }))}
             </Message>,
             { placement: 'topEnd' },
@@ -92,6 +92,16 @@ const AdminCustomFieldsPage = function (props) {
                     ...payload, team: currentTeam._id,
                 });
             }
+            toaster.push(
+                <Message type="success" showIcon closable duration={4000}>
+                    {intl.formatMessage({
+                        id: editing._id
+                            ? 'page.admin-custom-fields.toast.updated'
+                            : 'page.admin-custom-fields.toast.created',
+                    })}
+                </Message>,
+                { placement: 'topEnd' },
+            );
             setEditing(undefined);
             loadDefinitions();
         } catch (error) {
@@ -108,7 +118,7 @@ const AdminCustomFieldsPage = function (props) {
         try {
             const response = await customFieldRequests.deleteCustomField(definition._id);
             toaster.push(
-                <Message type="info">
+                <Message type="info" showIcon closable>
                     <FormattedMessage
                         id={response && response.archived
                             ? 'page.admin-custom-fields.toast.archived'

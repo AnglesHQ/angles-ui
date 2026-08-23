@@ -45,7 +45,7 @@ const ManualTestRunDetailPage = function ({ runId }) {
 
     const pushError = (error, fallbackId) => {
         toaster.push(
-            <Message type="error">
+            <Message type="error" showIcon closable>
                 {getApiErrorMessage(error, intl.formatMessage({ id: fallbackId }))}
             </Message>,
             { placement: 'topEnd' },
@@ -150,7 +150,7 @@ const ManualTestRunDetailPage = function ({ runId }) {
                 })),
             });
             toaster.push(
-                <Message type="success">
+                <Message type="success" showIcon closable>
                     <FormattedMessage id="page.manual-test-run-detail.toast.recorded" />
                 </Message>,
                 { placement: 'topEnd' },

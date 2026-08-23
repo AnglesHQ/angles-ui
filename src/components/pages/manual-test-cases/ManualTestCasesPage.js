@@ -57,7 +57,7 @@ function ManualTestCasesPage(props) {
             setTotal(response.metrics ? response.metrics.totalTestCases : 0);
         } catch (error) {
             toaster.push(
-                <Message type="error">
+                <Message type="error" showIcon closable>
                     {getApiErrorMessage(error, intl.formatMessage({ id: 'page.manual-test-cases.toast.fetch-error' }))}
                 </Message>,
                 { placement: 'topEnd' },
@@ -90,7 +90,7 @@ function ManualTestCasesPage(props) {
             router.push(`/manual-test-cases/${created._id}`);
         } catch (error) {
             toaster.push(
-                <Message type="error">
+                <Message type="error" showIcon closable>
                     {getApiErrorMessage(error, intl.formatMessage({ id: 'page.manual-test-cases.toast.create-error' }))}
                 </Message>,
                 { placement: 'topEnd' },

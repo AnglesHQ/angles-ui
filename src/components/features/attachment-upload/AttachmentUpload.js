@@ -24,7 +24,7 @@ const AttachmentUpload = ({ owner, attachments, onChange, readOnly }) => {
 
     const pushError = (error, fallbackId) => {
         toaster.push(
-            <Message type="error">
+            <Message type="error" showIcon closable>
                 {getApiErrorMessage(error, intl.formatMessage({ id: fallbackId }))}
             </Message>,
             { placement: 'topEnd' },
@@ -61,7 +61,7 @@ const AttachmentUpload = ({ owner, attachments, onChange, readOnly }) => {
         if (navigator.clipboard) {
             navigator.clipboard.writeText(reference);
             toaster.push(
-                <Message type="info">
+                <Message type="info" showIcon closable>
                     <FormattedMessage id="app.manual.attachments.reference-copied" />
                 </Message>,
                 { placement: 'topEnd' },

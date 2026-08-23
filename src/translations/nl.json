@@ -589,7 +589,6 @@
   "page.manual-test-case-detail.versions-help": "Kies een versie om te zien wat een tester zag bij de uitvoering.",
   "page.manual-test-case-detail.delete-confirm-title": "Testgeval verwijderen",
   "page.manual-test-case-detail.delete-confirm-message": "Dit verwijdert het testgeval en de volledige versiegeschiedenis. Dit kan niet ongedaan worden gemaakt.",
-  "page.manual-test-case-detail.toast.saved": "Testgeval opgeslagen.",
   "page.manual-test-case-detail.toast.fetch-error": "Kon het testgeval niet laden.",
   "page.manual-test-case-detail.toast.save-error": "Kon het testgeval niet opslaan.",
   "page.manual-test-case-detail.toast.clone-error": "Kon het testgeval niet klonen.",
@@ -754,5 +753,11 @@
   "page.manual-test-case-version.frozen-notice": "Dit is een bevroren versie. Deze toont exact wat destijds is opgesteld en verandert nooit.",
   "page.manual-test-case-version.compare-with": "Vergelijk met",
   "page.manual-test-case-version.toast.fetch-error": "Kon die versie niet laden.",
-  "page.manual-test-case-version.toast.compare-error": "Kon de vergelijkingsversie niet laden."
+  "page.manual-test-case-version.toast.compare-error": "Kon de vergelijkingsversie niet laden.",
+  "page.manual-test-case-detail.toast.saved-new-version": "Opgeslagen als versie {version}.",
+  "page.manual-test-case-detail.toast.saved-no-change": "Opgeslagen. De inhoud is niet gewijzigd, dus er is geen nieuwe versie gemaakt.",
+  "page.shared-steps.toast.saved": "Gedeelde stap opgeslagen.",
+  "page.shared-steps.toast.created": "Gedeelde stap aangemaakt.",
+  "page.admin-custom-fields.toast.created": "Aangepast veld aangemaakt.",
+  "page.admin-custom-fields.toast.updated": "Aangepast veld bijgewerkt."
 }

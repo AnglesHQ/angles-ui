@@ -37,7 +37,7 @@ const SharedStepsPage = function (props) {
 
     const pushError = (error, fallbackId) => {
         toaster.push(
-            <Message type="error">
+            <Message type="error" showIcon closable>
                 {getApiErrorMessage(error, intl.formatMessage({ id: fallbackId }))}
             </Message>,
             { placement: 'topEnd' },
@@ -95,19 +95,26 @@ const SharedStepsPage = function (props) {
                 const response = await sharedStepRequests.updateSharedStep(editing._id, payload);
                 const cascaded = response && response.cascade
                     ? response.cascade.testCasesVersioned : 0;
-                if (cascaded > 0) {
-                    toaster.push(
-                        <Message type="info">
-                            <FormattedMessage
-                                id="page.shared-steps.toast.cascaded"
-                                values={{ count: cascaded }}
-                            />
-                        </Message>,
-                        { placement: 'topEnd' },
-                    );
-                }
+                // A cascade is the notable outcome - it re-versioned other people's test
+                // cases - so it is reported instead of the plain confirmation, not as well.
+                toaster.push(
+                    <Message type="success" showIcon closable duration={4000}>
+                        {cascaded > 0
+                            ? intl.formatMessage(
+                                { id: 'page.shared-steps.toast.cascaded' }, { count: cascaded },
+                            )
+                            : intl.formatMessage({ id: 'page.shared-steps.toast.saved' })}
+                    </Message>,
+                    { placement: 'topEnd' },
+                );
             } else {
                 await sharedStepRequests.createSharedStep({ ...payload, team: currentTeam._id });
+                toaster.push(
+                    <Message type="success" showIcon closable duration={4000}>
+                        {intl.formatMessage({ id: 'page.shared-steps.toast.created' })}
+                    </Message>,
+                    { placement: 'topEnd' },
+                );
             }
             setEditing(undefined);
             loadSharedSteps();
