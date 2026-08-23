@@ -89,6 +89,12 @@ const SharedStepsPage = function (props) {
                     action: step.action,
                     expected: step.expected,
                     data: step.data,
+                    // The editor holds whole attachment documents so it can render
+                    // thumbnails; the API stores references.
+                    attachments: (step.attachments || [])
+                        .map((attachment) => (attachment && attachment._id
+                            ? attachment._id : attachment))
+                        .filter(Boolean),
                 })),
             };
             if (editing._id) {

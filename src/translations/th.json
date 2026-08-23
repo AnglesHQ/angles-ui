@@ -782,5 +782,6 @@
   "app.manual.step-editor.attachments": "ไฟล์แนบ",
   "app.manual.step-editor.attachments-need-save": "กรุณาบันทึกเคสทดสอบก่อน จากนั้นจึงแนบรูปภาพกับขั้นตอนได้",
   "app.manual.step-editor.drag-handle": "ลากเพื่อจัดลำดับใหม่",
-  "app.manual.step-editor.drag-help": "ลากขั้นตอนเพื่อเปลี่ยนลำดับ"
+  "app.manual.step-editor.drag-help": "ลากขั้นตอนเพื่อเปลี่ยนลำดับ",
+  "app.manual.attachments.load-error": "ไม่สามารถโหลดรูปภาพได้"
 }

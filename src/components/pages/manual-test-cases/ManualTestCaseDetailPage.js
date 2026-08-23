@@ -123,14 +123,22 @@ function ManualTestCaseDetailPage(props) {
         loadHistory();
     }, [activeTab, caseId]);
 
+    // The editor holds whole attachment documents so it can render thumbnails, but the API
+    // stores references - sending the objects makes mongoose try to cast one to an ObjectId
+    // and fail. Ids are what goes on the wire.
+    const toAttachmentIds = (attachments) => (attachments || [])
+        .map((attachment) => (attachment && attachment._id ? attachment._id : attachment))
+        .filter(Boolean);
+
     // A shared step inclusion has no action of its own - the shared step's contents are
     // expanded in its place - so the empty string the editor holds for the disabled input
     // is stripped rather than sent as content.
     const toPayload = (current) => ({
         ...current,
         steps: (current.steps || []).map((step) => {
-            if (!('sharedStep' in step)) return step;
-            const { action, expected, ...rest } = step;
+            const normalised = { ...step, attachments: toAttachmentIds(step.attachments) };
+            if (!('sharedStep' in normalised)) return normalised;
+            const { action, expected, ...rest } = normalised;
             return action ? { ...rest, action, expected } : rest;
         }),
     });

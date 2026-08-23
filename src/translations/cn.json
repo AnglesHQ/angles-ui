@@ -782,5 +782,6 @@
   "app.manual.step-editor.attachments": "附件",
   "app.manual.step-editor.attachments-need-save": "请先保存测试用例，然后才能为其步骤添加图片。",
   "app.manual.step-editor.drag-handle": "拖动以重新排序",
-  "app.manual.step-editor.drag-help": "拖动步骤即可更改顺序。"
+  "app.manual.step-editor.drag-help": "拖动步骤即可更改顺序。",
+  "app.manual.attachments.load-error": "无法加载图片。"
 }
