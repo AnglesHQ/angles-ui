@@ -29,6 +29,7 @@ import AngleRightIcon from '@rsuite/icons/legacy/AngleRight';
 import Image from '@rsuite/icons/Image';
 import BarChart from '@rsuite/icons/BarChart';
 import DocPass from '@rsuite/icons/DocPass';
+import TaskIcon from '@rsuite/icons/Task';
 import InfoOutline from '@rsuite/icons/InfoOutline';
 import GlobalIcon from '@rsuite/icons/Global';
 import AdminIcon from '@rsuite/icons/Admin';
@@ -216,6 +217,13 @@ const Shell = function (props) {
                                         <span>
                                             <FormattedMessage
                                                 id="nav.execution-metrics"
+                                            />
+                                        </span>
+                                    </Nav.Item>
+                                    <Nav.Item as={Link} eventKey="9" icon={<TaskIcon className="nav-item-icon" />} href="/manual-test-cases">
+                                        <span>
+                                            <FormattedMessage
+                                                id="nav.manual-test-cases"
                                             />
                                         </span>
                                     </Nav.Item>

@@ -1,0 +1,112 @@
+// ── Manual step editor ───────────────────────────────────────────────────────
+// Ordered list of a test case's steps. A step is either literal or an inclusion of a
+// shared step; the two look different so an author can see which content they own here.
+.manual-step-editor {
+  .manual-step-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    counter-reset: manual-step;
+  }
+
+  .manual-step {
+    display: flex;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    margin-bottom: var(--space-2);
+    background: var(--sub-panel-background);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    counter-increment: manual-step;
+
+    &::before {
+      content: counter(manual-step);
+      flex: 0 0 auto;
+      min-width: var(--space-5);
+      color: var(--modal-secondary-font-color);
+      font-weight: var(--font-weight-medium);
+    }
+  }
+
+  .manual-step-controls {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .manual-step-body {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 0;
+  }
+
+  .manual-step-label {
+    display: inline-block;
+    margin-right: var(--space-2);
+    color: var(--modal-secondary-font-color);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    text-transform: uppercase;
+  }
+
+  .manual-step-action {
+    color: var(--main-panel-font-color);
+    white-space: pre-wrap;
+  }
+
+  .manual-step-expected,
+  .manual-step-data {
+    color: var(--modal-secondary-font-color);
+    font-size: var(--font-size-sm);
+    white-space: pre-wrap;
+  }
+
+  .manual-step-shared-tag {
+    align-self: flex-start;
+    background: var(--sub-panel-background);
+    color: var(--modal-secondary-font-color);
+    font-size: var(--font-size-xs);
+  }
+
+  // An inclusion whose shared step has gone is kept rather than dropped, so it has to be
+  // visibly flagged - otherwise the case silently reads as one step short.
+  .manual-step-unresolved-tag {
+    align-self: flex-start;
+    background: var(--sub-panel-background);
+    color: var(--error-color);
+    font-size: var(--font-size-xs);
+  }
+
+  .manual-step-editor-actions {
+    display: flex;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+  }
+}
+
+.manual-step-editor-readonly {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: manual-step;
+
+  .manual-step {
+    padding: var(--space-3);
+    border-bottom: 1px solid var(--border-subtle);
+    counter-increment: manual-step;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &::before {
+      content: counter(manual-step);
+      display: inline-block;
+      min-width: var(--space-5);
+      color: var(--modal-secondary-font-color);
+      font-weight: var(--font-weight-medium);
+    }
+  }
+}

@@ -1,0 +1,71 @@
+// ── Manual test cases ────────────────────────────────────────────────────────
+.manual-test-cases-page {
+  .manual-test-cases-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    align-items: center;
+  }
+
+  .manual-test-cases-search {
+    max-width: 320px;
+  }
+
+  .manual-test-cases-pagination {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: var(--space-3);
+  }
+}
+
+// Status pills reuse the shared result hues rather than inventing new ones: DRAFT reads as
+// not-yet-run, ACTIVE as good, DEPRECATED as retired.
+.manual-status-tag {
+  background: var(--sub-panel-background);
+  font-size: var(--font-size-xs);
+
+  &.manual-status-draft {
+    color: var(--skipped-color);
+  }
+
+  &.manual-status-active {
+    color: var(--pass-color);
+  }
+
+  &.manual-status-deprecated {
+    color: var(--modal-secondary-font-color);
+  }
+}
+
+.manual-test-case-detail-page {
+  .manual-test-case-header-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .manual-test-case-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--space-3);
+  }
+
+  .manual-test-case-custom-fields {
+    margin-top: var(--space-4);
+    background: var(--sub-panel-background);
+    border-radius: var(--radius-md);
+  }
+
+  .manual-version-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding-bottom: var(--space-3);
+  }
+
+  .manual-version-title {
+    font-weight: var(--font-weight-medium);
+    color: var(--main-panel-font-color);
+  }
+}

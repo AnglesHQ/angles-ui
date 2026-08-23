@@ -1,0 +1,85 @@
+// ── Change history timeline ──────────────────────────────────────────────────
+// Audit trail for a manual test case or shared step: who changed what, and why.
+.change-history {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  .change-history-entry {
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--border-subtle);
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .change-history-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .change-history-action {
+    background: var(--sub-panel-background);
+    color: var(--main-panel-font-color);
+    font-size: var(--font-size-xs);
+  }
+
+  .change-history-version,
+  .change-history-date {
+    color: var(--modal-secondary-font-color);
+    font-size: var(--font-size-xs);
+  }
+
+  .change-history-author {
+    font-weight: var(--font-weight-medium);
+  }
+
+  .change-history-comment {
+    margin-top: var(--space-2);
+    color: var(--main-panel-font-color);
+  }
+
+  .change-history-caused-by {
+    margin-top: var(--space-1);
+    color: var(--modal-secondary-font-color);
+    font-size: var(--font-size-sm);
+    font-style: italic;
+  }
+
+  .change-history-changes {
+    list-style: none;
+    margin: var(--space-2) 0 0;
+    padding: 0;
+
+    li {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: var(--space-2);
+      padding: var(--space-1) 0;
+      font-size: var(--font-size-sm);
+    }
+  }
+
+  .change-history-field {
+    font-weight: var(--font-weight-medium);
+    color: var(--main-panel-font-color);
+  }
+
+  // The old value reads as removed, the new as added, without inventing new colours.
+  .change-history-from {
+    color: var(--fail-color);
+    text-decoration: line-through;
+  }
+
+  .change-history-to {
+    color: var(--pass-color);
+  }
+
+  .change-history-arrow {
+    color: var(--modal-secondary-font-color);
+  }
+}
