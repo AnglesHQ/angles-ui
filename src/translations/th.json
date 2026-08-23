@@ -595,5 +595,10 @@
   "page.manual-test-case-detail.toast.clone-error": "ไม่สามารถโคลนเทสต์เคสได้",
   "page.manual-test-case-detail.toast.delete-error": "ไม่สามารถลบเทสต์เคสได้",
   "page.manual-test-case-detail.toast.version-error": "ไม่สามารถโหลดเวอร์ชันนั้นได้",
-  "page.manual-test-case-detail.toast.history-error": "ไม่สามารถโหลดประวัติการเปลี่ยนแปลงได้"
+  "page.manual-test-case-detail.toast.history-error": "ไม่สามารถโหลดประวัติการเปลี่ยนแปลงได้",
+  "app.execution-type.all": "ทั้งหมด",
+  "app.execution-type.automated": "อัตโนมัติ",
+  "app.execution-type.manual": "ด้วยตนเอง",
+  "page.dashboard.filters.label.execution-type": "ประเภท",
+  "page.metrics.filters.labels.execution-type": "ประเภท"
 }

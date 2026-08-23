@@ -595,5 +595,10 @@
   "page.manual-test-case-detail.toast.clone-error": "Kon het testgeval niet klonen.",
   "page.manual-test-case-detail.toast.delete-error": "Kon het testgeval niet verwijderen.",
   "page.manual-test-case-detail.toast.version-error": "Kon die versie niet laden.",
-  "page.manual-test-case-detail.toast.history-error": "Kon de geschiedenis niet laden."
+  "page.manual-test-case-detail.toast.history-error": "Kon de geschiedenis niet laden.",
+  "app.execution-type.all": "Alle",
+  "app.execution-type.automated": "Geautomatiseerd",
+  "app.execution-type.manual": "Handmatig",
+  "page.dashboard.filters.label.execution-type": "Type",
+  "page.metrics.filters.labels.execution-type": "Type"
 }

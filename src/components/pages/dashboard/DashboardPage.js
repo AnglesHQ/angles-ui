@@ -43,6 +43,7 @@ import { getDateRangesPicker, getDurationAsString } from '../../../utility/TimeU
 import ExecutionBarChart from './charts/ExecutionBarChart';
 import BuildExecutionPieChart from './charts/BuildExecutionPieChart';
 import ConfirmModal from '../../common/ConfirmModal';
+import { getExecutionTypeOptions, toExecutionTypeParam } from '../../../utility/GeneralUtilities';
 
 const generateFilterMenuData = function (environments, components) {
   const data = [];
@@ -139,6 +140,8 @@ const DashboardPage = function (props) {
   const [endDate, setEndDate] = useState(queryEndDate ? moment(queryEndDate) : moment());
   const { afterToday } = DateRangePicker;
   const [selectedTeamId, setSelectedTeamId] = useState(undefined);
+  // undefined = both types, which is what every pre-3.0 dashboard showed.
+  const [executionType, setExecutionType] = useState(undefined);
 
   // filtering values
   const [selectedBuilds, setSelectedBuilds] = useState({});
@@ -154,6 +157,7 @@ const DashboardPage = function (props) {
   const limitValues = [10, 15, 25, 50].map(
     (item) => ({ label: item, value: item }),
   );
+  const executionTypeValues = getExecutionTypeOptions(intl);
   const addIndexToBuilds = (buildsToIndex, skip) => {
     buildsToIndex.forEach((build, index) => {
       build.index = index + skip + 1;
@@ -174,6 +178,7 @@ const DashboardPage = function (props) {
       limit,
       startDate,
       endDate,
+      executionType,
     )
       .then(({
         builds: retrievedBuilds,
@@ -198,7 +203,7 @@ const DashboardPage = function (props) {
       );
     }
   }, [currentTeam, limit, filteredEnvironments,
-    filteredComponents, startDate, endDate, activePage, searchParams]);
+    filteredComponents, startDate, endDate, activePage, searchParams, executionType]);
 
   useEffect(() => {
     if (currentTeam) {
@@ -217,7 +222,7 @@ const DashboardPage = function (props) {
   useEffect(() => {
     setActivePage(1);
   }, [filteredEnvironments, filteredComponents, currentTeam,
-    startDate, endDate, limit]);
+    startDate, endDate, limit, executionType]);
 
   const toggleSelectedBuild = (build) => {
     const updatedBuilds = update(
@@ -305,6 +310,11 @@ const DashboardPage = function (props) {
       setLimit(newLimit);
       setActivePage(1);
     }
+  };
+
+  const handleExecutionTypeChange = (value) => {
+    setExecutionType(toExecutionTypeParam(value));
+    setActivePage(1);
   };
 
   // eslint-disable-next-line no-shadow
@@ -462,6 +472,20 @@ const DashboardPage = function (props) {
                 defaultValue={limit}
                 searchable={false}
                 onChange={handleLimitChange}
+              />
+              <SelectPicker
+                label={(
+                  <FormattedMessage
+                    id="page.dashboard.filters.label.execution-type"
+                  />
+                )}
+                data={executionTypeValues}
+                appearance="default"
+                cleanable={false}
+                style={{ width: 200 }}
+                value={executionType === undefined ? ALL_EXECUTION_TYPES : executionType}
+                searchable={false}
+                onChange={handleExecutionTypeChange}
               />
               <FilterMenu
                 data={generateFilterMenuData(environments, currentTeam.components)}

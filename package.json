@@ -13,7 +13,7 @@
   "dependencies": {
     "@rsuite/icons": "^1.0.2",
     "@types/react": "^18.0.28",
-    "angles-javascript-client": "^1.0.43",
+    "angles-javascript-client": "^3.0.1",
     "apexcharts": "^6.8.0",
     "axios": "^1.13.3",
     "base-64": "^1.0.0",

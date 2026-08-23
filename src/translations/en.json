@@ -595,5 +595,10 @@
   "page.manual-test-case-detail.toast.clone-error": "Could not clone the test case.",
   "page.manual-test-case-detail.toast.delete-error": "Could not delete the test case.",
   "page.manual-test-case-detail.toast.version-error": "Could not load that version.",
-  "page.manual-test-case-detail.toast.history-error": "Could not load the change history."
+  "page.manual-test-case-detail.toast.history-error": "Could not load the change history.",
+  "app.execution-type.all": "All",
+  "app.execution-type.automated": "Automated",
+  "app.execution-type.manual": "Manual",
+  "page.dashboard.filters.label.execution-type": "Type",
+  "page.metrics.filters.labels.execution-type": "Type"
 }

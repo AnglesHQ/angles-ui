@@ -595,5 +595,10 @@
   "page.manual-test-case-detail.toast.clone-error": "无法克隆测试用例。",
   "page.manual-test-case-detail.toast.delete-error": "无法删除测试用例。",
   "page.manual-test-case-detail.toast.version-error": "无法加载该版本。",
-  "page.manual-test-case-detail.toast.history-error": "无法加载变更历史。"
+  "page.manual-test-case-detail.toast.history-error": "无法加载变更历史。",
+  "app.execution-type.all": "全部",
+  "app.execution-type.automated": "自动化",
+  "app.execution-type.manual": "手动",
+  "page.dashboard.filters.label.execution-type": "类型",
+  "page.metrics.filters.labels.execution-type": "类型"
 }

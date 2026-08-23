@@ -29,6 +29,7 @@ import { getPaletteColor, getPlatformLabel } from '../../../utility/ChartConfig'
 import { getDateRangesPicker } from '../../../utility/TimeUtilities';
 import ExecutionMetricsResultsBarChart from './charts/ExecutionMetricsResultsBarChart';
 import PhaseMetricsResultsBarChart from './charts/PhaseMetricsResultsBarChart';
+import { getExecutionTypeOptions, toExecutionTypeParam } from '../../../utility/GeneralUtilities';
 
 const MetricsPage = function (props) {
   const router = useRouter();
@@ -49,6 +50,8 @@ const MetricsPage = function (props) {
   const [selectedTeam, setSelectedTeam] = useState(currentTeam?._id || undefined);
   const [selectedComponent, setSelectedComponent] = useState(component || 'any');
   const [key, setKey] = useState('execution');
+  // undefined = both types, which is what every pre-3.0 metrics view showed.
+  const [executionType, setExecutionType] = useState(undefined);
   const [metrics, setMetrics] = useState({});
   const [platformColors, setPlatformColors] = useState({});
   const metricRequests = new MetricRequests(axios);
@@ -85,11 +88,12 @@ const MetricsPage = function (props) {
     return result;
   };
 
-  const getMetrics = (teamId, componentId, fromDate, toDate, groupingId) => {
+  const getMetrics = (teamId, componentId, fromDate, toDate, groupingId, executionTypeId) => {
     if (metrics && Object.keys(metrics).length > 0) {
       setMetrics(undefined);
     }
-    metricRequests.getPhaseMetrics(teamId, componentId, fromDate, toDate, groupingId)
+    metricRequests
+      .getPhaseMetrics(teamId, componentId, fromDate, toDate, groupingId, executionTypeId)
       .then((returnedMetrics) => {
         setMetrics(returnedMetrics);
         setPlatformColors(getPlatformArrayColors(returnedMetrics));
@@ -103,9 +107,11 @@ const MetricsPage = function (props) {
   const retrieveMetrics = () => {
     if (endDate && startDate && selectedTeam) {
       if (selectedComponent === 'any') {
-        getMetrics(selectedTeam, undefined, startDate, endDate, groupingPeriod);
+        getMetrics(selectedTeam, undefined, startDate, endDate, groupingPeriod, executionType);
       } else {
-        getMetrics(selectedTeam, selectedComponent, startDate, endDate, groupingPeriod);
+        getMetrics(
+          selectedTeam, selectedComponent, startDate, endDate, groupingPeriod, executionType,
+        );
       }
     }
   };
@@ -249,6 +255,17 @@ const MetricsPage = function (props) {
               if (value) {
                 handleGroupingChange(value);
               }
+            }}
+          />
+          <SelectPicker
+            label={<FormattedMessage id="page.metrics.filters.labels.execution-type" />}
+            cleanable={false}
+            searchable={false}
+            appearance="subtle"
+            data={getExecutionTypeOptions(intl)}
+            value={executionType === undefined ? ALL_EXECUTION_TYPES : executionType}
+            onChange={(value) => {
+              setExecutionType(toExecutionTypeParam(value));
             }}
           />
           <Button className="btn-primary" type="submit" onClick={() => { onSubmit(); }}>
