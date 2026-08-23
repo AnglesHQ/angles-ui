@@ -69,3 +69,35 @@
     color: var(--main-panel-font-color);
   }
 }
+
+// Folder tree beside the case list. The tree is a fixed rail so the table keeps a stable
+// width as folders are expanded.
+.manual-test-cases-page {
+  .manual-test-cases-layout {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+
+  .manual-test-cases-tree {
+    flex: 0 0 280px;
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+
+  .manual-test-cases-main {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .manual-test-cases-page .manual-test-cases-layout {
+    flex-direction: column;
+  }
+
+  .manual-test-cases-page .manual-test-cases-tree {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+}

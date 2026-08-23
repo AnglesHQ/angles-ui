@@ -1,0 +1,50 @@
+// ── Folder tree ──────────────────────────────────────────────────────────────
+// Sidebar tree for organising manual test cases.
+.folder-tree {
+  .folder-tree-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-2);
+  }
+
+  .folder-tree-node {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    width: 100%;
+  }
+
+  .folder-tree-icon {
+    color: var(--sub-panel-icon-color);
+  }
+
+  .folder-tree-label {
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .folder-tree-count {
+    color: var(--main-panel-secondary-font-color);
+    font-size: var(--font-size-xs);
+  }
+
+  // Row actions stay out of the way until the row is hovered, so a deep tree reads as
+  // structure rather than as a wall of buttons.
+  .folder-tree-actions {
+    display: none;
+    gap: var(--space-1);
+  }
+
+  .rs-tree-node:hover .folder-tree-actions {
+    display: inline-flex;
+  }
+
+  .folder-tree-parent-hint {
+    color: var(--main-panel-secondary-font-color);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--space-2);
+  }
+}

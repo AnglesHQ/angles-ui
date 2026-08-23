@@ -8,6 +8,7 @@ import {
     ManualTestCaseRequests,
     SharedStepRequests,
     CustomFieldRequests,
+    ManualFolderRequests,
 } from 'angles-javascript-client';
 import ManualStepEditor from '../../features/manual-step-editor/ManualStepEditor';
 import CustomFieldForm from '../../features/custom-field-form/CustomFieldForm';
@@ -30,6 +31,7 @@ function ManualTestCaseDetailPage(props) {
     const [sharedSteps, setSharedSteps] = useState([]);
     const [fieldDefinitions, setFieldDefinitions] = useState([]);
     const [versions, setVersions] = useState([]);
+    const [folderOptions, setFolderOptions] = useState([]);
     const [history, setHistory] = useState([]);
     const [selectedVersion, setSelectedVersion] = useState(null);
     const [activeTab, setActiveTab] = useState('details');
@@ -76,18 +78,22 @@ function ManualTestCaseDetailPage(props) {
                 status: found.status,
                 priority: found.priority,
                 tags: found.tags || [],
+                folder: found.folder || null,
                 steps: found.steps || [],
                 customFields: found.customFields || {},
             });
             const teamId = found.team && found.team._id ? found.team._id : found.team;
-            const [sharedStepResponse, customFieldResponse, versionResponse] = await Promise.all([
+            const manualFolderRequests = new ManualFolderRequests(axios);
+            const [sharedStepResponse, customFieldResponse, versionResponse, folderResponse] = await Promise.all([
                 sharedStepRequests.getSharedSteps(teamId),
                 customFieldRequests.getCustomFields(teamId),
                 manualTestCaseRequests.getVersions(caseId),
+                manualFolderRequests.getFolders(teamId),
             ]);
             setSharedSteps(sharedStepResponse.sharedSteps || []);
             setFieldDefinitions(customFieldResponse.customFields || []);
             setVersions(versionResponse.versions || []);
+            setFolderOptions(flattenFolders(folderResponse.folders));
         } catch (error) {
             pushError(error, 'page.manual-test-case-detail.toast.fetch-error');
         } finally {
@@ -128,6 +134,15 @@ function ManualTestCaseDetailPage(props) {
             return action ? { ...rest, action, expected } : rest;
         }),
     });
+
+    // The picker is a flat list with indentation rather than a nested control: a case
+    // belongs to exactly one folder, and a full tree widget for a single choice is more
+    // interaction than the decision needs.
+    const flattenFolders = (nodes, depth = 0) => (nodes || []).reduce((all, node) => [
+        ...all,
+        { label: `${'\u00a0\u00a0'.repeat(depth)}${node.name}`, value: node._id },
+        ...flattenFolders(node.children, depth + 1),
+    ], []);
 
     const handleSave = async () => {
         setSaving(true);
@@ -348,6 +363,21 @@ function ManualTestCaseDetailPage(props) {
                                     block
                                 />
                             </div>
+                        </div>
+                        <div className="detail-row">
+                            <label className="custom-field-label" htmlFor="case-folder">
+                                <FormattedMessage id="page.manual-test-case-detail.field.folder" />
+                            </label>
+                            <SelectPicker
+                                id="case-folder"
+                                data={folderOptions}
+                                value={draft.folder || null}
+                                // Clearing the picker files the case back at the team root,
+                                // which is a real destination rather than an absence.
+                                onChange={(value) => updateDraft({ folder: value || null })}
+                                placeholder={intl.formatMessage({ id: 'page.manual-test-case-detail.folder-root' })}
+                                block
+                            />
                         </div>
                         <div className="detail-row">
                             <label className="custom-field-label" htmlFor="case-tags">
