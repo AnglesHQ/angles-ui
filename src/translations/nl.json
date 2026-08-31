@@ -670,6 +670,7 @@
     "page.admin-custom-fields.form.label": "Label",
     "page.admin-custom-fields.form.key": "Sleutel",
     "page.admin-custom-fields.form.key-help": "Kleine letters, cijfers en underscores. Kan niet worden gewijzigd nadat het veld is aangemaakt.",
+    "page.admin-custom-fields.form.key-invalid": "Moet beginnen met een kleine letter en mag alleen kleine letters, cijfers en underscores bevatten (max. 40 tekens).",
     "page.admin-custom-fields.form.type": "Type",
     "page.admin-custom-fields.form.options": "Opties",
     "page.admin-custom-fields.form.applies-to": "Van toepassing op",

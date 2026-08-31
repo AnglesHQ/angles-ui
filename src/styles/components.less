@@ -174,10 +174,23 @@
     }
 }
 
+// Title on the left, action affordances pushed to the trailing edge, so a panel's
+// primary action always sits in the same place rather than trailing the title.
 .page-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
     color: var(--main-panel-font-color);
     font-weight: var(--font-weight-semibold);
     font-size: var(--font-size-2xl);
+
+    // The title carries the section-title bottom margin; the header row owns the
+    // spacing instead so the action button stays vertically centred against it.
+    .page-section-title {
+        margin-bottom: 0;
+    }
 }
 
 .page-section-title {
@@ -220,7 +233,18 @@
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
-// Row action links (tables, lists).
+// Row action links (tables, lists). These are usually <button> elements — an action
+// is not a navigation — so the native control chrome is stripped to make them read
+// as links rather than as tiny boxed buttons.
+.link-action,
+.link-danger {
+    padding: 0;
+    border: none;
+    background: none;
+    font: inherit;
+    cursor: pointer;
+}
+
 .link-action {
     color: var(--link-color-1);
 
@@ -455,6 +479,39 @@
         // panel; remove it so the tabs read as connected to the content.
         .rs-nav-bar {
             border: 0;
+        }
+    }
+
+    // `appearance="subtle"` navs (the test-case detail tabs) are a different
+    // rsuite skin from `.rs-nav-tabs` above: the active tab is marked by an
+    // underline bar rather than a filled tab. Both the bar and the hovered/
+    // active label take rsuite's `--rs-navs-selected`, which is only themed
+    // under `.rs-theme-dark` — a class this app never sets — so they stayed
+    // rsuite's default blue. Point them at the ember accent instead.
+    .rs-nav-subtle {
+        --rs-navs-selected: var(--color-primary);
+
+        .rs-nav-item {
+            color: var(--inactive-tab-font-color);
+
+            &:hover,
+            &:focus {
+                color: var(--color-primary);
+            }
+
+            &.rs-nav-item-active {
+                color: var(--color-primary);
+                font-weight: var(--font-weight-semibold);
+
+                // The underline bar under the active tab.
+                &::before {
+                    background-color: var(--color-primary);
+                }
+            }
+        }
+
+        .rs-nav-bar {
+            border-top-color: var(--border-subtle);
         }
     }
 

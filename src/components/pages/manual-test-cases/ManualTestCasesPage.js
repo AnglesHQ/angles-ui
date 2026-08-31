@@ -2,9 +2,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { useRouter } from 'next/navigation';
-import { Input, InputGroup, TagPicker, Button, Loader, Pagination, Message, useToaster } from 'rsuite';
+import {
+    Input, InputGroup, TagPicker, IconButton, Whisper, Tooltip, Loader, Pagination, Message,
+    useToaster, Panel,
+} from 'rsuite';
 import SearchIcon from '@rsuite/icons/Search';
-import PlusIcon from '@rsuite/icons/Plus';
+import TaskIcon from '@rsuite/icons/Task';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { ManualTestCaseRequests, ManualFolderRequests } from 'angles-javascript-client';
 import { getApiErrorMessage } from '../../../utility/ApiUtilities';
@@ -218,7 +221,7 @@ function ManualTestCasesPage(props) {
     return (
         <div className="page manual-test-cases-page">
           <div className="manual-test-cases-layout">
-            <div className="page-panel manual-test-cases-tree">
+            <Panel className="page-panel manual-test-cases-tree">
                 <FolderTree
                     folders={folders}
                     unfiledCount={unfiledCount}
@@ -231,20 +234,28 @@ function ManualTestCasesPage(props) {
                     onDelete={(folder) => setDeleteFolderState({ open: true, folder })}
                     onDropCase={handleMoveCase}
                 />
-            </div>
-            <div className="page-panel manual-test-cases-main">
+            </Panel>
+            <Panel className="page-panel manual-test-cases-main">
                 <div className="page-panel-header">
-                    <h3 className="page-section-title">
+                    <span className="page-section-title">
                         <FormattedMessage id="page.manual-test-cases" />
-                    </h3>
-                    <Button
-                        className="btn-primary"
-                        onClick={handleCreate}
-                        loading={creating}
-                        startIcon={<PlusIcon />}
+                    </span>
+                    <Whisper
+                        placement="left"
+                        speaker={(
+                            <Tooltip>
+                                <FormattedMessage id="page.manual-test-cases.create" />
+                            </Tooltip>
+                        )}
                     >
-                        <FormattedMessage id="page.manual-test-cases.create" />
-                    </Button>
+                        <IconButton
+                            appearance="subtle"
+                            icon={<TaskIcon />}
+                            onClick={handleCreate}
+                            loading={creating}
+                            aria-label={intl.formatMessage({ id: 'page.manual-test-cases.create' })}
+                        />
+                    </Whisper>
                 </div>
 
                 <div className="page-toolbar manual-test-cases-filters">
@@ -308,7 +319,7 @@ function ManualTestCasesPage(props) {
                         )}
                     </>
                 )}
-            </div>
+            </Panel>
           </div>
 
             <ConfirmModal

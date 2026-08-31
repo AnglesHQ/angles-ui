@@ -670,6 +670,7 @@
     "page.admin-custom-fields.form.label": "标签",
     "page.admin-custom-fields.form.key": "键",
     "page.admin-custom-fields.form.key-help": "小写字母、数字和下划线。字段创建后无法更改。",
+    "page.admin-custom-fields.form.key-invalid": "必须以小写字母开头，且只能包含小写字母、数字和下划线（最多40个字符）。",
     "page.admin-custom-fields.form.type": "类型",
     "page.admin-custom-fields.form.options": "选项",
     "page.admin-custom-fields.form.applies-to": "适用于",

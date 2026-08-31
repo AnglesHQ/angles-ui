@@ -2,7 +2,13 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { useRouter } from 'next/navigation';
-import { Input, SelectPicker, TagInput, Button, Loader, Nav, Message, useToaster, Panel } from 'rsuite';
+import {
+    Input, SelectPicker, TagInput, IconButton, Whisper, Tooltip, Loader, Nav, Message,
+    useToaster, Panel,
+} from 'rsuite';
+import CloneIcon from '@rsuite/icons/Copy';
+import TrashIcon from '@rsuite/icons/Trash';
+import SaveIcon from '@rsuite/icons/Save';
 import { FormattedMessage, useIntl } from 'react-intl';
 import {
     ManualTestCaseRequests,
@@ -260,20 +266,57 @@ function ManualTestCaseDetailPage(props) {
 
     return (
         <div className="page manual-test-case-detail-page">
-            <div className="page-panel">
+            <Panel className="page-panel">
                 <div className="page-detail-header">
                     <h3 className="page-detail-header-title">{testCase.title}</h3>
                     <div className="manual-test-case-header-actions">
                         <VersionBadge version={testCase.version} latestVersion={testCase.version} />
-                        <Button className="btn-ghost" onClick={handleClone}>
-                            <FormattedMessage id="page.manual-test-case-detail.clone" />
-                        </Button>
-                        <Button className="btn-secondary" onClick={() => setConfirmDelete(true)}>
-                            <FormattedMessage id="page.manual-test-case-detail.delete" />
-                        </Button>
-                        <Button className="btn-primary" onClick={handleSave} loading={saving}>
-                            <FormattedMessage id="page.manual-test-case-detail.save" />
-                        </Button>
+                        <Whisper
+                            placement="top"
+                            speaker={(
+                                <Tooltip>
+                                    <FormattedMessage id="page.manual-test-case-detail.clone" />
+                                </Tooltip>
+                            )}
+                        >
+                            <IconButton
+                                appearance="subtle"
+                                icon={<CloneIcon />}
+                                onClick={handleClone}
+                                aria-label={intl.formatMessage({ id: 'page.manual-test-case-detail.clone' })}
+                            />
+                        </Whisper>
+                        <Whisper
+                            placement="top"
+                            speaker={(
+                                <Tooltip>
+                                    <FormattedMessage id="page.manual-test-case-detail.delete" />
+                                </Tooltip>
+                            )}
+                        >
+                            <IconButton
+                                appearance="subtle"
+                                icon={<TrashIcon />}
+                                onClick={() => setConfirmDelete(true)}
+                                aria-label={intl.formatMessage({ id: 'page.manual-test-case-detail.delete' })}
+                            />
+                        </Whisper>
+                        <Whisper
+                            placement="top"
+                            speaker={(
+                                <Tooltip>
+                                    <FormattedMessage id="page.manual-test-case-detail.save" />
+                                </Tooltip>
+                            )}
+                        >
+                            <IconButton
+                                appearance="subtle"
+                                icon={<SaveIcon />}
+                                onClick={handleSave}
+                                loading={saving}
+                                aria-label={intl.formatMessage({ id: 'page.manual-test-case-detail.save' })}
+                            />
+                        </Whisper>
                     </div>
                 </div>
 
@@ -462,7 +505,7 @@ function ManualTestCaseDetailPage(props) {
                         <ChangeHistory entries={history} loading={historyLoading} />
                     </div>
                 )}
-            </div>
+            </Panel>
 
             <ConfirmModal
                 open={confirmDelete}

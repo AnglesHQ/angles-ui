@@ -670,6 +670,7 @@
     "page.admin-custom-fields.form.label": "Label",
     "page.admin-custom-fields.form.key": "Key",
     "page.admin-custom-fields.form.key-help": "Lowercase letters, numbers and underscores. Cannot be changed once the field is created.",
+    "page.admin-custom-fields.form.key-invalid": "Must start with a lowercase letter and contain only lowercase letters, numbers and underscores (max 40 characters).",
     "page.admin-custom-fields.form.type": "Type",
     "page.admin-custom-fields.form.options": "Options",
     "page.admin-custom-fields.form.applies-to": "Applies to",

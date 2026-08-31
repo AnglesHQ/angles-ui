@@ -670,6 +670,7 @@
     "page.admin-custom-fields.form.label": "ป้ายกำกับ",
     "page.admin-custom-fields.form.key": "คีย์",
     "page.admin-custom-fields.form.key-help": "ตัวพิมพ์เล็ก ตัวเลข และขีดล่าง ไม่สามารถเปลี่ยนได้หลังจากสร้างฟิลด์แล้ว",
+    "page.admin-custom-fields.form.key-invalid": "ต้องขึ้นต้นด้วยตัวพิมพ์เล็ก และมีเฉพาะตัวพิมพ์เล็ก ตัวเลข และขีดล่างเท่านั้น (สูงสุด 40 ตัวอักษร)",
     "page.admin-custom-fields.form.type": "ประเภท",
     "page.admin-custom-fields.form.options": "ตัวเลือก",
     "page.admin-custom-fields.form.applies-to": "ใช้กับ",

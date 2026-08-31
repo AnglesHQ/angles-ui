@@ -2,10 +2,11 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import {
-    Table, Input, InputGroup, Button, Loader, Message, useToaster, Modal, Form, Drawer, Tag,
+    Table, Input, InputGroup, Button, IconButton, Whisper, Tooltip, Loader, Message,
+    useToaster, Modal, Form, Drawer, Tag, Panel,
 } from 'rsuite';
 import SearchIcon from '@rsuite/icons/Search';
-import PlusIcon from '@rsuite/icons/Plus';
+import CombinationIcon from '@rsuite/icons/Combination';
 import { FormattedMessage, useIntl } from 'react-intl';
 import Link from 'next/link';
 import { SharedStepRequests } from 'angles-javascript-client';
@@ -182,21 +183,33 @@ const SharedStepsPage = function (props) {
 
     return (
         <div className="page shared-steps-page">
-            <div className="page-panel">
+            <Panel className="page-panel">
                 <div className="page-panel-header">
                     <span className="page-section-title">
                         <FormattedMessage id="page.shared-steps.title" />
                     </span>
-                    <Button className="btn-primary" startIcon={<PlusIcon />} onClick={() => openEditor(undefined)}>
-                        <FormattedMessage id="page.shared-steps.button.add" />
-                    </Button>
+                    <Whisper
+                        placement="left"
+                        speaker={(
+                            <Tooltip>
+                                <FormattedMessage id="page.shared-steps.button.add" />
+                            </Tooltip>
+                        )}
+                    >
+                        <IconButton
+                            appearance="subtle"
+                            icon={<CombinationIcon />}
+                            onClick={() => openEditor(undefined)}
+                            aria-label={intl.formatMessage({ id: 'page.shared-steps.button.add' })}
+                        />
+                    </Whisper>
                 </div>
                 <div className="page-help-text">
                     <FormattedMessage id="page.shared-steps.help" />
                 </div>
 
                 <div className="page-toolbar">
-                    <InputGroup inside style={{ width: 320 }}>
+                    <InputGroup inside className="shared-steps-search">
                         <Input
                             value={search}
                             placeholder={intl.formatMessage({ id: 'page.shared-steps.search-placeholder' })}
@@ -254,7 +267,7 @@ const SharedStepsPage = function (props) {
                         </Column>
                     </Table>
                 )}
-            </div>
+            </Panel>
 
             <Modal open={!!editing} size="lg" onClose={() => setEditing(undefined)}>
                 <Modal.Header>

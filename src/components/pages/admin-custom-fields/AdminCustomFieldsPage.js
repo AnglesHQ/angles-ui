@@ -2,10 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import {
-    Table, Button, Loader, Message, useToaster, Modal, Form, Input, SelectPicker,
-    TagInput, Toggle, InputNumber, Tag,
+    Table, Button, IconButton, Whisper, Tooltip, Loader, Message, useToaster, Modal, Form,
+    Input, SelectPicker, TagInput, Toggle, InputNumber, Tag, Panel,
 } from 'rsuite';
-import PlusIcon from '@rsuite/icons/Plus';
+import TableColumnIcon from '@rsuite/icons/TableColumn';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { CustomFieldRequests, CustomFieldTypes, CustomFieldScopes } from 'angles-javascript-client';
 import { getApiErrorMessage } from '../../../utility/ApiUtilities';
@@ -15,6 +15,10 @@ const { Column, HeaderCell, Cell } = Table;
 
 // Only these two need an options list; the rest take free input.
 const OPTION_BACKED_TYPES = [CustomFieldTypes.SELECT, CustomFieldTypes.MULTISELECT];
+
+// Mirrors the API's key validation - lowercase letters, numbers and underscores,
+// must start with a lowercase letter, max 40 characters.
+const KEY_PATTERN = /^[a-z][a-z0-9_]{0,39}$/;
 
 const emptyDefinition = {
     key: '', label: '', type: CustomFieldTypes.TEXT, options: [],
@@ -69,8 +73,10 @@ const AdminCustomFieldsPage = function (props) {
         value,
     }));
 
+    const keyInvalid = !!editing && !editing._id && !KEY_PATTERN.test(editing.key || '');
+
     const handleSave = async () => {
-        if (!editing) return;
+        if (!editing || keyInvalid) return;
         setSaving(true);
         try {
             const payload = {
@@ -143,18 +149,26 @@ const AdminCustomFieldsPage = function (props) {
 
     return (
         <div className="page admin-custom-fields-page">
-            <div className="page-panel">
+            <Panel className="page-panel">
                 <div className="page-panel-header">
                     <span className="page-section-title">
                         <FormattedMessage id="page.admin-custom-fields.title" />
                     </span>
-                    <Button
-                        className="btn-primary"
-                        startIcon={<PlusIcon />}
-                        onClick={() => setEditing({ ...emptyDefinition })}
+                    <Whisper
+                        placement="left"
+                        speaker={(
+                            <Tooltip>
+                                <FormattedMessage id="page.admin-custom-fields.button.add" />
+                            </Tooltip>
+                        )}
                     >
-                        <FormattedMessage id="page.admin-custom-fields.button.add" />
-                    </Button>
+                        <IconButton
+                            appearance="subtle"
+                            icon={<TableColumnIcon />}
+                            onClick={() => setEditing({ ...emptyDefinition })}
+                            aria-label={intl.formatMessage({ id: 'page.admin-custom-fields.button.add' })}
+                        />
+                    </Whisper>
                 </div>
                 <div className="page-help-text">
                     <FormattedMessage id="page.admin-custom-fields.help" />
@@ -227,7 +241,7 @@ const AdminCustomFieldsPage = function (props) {
                         </Column>
                     </Table>
                 )}
-            </div>
+            </Panel>
 
             <Modal open={!!editing} onClose={() => setEditing(undefined)}>
                 <Modal.Header>
@@ -254,11 +268,20 @@ const AdminCustomFieldsPage = function (props) {
                                 <Input
                                     value={editing.key}
                                     disabled={!!editing._id}
-                                    onChange={(value) => setEditing({ ...editing, key: value })}
+                                    onChange={(value) => setEditing({
+                                        ...editing,
+                                        key: value.toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 40),
+                                    })}
                                 />
-                                <Form.HelpText>
-                                    <FormattedMessage id="page.admin-custom-fields.form.key-help" />
-                                </Form.HelpText>
+                                {keyInvalid ? (
+                                    <Form.HelpText className="form-error-text">
+                                        <FormattedMessage id="page.admin-custom-fields.form.key-invalid" />
+                                    </Form.HelpText>
+                                ) : (
+                                    <Form.HelpText>
+                                        <FormattedMessage id="page.admin-custom-fields.form.key-help" />
+                                    </Form.HelpText>
+                                )}
                             </Form.Group>
                             <Form.Group>
                                 <Form.ControlLabel><FormattedMessage id="page.admin-custom-fields.form.type" /></Form.ControlLabel>
@@ -317,7 +340,7 @@ const AdminCustomFieldsPage = function (props) {
                     <Button className="btn-secondary" onClick={() => setEditing(undefined)}>
                         <FormattedMessage id="app.manual.cancel" />
                     </Button>
-                    <Button className="btn-primary" loading={saving} onClick={handleSave}>
+                    <Button className="btn-primary" loading={saving} disabled={keyInvalid} onClick={handleSave}>
                         <FormattedMessage id="app.manual.save" />
                     </Button>
                 </Modal.Footer>

@@ -6,6 +6,45 @@
 // components live in `components.less`.
 // ============================================================================
 
+// ── Buttons ──────────────────────────────────────────────────────────────────
+// Subtle buttons (the icon actions in panel headers and detail toolbars) take
+// their colours from rsuite's own `--rs-btn-subtle-*` custom properties. Those
+// are themed by rsuite under `.rs-theme-dark`, which this app never sets — it
+// themes via `[data-theme]` on :root instead — so in dark mode the buttons kept
+// rsuite's *light* value (a near-black `--rs-gray-800`) and disappeared against
+// the dark panel. Pointing the variables at our semantic tokens fixes both
+// modes at once, because the tokens already theme at the primitive layer.
+//
+// Declared on :root rather than on `.rs-btn-subtle` because the same variables
+// colour other subtle-styled widgets (input-group buttons, uploader triggers,
+// subtle pickers), which have the identical dark-mode problem.
+//
+// At rest they read as plain icons in the panel's own font colour; on hover and
+// while pressed they take the ember accent, matching how `.btn-primary` and the
+// row-action links signal interactivity. The hover surface stays the sub-panel
+// tone so the accent comes from the glyph rather than a filled block.
+:root {
+    --rs-btn-subtle-text: var(--main-panel-font-color);
+    --rs-btn-subtle-hover-text: var(--color-primary);
+    --rs-btn-subtle-hover-bg: var(--sub-panel-background);
+    --rs-btn-subtle-active-text: var(--color-primary-hover);
+    --rs-btn-subtle-active-bg: var(--sub-panel-background);
+    --rs-btn-subtle-disabled-text: var(--icon-disabled-color);
+}
+
+// rsuite drives the subtle button's colour through the variables above, but its
+// focus-visible ring is a hard-coded blue box-shadow. Match it to the app's
+// focus ring so keyboard focus reads the same as every other control.
+.rs-btn-subtle {
+    transition: color var(--transition-fast), background-color var(--transition-fast);
+
+    &:focus-visible {
+        color: var(--color-primary);
+        box-shadow: 0 0 0 3px var(--focus-ring);
+        outline: none;
+    }
+}
+
 // ── Table ───────────────────────────────────────────────────────────────────
 .rs-table {
     background-color: transparent;
@@ -27,6 +66,18 @@
             opacity: 0.8;
             font-weight: bold;
             font-size: var(--font-size-sm);
+        }
+
+        // On hover rsuite paints the header's cells with `--rs-bg-card` (a light
+        // #fff default, for the same inert-theme reason as the body rows). That
+        // sits behind our themed `.rs-table-cell-content`, so the white bled out
+        // around it. The header is not interactive — keep the cells transparent
+        // and let the content layer stay the only painted surface.
+        &:hover {
+            .rs-table-cell-group,
+            .rs-table-cell {
+                background-color: transparent;
+            }
         }
 
         .rs-table-cell-first {
@@ -65,6 +116,20 @@
         .rs-table-cell {
             background-color: var(--main-table-body-background);
             font-size: var(--font-size-sm);
+        }
+
+        // rsuite tints a hovered row with `--rs-state-hover-bg`. That variable is
+        // themed under `.rs-theme-dark`, which this app never sets (it themes via
+        // `[data-theme]` on :root), so the light default — a near-white #f2faff —
+        // was painting over rows in both modes. These tables are not row-clickable,
+        // so the highlight signals an interaction that does not exist: hold the
+        // resting background instead of restyling the tint.
+        .rs-table-row:hover {
+            &,
+            .rs-table-cell-group,
+            .rs-table-cell {
+                background-color: var(--main-table-body-background);
+            }
         }
 
         .rs-table-row:last-child {

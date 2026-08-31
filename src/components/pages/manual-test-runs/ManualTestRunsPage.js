@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
-    Table, Button, Loader, Message, useToaster, Modal, Form, Input, SelectPicker,
-    CheckPicker, Tag, Pagination,
+    Table, Button, IconButton, Whisper, Tooltip, Loader, Message, useToaster, Modal, Form,
+    Input, SelectPicker, CheckPicker, Tag, Pagination, Panel,
 } from 'rsuite';
-import PlusIcon from '@rsuite/icons/Plus';
+import PlayOutlineIcon from '@rsuite/icons/PlayOutline';
 import { FormattedMessage, useIntl } from 'react-intl';
 import {
     ManualTestRunRequests, ManualTestCaseRequests, ManualRunStates,
@@ -146,14 +146,26 @@ const ManualTestRunsPage = function (props) {
 
     return (
         <div className="page manual-test-runs-page">
-            <div className="page-panel">
+            <Panel className="page-panel">
                 <div className="page-panel-header">
                     <span className="page-section-title">
                         <FormattedMessage id="page.manual-test-runs.title" />
                     </span>
-                    <Button className="btn-primary" startIcon={<PlusIcon />} onClick={openWizard}>
-                        <FormattedMessage id="page.manual-test-runs.button.add" />
-                    </Button>
+                    <Whisper
+                        placement="left"
+                        speaker={(
+                            <Tooltip>
+                                <FormattedMessage id="page.manual-test-runs.button.add" />
+                            </Tooltip>
+                        )}
+                    >
+                        <IconButton
+                            appearance="subtle"
+                            icon={<PlayOutlineIcon />}
+                            onClick={openWizard}
+                            aria-label={intl.formatMessage({ id: 'page.manual-test-runs.button.add' })}
+                        />
+                    </Whisper>
                 </div>
 
                 <div className="page-toolbar">
@@ -162,7 +174,7 @@ const ManualTestRunsPage = function (props) {
                         data={statusOptions}
                         value={statusFilter}
                         searchable={false}
-                        style={{ width: 260 }}
+                        className="manual-test-runs-status-filter"
                         onChange={setStatusFilter}
                     />
                 </div>
@@ -226,7 +238,7 @@ const ManualTestRunsPage = function (props) {
                         )}
                     </>
                 )}
-            </div>
+            </Panel>
 
             <Modal open={!!creating} size="md" onClose={() => setCreating(undefined)}>
                 <Modal.Header>
