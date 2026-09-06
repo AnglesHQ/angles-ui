@@ -170,6 +170,19 @@
     border-radius: var(--radius-md);
     overflow: hidden;
     box-shadow: var(--shadow-md);
+}
+
+// Menus opened from the right-hand navbar are placed `bottom-start` by rsuite,
+// i.e. anchored to their toggle's LEFT edge, so a menu wider than its toggle
+// grows rightwards and off-screen. The theme picker is the first menu wide
+// enough to hit this (its group headings are wider than the theme names).
+// Re-anchor to the toggle's right edge for the right-aligned navbar only.
+.main-container .rs-navbar .rs-navbar-right .rs-dropdown-menu {
+    left: auto;
+    right: 0;
+}
+
+.rs-dropdown-menu {
 
     .rs-dropdown-item {
         color: var(--nav-font-color) !important;
@@ -181,6 +194,28 @@
             color: inherit !important;
             background-color: transparent !important;
         }
+    }
+
+    // Section heading inside a nav menu (the theme picker groups themes into
+    // Light / Dark). A label, not an option: no hover, no pointer, and muted
+    // so it reads as structure rather than a disabled choice.
+    .nav-menu-group-label {
+        padding: var(--space-2) var(--space-4) var(--space-1);
+        color: var(--main-panel-secondary-font-color);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-semibold);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        cursor: default;
+        pointer-events: none;
+    }
+
+    // Divide each group from the one above. Keyed on "a label with any label
+    // before it" via the general sibling combinator: rsuite renders menu items
+    // as `<li>` too, so `:first-of-type` cannot tell a heading from an option.
+    .nav-menu-group-label ~ .nav-menu-group-label {
+        border-top: 1px solid var(--border-subtle);
+        margin-top: var(--space-1);
     }
 
     // Hover / focus / active. RSuite marks the current item with its own

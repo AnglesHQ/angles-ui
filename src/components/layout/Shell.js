@@ -39,6 +39,7 @@ import ExitIcon from '@rsuite/icons/Exit';
 import { CgDarkMode } from 'react-icons/cg';
 
 import translations from '../../translations/translations.json';
+import { applyTheme, getThemesByPolarity } from '../../utility/Themes';
 import { storeCurrentTeam, storeTeams, storeTeamsError } from '../../redux/teamActions';
 import { storeEnvironments } from '../../redux/environmentActions';
 import { clearCurrentErrorMessage, clearCurrentInfoMessage, clearCurrentLoaderMessage } from '../../redux/notificationActions';
@@ -172,10 +173,9 @@ const Shell = function (props) {
         window.location.reload(); // Force reload to apply language change
     };
 
-    const setTheme = (theme) => {
-        const rootElement = document.documentElement;
-        rootElement.setAttribute('data-theme', theme);
-        Cookies.set('theme', theme);
+    const setTheme = (themeId) => {
+        applyTheme(themeId);
+        Cookies.set('theme', themeId);
     };
 
     const toggleMenu = () => {
@@ -285,8 +285,24 @@ const Shell = function (props) {
                                 {translations.map((translation, index) => (<Nav.Item key={index} eventKey={`4-${index}`} onClick={() => setLanguage(translation.code)}>{translation.text}</Nav.Item>))}
                             </Nav.Menu>
                             <Nav.Menu eventKey="5" icon={<CgDarkMode />} title={<FormattedMessage id="nav.theme" />}>
-                                <Nav.Item eventKey="5-1" onClick={() => setTheme('light')}><FormattedMessage id="nav.theme.light" /></Nav.Item>
-                                <Nav.Item eventKey="5-2" onClick={() => setTheme('dark')}><FormattedMessage id="nav.theme.dark" /></Nav.Item>
+                                {/* Grouped by polarity so the list stays scannable as themes
+                                    are added; the headings are labels, not selectable items. */}
+                                {['light', 'dark'].map((polarity) => (
+                                    <React.Fragment key={polarity}>
+                                        <li className="nav-menu-group-label" role="presentation">
+                                            <FormattedMessage id={`nav.theme.group.${polarity}`} />
+                                        </li>
+                                        {getThemesByPolarity(polarity).map((theme) => (
+                                            <Nav.Item
+                                                key={theme.id}
+                                                eventKey={`5-${theme.id}`}
+                                                onClick={() => setTheme(theme.id)}
+                                            >
+                                                <FormattedMessage id={theme.labelId} />
+                                            </Nav.Item>
+                                        ))}
+                                    </React.Fragment>
+                                ))}
                             </Nav.Menu>
                             {user && (
                                 <Nav.Menu eventKey="0" icon={<UserBadgeIcon className="nav-item-icon" />} title={user.username || intl.formatMessage({ id: 'nav.profile' })}>

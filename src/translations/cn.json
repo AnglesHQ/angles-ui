@@ -6,6 +6,8 @@
     "nav.theme": "主題色調",
     "nav.theme.light": "淺色",
     "nav.theme.dark": "深色",
+    "nav.theme.group.light": "淺色主題",
+    "nav.theme.group.dark": "深色主題",
     "nav.about": "關於 Angles",
     "nav.team-settings": "团队设置",
     "nav.admin": "管理",

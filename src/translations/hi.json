@@ -6,6 +6,8 @@
     "nav.theme": "थीम",
     "nav.theme.light": "लाइट",
     "nav.theme.dark": "डार्क",
+    "nav.theme.group.light": "लाइट थीम",
+    "nav.theme.group.dark": "डार्क थीम",
     "nav.about": "Angles के बारे में",
     "nav.team-settings": "टीम सेटिंग्स",
     "nav.admin": "प्रशासन",

@@ -6,6 +6,7 @@ import { IntlProvider } from 'react-intl';
 import Cookies from 'js-cookie';
 import { Provider } from 'react-redux';
 import store from '../redux/store';
+import { applyTheme } from '../utility/Themes';
 import { CurrentScreenshotProvider } from '../context/CurrentScreenshotContext';
 import { ExecutionStateProvider } from '../context/ExecutionStateContext';
 import { AuthProvider } from '../context/AuthContext';
@@ -40,11 +41,13 @@ export default function Providers({ children }) {
     useEffect(() => {
         // Only pin an explicit theme when the user has chosen one. With no
         // cookie we leave `data-theme` unset so the CSS follows the OS
-        // preference (prefers-color-scheme) — see src/styles/tokens.less.
-        const theme = Cookies.get('theme');
-        if (theme) {
-            document.documentElement.setAttribute('data-theme', theme);
-        }
+        // preference (prefers-color-scheme) — see tokens/_color.less.
+        //
+        // `applyTheme` validates against the registry: an unrecognised cookie
+        // (a theme that was renamed or removed, or a hand-edited value) leaves
+        // the attribute off rather than writing an id that matches no selector,
+        // which would render the page with no theme's primitives at all.
+        applyTheme(Cookies.get('theme'));
     }, []);
 
     if (!messages) {

@@ -6,6 +6,8 @@
     "nav.theme": "ธีม",
     "nav.theme.light": "สว่าง",
     "nav.theme.dark": "มืด",
+    "nav.theme.group.light": "ธีมสว่าง",
+    "nav.theme.group.dark": "ธีมมืด",
     "nav.about": "เกี่ยวกับ Angles",
     "nav.team-settings": "การตั้งค่าทีม",
     "nav.admin": "ผู้ดูแลระบบ",

@@ -6,6 +6,8 @@
     "nav.theme": "Thema",
     "nav.theme.light": "Licht",
     "nav.theme.dark": "Donker",
+    "nav.theme.group.light": "Lichte thema’s",
+    "nav.theme.group.dark": "Donkere thema’s",
     "nav.about": "Over Angles",
     "nav.team-settings": "Team Instellingen",
     "nav.admin": "Beheer",
