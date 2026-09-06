@@ -412,11 +412,10 @@
 
 // Height is now pure ink: the viewBox was tightened to the glyph extents (see
 // BrandLogo.js), so this value is the wordmark's real cap-to-descender height
-// rather than a box with slack in it. 26px against the cube's 44px puts the
-// cap-height of 'A' at roughly two thirds the cube's height, which is what the
-// original lockup used.
+// rather than a box with slack in it. Matching the cube's 44px sets the
+// wordmark at the same overall height as the mark beside it.
 .brand-logo-text {
-    height: 30px;
+    height: 44px;
     width: auto;
     flex: 0 0 auto;
 }
