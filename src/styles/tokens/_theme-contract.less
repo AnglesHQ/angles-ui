@@ -104,8 +104,9 @@
 //
 //   TEXT (WCAG AA, 4.5:1 minimum; the shipped themes hold AAA / 7:1)
 //     --master-font-color-1  vs  --master-color-2   ← primary text on panel
+//     --master-font-color-1  vs  --master-color-1   ← primary text on sub-panel
 //     --master-font-color-3  vs  --master-color-2   ← secondary text on panel
-//     --master-font-color-2  vs  --master-color-3   ← label on an accent button
+//     status colours         vs  --master-color-2   ← .status-* are TEXT
 //
 //   NON-TEXT (3:1 minimum — boundaries and state, not glyphs)
 //     --master-color-2-relative  vs  --master-color-2   ← borders must be seen
@@ -113,19 +114,45 @@
 //     --chart-series-N           vs  --main-panel-background  (all 10)
 //
 //   ORDERING (not a ratio — a relationship that must hold either way round)
-//     --master-color-muted MUST be dimmer than --master-color-3 against the
-//     panel. Measured by luminance distance, not contrast ratio: a token can
-//     pass 3:1 and still be *brighter* than the accent, which is what makes a
-//     disabled control look enabled. This inverted in dark mode when
-//     `--icon-disabled-color` was pointed at the secondary text tone.
+//     --master-color-muted must read as LESS PROMINENT than --master-color-3
+//     against the panel, or a disabled control out-weighs an enabled one.
 //
-//   KNOWN SHORTFALLS in the shipped themes, recorded so a new theme is not
-//   measured against a false baseline:
+//     Prominence is distance from the panel, not absolute luminance, so the
+//     direction flips with polarity:
+//       • dark theme  → muted must be DARKER than the accent (nearer the panel)
+//       • light theme → muted must be LIGHTER than the accent (nearer the panel)
+//     Checking "muted has lower luminance" unconditionally is wrong: it holds
+//     on dark themes and inverts on light ones. A token can also pass its 3:1
+//     and still be more prominent than the accent, so this is a separate check.
+//     This relationship inverted in dark mode when `--icon-disabled-color` was
+//     pointed at the secondary text tone.
+//
+//   KNOWN SHORTFALLS in the Ember themes, measured — recorded so a new theme
+//   is not judged against a false baseline. New themes should do better where
+//   they can; these are not licence to ship a worse palette.
+//
+//     • ON-ACCENT TEXT is the big one. `--master-font-color-2` (cream) on
+//       `--master-color-3` (ember) measures 2.46:1 light / 1.80:1 dark, well
+//       under AA. That pair is every primary button label — including Login.
+//       Fixing it means dark text on the orange, which is a brand decision, so
+//       it is recorded rather than silently changed. A NEW theme has no such
+//       constraint: pick an on-accent colour that clears 4.5:1, which usually
+//       means dark text on a mid-tone accent.
 //     • --master-color-3 (ember) sits at ~2.2:1 on the light panel. It is the
 //       brand accent and is used for icon affordance, so light-theme icons are
-//       below the 3:1 non-text bar. Changing it is a brand decision.
-//     • --master-color-2-relative sits at ~2.3:1 on the dark panel, so dark
-//       borders are fainter than the bar wants.
+//       below the 3:1 non-text bar.
+//     • Ember Light also fails the ORDERING rule above, as a consequence: the
+//       accent is so light (relative luminance 0.36) that no muted grey can be
+//       both lighter than it AND reach 3:1 on the pale panel — "lighter than
+//       the accent" there means very nearly panel-coloured. Disabled icons in
+//       Ember Light therefore read slightly heavier than enabled ones. The fix
+//       is a darker light-theme accent, i.e. the same brand decision as above.
+//       Slate Light and Sepia both satisfy the rule, so it is not a limitation
+//       of the rule itself.
+//     • --master-color-2-relative sits at 1.33:1 light / 2.32:1 dark against
+//       the panel, so borders are fainter than the bar wants in both.
+//     • The light theme's status colours (2.3–2.5:1) are tuned for the pale
+//       sub-panel they usually sit on rather than for maximum contrast.
 
 
 // ── 4. NOT part of the contract ────────────────────────────────────────────

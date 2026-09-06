@@ -71,6 +71,128 @@
     .chart-series-dark();
 }
 
+// ── Theme: Slate Light ──────────────────────────────────────────────────────
+// A cool, high-contrast alternative to Ember & Sand: neutral blue-grey
+// surfaces, white sub-panels, a blue accent. For people who find the warm
+// palette distracting.
+.theme-slate-light() {
+    --theme-ink-rgb: 0, 0, 0;
+    --theme-is-dark: 0;
+
+    --master-color-1: hsl(0, 0%, 100%);
+    --master-color-2: hsl(215, 20%, 97%);
+    --master-color-2-relative: hsl(215, 16%, 56%);
+
+    --master-font-color-1: hsl(215, 28%, 17%);
+    --master-font-color-2: hsl(0, 0%, 100%);
+    --master-font-color-3: hsl(215, 14%, 38%);
+
+    --master-color-3: hsl(211, 80%, 43%);
+    --master-color-3-relative: hsl(211, 84%, 35%);
+    --accent-rgb: 20, 105, 198;
+
+    // Lighter than the accent: on a light theme "less prominent" means nearer
+    // the panel, so muted sits above the accent in lightness, not below.
+    --master-color-muted: hsl(215, 12%, 56%);
+
+    --pass-color: hsl(140, 42%, 38%);
+    --fail-color: hsl(355, 72%, 50%);
+    --error-color: hsl(38, 88%, 41%);
+    --skipped-color: hsl(199, 89%, 42%);
+
+    .chart-series-light();
+}
+
+// ── Theme: Sepia ────────────────────────────────────────────────────────────
+// Warm and low-glare, for long reading sessions: paper-toned surfaces, a
+// muted terracotta accent, less contrast between panel and sub-panel than the
+// other light themes.
+.theme-sepia() {
+    --theme-ink-rgb: 0, 0, 0;
+    --theme-is-dark: 0;
+
+    --master-color-1: hsl(38, 46%, 97%);
+    --master-color-2: hsl(38, 40%, 93%);
+    --master-color-2-relative: hsl(34, 26%, 50%);
+
+    --master-font-color-1: hsl(25, 30%, 20%);
+    --master-font-color-2: hsl(38, 44%, 98%);
+    --master-font-color-3: hsl(28, 18%, 38%);
+
+    --master-color-3: hsl(18, 62%, 38%);
+    --master-color-3-relative: hsl(18, 64%, 30%);
+    --accent-rgb: 157, 78, 37;
+
+    --master-color-muted: hsl(28, 14%, 52%);
+
+    --pass-color: hsl(140, 42%, 38%);
+    --fail-color: hsl(355, 72%, 50%);
+    --error-color: hsl(38, 88%, 39%);
+    --skipped-color: hsl(199, 89%, 42%);
+
+    .chart-series-light();
+}
+
+// ── Theme: Slate Dark ───────────────────────────────────────────────────────
+// The cool counterpart to Ember Dark: blue-grey surfaces and a sky accent
+// instead of warm near-black and orange.
+.theme-slate-dark() {
+    --theme-ink-rgb: 255, 255, 255;
+    --theme-is-dark: 1;
+
+    --master-color-1: hsl(215, 25%, 18%);
+    --master-color-2: hsl(215, 28%, 12%);
+    // 43% rather than 42%: at 42% the border lands on 2.99:1 against the panel,
+    // a hair under the 3:1 the contract asks of non-text boundaries.
+    --master-color-2-relative: hsl(215, 15%, 43%);
+
+    --master-font-color-1: hsl(210, 20%, 93%);
+    --master-font-color-2: hsl(215, 28%, 10%);
+    --master-font-color-3: hsl(212, 14%, 74%);
+
+    --master-color-3: hsl(199, 85%, 62%);
+    --master-color-3-relative: hsl(199, 85%, 54%);
+    --accent-rgb: 74, 190, 240;
+
+    --master-color-muted: hsl(215, 12%, 45%);
+
+    --pass-color: hsl(140, 45%, 60%);
+    --fail-color: hsl(355, 80%, 68%);
+    --error-color: hsl(40, 90%, 62%);
+    --skipped-color: hsl(199, 90%, 66%);
+
+    .chart-series-dark();
+}
+
+// ── Theme: Midnight ─────────────────────────────────────────────────────────
+// Near-black and maximum contrast, for dim rooms and OLED screens. Pure
+// neutral greys so the amber accent is the only colour in the chrome.
+.theme-midnight() {
+    --theme-ink-rgb: 255, 255, 255;
+    --theme-is-dark: 1;
+
+    --master-color-1: hsl(0, 0%, 11%);
+    --master-color-2: hsl(0, 0%, 5%);
+    --master-color-2-relative: hsl(0, 0%, 45%);
+
+    --master-font-color-1: hsl(0, 0%, 100%);
+    --master-font-color-2: hsl(0, 0%, 4%);
+    --master-font-color-3: hsl(0, 0%, 78%);
+
+    --master-color-3: hsl(35, 100%, 66%);
+    --master-color-3-relative: hsl(35, 100%, 58%);
+    --accent-rgb: 255, 186, 82;
+
+    --master-color-muted: hsl(0, 0%, 42%);
+
+    --pass-color: hsl(140, 45%, 60%);
+    --fail-color: hsl(355, 80%, 68%);
+    --error-color: hsl(40, 90%, 62%);
+    --skipped-color: hsl(199, 90%, 66%);
+
+    .chart-series-dark();
+}
+
 // ── Categorical chart ramps (per polarity, not per theme) ───────────────────
 // Non-status series colours. Each ramp is tuned for the ground it sits on: the
 // light values fall below 3:1 on a dark panel and vice versa. A new theme picks
@@ -295,6 +417,22 @@
 :root[data-theme='dark'],
 :root[data-theme='ember-dark'] {
     .theme-ember-dark();
+}
+
+:root[data-theme='slate-light'] {
+    .theme-slate-light();
+}
+
+:root[data-theme='sepia'] {
+    .theme-sepia();
+}
+
+:root[data-theme='slate-dark'] {
+    .theme-slate-dark();
+}
+
+:root[data-theme='midnight'] {
+    .theme-midnight();
 }
 
 // ── OS-preference fallback ──────────────────────────────────────────────────

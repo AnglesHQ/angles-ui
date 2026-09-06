@@ -18,9 +18,15 @@
 // cannot drift into disagreeing about how anything is painted.
 // ============================================================================
 
+// Order within a polarity is the order the picker lists them, so the two
+// original Ember themes stay first.
 export const THEMES = [
   { id: 'light', polarity: 'light', labelId: 'nav.theme.light' },
+  { id: 'slate-light', polarity: 'light', labelId: 'nav.theme.slate-light' },
+  { id: 'sepia', polarity: 'light', labelId: 'nav.theme.sepia' },
   { id: 'dark', polarity: 'dark', labelId: 'nav.theme.dark' },
+  { id: 'slate-dark', polarity: 'dark', labelId: 'nav.theme.slate-dark' },
+  { id: 'midnight', polarity: 'dark', labelId: 'nav.theme.midnight' },
 ];
 
 // The theme applied when the user has made no choice. Leaving the cookie unset
