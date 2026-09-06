@@ -39,6 +39,7 @@ import ExitIcon from '@rsuite/icons/Exit';
 import { CgDarkMode } from 'react-icons/cg';
 
 import translations from '../../translations/translations.json';
+import BrandLogo from '../common/BrandLogo';
 import { applyTheme, getThemesByPolarity } from '../../utility/Themes';
 import { storeCurrentTeam, storeTeams, storeTeamsError } from '../../redux/teamActions';
 import { storeEnvironments } from '../../redux/environmentActions';
@@ -199,8 +200,7 @@ const Shell = function (props) {
                             <Sidenav.Header>
                                 <Link href="/">
                                     <div className="sidebar-header">
-                                        <img src="/assets/angles-icon.png" alt="Angles" className="brand-logo-icon" />
-                                        <img src="/assets/angles-text-logo.png" alt="Angles" className="brand-logo-text" />
+                                        <BrandLogo showText={expand} />
                                     </div>
                                 </Link>
                             </Sidenav.Header>

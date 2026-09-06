@@ -391,17 +391,89 @@
 }
 
 // ── Brand logo (sidebar + login) ─────────────────────────────────────────────
+// ── Brand logo ───────────────────────────────────────────────────────────────
+// Inline SVG (components/common/BrandLogo.js) rather than a PNG, so the mark
+// follows the theme's accent instead of staying orange on every palette. See
+// that file for why. Colour lives here; geometry lives in the component.
+.brand-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    // The outline inherits this, so the mark sits on whatever surface it is
+    // placed on without a per-context override.
+    color: var(--main-panel-font-color);
+}
+
 .brand-logo-icon {
-    height: 50px;
-    display: inline;
-    margin-top: -3px;
+    height: 44px;
+    width: auto;
+    flex: 0 0 auto;
 }
 
 .brand-logo-text {
-    height: 55px;
-    padding-left: 6px;
-    vertical-align: middle;
-    display: inline;
+    height: 34px;
+    width: auto;
+    flex: 0 0 auto;
+}
+
+// Cube faces, lit from above-left: the top takes the full accent, the right
+// face its shaded variant, and the left face the accent again at low opacity so
+// it reads as a dim plane of the SAME material.
+//
+// Opacity rather than a second colour token on purpose — `--master-font-color-2`
+// (the on-accent tone) was tried first and is near-black on Slate Dark, which
+// turned one face into a hole. Fading the accent over whatever surface the mark
+// sits on keeps the shading consistent in every theme.
+.brand-cube-top {
+    fill: var(--color-primary);
+}
+
+.brand-cube-right {
+    fill: var(--color-primary-hover);
+}
+
+.brand-cube-left {
+    fill: var(--color-primary);
+    opacity: 0.35;
+}
+
+.brand-cube-edge {
+    stroke: currentColor;
+    stroke-width: 3;
+    stroke-linejoin: round;
+    opacity: 0.55;
+}
+
+.brand-wordmark {
+    fill: var(--color-primary);
+    font-family: inherit;
+    font-size: 52px;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: -0.01em;
+}
+
+// Accessible themes render the mark in one tone. On Clay the accent is the
+// Okabe-Ito blue also used for PASS, and a two-tone logo competes with the
+// status colours it should be staying clear of.
+:root[data-theme='clay-light'] .brand-logo,
+:root[data-theme='clay-dark'] .brand-logo {
+    .brand-cube-top,
+    .brand-cube-right,
+    .brand-wordmark {
+        fill: currentColor;
+    }
+
+    .brand-cube-right {
+        opacity: 0.72;
+    }
+
+    .brand-cube-left {
+        fill: transparent;
+    }
+
+    .brand-cube-edge {
+        opacity: 1;
+    }
 }
 
 // ── Password requirements checklist (PasswordRequirements component) ─────────
