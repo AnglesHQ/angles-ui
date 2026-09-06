@@ -50,18 +50,24 @@ const BrandLogo = ({ showText = true, className = undefined, title = 'Angles' })
     {showText && (
       <svg
         className="brand-logo-text"
-        viewBox="0 -40 126 50"
+        viewBox="-1.5 -41.5 129.5 55"
         role="img"
         aria-label={title}
         focusable="false"
       >
         {/* Wordmark set as a single text node in the brand face.
 
-            The viewBox is measured, not guessed: at font-size 52 Saira
-            Condensed puts the cap-height of 'A' 39 units above the baseline and
-            the descender of 'g' 9 below, over an advance width of ~125. Placing
-            the baseline at y=0 and starting the box at y=-40 therefore wraps the
-            ink with a single unit of margin top and bottom.
+            The viewBox is measured from the painted pixels, not guessed, and
+            it must account for the STROKE as well as the glyphs. With the
+            baseline at y=0, the outlined wordmark paints 40 units above it,
+            11.5 below (the descender of 'g' plus half the stroke), and 126.25
+            wide from 0.75 left of the origin. The box wraps that with ~1.5
+            units of margin.
+
+            A centred stroke extends half its width beyond the glyph edge, so a
+            box fitted to the glyphs alone clips the outline — which is exactly
+            what happened when the stroke grew to 2.6 against a box sized when
+            it was much thinner.
 
             That tight box is what keeps the wordmark optically centred against
             the cube. The two SVGs are centred as boxes by `align-items: center`,
