@@ -41,7 +41,14 @@
         min-height: 100vh;
     }
 
+    // Centred rather than left to the text baseline: the logo is an inline-flex
+    // whose height changes with the sidebar state (the wordmark is dropped when
+    // collapsed), and on a baseline-aligned inline element that shrinking box
+    // dragged the cube ~4.6px upwards as the menu closed. Centring pins the cube
+    // to the middle of the header in both states.
     .sidebar-header {
+        display: flex;
+        align-items: center;
         padding: 3px 2px 3px 5px;
         height: 60px;
         overflow: hidden;
