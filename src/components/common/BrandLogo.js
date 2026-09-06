@@ -50,20 +50,28 @@ const BrandLogo = ({ showText = true, className = undefined, title = 'Angles' })
     {showText && (
       <svg
         className="brand-logo-text"
-        viewBox="0 0 300 64"
+        viewBox="0 -40 126 50"
         role="img"
         aria-label={title}
         focusable="false"
       >
-        {/* Wordmark set as a single text node: it inherits the app's font
-            stack, so it stays legible at any size and needs no font file. */}
-        <text
-          className="brand-wordmark"
-          x="0"
-          y="46"
-          textLength="292"
-          lengthAdjust="spacingAndGlyphs"
-        >
+        {/* Wordmark set as a single text node in the brand face.
+
+            The viewBox is measured, not guessed: at font-size 52 Saira
+            Condensed puts the cap-height of 'A' 39 units above the baseline and
+            the descender of 'g' 9 below, over an advance width of ~125. Placing
+            the baseline at y=0 and starting the box at y=-40 therefore wraps the
+            ink with a single unit of margin top and bottom.
+
+            That tight box is what keeps the wordmark optically centred against
+            the cube. The two SVGs are centred as boxes by `align-items: center`,
+            so padding baked into one viewBox and not the other shows up as a
+            vertical offset — the previous `0 0 300 64` box carried 15 units of
+            slack below the ink, which pushed the text visibly high.
+
+            No `textLength`: forcing the run to 292 units stretched this face to
+            more than twice its natural width. */}
+        <text className="brand-wordmark" x="0" y="0">
           Angles
         </text>
       </svg>

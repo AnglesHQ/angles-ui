@@ -410,8 +410,13 @@
     flex: 0 0 auto;
 }
 
+// Height is now pure ink: the viewBox was tightened to the glyph extents (see
+// BrandLogo.js), so this value is the wordmark's real cap-to-descender height
+// rather than a box with slack in it. 26px against the cube's 44px puts the
+// cap-height of 'A' at roughly two thirds the cube's height, which is what the
+// original lockup used.
 .brand-logo-text {
-    height: 34px;
+    height: 30px;
     width: auto;
     flex: 0 0 auto;
 }
@@ -444,9 +449,9 @@
     opacity: 0.55;
 }
 
-// Oswald, self-hosted via next/font (see app/layout.js) and reached through
-// `--font-brand`. Only the wordmark uses it — body text stays on the system
-// stack, per the rule against introducing new font families for UI text.
+// Saira Condensed, self-hosted via next/font (see app/layout.js) and reached
+// through `--font-brand`. Only the wordmark uses it — body text stays on the
+// system stack, per the rule against introducing new font families for UI text.
 // The fallback is a condensed system face so a font failure degrades to
 // something with roughly the right proportions rather than to a wide default.
 .brand-wordmark {
@@ -461,10 +466,12 @@
     // stroke behind the fill so it thickens the letter's edge rather than
     // eating into its interior.
     stroke: currentColor;
-    // 1.4 rather than 2.5: the stroke is drawn centred on the outline, so half
-    // of it eats into the glyph. At 2.5 that closed up the counters in 'g' and
-    // 'e' at sidebar size.
-    stroke-width: 1.4;
+    // The stroke is drawn centred on the outline, so half of it eats into the
+    // glyph and the counters close first. 0.8 is tuned for this face at its
+    // natural width — the earlier 1.4 was set while `textLength` still stretched
+    // the run to 2.3x its design width, which gave the strokes far more glyph to
+    // sit on. Removing that stretch made the same value close up 'g' and 'e'.
+    stroke-width: 0.8;
     paint-order: stroke fill;
     stroke-linejoin: round;
 }
