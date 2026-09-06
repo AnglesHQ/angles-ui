@@ -16,6 +16,8 @@
     "nav.theme.contrast-light": "คอนทราสต์สูงสว่าง",
     "nav.theme.forest-dark": "ป่ามืด",
     "nav.theme.contrast-dark": "คอนทราสต์สูงมืด",
+    "nav.theme.clay-light": "ดินเหนียว (เหมาะกับตาบอดสี)",
+    "nav.theme.clay-dark": "ดินเหนียวมืด (เหมาะกับตาบอดสี)",
     "nav.about": "เกี่ยวกับ Angles",
     "nav.team-settings": "การตั้งค่าทีม",
     "nav.admin": "ผู้ดูแลระบบ",

@@ -16,6 +16,8 @@
     "nav.theme.contrast-light": "高對比淺色",
     "nav.theme.forest-dark": "森林深色",
     "nav.theme.contrast-dark": "高對比深色",
+    "nav.theme.clay-light": "陶土（色盲友好）",
+    "nav.theme.clay-dark": "陶土深色（色盲友好）",
     "nav.about": "關於 Angles",
     "nav.team-settings": "团队设置",
     "nav.admin": "管理",

@@ -129,6 +129,41 @@
     background-color: var(--skipped-color);
 }
 
+// ── Status symbols (accessible themes) ───────────────────────────────────────
+// Four statuses cannot be separated by colour alone for someone with colour
+// vision deficiency. Measured against the shipped palette, PASS and FAIL sit at
+// 1.18:1 under simulated deuteranopia — effectively identical, where 3:1 is the
+// bar for non-text. Re-picking hues does not fix it: even the Okabe-Ito palette,
+// designed for dichromats, tops out near 1.2:1 on its closest pair once four
+// categories have to be told apart.
+//
+// So the accessible themes encode status twice: colour, plus a symbol that
+// survives having no colour perception at all (and survives greyscale printing).
+// This is opt-in per theme rather than global, because the other eight themes
+// were signed off on their current appearance.
+//
+// The symbol is decorative — the visible label already carries the meaning for
+// a screen reader, so `aria-hidden` keeps it out of the accessibility tree.
+:root[data-theme='clay-light'],
+:root[data-theme='clay-dark'] {
+    .status-pass::before,
+    .status-fail::before,
+    .status-error::before,
+    .status-skipped::before {
+        display: inline-block;
+        width: 1em;
+        margin-right: var(--space-1);
+        font-weight: var(--font-weight-bold);
+        text-align: center;
+        speak: never;
+    }
+
+    .status-pass::before { content: '\2713'; }    // check
+    .status-fail::before { content: '\2717'; }    // ballot X
+    .status-error::before { content: '\0021'; }   // exclamation
+    .status-skipped::before { content: '\2013'; } // en dash
+}
+
 // ── Inline alerts ────────────────────────────────────────────────────────────
 // Themed replacement for the old Bootstrap `.alert` blocks — loading and
 // empty/error states inside page content.

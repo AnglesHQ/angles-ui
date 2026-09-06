@@ -16,6 +16,8 @@
     "nav.theme.contrast-light": "High Contrast Light",
     "nav.theme.forest-dark": "Forest Dark",
     "nav.theme.contrast-dark": "High Contrast Dark",
+    "nav.theme.clay-light": "Clay (colour-blind safe)",
+    "nav.theme.clay-dark": "Clay Dark (colour-blind safe)",
     "nav.about": "About Angles",
     "nav.team-settings": "Team Settings",
     "nav.admin": "Administration",

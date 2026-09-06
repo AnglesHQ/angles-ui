@@ -16,6 +16,8 @@
     "nav.theme.contrast-light": "Hoog contrast licht",
     "nav.theme.forest-dark": "Bos donker",
     "nav.theme.contrast-dark": "Hoog contrast donker",
+    "nav.theme.clay-light": "Klei (kleurenblind-vriendelijk)",
+    "nav.theme.clay-dark": "Klei donker (kleurenblind-vriendelijk)",
     "nav.about": "Over Angles",
     "nav.team-settings": "Team Instellingen",
     "nav.admin": "Beheer",
