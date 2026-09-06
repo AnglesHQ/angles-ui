@@ -40,6 +40,7 @@ import { CgDarkMode } from 'react-icons/cg';
 
 import translations from '../../translations/translations.json';
 import BrandLogo from '../common/BrandLogo';
+import ThemeSwatch from '../common/ThemeSwatch';
 import { applyTheme, getThemesByPolarity } from '../../utility/Themes';
 import { storeCurrentTeam, storeTeams, storeTeamsError } from '../../redux/teamActions';
 import { storeEnvironments } from '../../redux/environmentActions';
@@ -345,9 +346,18 @@ const Shell = function (props) {
                                             <Nav.Item
                                                 key={theme.id}
                                                 eventKey={`5-${theme.id}`}
+                                                className="nav-theme-item"
                                                 onClick={() => setTheme(theme.id)}
                                             >
-                                                <FormattedMessage id={theme.labelId} />
+                                                {/* Swatch first so it forms a fixed-width
+                                                    leading column: down a twelve-row list a
+                                                    straight edge of chips scans far faster
+                                                    than chips ragged behind names of very
+                                                    different lengths. */}
+                                                <ThemeSwatch themeId={theme.id} />
+                                                <span className="nav-theme-name">
+                                                    <FormattedMessage id={theme.labelId} />
+                                                </span>
                                             </Nav.Item>
                                         ))}
                                     </React.Fragment>

@@ -269,6 +269,82 @@
         }
     }
 
+    // ── Theme picker rows ───────────────────────────────────────────────────
+    // Swatch + name on one baseline-aligned row. The swatch is a fixed-width
+    // leading column so the chips form a straight edge down the list.
+    .nav-theme-item {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+    }
+
+    .nav-theme-name {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .theme-swatch {
+        display: inline-flex;
+        flex: 0 0 auto;
+        gap: 2px;
+    }
+
+    // The chips are the one place in a dropdown item where background colour
+    // IS the content, so they have to opt out of the blanket
+    // `.rs-dropdown-item * { background-color: transparent !important }`
+    // above. Matching `!important` at greater specificity is the only way to
+    // beat it; the alternative — narrowing that rule to exclude the swatch —
+    // would put the exception far from the thing it exists for.
+    .theme-swatch-chip {
+        width: 10px;
+        height: 14px;
+        border-radius: var(--radius-xs);
+
+        // Without a hairline a light theme's near-white surface chip is
+        // invisible against a light menu, and a dark theme's text chip against
+        // a dark one.
+        //
+        // Built from `--theme-ink-rgb` — a primitive — rather than the derived
+        // `--border-subtle`, for the same reason the fills below use
+        // primitives: `--border-subtle` is computed once at `:root` and
+        // inherited already-resolved, so it would carry the ACTIVE theme's ink
+        // polarity onto every swatch. Read locally, the hairline inverts with
+        // the theme the chip is previewing, which is what keeps it visible on
+        // a light chip and a dark one alike.
+        border: 1px solid rgba(var(--theme-ink-rgb), 0.25);
+    }
+
+    // These read PRIMITIVES, not the semantic tokens they correspond to
+    // (`--main-panel-background` / `--main-panel-font-color`), and that is
+    // load-bearing rather than incidental.
+    //
+    // Only the primitive layer is per-theme. The semantic layer is declared
+    // once, at `:root`, as `var()` references to the primitives — so it is
+    // resolved at the root and *inherited already-computed* by everything
+    // below. A nested `data-theme` island overrides the primitives locally,
+    // but nothing re-derives the semantic tokens from them, so a swatch asking
+    // for `--main-panel-background` gets the ACTIVE theme's value, not its own.
+    // That is exactly what happened first time round: all twelve rows previewed
+    // the same surface and text, and only the accent (a primitive) varied.
+    //
+    // The pairs are identities in the semantic layer above
+    // (`--main-panel-background: var(--master-color-2)`), so the chips show the
+    // same colours the panel does — just resolved a layer lower down where the
+    // theme actually applies.
+    .theme-swatch-chip-surface {
+        background-color: var(--master-color-2) !important;
+    }
+
+    .theme-swatch-chip-accent {
+        background-color: var(--master-color-3) !important;
+    }
+
+    .theme-swatch-chip-text {
+        background-color: var(--master-font-color-1) !important;
+    }
+
     // Section heading inside a nav menu (the theme picker groups themes into
     // Light / Dark). A label, not an option: no hover, no pointer, and muted
     // so it reads as structure rather than a disabled choice.

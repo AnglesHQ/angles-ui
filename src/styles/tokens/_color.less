@@ -423,7 +423,14 @@
     --chart-series-10: #fb923c; // orange
 }
 
-:root {
+// ── Theme: Ember Light ──────────────────────────────────────────────────────
+// The default palette. Extracted into a mixin like every other theme so it can
+// be applied somewhere other than `:root` — the picker's swatches need it, and
+// `light` is the one theme with no registry selector of its own (`:root` already
+// carries it, so the selector below only has to out-rank the OS-preference
+// fallback). Without this a `data-theme="light"` swatch would inherit the active
+// theme and preview the wrong colours on every dark theme.
+.theme-ember-light() {
     // ── Primitive palette (light — the default theme) ───────────────────────
     // Polarity: drives the derived hairline, scrim and elevation tokens so no
     // theme has to restate them. See `_theme-contract.less`.
@@ -473,6 +480,11 @@
     // ApexCharts resolves `var()` in its `colors` array, so these theme like
     // everything else.
     .chart-series-light();
+}
+
+:root {
+    .theme-ember-light();
+
 
     // ── Screenshot overlay markers ──────────────────────────────────────────
     // Annotations drawn *on top of* user screenshots (template-match boxes,
@@ -606,56 +618,76 @@
 // One selector per theme. Adding a theme means adding its primitives block
 // above and one rule here — nothing else in the stylesheet changes.
 //
+// The selectors are deliberately NOT qualified with `:root`. Unqualified, they
+// still match the root element exactly as before — but they also match any
+// nested element carrying `data-theme`, and because custom properties inherit,
+// such an element becomes a live island of that theme's primitives. That is
+// what lets the theme picker's swatches paint themselves from the theme they
+// name (see `.theme-swatch` in `layout.less`) instead of restating its colours
+// in a second place that can drift.
+//
+// Re-adding `:root` here would silently blank every swatch: the primitives
+// would stop resolving inside the menu and the chips would inherit the current
+// theme's, so all twelve rows would preview identically.
+//
 // `light` and `dark` are the *shipped* names and must keep working: they are
 // already stored in users' `theme` cookies. `ember-light` / `ember-dark` are
 // aliases so themes can be named by family as more are added.
 //
-// (`:root` itself carries Ember Light, so `[data-theme='light']` only has to
-// stop a dark OS preference from applying — see the fallback below.)
-:root[data-theme='dark'],
-:root[data-theme='ember-dark'] {
+// (`:root` itself carries Ember Light, so on the root `[data-theme='light']`
+// only has to stop a dark OS preference from applying — see the fallback
+// below. It still needs a rule of its own for the nested case: a swatch is not
+// the root, so it inherits the active theme unless something re-applies Ember
+// Light to it.)
+[data-theme='light'],
+[data-theme='ember-light'] {
+    .theme-ember-light();
+}
+
+[data-theme='dark'],
+[data-theme='ember-dark'] {
     .theme-ember-dark();
 }
 
-:root[data-theme='slate-light'] {
+[data-theme='slate-light'] {
     .theme-slate-light();
 }
 
-:root[data-theme='sepia'] {
+[data-theme='sepia'] {
     .theme-sepia();
 }
 
-:root[data-theme='slate-dark'] {
+[data-theme='slate-dark'] {
     .theme-slate-dark();
 }
 
-:root[data-theme='midnight'] {
+[data-theme='midnight'] {
     .theme-midnight();
 }
 
-:root[data-theme='forest-light'] {
+[data-theme='forest-light'] {
     .theme-forest-light();
 }
 
-:root[data-theme='forest-dark'] {
+[data-theme='forest-dark'] {
     .theme-forest-dark();
 }
 
-:root[data-theme='contrast-light'] {
+[data-theme='contrast-light'] {
     .theme-contrast-light();
 }
 
-:root[data-theme='contrast-dark'] {
+[data-theme='contrast-dark'] {
     .theme-contrast-dark();
 }
 
 // Accessible pair — see `.theme-clay-light()` for why these differ in kind
 // from the others rather than only in colour.
-:root[data-theme='clay-light'] {
+[data-theme='clay-light'] {
     .theme-clay-light();
 }
 
-:root[data-theme='clay-dark'] {
+[data-theme='clay-dark'] {
     .theme-clay-dark();
 }
 
