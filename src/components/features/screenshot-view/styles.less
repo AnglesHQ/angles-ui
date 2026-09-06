@@ -236,7 +236,7 @@
 
 .find-image-match-box {
   position: absolute;
-  border: 2px solid #ff00ff;
+  border: 2px solid var(--overlay-match-color);
   z-index: 10;
   pointer-events: none;
 
@@ -244,8 +244,8 @@
     position: absolute;
     top: -1.4em;
     left: 0;
-    background: #ff00ff;
-    color: #ffffff;
+    background: var(--overlay-match-color);
+    color: var(--overlay-marker-font-color);
     font-size: var(--font-size-sm, 12px);
     padding: 0 var(--space-1);
     white-space: nowrap;
@@ -303,8 +303,8 @@
     line-height: 22px;
     text-align: center;
     border-radius: 50%;
-    background: #ff9800;
-    color: #ffffff;
+    background: var(--overlay-suggestion-color);
+    color: var(--overlay-marker-font-color);
     font-weight: var(--font-weight-bold);
     cursor: pointer;
     z-index: 11;

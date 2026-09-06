@@ -14,19 +14,21 @@ export const STATUS_COLORS = [
   'var(--skipped-color)',
 ];
 
-// Categorical palette for non-status series (e.g. platform distribution). Vivid
-// mid-tones chosen to read on both light and dark backgrounds.
+// Categorical palette for non-status series (e.g. platform distribution).
+// Like STATUS_COLORS these are design tokens rather than literals, so each hue
+// gets a dark-mode variant (see `--chart-series-*` in tokens/_color.less) and
+// the charts follow the theme instead of holding one fixed ramp.
 export const CATEGORICAL_PALETTE = [
-  '#6366f1', // indigo
-  '#14b8a6', // teal
-  '#f59e0b', // amber
-  '#a855f7', // violet
-  '#f43f5e', // rose
-  '#06b6d4', // cyan
-  '#84cc16', // lime
-  '#3b82f6', // blue
-  '#ec4899', // pink
-  '#f97316', // orange
+  'var(--chart-series-1)', // indigo
+  'var(--chart-series-2)', // teal
+  'var(--chart-series-3)', // amber
+  'var(--chart-series-4)', // violet
+  'var(--chart-series-5)', // rose
+  'var(--chart-series-6)', // cyan
+  'var(--chart-series-7)', // lime
+  'var(--chart-series-8)', // blue
+  'var(--chart-series-9)', // pink
+  'var(--chart-series-10)', // orange
 ];
 
 // Deterministic colour for the Nth distinct category (by first-seen order).

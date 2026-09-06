@@ -484,13 +484,10 @@
 
     // `appearance="subtle"` navs (the test-case detail tabs) are a different
     // rsuite skin from `.rs-nav-tabs` above: the active tab is marked by an
-    // underline bar rather than a filled tab. Both the bar and the hovered/
-    // active label take rsuite's `--rs-navs-selected`, which is only themed
-    // under `.rs-theme-dark` — a class this app never sets — so they stayed
-    // rsuite's default blue. Point them at the ember accent instead.
+    // underline bar rather than a filled tab. The accent itself now comes from
+    // `--rs-navs-selected` in the variable bridge (rsuite-overrides.less); what
+    // stays here is this skin's own weight and inactive-label treatment.
     .rs-nav-subtle {
-        --rs-navs-selected: var(--color-primary);
-
         .rs-nav-item {
             color: var(--inactive-tab-font-color);
 

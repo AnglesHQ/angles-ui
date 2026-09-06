@@ -32,6 +32,10 @@
     --master-font-color-2: hsl(40, 33%, 97%);
     --master-font-color-3: hsl(38, 12%, 76%);
 
+    // Muted neutral — darker than the light value so disabled chrome recedes
+    // into the dark panel instead of glowing above the accent.
+    --master-color-muted: hsl(30, 6%, 45%);
+
     // Status — brighter variants so they read on a dark surface
     --pass-color: #6cc07e;
     --fail-color: #ff7b85;
@@ -45,9 +49,26 @@
     --card-shadow: none;
     --card-border-color: rgba(255, 255, 255, 0.08);
 
+    // Categorical chart series — the light ramp is tuned for a pale panel and
+    // drops to roughly 3:1 against a dark one. These are the same hues lifted
+    // in lightness so each series stays distinguishable on the dark surface.
+    --chart-series-1: #818cf8;  // indigo
+    --chart-series-2: #2dd4bf;  // teal
+    --chart-series-3: #fbbf24;  // amber
+    --chart-series-4: #c084fc;  // violet
+    --chart-series-5: #fb7185;  // rose
+    --chart-series-6: #22d3ee;  // cyan
+    --chart-series-7: #a3e635;  // lime
+    --chart-series-8: #60a5fa;  // blue
+    --chart-series-9: #f472b6;  // pink
+    --chart-series-10: #fb923c; // orange
+
     // Tokens whose light value is a literal (cannot inherit via a primitive)
     --border-subtle: rgba(255, 255, 255, 0.12);
     --timeline-dot-background: var(--master-color-1);
+    // A deeper scrim on dark: the page behind it is already low-luminance, so
+    // the light-theme opacity would not separate the dialog from it.
+    --modal-overlay-background: rgba(0, 0, 0, 0.6);
 }
 
 :root {
@@ -62,7 +83,10 @@
     --master-font-color-2: hsl(40, 33%, 98%);
     --master-font-color-3: hsl(30, 6%, 40%);
 
-    --master-icon-color: hsl(210, 100%, 60%);
+    // Muted neutral for inert/disabled chrome. Tuned per theme to stay dimmer
+    // than the ember accent against the panel, so a disabled control never
+    // out-weighs an enabled one.
+    --master-color-muted: hsl(30, 5%, 52%);
 
     // Ember orange ramp (brand primary — sampled from the logo)
     --orange-300: #fbd38d;
@@ -83,6 +107,40 @@
 
     // Focus ring
     --focus-ring: rgba(237, 137, 54, 0.45);
+
+    // ── Categorical chart palette ───────────────────────────────────────────
+    // Series colours for non-status breakdowns (platform / feature
+    // distribution), assigned by first-seen order so a given platform keeps its
+    // colour across renders. Distinct from the status hues on purpose: these
+    // carry no pass/fail meaning.
+    //
+    // Consumed from JS via `CATEGORICAL_PALETTE` in `utility/ChartConfig.js`;
+    // ApexCharts resolves `var()` in its `colors` array, so these theme like
+    // everything else. Dark mode lightens each hue in the primitives mixin —
+    // the light values sit too dark against a dark panel.
+    // Amber and lime are a step darker than their siblings: at the shade the
+    // rest of the ramp uses they fall below 3:1 on the pale panel.
+    --chart-series-1: #4f46e5;  // indigo
+    --chart-series-2: #0d9488;  // teal
+    --chart-series-3: #b45309;  // amber
+    --chart-series-4: #9333ea;  // violet
+    --chart-series-5: #e11d48;  // rose
+    --chart-series-6: #0891b2;  // cyan
+    --chart-series-7: #4d7c0f;  // lime
+    --chart-series-8: #2563eb;  // blue
+    --chart-series-9: #db2777;  // pink
+    --chart-series-10: #ea580c; // orange
+
+    // ── Screenshot overlay markers ──────────────────────────────────────────
+    // Annotations drawn *on top of* user screenshots (template-match boxes,
+    // suggested ignore regions). They must stay legible over arbitrary image
+    // content rather than over an app surface, so they deliberately sit outside
+    // the Ember & Sand palette and do NOT change between themes — the image
+    // underneath does not change either. Magenta is chosen because it almost
+    // never occurs in UI screenshots.
+    --overlay-match-color: #ff00ff;
+    --overlay-suggestion-color: #ff9800;
+    --overlay-marker-font-color: #ffffff;
 
     // ── Semantic: brand / interaction ───────────────────────────────────────
     --color-primary: var(--master-color-3);
@@ -109,13 +167,13 @@
     --main-panel-background: var(--master-color-2);
     --main-panel-font-color: var(--master-font-color-1);
     --main-panel-secondary-font-color: var(--master-font-color-3);
-    --main-panel-icon-color: var(--master-icon-color);
+    --main-panel-icon-color: var(--color-primary);
 
     // Sub panels
     --sub-panel-background: var(--master-color-1);
     --sub-panel-font-color: var(--master-font-color-1);
     --sub-panel-secondary-font-color: var(--master-font-color-3);
-    --sub-panel-icon-color: var(--master-icon-color);
+    --sub-panel-icon-color: var(--color-primary);
 
     // Main tables
     --main-table-header-background: var(--master-color-3);
@@ -162,6 +220,10 @@
     --modal-background: var(--master-color-2);
     --modal-font-color: var(--master-font-color-1);
     --modal-secondary-font-color: var(--master-font-color-3);
+    // Scrim behind an open dialog. A literal rather than a primitive reference:
+    // it must stay a translucent black in both themes (a light scrim would wash
+    // the page out rather than recede it), so the dark mixin only deepens it.
+    --modal-overlay-background: rgba(0, 0, 0, 0.4);
 
     // Screenshot viewer
     --screenshot-border-color: var(--master-color-2-relative);
@@ -174,9 +236,24 @@
     --border-subtle: rgba(0, 0, 0, 0.12);
 
     // Icons & status accents
-    --icon-action-color: var(--master-icon-color);
-    --icon-disabled-color: hsl(0, 0%, 55%);
-    --info-color: var(--master-icon-color);
+    // Actionable icons take the brand accent, matching how `.btn-primary`,
+    // `.link-action` and the rsuite subtle-button hover already signal
+    // interactivity. They previously shared a fixed saturated blue
+    // (`--master-icon-color`) that belonged to no palette and had no dark
+    // value, so it neither themed nor matched anything around it.
+    --icon-action-color: var(--color-primary);
+    // Disabled icons are deliberately *not* the accent — they sit on the
+    // neutral ramp so they read as inert. This needs its own primitive
+    // (`--master-color-muted`) rather than borrowing one of the others: a
+    // disabled icon must stay *dimmer than the ember accent* in both themes,
+    // and no existing primitive does that on both sides. The secondary text
+    // tone is lighter than the accent on dark; the mid-sand tone is far too
+    // light on light. See `.theme-dark-primitives()` for the dark value.
+    --icon-disabled-color: var(--master-color-muted);
+    // Informational accent (the `.app-alert-info` stripe). Uses the same hue as
+    // the "skipped" result status, which is the app's existing neutral-info
+    // colour and carries dark-mode tuning already.
+    --info-color: var(--skipped-color);
 
     // Timeline dot (inverts with theme — see dark mixin)
     --timeline-dot-background: var(--master-font-color-2);
