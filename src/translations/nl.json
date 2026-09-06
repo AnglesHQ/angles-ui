@@ -566,7 +566,7 @@
     "page.manual-test-cases.new-case-title": "Naamloos testgeval",
     "page.manual-test-cases.loading": "Testgevallen laden...",
     "page.manual-test-cases.empty": "Geen testgevallen voldoen aan deze filters.",
-    "page.manual-test-cases.no-team": "Kies een team om de handmatige testgevallen te zien.",
+    "page.manual-test-cases.no-team": "Selecteer een team in het menu boven aan de pagina om de handmatige testgevallen te zien.",
     "page.manual-test-cases.filters.search": "Zoek in titel of omschrijving",
     "page.manual-test-cases.filters.status": "Status",
     "page.manual-test-cases.filters.priority": "Prioriteit",
@@ -617,7 +617,7 @@
     "app.manual.loading": "Laden...",
     "app.manual.yes": "Ja",
     "app.manual.no": "Nee",
-    "app.manual.no-team": "Selecteer een team om door te gaan.",
+    "app.manual.no-team": "Selecteer een team in het menu boven aan de pagina om door te gaan.",
     "app.manual.field.description": "Omschrijving",
     "app.manual.field.preconditions": "Voorwaarden",
     "app.manual.field.priority": "Prioriteit",
@@ -804,5 +804,6 @@
     "page.admin.settings.features.help": "Schakel optionele functies in of uit voor deze instantie. Wijzigingen zijn direct actief — opnieuw opstarten is niet nodig.",
     "page.admin.settings.features.manual-testing": "Testgevallenbeheer inschakelen",
     "page.admin.settings.features.manual-testing.help": "Handmatige testgevallen, testruns en gedeelde stappen. Wanneer uitgeschakeld zijn deze pagina's verborgen en is de bijbehorende data niet bereikbaar, maar er wordt niets verwijderd — opnieuw inschakelen herstelt alles.",
-    "app.feature.disabled": "Deze functie is niet ingeschakeld op deze instantie. Neem contact op met een beheerder als je toegang nodig hebt."
+    "app.feature.disabled": "Deze functie is niet ingeschakeld op deze instantie. Neem contact op met een beheerder als je toegang nodig hebt.",
+    "nav.team": "Team"
 }

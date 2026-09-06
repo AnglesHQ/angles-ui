@@ -120,8 +120,10 @@ const ManualTestRunsPage = function (props) {
 
     if (!currentTeam || !currentTeam._id) {
         return (
-            <div className="app-alert app-alert-info">
-                <FormattedMessage id="app.manual.no-team" />
+            <div className="page">
+                <div className="app-alert app-alert-info">
+                    <FormattedMessage id="app.manual.no-team" />
+                </div>
             </div>
         );
     }

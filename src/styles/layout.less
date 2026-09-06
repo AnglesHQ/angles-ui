@@ -189,6 +189,37 @@
     right: 0;
 }
 
+// The team menu's toggle shows the selected team's name, which is user data and
+// can be long. Cap it so a verbose team name cannot push the language, theme and
+// profile menus off the header; the full name is still visible in the open menu.
+//
+// Targeted at `> .rs-navbar-item` deliberately: inside a Navbar, rsuite renders
+// the Nav.Menu toggle as `.rs-navbar-item` (NOT `.rs-dropdown-toggle`), and it
+// copies the component's className onto both the wrapper and the dropdown `<ul>`
+// — so an unqualified `.nav-team-menu` rule would truncate the open menu's items
+// as well as the toggle.
+.main-container .rs-navbar .nav-team-menu > .rs-navbar-item {
+    display: inline-flex;
+    align-items: center;
+    max-width: 260px;
+
+    // The label is the only part allowed to shrink: the icon and the caret keep
+    // their intrinsic size, so a long name ellipsises between them instead of
+    // pushing the caret out of the toggle. `min-width: 0` is required for a flex
+    // item to shrink below its content width at all.
+    > .rs-navbar-item-caret,
+    > .rs-navbar-item-icon {
+        flex: 0 0 auto;
+    }
+
+    .nav-team-name {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
 .rs-dropdown-menu {
 
     .rs-dropdown-item {

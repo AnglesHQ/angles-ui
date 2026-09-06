@@ -281,6 +281,38 @@ const Shell = function (props) {
                 <Header>
                     <Navbar appearance="subtle" className="header-navbar">
                         <Nav pullRight>
+                            {/* Team is global state (a single `currentTeam` in Redux, persisted
+                                to a cookie by `changeCurrentTeam`), so it belongs with the other
+                                global controls rather than repeated as a per-page filter. Pages
+                                that are team-scoped read it straight from the store. */}
+                            {teams && teams.length > 0 && (
+                                <Nav.Menu
+                                    eventKey="8"
+                                    className="nav-team-menu"
+                                    icon={<PeoplesIcon className="nav-item-icon" />}
+                                    title={(
+                                        // Wrapped rather than passed as a bare string: a text
+                                        // node cannot be ellipsised inside the toggle's flex
+                                        // row, so a long team name would clip mid-glyph.
+                                        <span className="nav-team-name">
+                                            {currentTeam
+                                                ? currentTeam.name
+                                                : intl.formatMessage({ id: 'nav.team' })}
+                                        </span>
+                                    )}
+                                >
+                                    {teams.map((team) => (
+                                        <Nav.Item
+                                            key={team._id}
+                                            eventKey={`8-${team._id}`}
+                                            active={!!currentTeam && currentTeam._id === team._id}
+                                            onClick={() => changeCurrentTeam(team._id)}
+                                        >
+                                            {team.name}
+                                        </Nav.Item>
+                                    ))}
+                                </Nav.Menu>
+                            )}
                             <Nav.Menu eventKey="4" icon={<GlobalIcon className="nav-item-icon" />} title={<FormattedMessage id="nav.language" />}>
                                 {translations.map((translation, index) => (<Nav.Item key={index} eventKey={`4-${index}`} onClick={() => setLanguage(translation.code)}>{translation.text}</Nav.Item>))}
                             </Nav.Menu>

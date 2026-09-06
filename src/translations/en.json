@@ -566,7 +566,7 @@
     "page.manual-test-cases.new-case-title": "Untitled test case",
     "page.manual-test-cases.loading": "Loading test cases...",
     "page.manual-test-cases.empty": "No test cases match these filters.",
-    "page.manual-test-cases.no-team": "Select a team to see its manual test cases.",
+    "page.manual-test-cases.no-team": "Select a team from the menu at the top of the page to see its manual test cases.",
     "page.manual-test-cases.filters.search": "Search title or description",
     "page.manual-test-cases.filters.status": "Status",
     "page.manual-test-cases.filters.priority": "Priority",
@@ -617,7 +617,7 @@
     "app.manual.loading": "Loading...",
     "app.manual.yes": "Yes",
     "app.manual.no": "No",
-    "app.manual.no-team": "Select a team to continue.",
+    "app.manual.no-team": "Select a team from the menu at the top of the page to continue.",
     "app.manual.field.description": "Description",
     "app.manual.field.preconditions": "Preconditions",
     "app.manual.field.priority": "Priority",
@@ -804,5 +804,6 @@
     "page.admin.settings.features.help": "Turn optional features on or off for this instance. Changes take effect immediately — no restart is required.",
     "page.admin.settings.features.manual-testing": "Enable Test Case Management",
     "page.admin.settings.features.manual-testing.help": "Manual test cases, test runs and shared steps. When disabled these pages are hidden and their data cannot be reached, but nothing is deleted — re-enabling restores everything.",
-    "app.feature.disabled": "This feature is not enabled on this instance. Contact an administrator if you need access to it."
+    "app.feature.disabled": "This feature is not enabled on this instance. Contact an administrator if you need access to it.",
+    "nav.team": "Team"
 }

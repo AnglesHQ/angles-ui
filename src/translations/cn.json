@@ -566,7 +566,7 @@
     "page.manual-test-cases.new-case-title": "未命名测试用例",
     "page.manual-test-cases.loading": "正在加载测试用例...",
     "page.manual-test-cases.empty": "没有符合这些筛选条件的测试用例。",
-    "page.manual-test-cases.no-team": "请选择团队以查看其手动测试用例。",
+    "page.manual-test-cases.no-team": "请从页面顶部的菜单中选择一个团队，以查看其手动测试用例。",
     "page.manual-test-cases.filters.search": "搜索标题或描述",
     "page.manual-test-cases.filters.status": "状态",
     "page.manual-test-cases.filters.priority": "优先级",
@@ -617,7 +617,7 @@
     "app.manual.loading": "加载中...",
     "app.manual.yes": "是",
     "app.manual.no": "否",
-    "app.manual.no-team": "请选择一个团队以继续。",
+    "app.manual.no-team": "请从页面顶部的菜单中选择一个团队以继续。",
     "app.manual.field.description": "描述",
     "app.manual.field.preconditions": "前置条件",
     "app.manual.field.priority": "优先级",
@@ -804,5 +804,6 @@
     "page.admin.settings.features.help": "为此实例启用或禁用可选功能。更改立即生效 — 无需重启。",
     "page.admin.settings.features.manual-testing": "启用测试用例管理",
     "page.admin.settings.features.manual-testing.help": "手动测试用例、测试执行和共享步骤。禁用后，这些页面将被隐藏且其数据无法访问，但不会删除任何内容 — 重新启用即可恢复。",
-    "app.feature.disabled": "此实例未启用该功能。如需访问，请联系管理员。"
+    "app.feature.disabled": "此实例未启用该功能。如需访问，请联系管理员。",
+    "nav.team": "团队"
 }

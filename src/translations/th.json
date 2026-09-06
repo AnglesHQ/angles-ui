@@ -566,7 +566,7 @@
     "page.manual-test-cases.new-case-title": "เทสต์เคสไม่มีชื่อ",
     "page.manual-test-cases.loading": "กำลังโหลดเทสต์เคส...",
     "page.manual-test-cases.empty": "ไม่มีเทสต์เคสที่ตรงกับตัวกรองนี้",
-    "page.manual-test-cases.no-team": "เลือกทีมเพื่อดูเทสต์เคสแบบแมนนวล",
+    "page.manual-test-cases.no-team": "เลือกทีมจากเมนูด้านบนของหน้าเพื่อดูกรณีทดสอบแบบแมนนวลของทีมนั้น",
     "page.manual-test-cases.filters.search": "ค้นหาชื่อหรือคำอธิบาย",
     "page.manual-test-cases.filters.status": "สถานะ",
     "page.manual-test-cases.filters.priority": "ความสำคัญ",
@@ -617,7 +617,7 @@
     "app.manual.loading": "กำลังโหลด...",
     "app.manual.yes": "ใช่",
     "app.manual.no": "ไม่",
-    "app.manual.no-team": "เลือกทีมเพื่อดำเนินการต่อ",
+    "app.manual.no-team": "เลือกทีมจากเมนูด้านบนของหน้าเพื่อดำเนินการต่อ",
     "app.manual.field.description": "คำอธิบาย",
     "app.manual.field.preconditions": "เงื่อนไขเบื้องต้น",
     "app.manual.field.priority": "ความสำคัญ",
@@ -804,5 +804,6 @@
     "page.admin.settings.features.help": "เปิดหรือปิดฟีเจอร์เสริมสำหรับอินสแตนซ์นี้ การเปลี่ยนแปลงจะมีผลทันที — ไม่ต้องรีสตาร์ท",
     "page.admin.settings.features.manual-testing": "เปิดการจัดการเทสต์เคส",
     "page.admin.settings.features.manual-testing.help": "เทสต์เคสแบบแมนนวล รอบการทดสอบ และขั้นตอนที่ใช้ร่วมกัน เมื่อปิด หน้าเหล่านี้จะถูกซ่อนและไม่สามารถเข้าถึงข้อมูลได้ แต่จะไม่มีการลบข้อมูล — การเปิดอีกครั้งจะคืนค่าทั้งหมด",
-    "app.feature.disabled": "ฟีเจอร์นี้ไม่ได้เปิดใช้งานบนอินสแตนซ์นี้ หากต้องการเข้าถึง โปรดติดต่อผู้ดูแลระบบ"
+    "app.feature.disabled": "ฟีเจอร์นี้ไม่ได้เปิดใช้งานบนอินสแตนซ์นี้ หากต้องการเข้าถึง โปรดติดต่อผู้ดูแลระบบ",
+    "nav.team": "ทีม"
 }
