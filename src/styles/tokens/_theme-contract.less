@@ -1,0 +1,183 @@
+// ============================================================================
+// Design tokens — Theme contract
+// ----------------------------------------------------------------------------
+// THE ONE THING TO KNOW: a theme supplies primitives. Nothing else.
+//
+// The colour system has two layers. The ~80 *semantic* tokens in `_color.less`
+// (`--main-panel-background`, `--button-font-color`, …) are declared exactly
+// once, against primitives. Components consume only those. A theme never
+// touches them — it redefines the small set of primitives underneath, and every
+// semantic token re-resolves because CSS custom properties are late-bound.
+//
+// So adding a theme is not an audit of 80 tokens. It is filling in the list
+// below. This file defines that list, documents what each entry owes, and
+// derives everything that can be derived so a theme does not have to supply it.
+//
+// ── Adding a theme ─────────────────────────────────────────────────────────
+//   1. Copy `.theme-contract-template()` at the bottom of this file.
+//   2. Fill in every REQUIRED primitive. There are 14.
+//   3. Override an OPTIONAL primitive only where the derived default is wrong.
+//   4. Check the CONTRAST OBLIGATIONS below — they are what makes a theme
+//      usable rather than merely applied.
+//
+// A missing REQUIRED primitive does not fail loudly: the token silently keeps
+// the previous theme's value, which is how a half-applied theme happens. Run
+// the checklist rather than trusting the page to look wrong.
+// ============================================================================
+
+
+// ── 1. REQUIRED primitives ──────────────────────────────────────────────────
+// Every theme must define all 14. Grouped by the decision each one represents.
+//
+//   SURFACES — three tones, ordered by prominence. In a light theme these run
+//   light→dark; in a dark theme dark→light. What matters is that they stay
+//   *distinguishable from each other*, since panels nest inside panels.
+//
+//     --master-color-1           Sub-panel / inset surface (nested cards, table
+//                                bodies, input fields, tooltips).
+//     --master-color-2           Main panel & page background. The dominant tone.
+//     --master-color-2-relative  Mid-tone: borders, dividers, inactive tabs,
+//                                screenshot chrome. Sits between surface and text.
+//
+//   TEXT — three weights against the surfaces above.
+//
+//     --master-font-color-1      Primary body text. Carries the AAA obligation.
+//     --master-font-color-2      Text *on the accent* (button labels, table
+//                                headers). Contrast is owed against the accent,
+//                                NOT against the page.
+//     --master-font-color-3      Secondary/muted text (help text, timestamps).
+//
+//   ACCENT — the brand action colour and its pressed state.
+//
+//     --master-color-3           Primary accent: buttons, links, active states,
+//                                focus. One accent per theme.
+//     --master-color-3-relative  Hover/active variant of the accent.
+//
+//   INERT — chrome that must read as unavailable.
+//
+//     --master-color-muted       Disabled icons and controls. MUST be visually
+//                                dimmer than the accent against the panel, or a
+//                                disabled control out-weighs an enabled one.
+//                                Needs its own value precisely because no other
+//                                primitive holds that relationship in every
+//                                theme (see the note in `_color.less`).
+//
+//   STATUS — result hues. Keep the semantic mapping (green=pass, red=fail,
+//   amber=error, blue=skipped); tune only lightness/saturation for the ground.
+//
+//     --pass-color  --fail-color  --error-color  --skipped-color
+//
+//   POLARITY — whether this theme sits light or dark. Drives the derived
+//   hairlines and shadows in section 2; nothing else needs to branch on it.
+//
+//     --theme-ink-rgb            "0, 0, 0" on a light theme, "255, 255, 255" on
+//                                a dark one. The channel that hairlines and
+//                                scrims are mixed from.
+//     --theme-is-dark            0 or 1. Currently only selects the elevation
+//                                strategy (shadow vs hairline).
+
+
+// ── 2. DERIVED tokens — do NOT redefine these per theme ────────────────────
+// Each of these used to be a hand-written literal in *every* theme, which meant
+// a new theme had to restate it and could silently get it wrong. They are now
+// computed once from the required primitives above, in the derived block at the
+// end of `_color.less`:
+//
+//   --border-subtle             ink channel at 0.12 alpha; inverts with polarity
+//   --focus-ring                the theme's accent at 0.45 alpha
+//   --modal-overlay-background  black wash, deepened on dark themes
+//   --card-shadow               fades to none as --theme-is-dark goes 0 → 1
+//   --card-border-color         fades in as --theme-is-dark goes 0 → 1
+//
+// This file is documentation only — it declares no rules. The derivations live
+// next to the primitives they read so there is one place to look.
+//
+// `color-mix()` would express these more directly, but the browserslist targets
+// include Chrome 109 and iOS Safari 11, which predate it — hence the RGB
+// channel-splitting, which works everywhere.
+
+
+// ── 3. CONTRAST OBLIGATIONS ────────────────────────────────────────────────
+// A theme that resolves is not the same as a theme that works. These are the
+// relationships to verify — the failures below are ones this codebase has
+// actually shipped, not hypotheticals.
+//
+//   TEXT (WCAG AA, 4.5:1 minimum; the shipped themes hold AAA / 7:1)
+//     --master-font-color-1  vs  --master-color-2   ← primary text on panel
+//     --master-font-color-3  vs  --master-color-2   ← secondary text on panel
+//     --master-font-color-2  vs  --master-color-3   ← label on an accent button
+//
+//   NON-TEXT (3:1 minimum — boundaries and state, not glyphs)
+//     --master-color-2-relative  vs  --master-color-2   ← borders must be seen
+//     --master-color-muted       vs  --master-color-2   ← disabled still legible
+//     --chart-series-N           vs  --main-panel-background  (all 10)
+//
+//   ORDERING (not a ratio — a relationship that must hold either way round)
+//     --master-color-muted MUST be dimmer than --master-color-3 against the
+//     panel. Measured by luminance distance, not contrast ratio: a token can
+//     pass 3:1 and still be *brighter* than the accent, which is what makes a
+//     disabled control look enabled. This inverted in dark mode when
+//     `--icon-disabled-color` was pointed at the secondary text tone.
+//
+//   KNOWN SHORTFALLS in the shipped themes, recorded so a new theme is not
+//   measured against a false baseline:
+//     • --master-color-3 (ember) sits at ~2.2:1 on the light panel. It is the
+//       brand accent and is used for icon affordance, so light-theme icons are
+//       below the 3:1 non-text bar. Changing it is a brand decision.
+//     • --master-color-2-relative sits at ~2.3:1 on the dark panel, so dark
+//       borders are fainter than the bar wants.
+
+
+// ── 4. NOT part of the contract ────────────────────────────────────────────
+// Deliberately fixed across every theme. A theme must NOT redefine these.
+//
+//   --orange-300 … --orange-600   Brand ramp. Ember & Sand's own identity; a
+//                                 theme picks its accent via --master-color-3
+//                                 and may point it at this ramp or elsewhere.
+//
+//   --overlay-match-color         Screenshot annotations. These are drawn over
+//   --overlay-suggestion-color    arbitrary user screenshots, not over an app
+//   --overlay-marker-font-color   surface — the image underneath does not
+//                                 change with the theme, so neither do they.
+//
+//   --chart-series-1 … -10        Categorical chart series. Not per-theme, but
+//                                 per *polarity*: the light ramp is tuned for a
+//                                 pale ground and the dark ramp for a dark one.
+//                                 A new theme inherits whichever matches its
+//                                 polarity rather than authoring ten hues.
+
+
+// ── 5. Template ─────────────────────────────────────────────────────────────
+// Copy this block, rename it, and fill in the values. Then register the theme
+// (see `.theme-dark-primitives()` in `_color.less` for the shipped example).
+//
+// .theme-<name>-primitives() {
+//     // Polarity
+//     --theme-ink-rgb: 0, 0, 0;          // 255, 255, 255 on a dark theme
+//     --theme-is-dark: 0;                // 1 on a dark theme
+//
+//     // Surfaces
+//     --master-color-1: …;               // inset / nested
+//     --master-color-2: …;               // dominant panel + page
+//     --master-color-2-relative: …;      // borders, dividers, mid-tone
+//
+//     // Text
+//     --master-font-color-1: …;          // primary
+//     --master-font-color-2: …;          // on-accent
+//     --master-font-color-3: …;          // secondary
+//
+//     // Accent  (--accent-rgb must be the same colour as --master-color-3,
+//     //          as bare "r, g, b" channels, so --focus-ring can derive)
+//     --master-color-3: …;
+//     --master-color-3-relative: …;
+//     --accent-rgb: …, …, …;
+//
+//     // Inert — must read dimmer than the accent on --master-color-2
+//     --master-color-muted: …;
+//
+//     // Status
+//     --pass-color: …;
+//     --fail-color: …;
+//     --error-color: …;
+//     --skipped-color: …;
+// }

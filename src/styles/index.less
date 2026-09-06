@@ -12,8 +12,10 @@
 //   pages/*     → page- and feature-specific styles (co-located with components)
 // ============================================================================
 
-// Design tokens — colour must load first (surface/accent scales reference it),
-// then the non-colour scales.
+// Design tokens — the theme contract documents what a theme must supply and
+// derives what it should not; colour loads next (surface/accent scales
+// reference it), then the non-colour scales.
+@import 'tokens/_theme-contract.less';
 @import 'tokens/_color.less';
 @import 'tokens/_space.less';
 @import 'tokens/_radius.less';

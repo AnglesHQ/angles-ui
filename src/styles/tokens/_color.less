@@ -12,12 +12,21 @@
 // semantic layer is declared once against the primitives; switching theme just
 // overrides the primitives.
 //
+// The primitives a theme must supply — and the contrast relationships it owes —
+// are specified in `_theme-contract.less`. Read that before adding a theme.
+//
 // Light is the default (`:root`). Dark applies on explicit selection
 // (`html[data-theme="dark"]`) or OS preference when the user has not chosen light.
 // ============================================================================
 
 // ── Dark primitive overrides (shared by both dark triggers) ─────────────────
+// The reference implementation of the theme contract. Every entry here is a
+// REQUIRED primitive; nothing derived is restated.
 .theme-dark-primitives() {
+    // Polarity — drives the derived hairline, scrim and elevation tokens.
+    --theme-ink-rgb: 255, 255, 255;
+    --theme-is-dark: 1;
+
     // Warm near-black neutrals (from the logo outline)
     --master-color-1: hsl(30, 8%, 17%);
     --master-color-2: hsl(24, 9%, 12%);
@@ -26,6 +35,7 @@
     // Ember accent — brighter on dark for contrast
     --master-color-3: var(--orange-400);
     --master-color-3-relative: var(--orange-500);
+    --accent-rgb: 246, 173, 85; // = --orange-400, for the derived focus ring
 
     // Cream / sand text on dark
     --master-font-color-1: hsl(40, 30%, 93%);
@@ -42,16 +52,39 @@
     --error-color: #f9c65b;
     --skipped-color: #38bdf8;
 
-    // Focus ring on dark
-    --focus-ring: rgba(246, 173, 85, 0.5);
+    // NOTE: --focus-ring, --border-subtle and --modal-overlay-background are
+    // NOT set here. They derive from the polarity and accent primitives above
+    // (see `_theme-contract.less` §2), so a theme never restates them.
 
-    // Elevation: shadows read poorly on dark → drop shadow, use a hairline border
-    --card-shadow: none;
-    --card-border-color: rgba(255, 255, 255, 0.08);
+    // Timeline dot inverts against the surface it sits on.
+    --timeline-dot-background: var(--master-color-1);
 
-    // Categorical chart series — the light ramp is tuned for a pale panel and
-    // drops to roughly 3:1 against a dark one. These are the same hues lifted
-    // in lightness so each series stays distinguishable on the dark surface.
+    // Chart series for a dark ground — see `.chart-series-dark()` below. Kept
+    // out of the theme's own list because it is a property of the *polarity*,
+    // not of Ember & Sand: any dark theme wants this ramp.
+    .chart-series-dark();
+}
+
+// ── Categorical chart ramps (per polarity, not per theme) ───────────────────
+// Non-status series colours. Each ramp is tuned for the ground it sits on: the
+// light values fall below 3:1 on a dark panel and vice versa. A new theme picks
+// the ramp matching its polarity instead of authoring ten hues.
+// Amber and lime are a step darker than their siblings in the light ramp: at
+// the shade the others use they drop below 3:1 on the pale panel.
+.chart-series-light() {
+    --chart-series-1: #4f46e5;  // indigo
+    --chart-series-2: #0d9488;  // teal
+    --chart-series-3: #b45309;  // amber
+    --chart-series-4: #9333ea;  // violet
+    --chart-series-5: #e11d48;  // rose
+    --chart-series-6: #0891b2;  // cyan
+    --chart-series-7: #4d7c0f;  // lime
+    --chart-series-8: #2563eb;  // blue
+    --chart-series-9: #db2777;  // pink
+    --chart-series-10: #ea580c; // orange
+}
+
+.chart-series-dark() {
     --chart-series-1: #818cf8;  // indigo
     --chart-series-2: #2dd4bf;  // teal
     --chart-series-3: #fbbf24;  // amber
@@ -62,17 +95,15 @@
     --chart-series-8: #60a5fa;  // blue
     --chart-series-9: #f472b6;  // pink
     --chart-series-10: #fb923c; // orange
-
-    // Tokens whose light value is a literal (cannot inherit via a primitive)
-    --border-subtle: rgba(255, 255, 255, 0.12);
-    --timeline-dot-background: var(--master-color-1);
-    // A deeper scrim on dark: the page behind it is already low-luminance, so
-    // the light-theme opacity would not separate the dialog from it.
-    --modal-overlay-background: rgba(0, 0, 0, 0.6);
 }
 
 :root {
-    // ── Primitive palette (light) ───────────────────────────────────────────
+    // ── Primitive palette (light — the default theme) ───────────────────────
+    // Polarity: drives the derived hairline, scrim and elevation tokens so no
+    // theme has to restate them. See `_theme-contract.less`.
+    --theme-ink-rgb: 0, 0, 0;
+    --theme-is-dark: 0;
+
     // Warm sand / cream neutrals
     --master-color-1: hsl(40, 30%, 97%);
     --master-color-2: hsl(40, 22%, 92%);
@@ -98,15 +129,13 @@
     // primitive so every token pointing at it flips in lockstep.
     --master-color-3: var(--orange-500);
     --master-color-3-relative: var(--orange-600);
+    --accent-rgb: 237, 137, 54; // = --orange-500, for the derived focus ring
 
     // Status primitives (theme-independent hues; dark tunes brightness above).
     --pass-color: #5fad6f;
     --fail-color: #fc6571;
     --error-color: #f5b83f;
     --skipped-color: #0ea5e9;
-
-    // Focus ring
-    --focus-ring: rgba(237, 137, 54, 0.45);
 
     // ── Categorical chart palette ───────────────────────────────────────────
     // Series colours for non-status breakdowns (platform / feature
@@ -116,20 +145,8 @@
     //
     // Consumed from JS via `CATEGORICAL_PALETTE` in `utility/ChartConfig.js`;
     // ApexCharts resolves `var()` in its `colors` array, so these theme like
-    // everything else. Dark mode lightens each hue in the primitives mixin —
-    // the light values sit too dark against a dark panel.
-    // Amber and lime are a step darker than their siblings: at the shade the
-    // rest of the ramp uses they fall below 3:1 on the pale panel.
-    --chart-series-1: #4f46e5;  // indigo
-    --chart-series-2: #0d9488;  // teal
-    --chart-series-3: #b45309;  // amber
-    --chart-series-4: #9333ea;  // violet
-    --chart-series-5: #e11d48;  // rose
-    --chart-series-6: #0891b2;  // cyan
-    --chart-series-7: #4d7c0f;  // lime
-    --chart-series-8: #2563eb;  // blue
-    --chart-series-9: #db2777;  // pink
-    --chart-series-10: #ea580c; // orange
+    // everything else.
+    .chart-series-light();
 
     // ── Screenshot overlay markers ──────────────────────────────────────────
     // Annotations drawn *on top of* user screenshots (template-match boxes,
@@ -220,10 +237,8 @@
     --modal-background: var(--master-color-2);
     --modal-font-color: var(--master-font-color-1);
     --modal-secondary-font-color: var(--master-font-color-3);
-    // Scrim behind an open dialog. A literal rather than a primitive reference:
-    // it must stay a translucent black in both themes (a light scrim would wash
-    // the page out rather than recede it), so the dark mixin only deepens it.
-    --modal-overlay-background: rgba(0, 0, 0, 0.4);
+    // --modal-overlay-background is DERIVED from polarity — see the derived
+    // block at the end of this file.
 
     // Screenshot viewer
     --screenshot-border-color: var(--master-color-2-relative);
@@ -233,7 +248,7 @@
 
     // Borders & dividers
     --border-color: var(--master-color-2-relative);
-    --border-subtle: rgba(0, 0, 0, 0.12);
+    // --border-subtle is DERIVED from polarity — see the derived block below.
 
     // Icons & status accents
     // Actionable icons take the brand accent, matching how `.btn-primary`,
@@ -259,8 +274,6 @@
     --timeline-dot-background: var(--master-font-color-2);
     --timeline-dot-border: var(--border-color);
 
-    // Elevation companion (light: real shadow, transparent border; dark flips both)
-    --card-border-color: transparent;
 }
 
 // ── Dark theme triggers ─────────────────────────────────────────────────────
@@ -274,4 +287,35 @@
     :root:not([data-theme='light']) {
         .theme-dark-primitives();
     }
+}
+
+// ── Derived tokens ──────────────────────────────────────────────────────────
+// Computed from the polarity and accent primitives every theme supplies, so no
+// theme restates them (and none can get them subtly wrong). Declared AFTER the
+// theme triggers, but custom properties are late-bound — these re-resolve
+// whenever a trigger changes the primitives they read, in any order.
+//
+// See `_theme-contract.less` §2. `color-mix()` would say this more directly,
+// but the browserslist targets predate it, hence the channel splitting.
+:root {
+    // Hairline border: the ink channel at low alpha, inverting with polarity.
+    --border-subtle: rgba(var(--theme-ink-rgb), 0.12);
+
+    // Focus ring: the theme's accent at partial alpha.
+    --focus-ring: rgba(var(--accent-rgb), 0.45);
+
+    // Dialog scrim: always a black wash (a light scrim washes the page out
+    // rather than pushing it back), but deeper on a dark theme because the page
+    // behind is already low-luminance.
+    --modal-overlay-background: rgba(0, 0, 0, calc(0.4 + 0.2 * var(--theme-is-dark)));
+
+    // Elevation: a light theme lifts surfaces with a real shadow and no border;
+    // a dark theme drops the shadow (it reads as mud) and uses a hairline
+    // instead. Both fade out via the polarity flag rather than being switched
+    // per theme, so the pair always stays consistent:
+    //   light (0) → shadow at full strength, border fully transparent
+    //   dark  (1) → shadow fully transparent, border at 0.08
+    --card-shadow: 0 1px 3px rgba(16, 24, 40, calc(0.10 - 0.10 * var(--theme-is-dark))),
+                   0 1px 2px rgba(16, 24, 40, calc(0.06 - 0.06 * var(--theme-is-dark)));
+    --card-border-color: rgba(var(--theme-ink-rgb), calc(0.08 * var(--theme-is-dark)));
 }
