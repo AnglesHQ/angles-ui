@@ -6,8 +6,6 @@ import { connect } from 'react-redux';
 import { FormattedMessage, useIntl } from 'react-intl';
 import queryString from 'query-string';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
-import Cookies from 'js-cookie';
-import { storeCurrentTeam } from '../../../redux/teamActions';
 import { MetricRequests } from 'angles-javascript-client';
 import {
   Affix,
@@ -37,7 +35,7 @@ const MetricsPage = function (props) {
   const pathname = usePathname();
   const intl = useIntl();
   // const query = queryString.parse(location.search);
-  const { teams, currentTeam, saveCurrentTeam } = props;
+  const { teams, currentTeam } = props;
   const {
     component,
     grouping,
@@ -116,11 +114,16 @@ const MetricsPage = function (props) {
     }
   };
 
+  // The team now comes from the header picker, so this effect is the only path
+  // by which the page changes team. Resetting the component filter is part of
+  // that: component ids belong to a team, so one carried across a team change
+  // would filter the metrics by something the new team does not have.
   useEffect(() => {
-    if (currentTeam) {
+    if (currentTeam && currentTeam._id !== selectedTeam) {
       setSelectedTeam(currentTeam._id);
+      setSelectedComponent('any');
     }
-  }, [currentTeam]);
+  }, [currentTeam, selectedTeam]);
 
   useEffect(() => {
     retrieveMetrics();
@@ -128,33 +131,6 @@ const MetricsPage = function (props) {
 
   const handleGroupingChange = (groupingValue) => {
     setGroupingPeriod(groupingValue);
-  };
-
-  const getTeam = (teamId) => {
-    if (teams && Array.isArray(teams)) {
-      return teams.find((team) => team._id === teamId);
-    }
-    return undefined;
-  };
-
-  const handleTeamChange = (teamId) => {
-    changeCurrentTeam(teamId);
-    setSelectedTeam(teamId);
-    setSelectedComponent('any');
-    // Keep the teamId query param in sync with the newly selected team.
-    // The Shell drives currentTeam from the URL, so a stale teamId here would
-    // make it revert us back to the previous team as soon as currentTeam changes.
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('teamId', teamId);
-    params.set('component', 'any');
-    router.replace(`${pathname}?${params.toString()}`);
-  };
-
-  const changeCurrentTeam = (teamId) => {
-    if (teamId !== undefined) {
-      saveCurrentTeam(getTeam(teamId));
-      Cookies.set('teamId', teamId, { expires: 365 });
-    }
   };
 
   const handleComponentChange = (componentId) => {
@@ -195,19 +171,6 @@ const MetricsPage = function (props) {
         top={20}
       >
         <Stack className="top-menu-stack" spacing={10}>
-          <SelectPicker
-            cleanable={false}
-            // searchable={false}
-            label={<FormattedMessage id="page.metrics.filters.labels.team" />}
-            appearance="subtle"
-            data={teams.map((team) => ({ label: team.name, value: team._id }))}
-            value={selectedTeam}
-            onChange={(value) => {
-              if (value) {
-                handleTeamChange(value);
-              }
-            }}
-          />
           <SelectPicker
             cleanable
             // searchable={false}
@@ -387,8 +350,4 @@ const mapStateToProps = (state) => ({
   teams: state.teamsReducer.teams,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  saveCurrentTeam: (selectedTeam) => dispatch(storeCurrentTeam(selectedTeam)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(MetricsPage);
+export default connect(mapStateToProps)(MetricsPage);

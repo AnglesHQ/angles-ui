@@ -159,6 +159,15 @@ const Shell = function (props) {
         if (teamId) {
             if (!currentTeam || teamId !== currentTeam._id) {
                 changeCurrentTeam(teamId);
+            } else {
+                // The param has been applied, so drop it. It is a one-shot deep
+                // link, not a source of truth: left in place it re-asserts itself
+                // on every render of this effect, so picking a different team in
+                // the header would be immediately reverted to the URL's team.
+                const params = new URLSearchParams(searchParams.toString());
+                params.delete('teamId');
+                const query = params.toString();
+                router.replace(query ? `${pathname}?${query}` : pathname);
             }
         } else if (Cookies.get('teamId')) {
             if (!currentTeam || Cookies.get('teamId') !== currentTeam._id) {
@@ -167,7 +176,7 @@ const Shell = function (props) {
         } else if (teams && teams.length > 0) {
             changeCurrentTeam(teams[0]._id);
         }
-    }, [teams, currentTeam, searchParams]);
+    }, [teams, currentTeam, searchParams, pathname, router]);
 
     const setLanguage = (languageCode) => {
         Cookies.set('language', languageCode);

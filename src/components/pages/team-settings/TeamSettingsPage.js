@@ -36,7 +36,10 @@ function TeamSettingsPage(props) {
     }, [user, isLoading, router]);
 
     useEffect(() => {
-        if (!selectedTeamId && currentTeam && currentTeam._id) {
+        if (currentTeam && currentTeam._id && currentTeam._id !== selectedTeamId) {
+            // Follows the header picker too, not just the initial mount, so the
+            // page cannot end up editing a different team from the one the rest
+            // of the app is scoped to.
             setSelectedTeamId(currentTeam._id);
         } else if (!selectedTeamId && teams && teams.length > 0) {
             setSelectedTeamId(teams[0]._id);
@@ -74,6 +77,11 @@ function TeamSettingsPage(props) {
         }
     };
 
+    // Kept as an in-page control, unlike the filters on Dashboard and Metrics.
+    // Here the team is the object being edited — renamed, its access changed —
+    // not a filter over the page's content, so it belongs in the form next to
+    // the fields it governs. It still writes the global team, so the header
+    // picker and this control stay in agreement in both directions.
     const handleTeamChange = (teamId) => {
         if (!teamId) return;
         setSelectedTeamId(teamId);

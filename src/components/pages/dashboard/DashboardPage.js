@@ -35,9 +35,7 @@ import update from 'immutability-helper';
 import queryString from 'query-string';
 import { connect } from 'react-redux';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
-import Cookies from 'js-cookie';
 import { useAuth } from '../../../context/AuthContext';
-import { storeCurrentTeam } from '../../../redux/teamActions';
 import BuildsTable from './BuildsTable';
 import { getDateRangesPicker, getDurationAsString } from '../../../utility/TimeUtilities';
 import ExecutionBarChart from './charts/ExecutionBarChart';
@@ -121,7 +119,7 @@ const DashboardPage = function (props) {
   const { user } = useAuth();
   const intl = useIntl();
   const toaster = useToaster();
-  const { currentTeam, teams, environments, saveCurrentTeam, builds: reduxBuilds } = props;
+  const { currentTeam, environments, builds: reduxBuilds } = props;
 
   // query values
   // searchParams.get('startDate') ...
@@ -139,7 +137,6 @@ const DashboardPage = function (props) {
   const [startDate, setStartDate] = useState(queryStartDate ? moment(queryStartDate) : moment().subtract(90, 'days'));
   const [endDate, setEndDate] = useState(queryEndDate ? moment(queryEndDate) : moment());
   const { afterToday } = DateRangePicker;
-  const [selectedTeamId, setSelectedTeamId] = useState(undefined);
   // undefined = both types, which is what every pre-3.0 dashboard showed.
   const [executionType, setExecutionType] = useState(undefined);
 
@@ -204,12 +201,6 @@ const DashboardPage = function (props) {
     }
   }, [currentTeam, limit, filteredEnvironments,
     filteredComponents, startDate, endDate, activePage, searchParams, executionType]);
-
-  useEffect(() => {
-    if (currentTeam) {
-      setSelectedTeamId(currentTeam._id);
-    }
-  }, [currentTeam]);
 
   useEffect(() => {
     setFilteredValues([]);
@@ -289,20 +280,6 @@ const DashboardPage = function (props) {
 
   const clearSelection = () => {
     setSelectedBuilds({});
-  };
-
-  const getTeam = (teamId) => {
-    if (teams && Array.isArray(teams)) {
-      return teams.find((team) => team._id === teamId);
-    }
-    return undefined;
-  };
-
-  const handleTeamChange = (teamId) => {
-    if (teamId !== undefined) {
-      saveCurrentTeam(getTeam(teamId));
-      Cookies.set('teamId', teamId, { expires: 365 });
-    }
   };
 
   const handleLimitChange = (newLimit) => {
@@ -426,22 +403,6 @@ const DashboardPage = function (props) {
             top={20}
           >
             <Stack className="top-menu-stack" spacing={10}>
-              <SelectPicker
-                label={(
-                  <FormattedMessage
-                    id="page.dashboard.filters.label.team"
-                  />
-                )}
-                cleanable={false}
-                appearance="subtle"
-                data={teams.map((team) => ({ label: team.name, value: team._id }))}
-                value={selectedTeamId}
-                onChange={(value) => {
-                  if (value) {
-                    handleTeamChange(value);
-                  }
-                }}
-              />
               <DateRangePicker
                 label={(
                   <FormattedMessage
@@ -674,12 +635,7 @@ const DashboardPage = function (props) {
 
 const mapStateToProps = (state) => ({
   currentTeam: state.teamsReducer.currentTeam,
-  teams: state.teamsReducer.teams,
   environments: state.environmentsReducer.environments,
   builds: state.buildReducer.builds,
 });
-const mapDispatchToProps = (dispatch) => ({
-  saveCurrentTeam: (selectedTeam) => dispatch(storeCurrentTeam(selectedTeam)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(DashboardPage);
+export default connect(mapStateToProps)(DashboardPage);
