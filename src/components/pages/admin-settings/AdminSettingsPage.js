@@ -40,6 +40,10 @@ export default function AdminSettingsPage() {
     const intl = useIntl();
 
     const [localAuthEnabled, setLocalAuthEnabled] = useState(true);
+    // Feature toggles live in their own settings document and save independently of
+    // the auth settings, so turning a feature off never rewrites the provider list.
+    const [manualTestingEnabled, setManualTestingEnabled] = useState(true);
+    const [savingFeatures, setSavingFeatures] = useState(false);
     const [providers, setProviders] = useState([]);
     // Per-provider configuration outcome returned by a save: a provider can be enabled
     // but fail to build its strategy (unreachable issuer, unparseable certificate).
@@ -68,9 +72,15 @@ export default function AdminSettingsPage() {
     const fetchConfig = async () => {
         setLoading(true);
         try {
-            const response = await axios.get('/settings/auth');
-            if (response.data) {
-                applyResponse(response.data);
+            const [authResponse, featureResponse] = await Promise.all([
+                axios.get('/settings/auth'),
+                axios.get('/settings/features'),
+            ]);
+            if (authResponse.data) {
+                applyResponse(authResponse.data);
+            }
+            if (featureResponse.data) {
+                setManualTestingEnabled(featureResponse.data.manualTestingEnabled !== false);
             }
         } catch (error) {
             toaster.push(<Message type="error">{intl.formatMessage({ id: 'page.admin.settings.toast.fetch-error' })}</Message>, { placement: 'topEnd' });
@@ -111,6 +121,30 @@ export default function AdminSettingsPage() {
     };
 
     const handleSaveLocalAuth = () => persist(localAuthEnabled, providers);
+
+    // Disabling a feature hides its navigation and makes its API routes respond 404. The
+    // data is left untouched, so re-enabling restores everything exactly as it was.
+    const handleSaveFeatures = async () => {
+        setSavingFeatures(true);
+        try {
+            const response = await axios.put('/settings/features', { manualTestingEnabled });
+            if (response.data) {
+                setManualTestingEnabled(response.data.manualTestingEnabled !== false);
+            }
+            toaster.push(<Message type="success">{intl.formatMessage({ id: 'page.admin.settings.toast.save-success' })}</Message>, { placement: 'topEnd' });
+        } catch (error) {
+            const detail = error.response?.data?.errors?.[0]?.msg
+                || error.response?.data?.error;
+            toaster.push(
+                <Message type="error">
+                    {detail || intl.formatMessage({ id: 'page.admin.settings.toast.save-error' })}
+                </Message>,
+                { placement: 'topEnd' },
+            );
+        } finally {
+            setSavingFeatures(false);
+        }
+    };
 
     const handleSaveProvider = async (provider) => {
         const exists = providers.some((candidate) => candidate.id === provider.id);
@@ -168,6 +202,37 @@ export default function AdminSettingsPage() {
     return (
         <Container>
             <Content className="page">
+                <Panel
+                    header={<span className="page-panel-header"><FormattedMessage id="page.admin.settings.features.header" /></span>}
+                    bordered
+                    className="page-panel"
+                >
+                    {loading ? (
+                        <div className="app-alert app-alert-info">
+                            <Loader content={intl.formatMessage({ id: 'page.admin.settings.loading' })} />
+                        </div>
+                    ) : (
+                        <Form fluid>
+                            <p className="page-help-text"><FormattedMessage id="page.admin.settings.features.help" /></p>
+                            <Form.Group>
+                                <Form.ControlLabel><FormattedMessage id="page.admin.settings.features.manual-testing" /></Form.ControlLabel>
+                                <Toggle
+                                    checked={manualTestingEnabled}
+                                    onChange={setManualTestingEnabled}
+                                />
+                                <Form.HelpText><FormattedMessage id="page.admin.settings.features.manual-testing.help" /></Form.HelpText>
+                            </Form.Group>
+                            <Form.Group className="admin-settings-actions">
+                                <ButtonToolbar>
+                                    <Button className="btn-primary" onClick={handleSaveFeatures} loading={savingFeatures}>
+                                        <FormattedMessage id="page.admin.settings.button.save" />
+                                    </Button>
+                                </ButtonToolbar>
+                            </Form.Group>
+                        </Form>
+                    )}
+                </Panel>
+
                 <Panel
                     header={<span className="page-panel-header"><FormattedMessage id="page.admin.settings.header" /></span>}
                     bordered

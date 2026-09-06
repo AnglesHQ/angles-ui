@@ -787,5 +787,10 @@
     "app.manual.attachments.load-error": "Image could not be loaded.",
     "app.manual.folders.unknown": "Other folder",
     "page.manual-test-cases.toast.move-success": "Test case moved.",
-    "page.manual-test-cases.toast.move-error": "Could not move the test case."
+    "page.manual-test-cases.toast.move-error": "Could not move the test case.",
+    "page.admin.settings.features.header": "Feature Management",
+    "page.admin.settings.features.help": "Turn optional features on or off for this instance. Changes take effect immediately — no restart is required.",
+    "page.admin.settings.features.manual-testing": "Enable Test Case Management",
+    "page.admin.settings.features.manual-testing.help": "Manual test cases, test runs and shared steps. When disabled these pages are hidden and their data cannot be reached, but nothing is deleted — re-enabling restores everything.",
+    "app.feature.disabled": "This feature is not enabled on this instance. Contact an administrator if you need access to it."
 }

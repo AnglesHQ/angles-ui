@@ -60,7 +60,7 @@ const Shell = function (props) {
     const teamRequests = new TeamRequests(axios);
     const environmentRequests = new EnvironmentRequests(axios);
     const [expand, setExpand] = useState(true);
-    const { user, logout, isLoading } = useAuth();
+    const { user, logout, isLoading, manualTestingEnabled } = useAuth();
     const intl = useIntl();
 
     const {
@@ -220,17 +220,19 @@ const Shell = function (props) {
                                             />
                                         </span>
                                     </Nav.Item>
-                                    <Nav.Menu eventKey="9" icon={<TaskIcon className="nav-item-icon" />} title={<FormattedMessage id="nav.manual-testing" />}>
-                                        <Nav.Item as={Link} eventKey="9-1" href="/manual-test-cases">
-                                            <FormattedMessage id="nav.manual-test-cases" />
-                                        </Nav.Item>
-                                        <Nav.Item as={Link} eventKey="9-2" href="/manual-test-runs">
-                                            <FormattedMessage id="nav.manual-test-runs" />
-                                        </Nav.Item>
-                                        <Nav.Item as={Link} eventKey="9-3" href="/shared-steps">
-                                            <FormattedMessage id="nav.shared-steps" />
-                                        </Nav.Item>
-                                    </Nav.Menu>
+                                    {manualTestingEnabled && (
+                                        <Nav.Menu eventKey="9" icon={<TaskIcon className="nav-item-icon" />} title={<FormattedMessage id="nav.manual-testing" />}>
+                                            <Nav.Item as={Link} eventKey="9-1" href="/manual-test-cases">
+                                                <FormattedMessage id="nav.manual-test-cases" />
+                                            </Nav.Item>
+                                            <Nav.Item as={Link} eventKey="9-2" href="/manual-test-runs">
+                                                <FormattedMessage id="nav.manual-test-runs" />
+                                            </Nav.Item>
+                                            <Nav.Item as={Link} eventKey="9-3" href="/shared-steps">
+                                                <FormattedMessage id="nav.shared-steps" />
+                                            </Nav.Item>
+                                        </Nav.Menu>
+                                    )}
                                     <Nav.Item as={Link} eventKey="3" icon={<Image className="nav-item-icon" />} href="/screenshot-library">
                                         <span>
                                             <FormattedMessage

@@ -787,5 +787,10 @@
     "app.manual.attachments.load-error": "无法加载图片。",
     "app.manual.folders.unknown": "其他文件夹",
     "page.manual-test-cases.toast.move-success": "测试用例已移动。",
-    "page.manual-test-cases.toast.move-error": "无法移动测试用例。"
+    "page.manual-test-cases.toast.move-error": "无法移动测试用例。",
+    "page.admin.settings.features.header": "功能管理",
+    "page.admin.settings.features.help": "为此实例启用或禁用可选功能。更改立即生效 — 无需重启。",
+    "page.admin.settings.features.manual-testing": "启用测试用例管理",
+    "page.admin.settings.features.manual-testing.help": "手动测试用例、测试执行和共享步骤。禁用后，这些页面将被隐藏且其数据无法访问，但不会删除任何内容 — 重新启用即可恢复。",
+    "app.feature.disabled": "此实例未启用该功能。如需访问，请联系管理员。"
 }

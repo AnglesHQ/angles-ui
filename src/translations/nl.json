@@ -787,5 +787,10 @@
     "app.manual.attachments.load-error": "Afbeelding kon niet worden geladen.",
     "app.manual.folders.unknown": "Andere map",
     "page.manual-test-cases.toast.move-success": "Testgeval verplaatst.",
-    "page.manual-test-cases.toast.move-error": "Kon het testgeval niet verplaatsen."
+    "page.manual-test-cases.toast.move-error": "Kon het testgeval niet verplaatsen.",
+    "page.admin.settings.features.header": "Functiebeheer",
+    "page.admin.settings.features.help": "Schakel optionele functies in of uit voor deze instantie. Wijzigingen zijn direct actief — opnieuw opstarten is niet nodig.",
+    "page.admin.settings.features.manual-testing": "Testgevallenbeheer inschakelen",
+    "page.admin.settings.features.manual-testing.help": "Handmatige testgevallen, testruns en gedeelde stappen. Wanneer uitgeschakeld zijn deze pagina's verborgen en is de bijbehorende data niet bereikbaar, maar er wordt niets verwijderd — opnieuw inschakelen herstelt alles.",
+    "app.feature.disabled": "Deze functie is niet ingeschakeld op deze instantie. Neem contact op met een beheerder als je toegang nodig hebt."
 }
