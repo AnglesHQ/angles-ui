@@ -148,10 +148,20 @@
 
 
 // ── 5. Template ─────────────────────────────────────────────────────────────
-// Copy this block, rename it, and fill in the values. Then register the theme
-// (see `.theme-dark-primitives()` in `_color.less` for the shipped example).
+// Copy this block, rename it, fill in the values, then register it in the
+// theme registry in `_color.less`:
 //
-// .theme-<name>-primitives() {
+//     :root[data-theme='<name>'] { .theme-<name>(); }
+//
+// That is the whole wiring. A light theme also needs `.chart-series-light()`
+// (a dark one `.chart-series-dark()`) as its last line — see the shipped
+// `.theme-ember-dark()` for a worked example.
+//
+// Only a theme meant to be the OS-preference fallback belongs in the
+// `@media (prefers-color-scheme: …)` block, and that guard keys on the
+// *absence* of `data-theme` so an explicit choice always wins.
+//
+// .theme-<name>() {
 //     // Polarity
 //     --theme-ink-rgb: 0, 0, 0;          // 255, 255, 255 on a dark theme
 //     --theme-is-dark: 0;                // 1 on a dark theme

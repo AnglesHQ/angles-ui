@@ -67,18 +67,25 @@ primitives. Components must consume **semantic** tokens.
 
 ---
 
-## 3. Dark Mode
+## 3. Theming & Dark Mode
 
-- Dark mode applies in two ways (both defined in `_color.less` via the
-  `.theme-dark-primitives()` mixin):
-  1. Explicit selection: `:root[data-theme="dark"]` — set by the theme toggle; always wins.
-  2. OS preference: `@media (prefers-color-scheme: dark)` on `:root:not([data-theme="light"])` —
-     a fallback for users who have not chosen a theme.
+- **`src/styles/tokens/_theme-contract.less` is the spec.** Read it before adding a
+  theme or a theme-dependent token. It lists the primitives a theme must supply,
+  what is derived (and must not be restated), and the contrast obligations a theme owes.
+- Themes are registered one selector per theme in `_color.less`:
+  `:root[data-theme="ember-dark"] { .theme-ember-dark(); }`. `light` and `dark` are
+  retained as the shipped aliases because they are already in users' cookies.
+- The OS-preference fallback guards on `:root:not([data-theme])` — the **absence** of
+  the attribute. Never `:not([data-theme="light"])`: that reads as "anything except
+  light", so any third theme would get the fallback layered over it.
 - Do **not** add further `@media (prefers-color-scheme: …)` blocks anywhere else;
   theme-dependent values belong in the primitive overrides in `_color.less`.
 - Because theming happens at the **primitive** layer, a new semantic token defined
   against primitives usually needs no dark override. If a token's light value is a
-  literal (e.g. an rgba hairline), add its dark value to `.theme-dark-primitives()`.
+  literal (e.g. an rgba hairline), prefer *deriving* it from the polarity primitives
+  (`--theme-ink-rgb`, `--theme-is-dark`) or the accent (`--accent-rgb`) so every
+  present and future theme gets it for free — see the derived block at the end of
+  `_color.less`. Add a per-theme value only when it genuinely cannot be derived.
 
 ---
 
@@ -158,8 +165,11 @@ Use these before writing any new page-level CSS:
 When a design element can't be expressed by an existing token:
 1. Define the new token in `:root` in `src/styles/tokens/_color.less` (or the relevant
    token file), referencing primitives wherever possible.
-2. If its value cannot derive from a primitive, add a dark value to
-   `.theme-dark-primitives()` in the same file.
+2. If its value cannot reference a primitive directly, try to **derive** it in the
+   derived block at the end of `_color.less` — from the polarity primitives
+   (`--theme-ink-rgb`, `--theme-is-dark`) or the accent (`--accent-rgb`). A derived
+   token costs every future theme nothing. Only if that fails does it become a
+   per-theme value, which means adding it to **every** theme block.
 3. Name it semantically (e.g. `--modal-overlay-background`), not by value.
 4. Document it in a comment block near its peers.
 5. Remove tokens that lose their last consumer — no dead tokens.

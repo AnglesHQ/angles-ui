@@ -19,10 +19,16 @@
 // (`html[data-theme="dark"]`) or OS preference when the user has not chosen light.
 // ============================================================================
 
-// ── Dark primitive overrides (shared by both dark triggers) ─────────────────
-// The reference implementation of the theme contract. Every entry here is a
+// ── Theme: Ember Dark ───────────────────────────────────────────────────────
+// The reference implementation of the theme contract. Every entry is a
 // REQUIRED primitive; nothing derived is restated.
-.theme-dark-primitives() {
+//
+// Still a mixin rather than a bare rule set because it is applied at two
+// selectors — the explicit choice and the OS-preference fallback — and LESS
+// cannot alias a rule set to two selectors without duplicating it. A theme is
+// still authored as one block; only the two `.theme-ember-dark()` call sites
+// below know how it is triggered.
+.theme-ember-dark() {
     // Polarity — drives the derived hairline, scrim and elevation tokens.
     --theme-ink-rgb: 255, 255, 255;
     --theme-is-dark: 1;
@@ -263,7 +269,7 @@
     // disabled icon must stay *dimmer than the ember accent* in both themes,
     // and no existing primitive does that on both sides. The secondary text
     // tone is lighter than the accent on dark; the mid-sand tone is far too
-    // light on light. See `.theme-dark-primitives()` for the dark value.
+    // light on light. See `.theme-ember-dark()` for the dark value.
     --icon-disabled-color: var(--master-color-muted);
     // Informational accent (the `.app-alert-info` stripe). Uses the same hue as
     // the "skipped" result status, which is the app's existing neutral-info
@@ -276,16 +282,35 @@
 
 }
 
-// ── Dark theme triggers ─────────────────────────────────────────────────────
-// 1. Explicit user selection wins over everything.
-:root[data-theme='dark'] {
-    .theme-dark-primitives();
+// ── Theme registry ──────────────────────────────────────────────────────────
+// One selector per theme. Adding a theme means adding its primitives block
+// above and one rule here — nothing else in the stylesheet changes.
+//
+// `light` and `dark` are the *shipped* names and must keep working: they are
+// already stored in users' `theme` cookies. `ember-light` / `ember-dark` are
+// aliases so themes can be named by family as more are added.
+//
+// (`:root` itself carries Ember Light, so `[data-theme='light']` only has to
+// stop a dark OS preference from applying — see the fallback below.)
+:root[data-theme='dark'],
+:root[data-theme='ember-dark'] {
+    .theme-ember-dark();
 }
 
-// 2. Follow the OS preference when the user has not explicitly chosen light.
+// ── OS-preference fallback ──────────────────────────────────────────────────
+// Applies only when the user has expressed NO preference at all. The guard is
+// `:not([data-theme])` — the *absence* of the attribute — rather than
+// `:not([data-theme='light'])`.
+//
+// That older guard read "anything except light", which was fine while `light`
+// and `dark` were the only values: it meant "no cookie, or dark". With a third
+// theme it silently breaks, because a user on `sepia` or `slate-light` also
+// matches "not light" and would get Ember Dark's primitives layered over their
+// chosen theme on any machine set to dark mode. Keying on the attribute's
+// absence keeps an explicit choice — any explicit choice — authoritative.
 @media (prefers-color-scheme: dark) {
-    :root:not([data-theme='light']) {
-        .theme-dark-primitives();
+    :root:not([data-theme]) {
+        .theme-ember-dark();
     }
 }
 
