@@ -444,12 +444,29 @@
     opacity: 0.55;
 }
 
+// Oswald, self-hosted via next/font (see app/layout.js) and reached through
+// `--font-brand`. Only the wordmark uses it — body text stays on the system
+// stack, per the rule against introducing new font families for UI text.
+// The fallback is a condensed system face so a font failure degrades to
+// something with roughly the right proportions rather than to a wide default.
 .brand-wordmark {
     fill: var(--color-primary);
-    font-family: inherit;
+    font-family: var(--font-brand), 'Arial Narrow', 'Helvetica Neue', sans-serif;
     font-size: 52px;
-    font-weight: var(--font-weight-bold);
-    letter-spacing: -0.01em;
+    font-weight: 600;
+    letter-spacing: 0.005em;
+    // The original wordmark carried a heavy dark outline; it is what makes the
+    // mark read on a mid-tone surface like Sepia or Clay, where a flat accent
+    // fill would otherwise sit too close to the panel. `paint-order` keeps the
+    // stroke behind the fill so it thickens the letter's edge rather than
+    // eating into its interior.
+    stroke: currentColor;
+    // 1.4 rather than 2.5: the stroke is drawn centred on the outline, so half
+    // of it eats into the glyph. At 2.5 that closed up the counters in 'g' and
+    // 'e' at sidebar size.
+    stroke-width: 1.4;
+    paint-order: stroke fill;
+    stroke-linejoin: round;
 }
 
 // Accessible themes render the mark in one tone. On Clay the accent is the
