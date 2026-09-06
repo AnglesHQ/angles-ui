@@ -111,27 +111,91 @@
   gap: var(--space-3);
 }
 
+// Each folder is one card: the heading is the card's top bar and the table is its
+// body, so an expanded folder reads as a container holding its cases.
+//
+// Previously the heading was bare text on the page background and the table began
+// immediately below at full width, with its own strong header row. Two stacked
+// full-width blocks with nothing enclosing them read as siblings, and because the
+// table header is a solid accent bar it out-weighed the folder name above it — so
+// the table looked like the start of something new rather than the contents of the
+// folder it belongs to.
 .test-case-suite {
-  border: 1px solid transparent;
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  transition: background var(--transition-fast), border-color var(--transition-fast);
+  background: var(--sub-panel-background);
+  // Clips the table's square corners to the card's rounded ones; without it the
+  // accent header row overruns the border it is supposed to sit inside.
+  overflow: hidden;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 
   &.test-case-suite-drop {
     border-color: var(--pass-color);
-    background: var(--sub-panel-background);
+    box-shadow: 0 0 0 1px var(--pass-color);
   }
+}
+
+// A collapsed folder is a closed box: one bar, nothing below it. Dropping the
+// border-radius clamp lets the header keep the card's full rounding on all four
+// corners rather than only the top two.
+.test-case-suite-collapsed .test-case-suite-header {
+  border-bottom-color: transparent;
 }
 
 .test-case-suite-header {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-2) var(--space-2);
+  padding: var(--space-2) var(--space-3);
   cursor: pointer;
-  border-radius: var(--radius-md);
+  // The bar is the card's own surface, distinct from the table body beneath it, so
+  // the heading reads as a lid on the rows rather than as floating text.
+  background: var(--main-panel-background);
+  // Separates lid from body when expanded; transparent (not removed) when collapsed
+  // so the header does not change height as it toggles.
+  border-bottom: 1px solid var(--border-color);
+  transition: background var(--transition-fast), border-color var(--transition-fast);
 
   &:hover {
-    background: var(--sub-panel-background);
+    background: var(--surface-raised);
+  }
+}
+
+// A rail down the open card in the folder's own accent. It starts at the heading and
+// runs the height of the rows, which is what ties the two together at a glance: the
+// eye follows one continuous edge from the folder name to the last case in it.
+.test-case-suite-expanded {
+  border-left: 3px solid var(--color-primary);
+}
+
+// The table sits inside the card, so it must not carry its own outer border on top
+// of the card's.
+.test-case-suite-body {
+  .rs-table {
+    border: 0;
+  }
+
+  // The app-wide convention paints a table header in the accent, which is right for a
+  // table that IS the panel's content. Here the table is nested inside a folder card
+  // that already has a heading of its own, so the accent bar competed with it — and
+  // won, because a solid fill out-weighs text. That is what made the rows look like
+  // the start of a new section instead of the contents of the folder above them.
+  //
+  // Quietened to a subordinate header: same structure, no longer shouting over the
+  // folder that owns it. Scoped to this component, so tables elsewhere keep the
+  // convention.
+  .rs-table-row-header .rs-table-cell-content {
+    background-color: var(--sub-panel-background);
+    color: var(--main-panel-secondary-font-color);
+    opacity: 1;
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  // Without the accent fill the header needs an edge, or it merges into the first row.
+  .rs-table-row-header {
+    border-bottom: 1px solid var(--border-subtle);
   }
 }
 

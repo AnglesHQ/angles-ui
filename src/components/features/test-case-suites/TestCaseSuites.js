@@ -58,6 +58,20 @@ export const buildFolderLabel = (folder, byId) => {
     return [...names, folder.name].join(' / ');
 };
 
+/*
+How deep a section sits in the tree, so the card can be indented to match.
+
+The heading already spells the ancestry out ("Checkout / Refunds"), but reading a path
+is not the same as seeing one: indentation makes a sub-folder look subordinate at a
+glance instead of on inspection. Unfiled and unknown sections have no ancestry and sit
+at the root.
+ */
+export const folderDepth = (key, byId) => {
+    if (key === UNFILED) return 0;
+    const folder = byId.get(key);
+    return folder && folder.path ? folder.path.length : 0;
+};
+
 // Flattens the nested tree into a lookup, so a section can resolve its own ancestors.
 export const indexFolders = (folders) => {
     const byId = new Map();
@@ -137,7 +151,14 @@ const TestCaseSuites = ({
                 return (
                     <div
                         key={key}
-                        className={`test-case-suite${dropTarget === key ? ' test-case-suite-drop' : ''}`}
+                        className={[
+                            'test-case-suite',
+                            collapsed ? 'test-case-suite-collapsed' : 'test-case-suite-expanded',
+                            dropTarget === key ? 'test-case-suite-drop' : '',
+                        ].filter(Boolean).join(' ')}
+                        // Indent by tree depth rather than by a class per level, so the
+                        // nesting stays truthful however deep the folders go.
+                        style={{ marginLeft: `calc(var(--space-5) * ${folderDepth(key, byId)})` }}
                         onDragOver={(event) => handleDragOver(event, key)}
                         onDragLeave={() => setDropTarget(undefined)}
                         onDrop={(event) => handleDrop(event, key)}
@@ -146,6 +167,7 @@ const TestCaseSuites = ({
                             className="test-case-suite-header"
                             onClick={() => onToggleCollapse(key)}
                             role="button"
+                            aria-expanded={!collapsed}
                             tabIndex={0}
                             onKeyDown={(event) => {
                                 if (event.key === 'Enter' || event.key === ' ') onToggleCollapse(key);
@@ -162,6 +184,7 @@ const TestCaseSuites = ({
                         </div>
 
                         {!collapsed && (
+                            <div className="test-case-suite-body">
                             <Table
                                 data={rows}
                                 autoHeight
@@ -219,6 +242,7 @@ const TestCaseSuites = ({
                                     <Cell>{(row) => (row.steps ? row.steps.length : 0)}</Cell>
                                 </Column>
                             </Table>
+                            </div>
                         )}
                     </div>
                 );
