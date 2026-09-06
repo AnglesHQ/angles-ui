@@ -805,5 +805,6 @@
     "page.admin.settings.features.manual-testing": "Enable Test Case Management",
     "page.admin.settings.features.manual-testing.help": "Manual test cases, test runs and shared steps. When disabled these pages are hidden and their data cannot be reached, but nothing is deleted — re-enabling restores everything.",
     "app.feature.disabled": "This feature is not enabled on this instance. Contact an administrator if you need access to it.",
-    "nav.team": "Team"
+    "nav.team": "Team",
+    "nav.team.none": "None selected"
 }

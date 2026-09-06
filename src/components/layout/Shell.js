@@ -294,7 +294,7 @@ const Shell = function (props) {
                                 to a cookie by `changeCurrentTeam`), so it belongs with the other
                                 global controls rather than repeated as a per-page filter. Pages
                                 that are team-scoped read it straight from the store. */}
-                            {teams && teams.length > 0 && (
+                            {user && teams && teams.length > 0 && (
                                 <Nav.Menu
                                     eventKey="8"
                                     className="nav-team-menu"
@@ -303,10 +303,18 @@ const Shell = function (props) {
                                         // Wrapped rather than passed as a bare string: a text
                                         // node cannot be ellipsised inside the toggle's flex
                                         // row, so a long team name would clip mid-glyph.
-                                        <span className="nav-team-name">
-                                            {currentTeam
-                                                ? currentTeam.name
-                                                : intl.formatMessage({ id: 'nav.team' })}
+                                        <span className="nav-team-toggle">
+                                            {/* The team name alone does not say what the menu
+                                                selects, so the label is always shown and the
+                                                name reads as its current value. */}
+                                            <span className="nav-team-label">
+                                                <FormattedMessage id="nav.team" />
+                                            </span>
+                                            <span className="nav-team-name">
+                                                {currentTeam
+                                                    ? currentTeam.name
+                                                    : intl.formatMessage({ id: 'nav.team.none' })}
+                                            </span>
                                         </span>
                                     )}
                                 >

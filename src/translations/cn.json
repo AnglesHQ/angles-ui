@@ -805,5 +805,6 @@
     "page.admin.settings.features.manual-testing": "启用测试用例管理",
     "page.admin.settings.features.manual-testing.help": "手动测试用例、测试执行和共享步骤。禁用后，这些页面将被隐藏且其数据无法访问，但不会删除任何内容 — 重新启用即可恢复。",
     "app.feature.disabled": "此实例未启用该功能。如需访问，请联系管理员。",
-    "nav.team": "团队"
+    "nav.team": "团队",
+    "nav.team.none": "未选择"
 }

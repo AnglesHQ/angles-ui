@@ -705,4 +705,12 @@
     --card-shadow: 0 1px 3px rgba(16, 24, 40, calc(0.10 - 0.10 * var(--theme-is-dark))),
                    0 1px 2px rgba(16, 24, 40, calc(0.06 - 0.06 * var(--theme-is-dark)));
     --card-border-color: rgba(var(--theme-ink-rgb), calc(0.08 * var(--theme-is-dark)));
+
+    // Secondary text inside the nav. `--nav-font-color` and
+    // `--main-panel-secondary-font-color` happen to resolve to the same value in
+    // every shipped theme, so neither can express "quieter than the nav's own
+    // text". Derived from the ink channel instead: 0.65 alpha reads as a caption
+    // against the nav background on either polarity, and any future theme gets
+    // it without adding a value.
+    --nav-muted-font-color: rgba(var(--theme-ink-rgb), 0.65);
 }

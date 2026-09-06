@@ -805,5 +805,6 @@
     "page.admin.settings.features.manual-testing": "Testgevallenbeheer inschakelen",
     "page.admin.settings.features.manual-testing.help": "Handmatige testgevallen, testruns en gedeelde stappen. Wanneer uitgeschakeld zijn deze pagina's verborgen en is de bijbehorende data niet bereikbaar, maar er wordt niets verwijderd — opnieuw inschakelen herstelt alles.",
     "app.feature.disabled": "Deze functie is niet ingeschakeld op deze instantie. Neem contact op met een beheerder als je toegang nodig hebt.",
-    "nav.team": "Team"
+    "nav.team": "Team",
+    "nav.team.none": "Niets geselecteerd"
 }

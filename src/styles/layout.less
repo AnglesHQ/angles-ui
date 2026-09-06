@@ -212,6 +212,30 @@
         flex: 0 0 auto;
     }
 
+    .nav-team-toggle {
+        display: inline-flex;
+        align-items: baseline;
+        gap: var(--space-2);
+        min-width: 0;
+    }
+
+    // "Team" is the caption; the team name is the value. Muted and smaller so
+    // the pair reads as one control rather than two competing words, and never
+    // shrinking so the name is what gives way when space runs out.
+    //
+    // `!important` is required, not preference: the navbar rules above force
+    // `color: inherit !important` on every descendant of `.rs-navbar-item` to
+    // stop rsuite colouring its own children, and that blanket rule would
+    // otherwise flatten this caption to the same tone as the value.
+    .nav-team-label {
+        flex: 0 0 auto;
+        color: var(--nav-muted-font-color) !important;
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-normal);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+
     .nav-team-name {
         min-width: 0;
         overflow: hidden;
