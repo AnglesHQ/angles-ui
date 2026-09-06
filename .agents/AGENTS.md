@@ -180,12 +180,40 @@ When a design element can't be expressed by an existing token:
 
 - **Any text added to the UI** must use the `FormattedMessage` component with a specific `id`.
   Never hardcode English (or any other language) strings directly into JSX.
-- You must add the translation string for the new `id` in **all four** language files:
-  - `src/translations/en.json` — English
-  - `src/translations/cn.json` — Chinese
-  - `src/translations/nl.json` — Dutch
-  - `src/translations/th.json` — Thai
-- **Every** language file must receive the new key. Omitting any language file is not acceptable.
+- **`en.json` is the reference.** Every other catalogue in `src/translations/` must carry
+  **exactly** the same key set — no missing keys, no stale extras.
+- **Add the new key to every file in `src/translations/`**, translated. Do not assume a
+  fixed list of languages: run `ls src/translations/` and cover what is actually there.
+  Everything except `translations.json` (the language registry) is a catalogue.
+  This rule used to name four specific files; `hi.json` was added later and fell
+  432 keys behind precisely because the list was hardcoded here. Never re-introduce a
+  hardcoded list.
+- **Adding a new language** means creating its catalogue with a translation for
+  *every* key already in `en.json` — not just the keys for the feature being worked
+  on — and adding it to `src/translations/translations.json` so the picker offers it.
+  A partially populated catalogue is not acceptable: `react-intl` silently falls back
+  to the id, so gaps show up as raw dotted strings in the UI.
+- Leaving a value identical to English is only acceptable when the term genuinely does
+  not translate (proper nouns, `SAML`, `URL`). It is never a placeholder for
+  "translate this later".
+- **ICU placeholders and arguments must survive translation.** `{count}`, `{name}` and
+  the like are part of the contract; dropping one renders the wrong text with no error.
+  Plural *categories* may legitimately differ — Thai and Chinese have no grammatical
+  plural and use `other` alone.
+
+### Enforcement
+
+```bash
+npm run check-translations
+```
+
+Fails the build when any catalogue is missing keys, carries stale ones, drops an ICU
+placeholder, or when a `FormattedMessage` id used in the code is absent from `en.json`
+(which renders as a raw id — this check found `ccommon.` typo'd for `common.`).
+
+**Run it after adding or changing any UI text, and before opening a PR.** It derives the
+language list from the directory, so a newly added catalogue is covered automatically
+with no change to the script or to this document.
 
 ### Translation ID naming convention
 

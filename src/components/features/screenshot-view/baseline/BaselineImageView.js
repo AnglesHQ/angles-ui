@@ -381,7 +381,7 @@ const BaselineImageView = (props) => {
           type="warning"
           message={(
             <span>
-              <FormattedMessage id="ccommon.component.screenshot-view.tabs.baseline.message.loading-baseline-error" />
+              <FormattedMessage id="common.component.screenshot-view.tabs.baseline.message.loading-baseline-error" />
             </span>
           )}
         />
