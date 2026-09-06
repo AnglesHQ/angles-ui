@@ -24,9 +24,13 @@ export const THEMES = [
   { id: 'light', polarity: 'light', labelId: 'nav.theme.light' },
   { id: 'slate-light', polarity: 'light', labelId: 'nav.theme.slate-light' },
   { id: 'sepia', polarity: 'light', labelId: 'nav.theme.sepia' },
+  { id: 'forest-light', polarity: 'light', labelId: 'nav.theme.forest-light' },
+  { id: 'contrast-light', polarity: 'light', labelId: 'nav.theme.contrast-light' },
   { id: 'dark', polarity: 'dark', labelId: 'nav.theme.dark' },
   { id: 'slate-dark', polarity: 'dark', labelId: 'nav.theme.slate-dark' },
   { id: 'midnight', polarity: 'dark', labelId: 'nav.theme.midnight' },
+  { id: 'forest-dark', polarity: 'dark', labelId: 'nav.theme.forest-dark' },
+  { id: 'contrast-dark', polarity: 'dark', labelId: 'nav.theme.contrast-dark' },
 ];
 
 // The theme applied when the user has made no choice. Leaving the cookie unset

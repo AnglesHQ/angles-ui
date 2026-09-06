@@ -193,6 +193,129 @@
     .chart-series-dark();
 }
 
+// ── Theme: Forest Light ─────────────────────────────────────────────────────
+// Muted sage surfaces with a deep green accent. The only green in the set and
+// the furthest from Ember, Slate and Sepia — low saturation so it reads calm
+// rather than clinical.
+.theme-forest-light() {
+    --theme-ink-rgb: 0, 0, 0;
+    --theme-is-dark: 0;
+
+    --master-color-1: hsl(120, 25%, 99%);
+    --master-color-2: hsl(120, 14%, 95%);
+    --master-color-2-relative: hsl(125, 18%, 50%);
+
+    --master-font-color-1: hsl(150, 30%, 14%);
+    --master-font-color-2: hsl(120, 30%, 99%);
+    --master-font-color-3: hsl(140, 12%, 32%);
+
+    --master-color-3: hsl(157, 58%, 29%);
+    --master-color-3-relative: hsl(157, 60%, 22%);
+    --accent-rgb: 31, 117, 82;
+
+    // 52% rather than 54%: the sage panel is light enough that 54% lands at
+    // 2.91:1, just under the 3:1 the contract asks for.
+    --master-color-muted: hsl(120, 10%, 52%);
+
+    --pass-color: hsl(140, 42%, 38%);
+    --fail-color: hsl(355, 72%, 50%);
+    // A step darker than the other light themes for the same reason.
+    --error-color: hsl(38, 88%, 40%);
+    --skipped-color: hsl(199, 89%, 42%);
+
+    .chart-series-light();
+}
+
+// ── Theme: Forest Dark ──────────────────────────────────────────────────────
+// The night-time counterpart to Forest Light: deep pine surfaces, a bright
+// spring-green accent.
+.theme-forest-dark() {
+    --theme-ink-rgb: 255, 255, 255;
+    --theme-is-dark: 1;
+
+    --master-color-1: hsl(150, 16%, 15%);
+    --master-color-2: hsl(155, 20%, 9%);
+    --master-color-2-relative: hsl(150, 12%, 44%);
+
+    --master-font-color-1: hsl(120, 20%, 94%);
+    --master-font-color-2: hsl(155, 25%, 8%);
+    --master-font-color-3: hsl(140, 12%, 74%);
+
+    --master-color-3: hsl(150, 55%, 60%);
+    --master-color-3-relative: hsl(150, 55%, 52%);
+    --accent-rgb: 105, 217, 155;
+
+    --master-color-muted: hsl(150, 10%, 44%);
+
+    --pass-color: hsl(140, 45%, 60%);
+    --fail-color: hsl(355, 80%, 68%);
+    --error-color: hsl(40, 90%, 62%);
+    --skipped-color: hsl(199, 90%, 66%);
+
+    .chart-series-dark();
+}
+
+// ── Theme: High Contrast Light ──────────────────────────────────────────────
+// For low vision and bright sunlight. Pure white ground, black text, a deep
+// blue accent — every pairing clears AAA (7:1) rather than the AA the contract
+// requires. Panel and sub-panel are BOTH pure white on purpose: surfaces are
+// separated by borders here, not by tone, which is what keeps contrast maximal.
+.theme-contrast-light() {
+    --theme-ink-rgb: 0, 0, 0;
+    --theme-is-dark: 0;
+
+    --master-color-1: hsl(0, 0%, 100%);
+    --master-color-2: hsl(0, 0%, 100%);
+    --master-color-2-relative: hsl(0, 0%, 40%);
+
+    --master-font-color-1: hsl(0, 0%, 0%);
+    --master-font-color-2: hsl(0, 0%, 100%);
+    --master-font-color-3: hsl(0, 0%, 26%);
+
+    --master-color-3: hsl(220, 90%, 32%);
+    --master-color-3-relative: hsl(220, 92%, 24%);
+    --accent-rgb: 13, 71, 155;
+
+    --master-color-muted: hsl(0, 0%, 46%);
+
+    --pass-color: hsl(140, 42%, 38%);
+    --fail-color: hsl(355, 72%, 50%);
+    --error-color: hsl(38, 88%, 41%);
+    --skipped-color: hsl(199, 89%, 42%);
+
+    .chart-series-light();
+}
+
+// ── Theme: High Contrast Dark ───────────────────────────────────────────────
+// True black with white text and an amber accent. Distinct from Midnight,
+// which is a near-black *aesthetic*: this one pushes every pairing to AAA and
+// uses a fully saturated accent for maximum separation.
+.theme-contrast-dark() {
+    --theme-ink-rgb: 255, 255, 255;
+    --theme-is-dark: 1;
+
+    --master-color-1: hsl(0, 0%, 7%);
+    --master-color-2: hsl(0, 0%, 0%);
+    --master-color-2-relative: hsl(0, 0%, 55%);
+
+    --master-font-color-1: hsl(0, 0%, 100%);
+    --master-font-color-2: hsl(0, 0%, 0%);
+    --master-font-color-3: hsl(0, 0%, 88%);
+
+    --master-color-3: hsl(45, 100%, 55%);
+    --master-color-3-relative: hsl(45, 100%, 46%);
+    --accent-rgb: 255, 209, 26;
+
+    --master-color-muted: hsl(0, 0%, 52%);
+
+    --pass-color: hsl(140, 45%, 60%);
+    --fail-color: hsl(355, 80%, 68%);
+    --error-color: hsl(40, 90%, 62%);
+    --skipped-color: hsl(199, 90%, 66%);
+
+    .chart-series-dark();
+}
+
 // ── Categorical chart ramps (per polarity, not per theme) ───────────────────
 // Non-status series colours. Each ramp is tuned for the ground it sits on: the
 // light values fall below 3:1 on a dark panel and vice versa. A new theme picks
@@ -433,6 +556,22 @@
 
 :root[data-theme='midnight'] {
     .theme-midnight();
+}
+
+:root[data-theme='forest-light'] {
+    .theme-forest-light();
+}
+
+:root[data-theme='forest-dark'] {
+    .theme-forest-dark();
+}
+
+:root[data-theme='contrast-light'] {
+    .theme-contrast-light();
+}
+
+:root[data-theme='contrast-dark'] {
+    .theme-contrast-dark();
 }
 
 // ── OS-preference fallback ──────────────────────────────────────────────────
