@@ -1,0 +1,76 @@
+// ── Attachment upload ────────────────────────────────────────────────────────
+// Drop zone plus thumbnail strip, used by the step editor and the execution view.
+.attachment-upload {
+  .attachment-upload-zone {
+    padding: var(--space-3);
+    border: 1px dashed var(--border-color);
+    border-radius: var(--radius-sm);
+    text-align: center;
+    color: var(--main-panel-secondary-font-color);
+    font-size: var(--font-size-sm);
+    background: var(--sub-panel-background);
+  }
+
+  .attachment-upload-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+  }
+
+  .attachment-upload-item {
+    position: relative;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: var(--space-1);
+    background: var(--sub-panel-background);
+
+    img {
+      display: block;
+      max-width: 96px;
+      max-height: 96px;
+      border-radius: var(--radius-xs);
+    }
+
+    // The thumbnail is a button so it can open the full image through an authenticated
+    // fetch; it must not look like one.
+    .attachment-upload-open {
+      display: block;
+      padding: 0;
+      border: none;
+      background: none;
+      cursor: pointer;
+    }
+
+    // Reserves the thumbnail's footprint while the image is being fetched, so a list of
+    // attachments does not jump as each one arrives.
+    .attachment-upload-loading {
+      display: block;
+      width: 96px;
+      height: 96px;
+      border-radius: var(--radius-xs);
+      background: var(--main-panel-background);
+    }
+
+    .attachment-upload-broken {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 96px;
+      height: 96px;
+      padding: var(--space-1);
+      border-radius: var(--radius-xs);
+      background: var(--main-panel-background);
+      color: var(--fail-color);
+      font-size: var(--font-size-xs);
+      text-align: center;
+    }
+
+    .attachment-upload-item-actions {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-1);
+      margin-top: var(--space-1);
+    }
+  }
+}

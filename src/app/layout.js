@@ -2,9 +2,22 @@ import 'rsuite/dist/rsuite.min.css';
 import 'react-image-crop/dist/ReactCrop.css';
 import '../styles/main.css';
 
+import { Saira_Condensed as SairaCondensed } from 'next/font/google';
+
 import Providers from './providers';
 import Shell from '../components/layout/Shell';
 import RuntimeConfigScript from './runtime-config-script';
+
+// Wordmark face for the brand logo. `next/font` self-hosts the file at build
+// time, so there is no runtime request to Google — no third-party dependency on
+// the critical path and nothing to allow through a CSP. Exposed as a CSS
+// variable so only `.brand-wordmark` uses it; body text keeps the system stack.
+const brandFont = SairaCondensed({
+    subsets: ['latin'],
+    weight: ['600'],
+    display: 'swap',
+    variable: '--font-brand',
+});
 
 export const metadata = {
     title: 'Angles',
@@ -17,7 +30,7 @@ export const dynamic = 'force-dynamic';
 
 export default function RootLayout({ children }) {
     return (
-        <html lang="en">
+        <html lang="en" className={brandFont.variable}>
             <head>
                 <RuntimeConfigScript />
             </head>

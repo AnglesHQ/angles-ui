@@ -1,0 +1,33 @@
+// ── Custom field form ────────────────────────────────────────────────────────
+// Inputs generated from the team's configured field definitions.
+.custom-field-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+
+  .custom-field-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .custom-field-label {
+    color: var(--main-panel-font-color);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .custom-field-required {
+    margin-left: var(--space-1);
+    color: var(--fail-color);
+  }
+
+  // An archived field only appears when a value already exists for it, so the marker
+  // explains why an author is seeing a field that is no longer offered.
+  .custom-field-archived {
+    margin-left: var(--space-2);
+    color: var(--modal-secondary-font-color);
+    font-size: var(--font-size-xs);
+    font-style: italic;
+  }
+}

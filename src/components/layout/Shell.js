@@ -29,6 +29,7 @@ import AngleRightIcon from '@rsuite/icons/legacy/AngleRight';
 import Image from '@rsuite/icons/Image';
 import BarChart from '@rsuite/icons/BarChart';
 import DocPass from '@rsuite/icons/DocPass';
+import TaskIcon from '@rsuite/icons/Task';
 import InfoOutline from '@rsuite/icons/InfoOutline';
 import GlobalIcon from '@rsuite/icons/Global';
 import AdminIcon from '@rsuite/icons/Admin';
@@ -38,6 +39,9 @@ import ExitIcon from '@rsuite/icons/Exit';
 import { CgDarkMode } from 'react-icons/cg';
 
 import translations from '../../translations/translations.json';
+import BrandLogo from '../common/BrandLogo';
+import ThemeSwatch from '../common/ThemeSwatch';
+import { applyTheme, getThemesByPolarity } from '../../utility/Themes';
 import { storeCurrentTeam, storeTeams, storeTeamsError } from '../../redux/teamActions';
 import { storeEnvironments } from '../../redux/environmentActions';
 import { clearCurrentErrorMessage, clearCurrentInfoMessage, clearCurrentLoaderMessage } from '../../redux/notificationActions';
@@ -59,7 +63,7 @@ const Shell = function (props) {
     const teamRequests = new TeamRequests(axios);
     const environmentRequests = new EnvironmentRequests(axios);
     const [expand, setExpand] = useState(true);
-    const { user, logout, isLoading } = useAuth();
+    const { user, logout, isLoading, manualTestingEnabled } = useAuth();
     const intl = useIntl();
 
     const {
@@ -156,6 +160,15 @@ const Shell = function (props) {
         if (teamId) {
             if (!currentTeam || teamId !== currentTeam._id) {
                 changeCurrentTeam(teamId);
+            } else {
+                // The param has been applied, so drop it. It is a one-shot deep
+                // link, not a source of truth: left in place it re-asserts itself
+                // on every render of this effect, so picking a different team in
+                // the header would be immediately reverted to the URL's team.
+                const params = new URLSearchParams(searchParams.toString());
+                params.delete('teamId');
+                const query = params.toString();
+                router.replace(query ? `${pathname}?${query}` : pathname);
             }
         } else if (Cookies.get('teamId')) {
             if (!currentTeam || Cookies.get('teamId') !== currentTeam._id) {
@@ -164,17 +177,16 @@ const Shell = function (props) {
         } else if (teams && teams.length > 0) {
             changeCurrentTeam(teams[0]._id);
         }
-    }, [teams, currentTeam, searchParams]);
+    }, [teams, currentTeam, searchParams, pathname, router]);
 
     const setLanguage = (languageCode) => {
         Cookies.set('language', languageCode);
         window.location.reload(); // Force reload to apply language change
     };
 
-    const setTheme = (theme) => {
-        const rootElement = document.documentElement;
-        rootElement.setAttribute('data-theme', theme);
-        Cookies.set('theme', theme);
+    const setTheme = (themeId) => {
+        applyTheme(themeId);
+        Cookies.set('theme', themeId);
     };
 
     const toggleMenu = () => {
@@ -198,8 +210,7 @@ const Shell = function (props) {
                             <Sidenav.Header>
                                 <Link href="/">
                                     <div className="sidebar-header">
-                                        <img src="/assets/angles-icon.png" alt="Angles" className="brand-logo-icon" />
-                                        <img src="/assets/angles-text-logo.png" alt="Angles" className="brand-logo-text" />
+                                        <BrandLogo showText={expand} />
                                     </div>
                                 </Link>
                             </Sidenav.Header>
@@ -219,6 +230,19 @@ const Shell = function (props) {
                                             />
                                         </span>
                                     </Nav.Item>
+                                    {manualTestingEnabled && (
+                                        <Nav.Menu eventKey="9" icon={<TaskIcon className="nav-item-icon" />} title={<FormattedMessage id="nav.manual-testing" />}>
+                                            <Nav.Item as={Link} eventKey="9-1" href="/manual-test-cases">
+                                                <FormattedMessage id="nav.manual-test-cases" />
+                                            </Nav.Item>
+                                            <Nav.Item as={Link} eventKey="9-2" href="/manual-test-runs">
+                                                <FormattedMessage id="nav.manual-test-runs" />
+                                            </Nav.Item>
+                                            <Nav.Item as={Link} eventKey="9-3" href="/shared-steps">
+                                                <FormattedMessage id="nav.shared-steps" />
+                                            </Nav.Item>
+                                        </Nav.Menu>
+                                    )}
                                     <Nav.Item as={Link} eventKey="3" icon={<Image className="nav-item-icon" />} href="/screenshot-library">
                                         <span>
                                             <FormattedMessage
@@ -239,6 +263,7 @@ const Shell = function (props) {
                                         <Nav.Menu eventKey="7" icon={<AdminIcon className="nav-item-icon" />} title={<FormattedMessage id="nav.admin" />}>
                                             <Nav.Item as={Link} eventKey="7-1" href="/admin/users"><FormattedMessage id="nav.admin.users" /></Nav.Item>
                                             <Nav.Item as={Link} eventKey="7-2" href="/admin/settings"><FormattedMessage id="nav.admin.settings" /></Nav.Item>
+                                            <Nav.Item as={Link} eventKey="7-3" href="/admin/custom-fields"><FormattedMessage id="nav.admin.custom-fields" /></Nav.Item>
                                         </Nav.Menu>
                                     )}
                                     <Nav.Item as={Link} eventKey="6" icon={<InfoOutline className="nav-item-icon" />} href="/about">
@@ -266,12 +291,77 @@ const Shell = function (props) {
                 <Header>
                     <Navbar appearance="subtle" className="header-navbar">
                         <Nav pullRight>
+                            {/* Team is global state (a single `currentTeam` in Redux, persisted
+                                to a cookie by `changeCurrentTeam`), so it belongs with the other
+                                global controls rather than repeated as a per-page filter. Pages
+                                that are team-scoped read it straight from the store. */}
+                            {user && teams && teams.length > 0 && (
+                                <Nav.Menu
+                                    eventKey="8"
+                                    className="nav-team-menu"
+                                    icon={<PeoplesIcon className="nav-item-icon" />}
+                                    title={(
+                                        // Wrapped rather than passed as a bare string: a text
+                                        // node cannot be ellipsised inside the toggle's flex
+                                        // row, so a long team name would clip mid-glyph.
+                                        <span className="nav-team-toggle">
+                                            {/* The team name alone does not say what the menu
+                                                selects, so the label is always shown and the
+                                                name reads as its current value. */}
+                                            <span className="nav-team-label">
+                                                <FormattedMessage id="nav.team" />
+                                            </span>
+                                            <span className="nav-team-name">
+                                                {currentTeam
+                                                    ? currentTeam.name
+                                                    : intl.formatMessage({ id: 'nav.team.none' })}
+                                            </span>
+                                        </span>
+                                    )}
+                                >
+                                    {teams.map((team) => (
+                                        <Nav.Item
+                                            key={team._id}
+                                            eventKey={`8-${team._id}`}
+                                            active={!!currentTeam && currentTeam._id === team._id}
+                                            onClick={() => changeCurrentTeam(team._id)}
+                                        >
+                                            {team.name}
+                                        </Nav.Item>
+                                    ))}
+                                </Nav.Menu>
+                            )}
                             <Nav.Menu eventKey="4" icon={<GlobalIcon className="nav-item-icon" />} title={<FormattedMessage id="nav.language" />}>
                                 {translations.map((translation, index) => (<Nav.Item key={index} eventKey={`4-${index}`} onClick={() => setLanguage(translation.code)}>{translation.text}</Nav.Item>))}
                             </Nav.Menu>
                             <Nav.Menu eventKey="5" icon={<CgDarkMode />} title={<FormattedMessage id="nav.theme" />}>
-                                <Nav.Item eventKey="5-1" onClick={() => setTheme('light')}><FormattedMessage id="nav.theme.light" /></Nav.Item>
-                                <Nav.Item eventKey="5-2" onClick={() => setTheme('dark')}><FormattedMessage id="nav.theme.dark" /></Nav.Item>
+                                {/* Grouped by polarity so the list stays scannable as themes
+                                    are added; the headings are labels, not selectable items. */}
+                                {['light', 'dark'].map((polarity) => (
+                                    <React.Fragment key={polarity}>
+                                        <li className="nav-menu-group-label" role="presentation">
+                                            <FormattedMessage id={`nav.theme.group.${polarity}`} />
+                                        </li>
+                                        {getThemesByPolarity(polarity).map((theme) => (
+                                            <Nav.Item
+                                                key={theme.id}
+                                                eventKey={`5-${theme.id}`}
+                                                className="nav-theme-item"
+                                                onClick={() => setTheme(theme.id)}
+                                            >
+                                                {/* Swatch first so it forms a fixed-width
+                                                    leading column: down a twelve-row list a
+                                                    straight edge of chips scans far faster
+                                                    than chips ragged behind names of very
+                                                    different lengths. */}
+                                                <ThemeSwatch themeId={theme.id} />
+                                                <span className="nav-theme-name">
+                                                    <FormattedMessage id={theme.labelId} />
+                                                </span>
+                                            </Nav.Item>
+                                        ))}
+                                    </React.Fragment>
+                                ))}
                             </Nav.Menu>
                             {user && (
                                 <Nav.Menu eventKey="0" icon={<UserBadgeIcon className="nav-item-icon" />} title={user.username || intl.formatMessage({ id: 'nav.profile' })}>

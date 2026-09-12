@@ -24,6 +24,13 @@ const normaliseUser = (userData) => {
     return userData;
 };
 
+// Feature toggles are admin-controlled and arrive with the auth config. A toggle is only
+// off when the API says so: while the config is still loading, and if it fails to load
+// entirely, a feature is treated as enabled so nothing flickers out of the navigation.
+const isFeatureEnabled = (config, feature) => (
+    config?.features?.[feature] !== false
+);
+
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [authConfig, setAuthConfig] = useState(null);
@@ -35,8 +42,10 @@ export const AuthProvider = ({ children }) => {
             setAuthConfig(response.data);
         } catch (error) {
             console.error('Failed to load auth config', error);
-            // Default config fallback: local login only, so the page stays usable.
-            setAuthConfig({ localAuthEnabled: true, providers: [] });
+            // Default config fallback: local login only, so the page stays usable. Features
+            // default to on for the same reason - a config fetch failure must not make the
+            // app look like an admin had disabled half of it.
+            setAuthConfig({ localAuthEnabled: true, providers: [], features: {} });
         }
     };
 
@@ -102,6 +111,10 @@ export const AuthProvider = ({ children }) => {
             value={{
                 user,
                 authConfig,
+                // False until the config has actually been read, so a guard can tell
+                // "not loaded yet" from "an admin turned this off".
+                featuresLoaded: authConfig !== null,
+                manualTestingEnabled: isFeatureEnabled(authConfig, 'manualTestingEnabled'),
                 isLoading,
                 login,
                 loginWithProvider,

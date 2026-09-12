@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Container, Content, Panel, Table, Button, Modal, Form, ButtonToolbar, Message, useToaster, SelectPicker, TagPicker } from 'rsuite';
+import { Container, Content, Panel, Table, Button, IconButton, Whisper, Tooltip, Modal, Form, Message, useToaster, SelectPicker, TagPicker } from 'rsuite';
+import MemberIcon from '@rsuite/icons/Member';
 import { useAuth } from '../../../context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -142,59 +143,72 @@ export default function AdminUsersPage() {
         <Container>
             <Content className="page">
                 <Panel
-                    header={<span className="page-panel-header"><FormattedMessage id="page.admin.users.header" /></span>}
+                    header={(
+                        <span className="page-panel-header">
+                            <FormattedMessage id="page.admin.users.header" />
+                            <Whisper
+                                placement="left"
+                                speaker={(
+                                    <Tooltip>
+                                        <FormattedMessage id="page.admin.users.button.add-user" />
+                                    </Tooltip>
+                                )}
+                            >
+                                <IconButton
+                                    appearance="subtle"
+                                    icon={<MemberIcon />}
+                                    onClick={() => handleOpenModal()}
+                                    aria-label={intl.formatMessage({ id: 'page.admin.users.button.add-user' })}
+                                />
+                            </Whisper>
+                        </span>
+                    )}
                     bordered
                     className="page-panel"
                 >
-                    <ButtonToolbar className="page-toolbar">
-                        <Button className="btn-primary" onClick={() => handleOpenModal()}>
-                            <FormattedMessage id="page.admin.users.button.add-user" />
-                        </Button>
-                    </ButtonToolbar>
-
                     <Table
-                        height={400}
                         data={users}
                         loading={loading}
-                        hover={false}
+                        autoHeight
+                        rowKey="_id"
                     >
-                        <Column width={200} align="center" fixed>
+                        <Column flexGrow={2}>
                             <HeaderCell><FormattedMessage id="page.admin.users.table.username" /></HeaderCell>
                             <Cell dataKey="username" />
                         </Column>
 
-                        <Column width={150}>
+                        <Column flexGrow={1}>
                             <HeaderCell><FormattedMessage id="page.admin.users.table.role" /></HeaderCell>
                             <Cell dataKey="role" />
                         </Column>
 
-                        <Column width={300}>
+                        <Column flexGrow={1}>
                             <HeaderCell><FormattedMessage id="page.admin.users.table.teams" /></HeaderCell>
                             <Cell>
                                 {rowData => intl.formatMessage({ id: 'page.admin.users.table.teams-assigned' }, { count: rowData.teams ? rowData.teams.length : 0 })}
                             </Cell>
                         </Column>
 
-                        <Column width={200} fixed="right">
+                        <Column width={160}>
                             <HeaderCell><FormattedMessage id="page.user-settings.table.action" /></HeaderCell>
                             <Cell>
                                 {rowData => (
                                     <span>
-                                        <Button
-                                            appearance="link"
+                                        <button
+                                            type="button"
                                             className="link-action"
                                             onClick={() => handleOpenModal(rowData)}
                                         >
                                             <FormattedMessage id="page.admin.users.table.edit" />
-                                        </Button>
+                                        </button>
                                         <span className="link-separator">|</span>
-                                        <Button
-                                            appearance="link"
+                                        <button
+                                            type="button"
                                             className="link-danger"
                                             onClick={() => handleDeleteUser(rowData._id)}
                                         >
                                             <FormattedMessage id="page.admin.users.table.delete" />
-                                        </Button>
+                                        </button>
                                     </span>
                                 )}
                             </Cell>

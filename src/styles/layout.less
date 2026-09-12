@@ -41,7 +41,14 @@
         min-height: 100vh;
     }
 
+    // Centred rather than left to the text baseline: the logo is an inline-flex
+    // whose height changes with the sidebar state (the wordmark is dropped when
+    // collapsed), and on a baseline-aligned inline element that shrinking box
+    // dragged the cube ~4.6px upwards as the menu closed. Centring pins the cube
+    // to the middle of the header in both states.
     .sidebar-header {
+        display: flex;
+        align-items: center;
         padding: 3px 2px 3px 5px;
         height: 60px;
         overflow: hidden;
@@ -170,6 +177,85 @@
     border-radius: var(--radius-md);
     overflow: hidden;
     box-shadow: var(--shadow-md);
+}
+
+// Menus opened from the right-hand navbar are placed `bottom-start` by rsuite,
+// i.e. anchored to their toggle's LEFT edge, so a menu wider than its toggle
+// grows rightwards and off-screen. The theme picker is the first menu wide
+// enough to hit this (its group headings are wider than the theme names).
+// Re-anchor to the toggle's right edge for the right-aligned navbar only.
+.main-container .rs-navbar .rs-navbar-right .rs-dropdown-menu {
+    left: auto;
+    right: 0;
+}
+
+// The team menu's toggle shows the selected team's name, which is user data and
+// can be long. Cap it so a verbose team name cannot push the language, theme and
+// profile menus off the header; the full name is still visible in the open menu.
+//
+// Targeted at `> .rs-navbar-item` deliberately: inside a Navbar, rsuite renders
+// the Nav.Menu toggle as `.rs-navbar-item` (NOT `.rs-dropdown-toggle`), and it
+// copies the component's className onto both the wrapper and the dropdown `<ul>`
+// — so an unqualified `.nav-team-menu` rule would truncate the open menu's items
+// as well as the toggle.
+.main-container .rs-navbar .nav-team-menu > .rs-navbar-item {
+    display: inline-flex;
+    align-items: center;
+    max-width: 260px;
+
+    // The label is the only part allowed to shrink: the icon and the caret keep
+    // their intrinsic size, so a long name ellipsises between them instead of
+    // pushing the caret out of the toggle. `min-width: 0` is required for a flex
+    // item to shrink below its content width at all.
+    > .rs-navbar-item-caret,
+    > .rs-navbar-item-icon {
+        flex: 0 0 auto;
+    }
+
+    .nav-team-toggle {
+        display: inline-flex;
+        align-items: baseline;
+        gap: var(--space-2);
+        min-width: 0;
+    }
+
+    // "Team" is the caption; the team name is the value. Muted and smaller so
+    // the pair reads as one control rather than two competing words, and never
+    // shrinking so the name is what gives way when space runs out.
+    //
+    // `!important` is required, not preference: the navbar rules above force
+    // `color: inherit !important` on every descendant of `.rs-navbar-item` to
+    // stop rsuite colouring its own children, and that blanket rule would
+    // otherwise flatten this caption to the same tone as the value.
+    .nav-team-label {
+        flex: 0 0 auto;
+        color: var(--nav-muted-font-color) !important;
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-normal);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+
+        // Punctuation, not wording: kept out of the `nav.team` string so the
+        // catalogues hold the label alone. Locales that punctuate differently
+        // (a space before the colon in French, a full-width one in CJK) can then
+        // override it here rather than each catalogue smuggling in a glyph.
+        // `letter-spacing` above adds a trailing gap after the colon, so the
+        // margin cancels it to keep the spacing even on both sides.
+        &::after {
+            content: ':';
+            margin-right: -0.06em;
+        }
+    }
+
+    .nav-team-name {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+.rs-dropdown-menu {
 
     .rs-dropdown-item {
         color: var(--nav-font-color) !important;
@@ -181,6 +267,104 @@
             color: inherit !important;
             background-color: transparent !important;
         }
+    }
+
+    // ── Theme picker rows ───────────────────────────────────────────────────
+    // Swatch + name on one baseline-aligned row. The swatch is a fixed-width
+    // leading column so the chips form a straight edge down the list.
+    .nav-theme-item {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+    }
+
+    .nav-theme-name {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .theme-swatch {
+        display: inline-flex;
+        flex: 0 0 auto;
+        gap: 2px;
+    }
+
+    // The chips are the one place in a dropdown item where background colour
+    // IS the content, so they have to opt out of the blanket
+    // `.rs-dropdown-item * { background-color: transparent !important }`
+    // above. Matching `!important` at greater specificity is the only way to
+    // beat it; the alternative — narrowing that rule to exclude the swatch —
+    // would put the exception far from the thing it exists for.
+    .theme-swatch-chip {
+        width: 10px;
+        height: 14px;
+        border-radius: var(--radius-xs);
+
+        // Without a hairline a light theme's near-white surface chip is
+        // invisible against a light menu, and a dark theme's text chip against
+        // a dark one.
+        //
+        // Built from `--theme-ink-rgb` — a primitive — rather than the derived
+        // `--border-subtle`, for the same reason the fills below use
+        // primitives: `--border-subtle` is computed once at `:root` and
+        // inherited already-resolved, so it would carry the ACTIVE theme's ink
+        // polarity onto every swatch. Read locally, the hairline inverts with
+        // the theme the chip is previewing, which is what keeps it visible on
+        // a light chip and a dark one alike.
+        border: 1px solid rgba(var(--theme-ink-rgb), 0.25);
+    }
+
+    // These read PRIMITIVES, not the semantic tokens they correspond to
+    // (`--main-panel-background` / `--main-panel-font-color`), and that is
+    // load-bearing rather than incidental.
+    //
+    // Only the primitive layer is per-theme. The semantic layer is declared
+    // once, at `:root`, as `var()` references to the primitives — so it is
+    // resolved at the root and *inherited already-computed* by everything
+    // below. A nested `data-theme` island overrides the primitives locally,
+    // but nothing re-derives the semantic tokens from them, so a swatch asking
+    // for `--main-panel-background` gets the ACTIVE theme's value, not its own.
+    // That is exactly what happened first time round: all twelve rows previewed
+    // the same surface and text, and only the accent (a primitive) varied.
+    //
+    // The pairs are identities in the semantic layer above
+    // (`--main-panel-background: var(--master-color-2)`), so the chips show the
+    // same colours the panel does — just resolved a layer lower down where the
+    // theme actually applies.
+    .theme-swatch-chip-surface {
+        background-color: var(--master-color-2) !important;
+    }
+
+    .theme-swatch-chip-accent {
+        background-color: var(--master-color-3) !important;
+    }
+
+    .theme-swatch-chip-text {
+        background-color: var(--master-font-color-1) !important;
+    }
+
+    // Section heading inside a nav menu (the theme picker groups themes into
+    // Light / Dark). A label, not an option: no hover, no pointer, and muted
+    // so it reads as structure rather than a disabled choice.
+    .nav-menu-group-label {
+        padding: var(--space-2) var(--space-4) var(--space-1);
+        color: var(--main-panel-secondary-font-color);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-semibold);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        cursor: default;
+        pointer-events: none;
+    }
+
+    // Divide each group from the one above. Keyed on "a label with any label
+    // before it" via the general sibling combinator: rsuite renders menu items
+    // as `<li>` too, so `:first-of-type` cannot tell a heading from an option.
+    .nav-menu-group-label ~ .nav-menu-group-label {
+        border-top: 1px solid var(--border-subtle);
+        margin-top: var(--space-1);
     }
 
     // Hover / focus / active. RSuite marks the current item with its own

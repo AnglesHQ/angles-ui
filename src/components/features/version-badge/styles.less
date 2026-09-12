@@ -1,0 +1,24 @@
+// ── Version badge ────────────────────────────────────────────────────────────
+// Marks which frozen version is on screen, and flags when it trails the latest.
+.version-badge {
+  display: inline-flex;
+  align-items: center;
+
+  .version-badge-tag {
+    background: var(--sub-panel-background);
+    color: var(--main-panel-font-color);
+    font-size: var(--font-size-xs);
+    border-radius: var(--radius-pill);
+  }
+
+  // A version behind the latest is worth noticing, so it borrows the skipped hue
+  // rather than a new colour - it is informational, not an error.
+  .version-badge-tag-behind {
+    color: var(--skipped-color);
+  }
+
+  .version-badge-behind {
+    margin-left: var(--space-1);
+    opacity: 0.85;
+  }
+}

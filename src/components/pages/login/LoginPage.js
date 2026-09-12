@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '../../../context/AuthContext';
+import BrandLogo from '../../common/BrandLogo';
 import { Panel, Form, ButtonToolbar, Button, Message, SelectPicker } from 'rsuite';
 import { FormattedMessage, useIntl } from 'react-intl';
 
@@ -111,8 +112,7 @@ export default function LoginPage() {
             <div className="login-container">
                 <Panel header={
                     <div className="login-header">
-                        <img src="/assets/angles-icon.png" alt="Angles" className="brand-logo-icon" />
-                        <img src="/assets/angles-text-logo.png" alt="Angles" className="brand-logo-text" />
+                        <BrandLogo />
                     </div>
                 } bordered className="login-panel">
                     {error && <Message showIcon type="error" className="login-error">{error}</Message>}

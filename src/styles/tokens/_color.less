@@ -12,12 +12,27 @@
 // semantic layer is declared once against the primitives; switching theme just
 // overrides the primitives.
 //
+// The primitives a theme must supply — and the contrast relationships it owes —
+// are specified in `_theme-contract.less`. Read that before adding a theme.
+//
 // Light is the default (`:root`). Dark applies on explicit selection
 // (`html[data-theme="dark"]`) or OS preference when the user has not chosen light.
 // ============================================================================
 
-// ── Dark primitive overrides (shared by both dark triggers) ─────────────────
-.theme-dark-primitives() {
+// ── Theme: Ember Dark ───────────────────────────────────────────────────────
+// The reference implementation of the theme contract. Every entry is a
+// REQUIRED primitive; nothing derived is restated.
+//
+// Still a mixin rather than a bare rule set because it is applied at two
+// selectors — the explicit choice and the OS-preference fallback — and LESS
+// cannot alias a rule set to two selectors without duplicating it. A theme is
+// still authored as one block; only the two `.theme-ember-dark()` call sites
+// below know how it is triggered.
+.theme-ember-dark() {
+    // Polarity — drives the derived hairline, scrim and elevation tokens.
+    --theme-ink-rgb: 255, 255, 255;
+    --theme-is-dark: 1;
+
     // Warm near-black neutrals (from the logo outline)
     --master-color-1: hsl(30, 8%, 17%);
     --master-color-2: hsl(24, 9%, 12%);
@@ -26,11 +41,16 @@
     // Ember accent — brighter on dark for contrast
     --master-color-3: var(--orange-400);
     --master-color-3-relative: var(--orange-500);
+    --accent-rgb: 246, 173, 85; // = --orange-400, for the derived focus ring
 
     // Cream / sand text on dark
     --master-font-color-1: hsl(40, 30%, 93%);
     --master-font-color-2: hsl(40, 33%, 97%);
     --master-font-color-3: hsl(38, 12%, 76%);
+
+    // Muted neutral — darker than the light value so disabled chrome recedes
+    // into the dark panel instead of glowing above the accent.
+    --master-color-muted: hsl(30, 6%, 45%);
 
     // Status — brighter variants so they read on a dark surface
     --pass-color: #6cc07e;
@@ -38,20 +58,385 @@
     --error-color: #f9c65b;
     --skipped-color: #38bdf8;
 
-    // Focus ring on dark
-    --focus-ring: rgba(246, 173, 85, 0.5);
+    // NOTE: --focus-ring, --border-subtle and --modal-overlay-background are
+    // NOT set here. They derive from the polarity and accent primitives above
+    // (see `_theme-contract.less` §2), so a theme never restates them.
 
-    // Elevation: shadows read poorly on dark → drop shadow, use a hairline border
-    --card-shadow: none;
-    --card-border-color: rgba(255, 255, 255, 0.08);
-
-    // Tokens whose light value is a literal (cannot inherit via a primitive)
-    --border-subtle: rgba(255, 255, 255, 0.12);
+    // Timeline dot inverts against the surface it sits on.
     --timeline-dot-background: var(--master-color-1);
+
+    // Chart series for a dark ground — see `.chart-series-dark()` below. Kept
+    // out of the theme's own list because it is a property of the *polarity*,
+    // not of Ember & Sand: any dark theme wants this ramp.
+    .chart-series-dark();
 }
 
-:root {
-    // ── Primitive palette (light) ───────────────────────────────────────────
+// ── Theme: Slate Light ──────────────────────────────────────────────────────
+// A cool, high-contrast alternative to Ember & Sand: neutral blue-grey
+// surfaces, white sub-panels, a blue accent. For people who find the warm
+// palette distracting.
+.theme-slate-light() {
+    --theme-ink-rgb: 0, 0, 0;
+    --theme-is-dark: 0;
+
+    --master-color-1: hsl(215, 24%, 98%);
+    --master-color-2: hsl(215, 18%, 93%);
+    --master-color-2-relative: hsl(215, 16%, 52%);
+
+    --master-font-color-1: hsl(215, 28%, 17%);
+    --master-font-color-2: hsl(0, 0%, 100%);
+    --master-font-color-3: hsl(215, 14%, 38%);
+
+    --master-color-3: hsl(211, 80%, 43%);
+    --master-color-3-relative: hsl(211, 84%, 35%);
+    --accent-rgb: 20, 105, 198;
+
+    // Lighter than the accent: on a light theme "less prominent" means nearer
+    // the panel, so muted sits above the accent in lightness, not below.
+    --master-color-muted: hsl(215, 12%, 54%);
+
+    --pass-color: hsl(140, 42%, 38%);
+    --fail-color: hsl(355, 72%, 50%);
+    --error-color: hsl(38, 88%, 38%);
+    --skipped-color: hsl(199, 89%, 42%);
+
+    .chart-series-light();
+}
+
+// ── Theme: Sepia ────────────────────────────────────────────────────────────
+// Warm and low-glare, for long reading sessions: paper-toned surfaces, a
+// muted terracotta accent, less contrast between panel and sub-panel than the
+// other light themes.
+.theme-sepia() {
+    --theme-ink-rgb: 0, 0, 0;
+    --theme-is-dark: 0;
+
+    --master-color-1: hsl(38, 48%, 95%);
+    --master-color-2: hsl(38, 42%, 89%);
+    --master-color-2-relative: hsl(34, 28%, 46%);
+
+    --master-font-color-1: hsl(25, 30%, 20%);
+    --master-font-color-2: hsl(38, 44%, 98%);
+    --master-font-color-3: hsl(28, 18%, 38%);
+
+    --master-color-3: hsl(18, 62%, 38%);
+    --master-color-3-relative: hsl(18, 64%, 30%);
+    --accent-rgb: 157, 78, 37;
+
+    --master-color-muted: hsl(28, 14%, 50%);
+
+    --pass-color: hsl(140, 42%, 38%);
+    --fail-color: hsl(355, 72%, 50%);
+    --error-color: hsl(38, 88%, 37%);
+    --skipped-color: hsl(199, 89%, 41%);
+
+    .chart-series-light();
+}
+
+// ── Theme: Slate Dark ───────────────────────────────────────────────────────
+// The cool counterpart to Ember Dark: blue-grey surfaces and a sky accent
+// instead of warm near-black and orange.
+.theme-slate-dark() {
+    --theme-ink-rgb: 255, 255, 255;
+    --theme-is-dark: 1;
+
+    --master-color-1: hsl(215, 25%, 18%);
+    --master-color-2: hsl(215, 28%, 12%);
+    // 43% rather than 42%: at 42% the border lands on 2.99:1 against the panel,
+    // a hair under the 3:1 the contract asks of non-text boundaries.
+    --master-color-2-relative: hsl(215, 15%, 43%);
+
+    --master-font-color-1: hsl(210, 20%, 93%);
+    --master-font-color-2: hsl(215, 28%, 10%);
+    --master-font-color-3: hsl(212, 14%, 74%);
+
+    --master-color-3: hsl(199, 85%, 62%);
+    --master-color-3-relative: hsl(199, 85%, 54%);
+    --accent-rgb: 74, 190, 240;
+
+    --master-color-muted: hsl(215, 12%, 45%);
+
+    --pass-color: hsl(140, 45%, 60%);
+    --fail-color: hsl(355, 80%, 68%);
+    --error-color: hsl(40, 90%, 62%);
+    --skipped-color: hsl(199, 90%, 66%);
+
+    .chart-series-dark();
+}
+
+// ── Theme: Midnight ─────────────────────────────────────────────────────────
+// Near-black and maximum contrast, for dim rooms and OLED screens. Pure
+// neutral greys so the amber accent is the only colour in the chrome.
+.theme-midnight() {
+    --theme-ink-rgb: 255, 255, 255;
+    --theme-is-dark: 1;
+
+    --master-color-1: hsl(0, 0%, 11%);
+    --master-color-2: hsl(0, 0%, 5%);
+    --master-color-2-relative: hsl(0, 0%, 45%);
+
+    --master-font-color-1: hsl(0, 0%, 100%);
+    --master-font-color-2: hsl(0, 0%, 4%);
+    --master-font-color-3: hsl(0, 0%, 78%);
+
+    --master-color-3: hsl(35, 100%, 66%);
+    --master-color-3-relative: hsl(35, 100%, 58%);
+    --accent-rgb: 255, 186, 82;
+
+    --master-color-muted: hsl(0, 0%, 42%);
+
+    --pass-color: hsl(140, 45%, 60%);
+    --fail-color: hsl(355, 80%, 68%);
+    --error-color: hsl(40, 90%, 62%);
+    --skipped-color: hsl(199, 90%, 66%);
+
+    .chart-series-dark();
+}
+
+// ── Theme: Forest Light ─────────────────────────────────────────────────────
+// Muted sage surfaces with a deep green accent. The only green in the set and
+// the furthest from Ember, Slate and Sepia — low saturation so it reads calm
+// rather than clinical.
+.theme-forest-light() {
+    --theme-ink-rgb: 0, 0, 0;
+    --theme-is-dark: 0;
+
+    --master-color-1: hsl(120, 20%, 93%);
+    --master-color-2: hsl(120, 15%, 84%);
+    --master-color-2-relative: hsl(125, 20%, 42%);
+
+    --master-font-color-1: hsl(150, 30%, 14%);
+    --master-font-color-2: hsl(120, 30%, 99%);
+    --master-font-color-3: hsl(140, 12%, 32%);
+
+    --master-color-3: hsl(157, 58%, 29%);
+    --master-color-3-relative: hsl(157, 60%, 22%);
+    --accent-rgb: 31, 117, 82;
+
+    // 52% rather than 54%: the sage panel is light enough that 54% lands at
+    // 2.91:1, just under the 3:1 the contract asks for.
+    --master-color-muted: hsl(120, 12%, 45%);
+
+    --pass-color: hsl(140, 42%, 38%);
+    --fail-color: hsl(355, 72%, 50%);
+    // A step darker than the other light themes for the same reason.
+    --error-color: hsl(38, 88%, 35%);
+    --skipped-color: hsl(199, 89%, 38%);
+
+    .chart-series-light();
+}
+
+// ── Theme: Forest Dark ──────────────────────────────────────────────────────
+// The night-time counterpart to Forest Light: deep pine surfaces, a bright
+// spring-green accent.
+.theme-forest-dark() {
+    --theme-ink-rgb: 255, 255, 255;
+    --theme-is-dark: 1;
+
+    --master-color-1: hsl(150, 16%, 15%);
+    --master-color-2: hsl(155, 20%, 9%);
+    --master-color-2-relative: hsl(150, 12%, 44%);
+
+    --master-font-color-1: hsl(120, 20%, 94%);
+    --master-font-color-2: hsl(155, 25%, 8%);
+    --master-font-color-3: hsl(140, 12%, 74%);
+
+    --master-color-3: hsl(150, 55%, 60%);
+    --master-color-3-relative: hsl(150, 55%, 52%);
+    --accent-rgb: 105, 217, 155;
+
+    --master-color-muted: hsl(150, 10%, 44%);
+
+    --pass-color: hsl(140, 45%, 60%);
+    --fail-color: hsl(355, 80%, 68%);
+    --error-color: hsl(40, 90%, 62%);
+    --skipped-color: hsl(199, 90%, 66%);
+
+    .chart-series-dark();
+}
+
+// ── Theme: High Contrast Light ──────────────────────────────────────────────
+// For low vision and bright sunlight. Pure white ground, black text, a deep
+// blue accent — every pairing clears AAA (7:1) rather than the AA the contract
+// requires. Panel and sub-panel are BOTH pure white on purpose: surfaces are
+// separated by borders here, not by tone, which is what keeps contrast maximal.
+.theme-contrast-light() {
+    --theme-ink-rgb: 0, 0, 0;
+    --theme-is-dark: 0;
+
+    --master-color-1: hsl(0, 0%, 100%);
+    --master-color-2: hsl(0, 0%, 100%);
+    --master-color-2-relative: hsl(0, 0%, 40%);
+
+    --master-font-color-1: hsl(0, 0%, 0%);
+    --master-font-color-2: hsl(0, 0%, 100%);
+    --master-font-color-3: hsl(0, 0%, 26%);
+
+    --master-color-3: hsl(220, 90%, 32%);
+    --master-color-3-relative: hsl(220, 92%, 24%);
+    --accent-rgb: 13, 71, 155;
+
+    --master-color-muted: hsl(0, 0%, 46%);
+
+    --pass-color: hsl(140, 42%, 38%);
+    --fail-color: hsl(355, 72%, 50%);
+    --error-color: hsl(38, 88%, 41%);
+    --skipped-color: hsl(199, 89%, 42%);
+
+    .chart-series-light();
+}
+
+// ── Theme: High Contrast Dark ───────────────────────────────────────────────
+// True black with white text and an amber accent. Distinct from Midnight,
+// which is a near-black *aesthetic*: this one pushes every pairing to AAA and
+// uses a fully saturated accent for maximum separation.
+.theme-contrast-dark() {
+    --theme-ink-rgb: 255, 255, 255;
+    --theme-is-dark: 1;
+
+    --master-color-1: hsl(0, 0%, 7%);
+    --master-color-2: hsl(0, 0%, 0%);
+    --master-color-2-relative: hsl(0, 0%, 55%);
+
+    --master-font-color-1: hsl(0, 0%, 100%);
+    --master-font-color-2: hsl(0, 0%, 0%);
+    --master-font-color-3: hsl(0, 0%, 88%);
+
+    --master-color-3: hsl(45, 100%, 55%);
+    --master-color-3-relative: hsl(45, 100%, 46%);
+    --accent-rgb: 255, 209, 26;
+
+    --master-color-muted: hsl(0, 0%, 52%);
+
+    --pass-color: hsl(140, 45%, 60%);
+    --fail-color: hsl(355, 80%, 68%);
+    --error-color: hsl(40, 90%, 62%);
+    --skipped-color: hsl(199, 90%, 66%);
+
+    .chart-series-dark();
+}
+
+// ── Theme: Clay (accessible) ────────────────────────────────────────────────
+// Built for colour vision deficiency. Two things make it different from simply
+// picking nicer colours:
+//
+//   1. The status ramp uses the Okabe-Ito palette — blue / vermillion / amber /
+//      purple. There is deliberately NO green-versus-red pair anywhere, because
+//      that is the distinction ~6% of men cannot make.
+//   2. Colour is not the only channel. `.theme-colour-blind` (components.less)
+//      adds a symbol before every status label, because measurement shows four
+//      statuses CANNOT be separated by colour alone: even with an optimal
+//      palette the closest pair sits near 1.2:1 under simulated deuteranopia,
+//      where 3:1 is the bar. The symbol carries the meaning; the colour
+//      reinforces it for everyone else.
+//
+// The panel is also the darkest of the light themes (L 78%), which keeps the
+// Okabe-Ito hues clear of the surface without pushing them to near-black.
+.theme-clay-light() {
+    --theme-ink-rgb: 0, 0, 0;
+    --theme-is-dark: 0;
+
+    --master-color-1: hsl(32, 30%, 88%);
+    --master-color-2: hsl(30, 22%, 78%);
+    --master-color-2-relative: hsl(28, 18%, 42%);
+
+    --master-font-color-1: hsl(25, 25%, 12%);
+    --master-font-color-2: hsl(40, 30%, 97%);
+    --master-font-color-3: hsl(28, 14%, 30%);
+
+    // Okabe-Ito blue — safe against every form of colour blindness.
+    --master-color-3: hsl(202, 100%, 27%);
+    --master-color-3-relative: hsl(202, 100%, 20%);
+    --accent-rgb: 0, 97, 137;
+
+    --master-color-muted: hsl(28, 12%, 42%);
+
+    // Okabe-Ito. Note pass is BLUE, not green: the green/red pair is exactly
+    // what dichromats cannot resolve, so the convention is traded for clarity.
+    --pass-color: #006189;
+    --fail-color: #b33e00;
+    --error-color: #8a6100;
+    --skipped-color: #7a3d9e;
+
+    .chart-series-light();
+}
+
+// ── Theme: Clay Dark (accessible) ───────────────────────────────────────────
+// The dark counterpart, on the same Okabe-Ito principles and with the same
+// symbol reinforcement.
+.theme-clay-dark() {
+    --theme-ink-rgb: 255, 255, 255;
+    --theme-is-dark: 1;
+
+    --master-color-1: hsl(30, 12%, 19%);
+    --master-color-2: hsl(30, 10%, 13%);
+    --master-color-2-relative: hsl(30, 10%, 46%);
+
+    --master-font-color-1: hsl(40, 25%, 94%);
+    --master-font-color-2: hsl(30, 15%, 10%);
+    --master-font-color-3: hsl(35, 12%, 76%);
+
+    --master-color-3: hsl(202, 76%, 63%);
+    --master-color-3-relative: hsl(202, 76%, 54%);
+    --accent-rgb: 86, 180, 233;
+
+    --master-color-muted: hsl(30, 8%, 44%);
+
+    // Okabe-Ito, lifted for a dark ground.
+    --pass-color: #56b4e9;
+    --fail-color: #e69f00;
+    --error-color: #f0e442;
+    --skipped-color: #cc79a7;
+
+    .chart-series-dark();
+}
+
+// ── Categorical chart ramps (per polarity, not per theme) ───────────────────
+// Non-status series colours. Each ramp is tuned for the ground it sits on: the
+// light values fall below 3:1 on a dark panel and vice versa. A new theme picks
+// the ramp matching its polarity instead of authoring ten hues.
+// Amber and lime are a step darker than their siblings in the light ramp: at
+// the shade the others use they drop below 3:1 on the pale panel.
+.chart-series-light() {
+    --chart-series-1: #4c43e5;  // indigo
+    --chart-series-2: #0b7a70;  // teal
+    --chart-series-3: #af5109;  // amber
+    --chart-series-4: #912fea;  // violet
+    --chart-series-5: #d41b44;  // rose
+    --chart-series-6: #077792;  // cyan
+    --chart-series-7: #49760e;  // lime
+    --chart-series-8: #2362eb;  // blue
+    --chart-series-9: #cd226e;  // pink
+    --chart-series-10: #bd470a; // orange
+}
+
+.chart-series-dark() {
+    --chart-series-1: #818cf8;  // indigo
+    --chart-series-2: #2dd4bf;  // teal
+    --chart-series-3: #fbbf24;  // amber
+    --chart-series-4: #c084fc;  // violet
+    --chart-series-5: #fb7185;  // rose
+    --chart-series-6: #22d3ee;  // cyan
+    --chart-series-7: #a3e635;  // lime
+    --chart-series-8: #60a5fa;  // blue
+    --chart-series-9: #f472b6;  // pink
+    --chart-series-10: #fb923c; // orange
+}
+
+// ── Theme: Ember Light ──────────────────────────────────────────────────────
+// The default palette. Extracted into a mixin like every other theme so it can
+// be applied somewhere other than `:root` — the picker's swatches need it, and
+// `light` is the one theme with no registry selector of its own (`:root` already
+// carries it, so the selector below only has to out-rank the OS-preference
+// fallback). Without this a `data-theme="light"` swatch would inherit the active
+// theme and preview the wrong colours on every dark theme.
+.theme-ember-light() {
+    // ── Primitive palette (light — the default theme) ───────────────────────
+    // Polarity: drives the derived hairline, scrim and elevation tokens so no
+    // theme has to restate them. See `_theme-contract.less`.
+    --theme-ink-rgb: 0, 0, 0;
+    --theme-is-dark: 0;
+
     // Warm sand / cream neutrals
     --master-color-1: hsl(40, 30%, 97%);
     --master-color-2: hsl(40, 22%, 92%);
@@ -62,7 +447,10 @@
     --master-font-color-2: hsl(40, 33%, 98%);
     --master-font-color-3: hsl(30, 6%, 40%);
 
-    --master-icon-color: hsl(210, 100%, 60%);
+    // Muted neutral for inert/disabled chrome. Tuned per theme to stay dimmer
+    // than the ember accent against the panel, so a disabled control never
+    // out-weighs an enabled one.
+    --master-color-muted: hsl(30, 5%, 52%);
 
     // Ember orange ramp (brand primary — sampled from the logo)
     --orange-300: #fbd38d;
@@ -74,6 +462,7 @@
     // primitive so every token pointing at it flips in lockstep.
     --master-color-3: var(--orange-500);
     --master-color-3-relative: var(--orange-600);
+    --accent-rgb: 237, 137, 54; // = --orange-500, for the derived focus ring
 
     // Status primitives (theme-independent hues; dark tunes brightness above).
     --pass-color: #5fad6f;
@@ -81,8 +470,32 @@
     --error-color: #f5b83f;
     --skipped-color: #0ea5e9;
 
-    // Focus ring
-    --focus-ring: rgba(237, 137, 54, 0.45);
+    // ── Categorical chart palette ───────────────────────────────────────────
+    // Series colours for non-status breakdowns (platform / feature
+    // distribution), assigned by first-seen order so a given platform keeps its
+    // colour across renders. Distinct from the status hues on purpose: these
+    // carry no pass/fail meaning.
+    //
+    // Consumed from JS via `CATEGORICAL_PALETTE` in `utility/ChartConfig.js`;
+    // ApexCharts resolves `var()` in its `colors` array, so these theme like
+    // everything else.
+    .chart-series-light();
+}
+
+:root {
+    .theme-ember-light();
+
+
+    // ── Screenshot overlay markers ──────────────────────────────────────────
+    // Annotations drawn *on top of* user screenshots (template-match boxes,
+    // suggested ignore regions). They must stay legible over arbitrary image
+    // content rather than over an app surface, so they deliberately sit outside
+    // the Ember & Sand palette and do NOT change between themes — the image
+    // underneath does not change either. Magenta is chosen because it almost
+    // never occurs in UI screenshots.
+    --overlay-match-color: #ff00ff;
+    --overlay-suggestion-color: #ff9800;
+    --overlay-marker-font-color: #ffffff;
 
     // ── Semantic: brand / interaction ───────────────────────────────────────
     --color-primary: var(--master-color-3);
@@ -109,13 +522,13 @@
     --main-panel-background: var(--master-color-2);
     --main-panel-font-color: var(--master-font-color-1);
     --main-panel-secondary-font-color: var(--master-font-color-3);
-    --main-panel-icon-color: var(--master-icon-color);
+    --main-panel-icon-color: var(--color-primary);
 
     // Sub panels
     --sub-panel-background: var(--master-color-1);
     --sub-panel-font-color: var(--master-font-color-1);
     --sub-panel-secondary-font-color: var(--master-font-color-3);
-    --sub-panel-icon-color: var(--master-icon-color);
+    --sub-panel-icon-color: var(--color-primary);
 
     // Main tables
     --main-table-header-background: var(--master-color-3);
@@ -162,6 +575,8 @@
     --modal-background: var(--master-color-2);
     --modal-font-color: var(--master-font-color-1);
     --modal-secondary-font-color: var(--master-font-color-3);
+    // --modal-overlay-background is DERIVED from polarity — see the derived
+    // block at the end of this file.
 
     // Screenshot viewer
     --screenshot-border-color: var(--master-color-2-relative);
@@ -171,30 +586,163 @@
 
     // Borders & dividers
     --border-color: var(--master-color-2-relative);
-    --border-subtle: rgba(0, 0, 0, 0.12);
+    // --border-subtle is DERIVED from polarity — see the derived block below.
 
     // Icons & status accents
-    --icon-action-color: var(--master-icon-color);
-    --icon-disabled-color: hsl(0, 0%, 55%);
-    --info-color: var(--master-icon-color);
+    // Actionable icons take the brand accent, matching how `.btn-primary`,
+    // `.link-action` and the rsuite subtle-button hover already signal
+    // interactivity. They previously shared a fixed saturated blue
+    // (`--master-icon-color`) that belonged to no palette and had no dark
+    // value, so it neither themed nor matched anything around it.
+    --icon-action-color: var(--color-primary);
+    // Disabled icons are deliberately *not* the accent — they sit on the
+    // neutral ramp so they read as inert. This needs its own primitive
+    // (`--master-color-muted`) rather than borrowing one of the others: a
+    // disabled icon must stay *dimmer than the ember accent* in both themes,
+    // and no existing primitive does that on both sides. The secondary text
+    // tone is lighter than the accent on dark; the mid-sand tone is far too
+    // light on light. See `.theme-ember-dark()` for the dark value.
+    --icon-disabled-color: var(--master-color-muted);
+    // Informational accent (the `.app-alert-info` stripe). Uses the same hue as
+    // the "skipped" result status, which is the app's existing neutral-info
+    // colour and carries dark-mode tuning already.
+    --info-color: var(--skipped-color);
 
     // Timeline dot (inverts with theme — see dark mixin)
     --timeline-dot-background: var(--master-font-color-2);
     --timeline-dot-border: var(--border-color);
 
-    // Elevation companion (light: real shadow, transparent border; dark flips both)
-    --card-border-color: transparent;
 }
 
-// ── Dark theme triggers ─────────────────────────────────────────────────────
-// 1. Explicit user selection wins over everything.
-:root[data-theme='dark'] {
-    .theme-dark-primitives();
+// ── Theme registry ──────────────────────────────────────────────────────────
+// One selector per theme. Adding a theme means adding its primitives block
+// above and one rule here — nothing else in the stylesheet changes.
+//
+// The selectors are deliberately NOT qualified with `:root`. Unqualified, they
+// still match the root element exactly as before — but they also match any
+// nested element carrying `data-theme`, and because custom properties inherit,
+// such an element becomes a live island of that theme's primitives. That is
+// what lets the theme picker's swatches paint themselves from the theme they
+// name (see `.theme-swatch` in `layout.less`) instead of restating its colours
+// in a second place that can drift.
+//
+// Re-adding `:root` here would silently blank every swatch: the primitives
+// would stop resolving inside the menu and the chips would inherit the current
+// theme's, so all twelve rows would preview identically.
+//
+// `light` and `dark` are the *shipped* names and must keep working: they are
+// already stored in users' `theme` cookies. `ember-light` / `ember-dark` are
+// aliases so themes can be named by family as more are added.
+//
+// (`:root` itself carries Ember Light, so on the root `[data-theme='light']`
+// only has to stop a dark OS preference from applying — see the fallback
+// below. It still needs a rule of its own for the nested case: a swatch is not
+// the root, so it inherits the active theme unless something re-applies Ember
+// Light to it.)
+[data-theme='light'],
+[data-theme='ember-light'] {
+    .theme-ember-light();
 }
 
-// 2. Follow the OS preference when the user has not explicitly chosen light.
+[data-theme='dark'],
+[data-theme='ember-dark'] {
+    .theme-ember-dark();
+}
+
+[data-theme='slate-light'] {
+    .theme-slate-light();
+}
+
+[data-theme='sepia'] {
+    .theme-sepia();
+}
+
+[data-theme='slate-dark'] {
+    .theme-slate-dark();
+}
+
+[data-theme='midnight'] {
+    .theme-midnight();
+}
+
+[data-theme='forest-light'] {
+    .theme-forest-light();
+}
+
+[data-theme='forest-dark'] {
+    .theme-forest-dark();
+}
+
+[data-theme='contrast-light'] {
+    .theme-contrast-light();
+}
+
+[data-theme='contrast-dark'] {
+    .theme-contrast-dark();
+}
+
+// Accessible pair — see `.theme-clay-light()` for why these differ in kind
+// from the others rather than only in colour.
+[data-theme='clay-light'] {
+    .theme-clay-light();
+}
+
+[data-theme='clay-dark'] {
+    .theme-clay-dark();
+}
+
+// ── OS-preference fallback ──────────────────────────────────────────────────
+// Applies only when the user has expressed NO preference at all. The guard is
+// `:not([data-theme])` — the *absence* of the attribute — rather than
+// `:not([data-theme='light'])`.
+//
+// That older guard read "anything except light", which was fine while `light`
+// and `dark` were the only values: it meant "no cookie, or dark". With a third
+// theme it silently breaks, because a user on `sepia` or `slate-light` also
+// matches "not light" and would get Ember Dark's primitives layered over their
+// chosen theme on any machine set to dark mode. Keying on the attribute's
+// absence keeps an explicit choice — any explicit choice — authoritative.
 @media (prefers-color-scheme: dark) {
-    :root:not([data-theme='light']) {
-        .theme-dark-primitives();
+    :root:not([data-theme]) {
+        .theme-ember-dark();
     }
+}
+
+// ── Derived tokens ──────────────────────────────────────────────────────────
+// Computed from the polarity and accent primitives every theme supplies, so no
+// theme restates them (and none can get them subtly wrong). Declared AFTER the
+// theme triggers, but custom properties are late-bound — these re-resolve
+// whenever a trigger changes the primitives they read, in any order.
+//
+// See `_theme-contract.less` §2. `color-mix()` would say this more directly,
+// but the browserslist targets predate it, hence the channel splitting.
+:root {
+    // Hairline border: the ink channel at low alpha, inverting with polarity.
+    --border-subtle: rgba(var(--theme-ink-rgb), 0.12);
+
+    // Focus ring: the theme's accent at partial alpha.
+    --focus-ring: rgba(var(--accent-rgb), 0.45);
+
+    // Dialog scrim: always a black wash (a light scrim washes the page out
+    // rather than pushing it back), but deeper on a dark theme because the page
+    // behind is already low-luminance.
+    --modal-overlay-background: rgba(0, 0, 0, calc(0.4 + 0.2 * var(--theme-is-dark)));
+
+    // Elevation: a light theme lifts surfaces with a real shadow and no border;
+    // a dark theme drops the shadow (it reads as mud) and uses a hairline
+    // instead. Both fade out via the polarity flag rather than being switched
+    // per theme, so the pair always stays consistent:
+    //   light (0) → shadow at full strength, border fully transparent
+    //   dark  (1) → shadow fully transparent, border at 0.08
+    --card-shadow: 0 1px 3px rgba(16, 24, 40, calc(0.10 - 0.10 * var(--theme-is-dark))),
+                   0 1px 2px rgba(16, 24, 40, calc(0.06 - 0.06 * var(--theme-is-dark)));
+    --card-border-color: rgba(var(--theme-ink-rgb), calc(0.08 * var(--theme-is-dark)));
+
+    // Secondary text inside the nav. `--nav-font-color` and
+    // `--main-panel-secondary-font-color` happen to resolve to the same value in
+    // every shipped theme, so neither can express "quieter than the nav's own
+    // text". Derived from the ink channel instead: 0.65 alpha reads as a caption
+    // against the nav background on either polarity, and any future theme gets
+    // it without adding a value.
+    --nav-muted-font-color: rgba(var(--theme-ink-rgb), 0.65);
 }

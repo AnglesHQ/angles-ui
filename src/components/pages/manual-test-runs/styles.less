@@ -1,0 +1,75 @@
+// ── Manual test runs ─────────────────────────────────────────────────────────
+.manual-test-runs-page {
+  .rs-tag {
+    font-size: var(--font-size-xs);
+  }
+
+  .manual-test-runs-status-filter {
+    width: 260px;
+  }
+}
+
+// Execution view: case list on the left, the bound version's steps on the right.
+.manual-test-run-detail-page {
+  .manual-test-run-detail-body {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+
+  .manual-test-run-case-list {
+    flex: 0 0 260px;
+
+    .manual-test-run-case-title {
+      margin-left: var(--space-2);
+    }
+  }
+
+  .manual-test-run-execution {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .manual-test-run-step {
+    padding: var(--space-3);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-3);
+    background: var(--sub-panel-background);
+  }
+
+  .manual-test-run-step-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+  }
+
+  .manual-test-run-step-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: var(--radius-pill);
+    background: var(--main-panel-background);
+    font-size: var(--font-size-xs);
+  }
+
+  .manual-test-run-step-action {
+    margin-bottom: var(--space-1);
+  }
+
+  .manual-test-run-step-expected {
+    color: var(--main-panel-secondary-font-color);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--space-2);
+  }
+
+  .manual-test-run-outcome {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    align-items: flex-start;
+  }
+}

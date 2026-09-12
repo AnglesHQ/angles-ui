@@ -129,6 +129,41 @@
     background-color: var(--skipped-color);
 }
 
+// ── Status symbols (accessible themes) ───────────────────────────────────────
+// Four statuses cannot be separated by colour alone for someone with colour
+// vision deficiency. Measured against the shipped palette, PASS and FAIL sit at
+// 1.18:1 under simulated deuteranopia — effectively identical, where 3:1 is the
+// bar for non-text. Re-picking hues does not fix it: even the Okabe-Ito palette,
+// designed for dichromats, tops out near 1.2:1 on its closest pair once four
+// categories have to be told apart.
+//
+// So the accessible themes encode status twice: colour, plus a symbol that
+// survives having no colour perception at all (and survives greyscale printing).
+// This is opt-in per theme rather than global, because the other eight themes
+// were signed off on their current appearance.
+//
+// The symbol is decorative — the visible label already carries the meaning for
+// a screen reader, so `aria-hidden` keeps it out of the accessibility tree.
+:root[data-theme='clay-light'],
+:root[data-theme='clay-dark'] {
+    .status-pass::before,
+    .status-fail::before,
+    .status-error::before,
+    .status-skipped::before {
+        display: inline-block;
+        width: 1em;
+        margin-right: var(--space-1);
+        font-weight: var(--font-weight-bold);
+        text-align: center;
+        speak: never;
+    }
+
+    .status-pass::before { content: '\2713'; }    // check
+    .status-fail::before { content: '\2717'; }    // ballot X
+    .status-error::before { content: '\0021'; }   // exclamation
+    .status-skipped::before { content: '\2013'; } // en dash
+}
+
 // ── Inline alerts ────────────────────────────────────────────────────────────
 // Themed replacement for the old Bootstrap `.alert` blocks — loading and
 // empty/error states inside page content.
@@ -153,6 +188,10 @@
     border-left-color: var(--fail-color);
 }
 
+.app-alert-success {
+    border-left-color: var(--pass-color);
+}
+
 // ── Generic page chrome ──────────────────────────────────────────────────────
 // Shared by the settings/about/not-found style pages so each page's LESS only
 // carries what is genuinely page-specific.
@@ -170,10 +209,23 @@
     }
 }
 
+// Title on the left, action affordances pushed to the trailing edge, so a panel's
+// primary action always sits in the same place rather than trailing the title.
 .page-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
     color: var(--main-panel-font-color);
     font-weight: var(--font-weight-semibold);
     font-size: var(--font-size-2xl);
+
+    // The title carries the section-title bottom margin; the header row owns the
+    // spacing instead so the action button stays vertically centred against it.
+    .page-section-title {
+        margin-bottom: 0;
+    }
 }
 
 .page-section-title {
@@ -216,7 +268,18 @@
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
-// Row action links (tables, lists).
+// Row action links (tables, lists). These are usually <button> elements — an action
+// is not a navigation — so the native control chrome is stripped to make them read
+// as links rather than as tiny boxed buttons.
+.link-action,
+.link-danger {
+    padding: 0;
+    border: none;
+    background: none;
+    font: inherit;
+    cursor: pointer;
+}
+
 .link-action {
     color: var(--link-color-1);
 
@@ -328,17 +391,115 @@
 }
 
 // ── Brand logo (sidebar + login) ─────────────────────────────────────────────
-.brand-logo-icon {
-    height: 50px;
-    display: inline;
-    margin-top: -3px;
+// ── Brand logo ───────────────────────────────────────────────────────────────
+// Inline SVG (components/common/BrandLogo.js) rather than a PNG, so the mark
+// follows the theme's accent instead of staying orange on every palette. See
+// that file for why. Colour lives here; geometry lives in the component.
+.brand-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    // The outline inherits this, so the mark sits on whatever surface it is
+    // placed on without a per-context override.
+    color: var(--main-panel-font-color);
 }
 
+.brand-logo-icon {
+    height: 44px;
+    width: auto;
+    flex: 0 0 auto;
+}
+
+// The viewBox wraps the painted wordmark including its outline (see
+// BrandLogo.js), so this is the height of the whole mark, box and all.
+//
+// 53.2px = 48.4 x 1.1. The 48.4 keeps the glyphs at the size they were when
+// the box was 50 units tall (44 x 55/50) — the box grew to 55 units to stop
+// clipping the stroke, and without that correction the same 44px would have
+// silently shrunk the letters. The 1.1 is the requested 10% increase on top.
 .brand-logo-text {
-    height: 55px;
-    padding-left: 6px;
-    vertical-align: middle;
-    display: inline;
+    height: 53.2px;
+    width: auto;
+    flex: 0 0 auto;
+}
+
+// Cube faces, lit from above-left: the top takes the full accent, the right
+// face its shaded variant, and the left face the accent again at low opacity so
+// it reads as a dim plane of the SAME material.
+//
+// Opacity rather than a second colour token on purpose — `--master-font-color-2`
+// (the on-accent tone) was tried first and is near-black on Slate Dark, which
+// turned one face into a hole. Fading the accent over whatever surface the mark
+// sits on keeps the shading consistent in every theme.
+.brand-cube-top {
+    fill: var(--color-primary);
+}
+
+.brand-cube-right {
+    fill: var(--color-primary-hover);
+}
+
+.brand-cube-left {
+    fill: var(--color-primary);
+    opacity: 0.35;
+}
+
+.brand-cube-edge {
+    stroke: currentColor;
+    stroke-width: 3;
+    stroke-linejoin: round;
+    opacity: 0.55;
+}
+
+// Saira Condensed, self-hosted via next/font (see app/layout.js) and reached
+// through `--font-brand`. Only the wordmark uses it — body text stays on the
+// system stack, per the rule against introducing new font families for UI text.
+// The fallback is a condensed system face so a font failure degrades to
+// something with roughly the right proportions rather than to a wide default.
+.brand-wordmark {
+    fill: var(--color-primary);
+    font-family: var(--font-brand), 'Arial Narrow', 'Helvetica Neue', sans-serif;
+    font-size: 52px;
+    font-weight: 600;
+    letter-spacing: 0.005em;
+    // The original wordmark carried a heavy dark outline; it is what makes the
+    // mark read on a mid-tone surface like Sepia or Clay, where a flat accent
+    // fill would otherwise sit too close to the panel. `paint-order` keeps the
+    // stroke behind the fill so it thickens the letter's edge rather than
+    // eating into its interior.
+    stroke: currentColor;
+    // In user units, not pixels: the viewBox is 50 units tall rendered at 44px,
+    // so this scales to ~2.3 CSS px and stays proportional at any logo size.
+    // The stroke is drawn centred on the outline, so half of it eats into the
+    // glyph and the counters in 'g' and 'e' close first — that is the limit to
+    // watch when changing this.
+    stroke-width: 2.6;
+    paint-order: stroke fill;
+    stroke-linejoin: round;
+}
+
+// Accessible themes render the mark in one tone. On Clay the accent is the
+// Okabe-Ito blue also used for PASS, and a two-tone logo competes with the
+// status colours it should be staying clear of.
+:root[data-theme='clay-light'] .brand-logo,
+:root[data-theme='clay-dark'] .brand-logo {
+    .brand-cube-top,
+    .brand-cube-right,
+    .brand-wordmark {
+        fill: currentColor;
+    }
+
+    .brand-cube-right {
+        opacity: 0.72;
+    }
+
+    .brand-cube-left {
+        fill: transparent;
+    }
+
+    .brand-cube-edge {
+        opacity: 1;
+    }
 }
 
 // ── Password requirements checklist (PasswordRequirements component) ─────────
@@ -451,6 +612,36 @@
         // panel; remove it so the tabs read as connected to the content.
         .rs-nav-bar {
             border: 0;
+        }
+    }
+
+    // `appearance="subtle"` navs (the test-case detail tabs) are a different
+    // rsuite skin from `.rs-nav-tabs` above: the active tab is marked by an
+    // underline bar rather than a filled tab. The accent itself now comes from
+    // `--rs-navs-selected` in the variable bridge (rsuite-overrides.less); what
+    // stays here is this skin's own weight and inactive-label treatment.
+    .rs-nav-subtle {
+        .rs-nav-item {
+            color: var(--inactive-tab-font-color);
+
+            &:hover,
+            &:focus {
+                color: var(--color-primary);
+            }
+
+            &.rs-nav-item-active {
+                color: var(--color-primary);
+                font-weight: var(--font-weight-semibold);
+
+                // The underline bar under the active tab.
+                &::before {
+                    background-color: var(--color-primary);
+                }
+            }
+        }
+
+        .rs-nav-bar {
+            border-top-color: var(--border-subtle);
         }
     }
 

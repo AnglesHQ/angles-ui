@@ -1,0 +1,240 @@
+// ── Manual test cases ────────────────────────────────────────────────────────
+.manual-test-cases-page {
+  .manual-test-cases-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    align-items: center;
+  }
+
+  .manual-test-cases-search {
+    max-width: 320px;
+  }
+
+  .manual-test-cases-pagination {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: var(--space-3);
+  }
+}
+
+// Status pills reuse the shared result hues rather than inventing new ones: DRAFT reads as
+// not-yet-run, ACTIVE as good, DEPRECATED as retired.
+.manual-status-tag {
+  background: var(--sub-panel-background);
+  font-size: var(--font-size-xs);
+
+  &.manual-status-draft {
+    color: var(--skipped-color);
+  }
+
+  &.manual-status-active {
+    color: var(--pass-color);
+  }
+
+  &.manual-status-deprecated {
+    color: var(--modal-secondary-font-color);
+  }
+}
+
+.manual-test-case-detail-page {
+  .manual-test-case-header-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .manual-test-case-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--space-3);
+  }
+
+  .manual-test-case-custom-fields {
+    margin-top: var(--space-4);
+    background: var(--sub-panel-background);
+    border-radius: var(--radius-md);
+  }
+
+  .manual-version-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding-bottom: var(--space-3);
+  }
+
+  .manual-version-title {
+    font-weight: var(--font-weight-medium);
+    color: var(--main-panel-font-color);
+  }
+}
+
+// Folder tree beside the case list. The tree is a fixed rail so the table keeps a stable
+// width as folders are expanded.
+.manual-test-cases-page {
+  .manual-test-cases-layout {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+
+  .manual-test-cases-tree {
+    flex: 0 0 280px;
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+
+  .manual-test-cases-main {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .manual-test-cases-page .manual-test-cases-layout {
+    flex-direction: column;
+  }
+
+  .manual-test-cases-page .manual-test-cases-tree {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+}
+
+// ── Grouped suites ───────────────────────────────────────────────────────────
+// One table per folder, mirroring the tree. The drop states are deliberately loud:
+// a drag has no undo, so the target has to be unambiguous before the pointer is released.
+.test-case-suites {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+// Each folder is one card: the heading is the card's top bar and the table is its
+// body, so an expanded folder reads as a container holding its cases.
+//
+// Previously the heading was bare text on the page background and the table began
+// immediately below at full width, with its own strong header row. Two stacked
+// full-width blocks with nothing enclosing them read as siblings, and because the
+// table header is a solid accent bar it out-weighed the folder name above it — so
+// the table looked like the start of something new rather than the contents of the
+// folder it belongs to.
+.test-case-suite {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--sub-panel-background);
+  // Clips the table's square corners to the card's rounded ones; without it the
+  // accent header row overruns the border it is supposed to sit inside.
+  overflow: hidden;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+
+  &.test-case-suite-drop {
+    border-color: var(--pass-color);
+    box-shadow: 0 0 0 1px var(--pass-color);
+  }
+}
+
+// A collapsed folder is a closed box: one bar, nothing below it. Dropping the
+// border-radius clamp lets the header keep the card's full rounding on all four
+// corners rather than only the top two.
+.test-case-suite-collapsed .test-case-suite-header {
+  border-bottom-color: transparent;
+}
+
+.test-case-suite-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
+  // The bar is the card's own surface, distinct from the table body beneath it, so
+  // the heading reads as a lid on the rows rather than as floating text.
+  background: var(--main-panel-background);
+  // Separates lid from body when expanded; transparent (not removed) when collapsed
+  // so the header does not change height as it toggles.
+  border-bottom: 1px solid var(--border-color);
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+
+  &:hover {
+    background: var(--surface-raised);
+  }
+}
+
+// A rail down the open card in the folder's own accent. It starts at the heading and
+// runs the height of the rows, which is what ties the two together at a glance: the
+// eye follows one continuous edge from the folder name to the last case in it.
+.test-case-suite-expanded {
+  border-left: 3px solid var(--color-primary);
+}
+
+// The table sits inside the card, so it must not carry its own outer border on top
+// of the card's.
+.test-case-suite-body {
+  .rs-table {
+    border: 0;
+  }
+
+  // The app-wide convention paints a table header in the accent, which is right for a
+  // table that IS the panel's content. Here the table is nested inside a folder card
+  // that already has a heading of its own, so the accent bar competed with it — and
+  // won, because a solid fill out-weighs text. That is what made the rows look like
+  // the start of a new section instead of the contents of the folder above them.
+  //
+  // Quietened to a subordinate header: same structure, no longer shouting over the
+  // folder that owns it. Scoped to this component, so tables elsewhere keep the
+  // convention.
+  .rs-table-row-header .rs-table-cell-content {
+    background-color: var(--sub-panel-background);
+    color: var(--main-panel-secondary-font-color);
+    opacity: 1;
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  // Without the accent fill the header needs an edge, or it merges into the first row.
+  .rs-table-row-header {
+    border-bottom: 1px solid var(--border-subtle);
+  }
+}
+
+.test-case-suite-icon {
+  color: var(--modal-secondary-font-color);
+}
+
+.test-case-suite-title {
+  font-weight: var(--font-weight-medium);
+  color: var(--main-panel-font-color);
+}
+
+.test-case-suite-count {
+  color: var(--modal-secondary-font-color);
+  font-size: var(--font-size-xs);
+}
+
+// The grip is the affordance that says a row can be dragged at all; without it the
+// only discoverable way to move a case is to find the folder field on the detail page.
+.test-case-suite-row {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.test-case-suite-grip {
+  color: var(--modal-secondary-font-color);
+  font-size: var(--font-size-xs);
+  letter-spacing: -2px;
+}
+
+// A folder in the tree lit up as the pending destination.
+.folder-tree-node-drop {
+  outline: 1px solid var(--pass-color);
+  border-radius: var(--radius-sm);
+  background: var(--sub-panel-background);
+}

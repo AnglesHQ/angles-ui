@@ -35,14 +35,13 @@ import update from 'immutability-helper';
 import queryString from 'query-string';
 import { connect } from 'react-redux';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
-import Cookies from 'js-cookie';
 import { useAuth } from '../../../context/AuthContext';
-import { storeCurrentTeam } from '../../../redux/teamActions';
 import BuildsTable from './BuildsTable';
 import { getDateRangesPicker, getDurationAsString } from '../../../utility/TimeUtilities';
 import ExecutionBarChart from './charts/ExecutionBarChart';
 import BuildExecutionPieChart from './charts/BuildExecutionPieChart';
 import ConfirmModal from '../../common/ConfirmModal';
+import { ALL_EXECUTION_TYPES, getExecutionTypeOptions, toExecutionTypeParam } from '../../../utility/GeneralUtilities';
 
 const generateFilterMenuData = function (environments, components) {
   const data = [];
@@ -120,7 +119,7 @@ const DashboardPage = function (props) {
   const { user } = useAuth();
   const intl = useIntl();
   const toaster = useToaster();
-  const { currentTeam, teams, environments, saveCurrentTeam, builds: reduxBuilds } = props;
+  const { currentTeam, environments, builds: reduxBuilds } = props;
 
   // query values
   // searchParams.get('startDate') ...
@@ -138,7 +137,8 @@ const DashboardPage = function (props) {
   const [startDate, setStartDate] = useState(queryStartDate ? moment(queryStartDate) : moment().subtract(90, 'days'));
   const [endDate, setEndDate] = useState(queryEndDate ? moment(queryEndDate) : moment());
   const { afterToday } = DateRangePicker;
-  const [selectedTeamId, setSelectedTeamId] = useState(undefined);
+  // undefined = both types, which is what every pre-3.0 dashboard showed.
+  const [executionType, setExecutionType] = useState(undefined);
 
   // filtering values
   const [selectedBuilds, setSelectedBuilds] = useState({});
@@ -154,6 +154,7 @@ const DashboardPage = function (props) {
   const limitValues = [10, 15, 25, 50].map(
     (item) => ({ label: item, value: item }),
   );
+  const executionTypeValues = getExecutionTypeOptions(intl);
   const addIndexToBuilds = (buildsToIndex, skip) => {
     buildsToIndex.forEach((build, index) => {
       build.index = index + skip + 1;
@@ -174,6 +175,7 @@ const DashboardPage = function (props) {
       limit,
       startDate,
       endDate,
+      executionType,
     )
       .then(({
         builds: retrievedBuilds,
@@ -198,13 +200,7 @@ const DashboardPage = function (props) {
       );
     }
   }, [currentTeam, limit, filteredEnvironments,
-    filteredComponents, startDate, endDate, activePage, searchParams]);
-
-  useEffect(() => {
-    if (currentTeam) {
-      setSelectedTeamId(currentTeam._id);
-    }
-  }, [currentTeam]);
+    filteredComponents, startDate, endDate, activePage, searchParams, executionType]);
 
   useEffect(() => {
     setFilteredValues([]);
@@ -217,7 +213,7 @@ const DashboardPage = function (props) {
   useEffect(() => {
     setActivePage(1);
   }, [filteredEnvironments, filteredComponents, currentTeam,
-    startDate, endDate, limit]);
+    startDate, endDate, limit, executionType]);
 
   const toggleSelectedBuild = (build) => {
     const updatedBuilds = update(
@@ -286,25 +282,16 @@ const DashboardPage = function (props) {
     setSelectedBuilds({});
   };
 
-  const getTeam = (teamId) => {
-    if (teams && Array.isArray(teams)) {
-      return teams.find((team) => team._id === teamId);
-    }
-    return undefined;
-  };
-
-  const handleTeamChange = (teamId) => {
-    if (teamId !== undefined) {
-      saveCurrentTeam(getTeam(teamId));
-      Cookies.set('teamId', teamId, { expires: 365 });
-    }
-  };
-
   const handleLimitChange = (newLimit) => {
     if (newLimit) {
       setLimit(newLimit);
       setActivePage(1);
     }
+  };
+
+  const handleExecutionTypeChange = (value) => {
+    setExecutionType(toExecutionTypeParam(value));
+    setActivePage(1);
   };
 
   // eslint-disable-next-line no-shadow
@@ -416,22 +403,6 @@ const DashboardPage = function (props) {
             top={20}
           >
             <Stack className="top-menu-stack" spacing={10}>
-              <SelectPicker
-                label={(
-                  <FormattedMessage
-                    id="page.dashboard.filters.label.team"
-                  />
-                )}
-                cleanable={false}
-                appearance="subtle"
-                data={teams.map((team) => ({ label: team.name, value: team._id }))}
-                value={selectedTeamId}
-                onChange={(value) => {
-                  if (value) {
-                    handleTeamChange(value);
-                  }
-                }}
-              />
               <DateRangePicker
                 label={(
                   <FormattedMessage
@@ -462,6 +433,20 @@ const DashboardPage = function (props) {
                 defaultValue={limit}
                 searchable={false}
                 onChange={handleLimitChange}
+              />
+              <SelectPicker
+                label={(
+                  <FormattedMessage
+                    id="page.dashboard.filters.label.execution-type"
+                  />
+                )}
+                data={executionTypeValues}
+                appearance="default"
+                cleanable={false}
+                style={{ width: 200 }}
+                value={executionType === undefined ? ALL_EXECUTION_TYPES : executionType}
+                searchable={false}
+                onChange={handleExecutionTypeChange}
               />
               <FilterMenu
                 data={generateFilterMenuData(environments, currentTeam.components)}
@@ -650,12 +635,7 @@ const DashboardPage = function (props) {
 
 const mapStateToProps = (state) => ({
   currentTeam: state.teamsReducer.currentTeam,
-  teams: state.teamsReducer.teams,
   environments: state.environmentsReducer.environments,
   builds: state.buildReducer.builds,
 });
-const mapDispatchToProps = (dispatch) => ({
-  saveCurrentTeam: (selectedTeam) => dispatch(storeCurrentTeam(selectedTeam)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(DashboardPage);
+export default connect(mapStateToProps)(DashboardPage);

@@ -6,8 +6,6 @@ import { connect } from 'react-redux';
 import { FormattedMessage, useIntl } from 'react-intl';
 import queryString from 'query-string';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
-import Cookies from 'js-cookie';
-import { storeCurrentTeam } from '../../../redux/teamActions';
 import { MetricRequests } from 'angles-javascript-client';
 import {
   Affix,
@@ -29,6 +27,7 @@ import { getPaletteColor, getPlatformLabel } from '../../../utility/ChartConfig'
 import { getDateRangesPicker } from '../../../utility/TimeUtilities';
 import ExecutionMetricsResultsBarChart from './charts/ExecutionMetricsResultsBarChart';
 import PhaseMetricsResultsBarChart from './charts/PhaseMetricsResultsBarChart';
+import { ALL_EXECUTION_TYPES, getExecutionTypeOptions, toExecutionTypeParam } from '../../../utility/GeneralUtilities';
 
 const MetricsPage = function (props) {
   const router = useRouter();
@@ -36,7 +35,7 @@ const MetricsPage = function (props) {
   const pathname = usePathname();
   const intl = useIntl();
   // const query = queryString.parse(location.search);
-  const { teams, currentTeam, saveCurrentTeam } = props;
+  const { teams, currentTeam } = props;
   const {
     component,
     grouping,
@@ -49,6 +48,8 @@ const MetricsPage = function (props) {
   const [selectedTeam, setSelectedTeam] = useState(currentTeam?._id || undefined);
   const [selectedComponent, setSelectedComponent] = useState(component || 'any');
   const [key, setKey] = useState('execution');
+  // undefined = both types, which is what every pre-3.0 metrics view showed.
+  const [executionType, setExecutionType] = useState(undefined);
   const [metrics, setMetrics] = useState({});
   const [platformColors, setPlatformColors] = useState({});
   const metricRequests = new MetricRequests(axios);
@@ -85,11 +86,12 @@ const MetricsPage = function (props) {
     return result;
   };
 
-  const getMetrics = (teamId, componentId, fromDate, toDate, groupingId) => {
+  const getMetrics = (teamId, componentId, fromDate, toDate, groupingId, executionTypeId) => {
     if (metrics && Object.keys(metrics).length > 0) {
       setMetrics(undefined);
     }
-    metricRequests.getPhaseMetrics(teamId, componentId, fromDate, toDate, groupingId)
+    metricRequests
+      .getPhaseMetrics(teamId, componentId, fromDate, toDate, groupingId, executionTypeId)
       .then((returnedMetrics) => {
         setMetrics(returnedMetrics);
         setPlatformColors(getPlatformArrayColors(returnedMetrics));
@@ -103,18 +105,25 @@ const MetricsPage = function (props) {
   const retrieveMetrics = () => {
     if (endDate && startDate && selectedTeam) {
       if (selectedComponent === 'any') {
-        getMetrics(selectedTeam, undefined, startDate, endDate, groupingPeriod);
+        getMetrics(selectedTeam, undefined, startDate, endDate, groupingPeriod, executionType);
       } else {
-        getMetrics(selectedTeam, selectedComponent, startDate, endDate, groupingPeriod);
+        getMetrics(
+          selectedTeam, selectedComponent, startDate, endDate, groupingPeriod, executionType,
+        );
       }
     }
   };
 
+  // The team now comes from the header picker, so this effect is the only path
+  // by which the page changes team. Resetting the component filter is part of
+  // that: component ids belong to a team, so one carried across a team change
+  // would filter the metrics by something the new team does not have.
   useEffect(() => {
-    if (currentTeam) {
+    if (currentTeam && currentTeam._id !== selectedTeam) {
       setSelectedTeam(currentTeam._id);
+      setSelectedComponent('any');
     }
-  }, [currentTeam]);
+  }, [currentTeam, selectedTeam]);
 
   useEffect(() => {
     retrieveMetrics();
@@ -122,33 +131,6 @@ const MetricsPage = function (props) {
 
   const handleGroupingChange = (groupingValue) => {
     setGroupingPeriod(groupingValue);
-  };
-
-  const getTeam = (teamId) => {
-    if (teams && Array.isArray(teams)) {
-      return teams.find((team) => team._id === teamId);
-    }
-    return undefined;
-  };
-
-  const handleTeamChange = (teamId) => {
-    changeCurrentTeam(teamId);
-    setSelectedTeam(teamId);
-    setSelectedComponent('any');
-    // Keep the teamId query param in sync with the newly selected team.
-    // The Shell drives currentTeam from the URL, so a stale teamId here would
-    // make it revert us back to the previous team as soon as currentTeam changes.
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('teamId', teamId);
-    params.set('component', 'any');
-    router.replace(`${pathname}?${params.toString()}`);
-  };
-
-  const changeCurrentTeam = (teamId) => {
-    if (teamId !== undefined) {
-      saveCurrentTeam(getTeam(teamId));
-      Cookies.set('teamId', teamId, { expires: 365 });
-    }
   };
 
   const handleComponentChange = (componentId) => {
@@ -189,19 +171,6 @@ const MetricsPage = function (props) {
         top={20}
       >
         <Stack className="top-menu-stack" spacing={10}>
-          <SelectPicker
-            cleanable={false}
-            // searchable={false}
-            label={<FormattedMessage id="page.metrics.filters.labels.team" />}
-            appearance="subtle"
-            data={teams.map((team) => ({ label: team.name, value: team._id }))}
-            value={selectedTeam}
-            onChange={(value) => {
-              if (value) {
-                handleTeamChange(value);
-              }
-            }}
-          />
           <SelectPicker
             cleanable
             // searchable={false}
@@ -249,6 +218,17 @@ const MetricsPage = function (props) {
               if (value) {
                 handleGroupingChange(value);
               }
+            }}
+          />
+          <SelectPicker
+            label={<FormattedMessage id="page.metrics.filters.labels.execution-type" />}
+            cleanable={false}
+            searchable={false}
+            appearance="subtle"
+            data={getExecutionTypeOptions(intl)}
+            value={executionType === undefined ? ALL_EXECUTION_TYPES : executionType}
+            onChange={(value) => {
+              setExecutionType(toExecutionTypeParam(value));
             }}
           />
           <Button className="btn-primary" type="submit" onClick={() => { onSubmit(); }}>
@@ -370,8 +350,4 @@ const mapStateToProps = (state) => ({
   teams: state.teamsReducer.teams,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  saveCurrentTeam: (selectedTeam) => dispatch(storeCurrentTeam(selectedTeam)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(MetricsPage);
+export default connect(mapStateToProps)(MetricsPage);

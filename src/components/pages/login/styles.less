@@ -17,8 +17,11 @@
 
         // Brand logo classes are shared with the sidebar (components.less).
         .login-header {
-            text-align: center;
-            height: 60px;
+            // Centres the inline-flex brand mark. The old fixed 60px height was
+            // sized for the PNG pair and clipped the taller SVG wordmark.
+            display: flex;
+            justify-content: center;
+            padding: var(--space-2) 0;
         }
 
         .rs-input {

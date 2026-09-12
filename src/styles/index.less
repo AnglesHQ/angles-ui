@@ -12,8 +12,10 @@
 //   pages/*     → page- and feature-specific styles (co-located with components)
 // ============================================================================
 
-// Design tokens — colour must load first (surface/accent scales reference it),
-// then the non-colour scales.
+// Design tokens — the theme contract documents what a theme must supply and
+// derives what it should not; colour loads next (surface/accent scales
+// reference it), then the non-colour scales.
+@import 'tokens/_theme-contract.less';
 @import 'tokens/_color.less';
 @import 'tokens/_space.less';
 @import 'tokens/_radius.less';
@@ -32,6 +34,11 @@
 @import '../components/pages/admin-settings/styles.less';
 @import '../components/pages/dashboard/styles.less';
 @import '../components/pages/login/styles.less';
+@import '../components/pages/manual-test-cases/styles.less';
+@import '../components/pages/manual-test-case-version/styles.less';
+@import '../components/pages/manual-test-runs/styles.less';
+@import '../components/pages/shared-steps/styles.less';
+@import '../components/pages/admin-custom-fields/styles.less';
 @import '../components/pages/metrics/styles.less';
 @import '../components/pages/screenshot-library/styles.less';
 @import '../components/pages/team-settings/styles.less';
@@ -40,7 +47,14 @@
 @import '../components/pages/user-settings/styles.less';
 
 // ── Co-located feature styles (components/features/*) ────────────────────────
+@import '../components/features/attachment-upload/styles.less';
+@import '../components/features/change-history/styles.less';
+@import '../components/features/custom-field-form/styles.less';
+@import '../components/features/folder-tree/styles.less';
 @import '../components/features/execution-timeline/styles.less';
+@import '../components/features/manual-step-editor/styles.less';
 @import '../components/features/results-bar/styles.less';
 @import '../components/features/screenshot-view/styles.less';
+@import '../components/features/version-badge/styles.less';
+@import '../components/features/version-diff/styles.less';
 @import '../components/features/test-suite/styles.less';

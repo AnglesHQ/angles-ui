@@ -6,6 +6,270 @@
 // components live in `components.less`.
 // ============================================================================
 
+// ── RSuite variable bridge ───────────────────────────────────────────────────
+// RSuite drives every widget's colour through its own `--rs-*` custom
+// properties, and ships a full dark palette for them under `.rs-theme-dark`.
+// This app never sets that class — it themes via `[data-theme]` on :root — so
+// unless a variable is remapped here, the widget keeps rsuite's *light* default
+// in every theme (`--rs-bg-card` stays #fff, `--rs-text-primary` stays
+// near-black, and so on) and disappears against a dark surface.
+//
+// Pointing rsuite's variables at the Angles semantic tokens fixes all themes at
+// once, because the tokens themselves theme at the primitive layer. Prefer
+// adding a mapping here over writing a per-class rule below: a variable covers
+// every widget that reads it, including ones this app has not styled by hand.
+//
+// Only the variables whose defaults actually clash are remapped; anything not
+// listed keeps rsuite's own value deliberately.
+:root {
+    // ── Surfaces ─────────────────────────────────────────────────────────────
+    // `--rs-bg-overlay` is the surface behind floating chrome: it is what paints
+    // Drawer bodies (`.rs-drawer-content`) and Popovers, neither of which has a
+    // variable of its own.
+    --rs-bg-card: var(--main-panel-background);
+    --rs-bg-overlay: var(--select-picker-background);
+    --rs-bg-well: var(--surface-sunken);
+    --rs-bg-active: var(--color-primary);
+    --rs-bg-backdrop: var(--modal-overlay-background);
+    --rs-state-hover-bg: var(--sub-panel-background);
+
+    // ── Text ─────────────────────────────────────────────────────────────────
+    --rs-text-primary: var(--main-panel-font-color);
+    --rs-text-secondary: var(--main-panel-secondary-font-color);
+    --rs-text-tertiary: var(--sub-panel-secondary-font-color);
+    --rs-text-heading: var(--main-panel-font-color);
+    --rs-text-inverse: var(--color-primary-contrast);
+    --rs-text-disabled: var(--icon-disabled-color);
+    --rs-text-active: var(--color-primary);
+    --rs-text-link: var(--link-color-1);
+    --rs-text-link-hover: var(--color-primary-hover);
+    --rs-text-link-active: var(--color-primary-hover);
+
+    // ── Borders, dividers & focus ────────────────────────────────────────────
+    // Divider and Table both resolve from these rather than owning a colour.
+    --rs-border-primary: var(--border-color);
+    --rs-border-secondary: var(--border-subtle);
+    --rs-divider-border: var(--border-color);
+    --rs-color-focus-ring: var(--focus-ring);
+    --rs-state-focus-shadow: 0 0 0 3px var(--focus-ring);
+    --rs-state-focus-shadow-slim: 0 0 0 2px var(--focus-ring);
+    --rs-state-focus-outline: 3px solid var(--focus-ring);
+
+    // ── Status ───────────────────────────────────────────────────────────────
+    // Align rsuite's semantic states with the app's result-status hues so
+    // Message, Steps and form validation agree with the rest of the UI.
+    --rs-state-success: var(--pass-color);
+    --rs-state-error: var(--fail-color);
+    --rs-state-warning: var(--error-color);
+    --rs-state-info: var(--skipped-color);
+
+    // ── Buttons ──────────────────────────────────────────────────────────────
+    // Subtle buttons are the icon actions in panel headers and detail toolbars.
+    // At rest they read as plain icons in the panel's own font colour; on hover
+    // and while pressed they take the ember accent, matching how `.btn-primary`
+    // and the row-action links signal interactivity. The hover surface stays the
+    // sub-panel tone so the accent comes from the glyph rather than a filled
+    // block. The same variables colour other subtle-styled widgets (input-group
+    // buttons, uploader triggers, subtle pickers).
+    --rs-btn-subtle-text: var(--main-panel-font-color);
+    --rs-btn-subtle-hover-text: var(--color-primary);
+    --rs-btn-subtle-hover-bg: var(--sub-panel-background);
+    --rs-btn-subtle-active-text: var(--color-primary-hover);
+    --rs-btn-subtle-active-bg: var(--sub-panel-background);
+    --rs-btn-subtle-disabled-text: var(--icon-disabled-color);
+
+    // Default (secondary) buttons — rsuite's grey ramp reads as disabled on a
+    // dark panel.
+    --rs-btn-default-bg: var(--button-deactivated-background);
+    --rs-btn-default-text: var(--button-deactivated-font-color);
+    --rs-btn-default-hover-bg: var(--sub-panel-background);
+    --rs-btn-default-hover-text: var(--main-panel-font-color);
+    --rs-btn-default-active-bg: var(--sub-panel-background);
+    --rs-btn-default-active-text: var(--color-primary);
+    --rs-btn-default-disabled-bg: var(--button-deactivated-background);
+    --rs-btn-default-disabled-text: var(--icon-disabled-color);
+
+    // Primary / ghost / link buttons follow the ember accent rather than
+    // rsuite's blue.
+    --rs-btn-primary-bg: var(--button-background);
+    --rs-btn-primary-text: var(--button-font-color);
+    --rs-btn-primary-hover-bg: var(--button-hover-background);
+    --rs-btn-primary-active-bg: var(--color-primary-hover);
+    --rs-btn-ghost-border: var(--color-primary);
+    --rs-btn-ghost-text: var(--color-primary);
+    --rs-btn-ghost-hover-border: var(--color-primary-hover);
+    --rs-btn-ghost-hover-text: var(--color-primary-hover);
+    --rs-btn-link-text: var(--link-color-1);
+    --rs-btn-link-hover-text: var(--color-primary-hover);
+    --rs-btn-link-active-text: var(--color-primary-hover);
+
+    // ── Widgets with no per-class rule of their own ──────────────────────────
+    // Tooltip's default is a near-black chip that vanishes on a dark surface.
+    --rs-tooltip-bg: var(--sub-panel-background);
+    --rs-tooltip-text: var(--sub-panel-font-color);
+    --rs-tag-bg: var(--sub-panel-background);
+    --rs-toggle-bg: var(--master-color-2-relative);
+    --rs-toggle-hover-bg: var(--border-color);
+    --rs-toggle-checked-bg: var(--color-primary);
+    --rs-toggle-checked-hover-bg: var(--color-primary-hover);
+    --rs-toggle-disabled-bg: var(--button-deactivated-background);
+    --rs-checkbox-border: var(--border-color);
+    --rs-checkbox-checked-bg: var(--color-primary);
+    --rs-checkbox-disabled-bg: var(--button-deactivated-background);
+    --rs-radio-border: var(--border-color);
+    --rs-radio-checked-bg: var(--color-primary);
+    --rs-radio-disabled-bg: var(--button-deactivated-background);
+    --rs-breadcrumb-item-active-text: var(--main-panel-font-color);
+    --rs-timeline-indicator-bg: var(--border-color);
+    --rs-timeline-indicator-active-bg: var(--color-primary);
+    --rs-uploader-dnd-bg: var(--sub-panel-background);
+    --rs-uploader-dnd-border: var(--border-color);
+    --rs-uploader-dnd-hover-border: var(--color-primary);
+    --rs-uploader-item-bg: var(--border-color);
+    --rs-uploader-item-hover-bg: var(--sub-panel-background);
+    --rs-loader-ring: var(--border-subtle);
+    --rs-loader-rotor: var(--color-primary);
+    // Progress bars default to rsuite's blue. Not used in the app today, but
+    // mapped so the first one added inherits the theme rather than the vendor
+    // palette. Success/fail keep the app's own result hues.
+    --rs-progress-bg: var(--border-color);
+    --rs-progress-bar: var(--color-primary);
+    --rs-progress-bar-success: var(--pass-color);
+    --rs-progress-bar-fail: var(--fail-color);
+
+    // Table sort indicator and scrollbars.
+    --rs-table-sort: var(--color-primary);
+    --rs-table-border-color: var(--border-subtle);
+    --rs-table-scrollbar-track: var(--sub-panel-background);
+    --rs-table-scrollbar-thumb: var(--border-color);
+    --rs-table-scrollbar-thumb-active: var(--color-primary);
+    --rs-scrollbar-thumb-bg: var(--border-color);
+    --rs-scrollbar-thumb-hover-bg: var(--master-color-2-relative);
+
+    // Picker internals (selected value text, multi-select count badge).
+    --rs-picker-value: var(--color-primary);
+    --rs-picker-count-bg: var(--color-primary);
+    --rs-picker-count-text: var(--color-primary-contrast);
+
+    // Inputs. `.rs-input` already resolves its surface, border and text from
+    // these three plus `--rs-border-primary`/`--rs-text-primary` above, so the
+    // rule below only needs to add the app's radius and focus treatment.
+    --rs-input-bg: var(--body-background);
+    --rs-input-focus-border: var(--color-primary);
+    --rs-input-disabled-bg: var(--main-panel-background);
+
+    // Form validation messages.
+    --rs-form-errormessage-bg: var(--sub-panel-background);
+    --rs-form-errormessage-text: var(--fail-color);
+
+    // Navs / tabs — the selected marker (the underline bar on `appearance
+    // ="subtle"` navs and the active label) defaults to rsuite's blue.
+    --rs-navs-selected: var(--color-primary);
+    --rs-navs-text: var(--inactive-tab-font-color);
+    --rs-navs-text-hover: var(--color-primary);
+    --rs-navs-tab-border: var(--border-color);
+    --rs-navs-subtle-border: var(--border-subtle);
+
+    // Calendar popup (DatePicker / DateRangePicker).
+    --rs-calendar-today-bg: var(--color-primary);
+    --rs-calendar-today-text: var(--color-primary-contrast);
+    --rs-calendar-date-selected-text: var(--color-primary-contrast);
+    --rs-calendar-cell-selected-hover-bg: var(--color-primary-hover);
+    --rs-calendar-range-bg: var(--sub-panel-background);
+    --rs-calendar-time-unit-bg: var(--sub-panel-background);
+
+    // ── Message ──────────────────────────────────────────────────────────────
+    // rsuite fills each variant's inner container with a pale tint of its own
+    // palette (a 60% wash of e.g. `--rs-red-100`) and sets the body text to
+    // `--rs-text-primary`. Those tints are light-theme values with no dark
+    // counterpart here, so the near-white fill survived into dark mode while the
+    // themed text turned near-white with it — the alert became unreadable.
+    //
+    // Instead of tinting, give every variant the sub-panel surface and carry the
+    // meaning in the icon and the left stripe added below. That reads correctly
+    // on any theme because the tokens theme together, and it matches how
+    // `.app-alert` already styles the app's own inline alerts.
+    --rs-message-info-bg: var(--sub-panel-background);
+    --rs-message-info-border: var(--skipped-color);
+    --rs-message-info-icon: var(--skipped-color);
+    --rs-message-info-text: var(--sub-panel-font-color);
+    --rs-message-info-header: var(--sub-panel-font-color);
+
+    --rs-message-success-bg: var(--sub-panel-background);
+    --rs-message-success-border: var(--pass-color);
+    --rs-message-success-icon: var(--pass-color);
+    --rs-message-success-text: var(--sub-panel-font-color);
+    --rs-message-success-header: var(--sub-panel-font-color);
+
+    --rs-message-warning-bg: var(--sub-panel-background);
+    --rs-message-warning-border: var(--error-color);
+    --rs-message-warning-icon: var(--error-color);
+    --rs-message-warning-text: var(--sub-panel-font-color);
+    --rs-message-warning-header: var(--sub-panel-font-color);
+
+    --rs-message-error-bg: var(--sub-panel-background);
+    --rs-message-error-border: var(--fail-color);
+    --rs-message-error-icon: var(--fail-color);
+    --rs-message-error-text: var(--sub-panel-font-color);
+    --rs-message-error-header: var(--sub-panel-font-color);
+}
+
+// ── Message ─────────────────────────────────────────────────────────────────
+// The variant fills are mapped in the bridge above, but rsuite also paints the
+// *outer* `.rs-message-{variant}` element a literal `#fff` with no variable
+// behind it, which framed every alert in white on a dark surface. Clear it so
+// the themed container is the only painted surface.
+//
+// rsuite only draws the variant's accent border when the `bordered` prop is
+// set, which this app never passes. Carry the status hue as a left stripe
+// instead, matching `.app-alert`, so the variant stays readable without
+// depending on the tinted fill that was removed.
+.rs-message {
+    background-color: transparent;
+    border-left: 4px solid var(--border-color);
+
+    // The container is the painted surface. It must fill the outer element
+    // completely: the outer background is cleared above, so any strip it does
+    // not cover shows the page through the alert as a dark band along the edge.
+    .rs-message-container {
+        border-radius: 0;
+        height: 100%;
+    }
+}
+
+.rs-message-info {
+    background-color: transparent;
+    border-left-color: var(--skipped-color);
+}
+
+.rs-message-success {
+    background-color: transparent;
+    border-left-color: var(--pass-color);
+}
+
+.rs-message-warning {
+    background-color: transparent;
+    border-left-color: var(--error-color);
+}
+
+.rs-message-error {
+    background-color: transparent;
+    border-left-color: var(--fail-color);
+}
+
+// rsuite drives the subtle button's colour through the variables above, but its
+// focus-visible ring is a hard-coded blue box-shadow. Match it to the app's
+// focus ring so keyboard focus reads the same as every other control.
+.rs-btn-subtle {
+    transition: color var(--transition-fast), background-color var(--transition-fast);
+
+    &:focus-visible {
+        color: var(--color-primary);
+        box-shadow: 0 0 0 3px var(--focus-ring);
+        outline: none;
+    }
+}
+
 // ── Table ───────────────────────────────────────────────────────────────────
 .rs-table {
     background-color: transparent;
@@ -27,6 +291,18 @@
             opacity: 0.8;
             font-weight: bold;
             font-size: var(--font-size-sm);
+        }
+
+        // On hover rsuite paints the header's cells with `--rs-bg-card`. That is
+        // themed by the bridge above, but it is the *panel* surface rather than
+        // the header's accent fill, so it still sits visibly behind our
+        // `.rs-table-cell-content`. The header is not interactive — keep the
+        // cells transparent so the content layer stays the only painted surface.
+        &:hover {
+            .rs-table-cell-group,
+            .rs-table-cell {
+                background-color: transparent;
+            }
         }
 
         .rs-table-cell-first {
@@ -65,6 +341,18 @@
         .rs-table-cell {
             background-color: var(--main-table-body-background);
             font-size: var(--font-size-sm);
+        }
+
+        // rsuite tints a hovered row with `--rs-state-hover-bg`. The bridge above
+        // themes that variable, so the tint now tracks the theme — but these
+        // tables are not row-clickable, so any highlight signals an interaction
+        // that does not exist. Hold the resting background instead.
+        .rs-table-row:hover {
+            &,
+            .rs-table-cell-group,
+            .rs-table-cell {
+                background-color: var(--main-table-body-background);
+            }
         }
 
         .rs-table-row:last-child {
@@ -145,9 +433,10 @@
 }
 
 // ── Modals ───────────────────────────────────────────────────────────────────
-// RSuite ships a light-only stylesheet, so modal chrome must be themed to track
-// dark/light. Applies to every RSuite dialog (add/edit user, generate token,
-// change password) as well as ConfirmModal.
+// Modal chrome resolves from `--rs-bg-overlay` and `--rs-text-heading`, both
+// bridged above, so only the surfaces that need the *modal* tone rather than the
+// generic overlay tone are set here. Applies to every RSuite dialog (add/edit
+// user, generate token, change password) as well as ConfirmModal.
 .rs-modal-content {
     background-color: var(--modal-background);
     color: var(--modal-font-color);
@@ -158,32 +447,12 @@
     background-color: var(--modal-background);
 }
 
-.rs-modal-title {
-    color: var(--modal-font-color);
-}
-
-.rs-modal-body {
-    color: var(--modal-font-color);
-}
-
-.rs-modal-header .rs-modal-header-close {
-    color: var(--modal-secondary-font-color);
-}
-
 // ── Form controls ────────────────────────────────────────────────────────────
-// Themes labels, inputs and input groups everywhere (modals, filters, search).
-.rs-form-control-label {
-    color: var(--main-panel-font-color);
-}
-
-.rs-form-help-text {
-    color: var(--sub-panel-secondary-font-color);
-}
-
+// Labels, help text, inputs and input groups everywhere (modals, filters,
+// search). Colour comes from the bridge — `.rs-input` already reads
+// `--rs-input-bg`, `--rs-border-primary` and `--rs-text-primary` — so what is
+// left here is the app's radius and focus ring.
 .rs-input {
-    background-color: var(--body-background);
-    color: var(--main-panel-font-color);
-    border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
     transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 
@@ -193,15 +462,11 @@
 
     &:focus,
     &:focus-visible {
-        background-color: var(--body-background);
-        color: var(--main-panel-font-color);
-        border-color: var(--color-primary);
         box-shadow: 0 0 0 3px var(--focus-ring);
         outline: none;
     }
 
     &:disabled {
-        background-color: var(--main-panel-background);
         color: var(--sub-panel-secondary-font-color);
     }
 }
