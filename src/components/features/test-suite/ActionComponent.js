@@ -14,6 +14,7 @@ const ActionComponent = function (props) {
     actionIndex,
     execution,
     showScreenshots,
+    attachments,
   } = props;
 
   const expanded = isActionExpanded(execution._id, actionIndex);
@@ -63,6 +64,7 @@ const ActionComponent = function (props) {
             screenshots={screenshots}
             openModal={openModal}
             showScreenshots={showScreenshots}
+            attachments={attachments}
           />
         </div>
       ) : null }
