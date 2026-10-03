@@ -77,6 +77,18 @@
 //                                strategy (shadow vs hairline).
 
 
+// ── 1b. OPTIONAL primitives ────────────────────────────────────────────────
+// Each has a default that is right for most themes. Set one only where the
+// default fails a contrast obligation in section 3; never restate the default.
+//
+//     --master-font-color-accent-heading
+//                                Text on the accent in the suite header band.
+//                                Defaults to the on-accent text
+//                                (`--master-font-color-2`). Ember Dark sets it,
+//                                because its cream on-accent text measures
+//                                1.8:1 on orange-400.
+
+
 // ── 2. DERIVED tokens — do NOT redefine these per theme ────────────────────
 // Each of these used to be a hand-written literal in *every* theme, which meant
 // a new theme had to restate it and could silently get it wrong. They are now
@@ -135,7 +147,9 @@
 //       `--master-color-3` (ember) measures 2.46:1 light / 1.80:1 dark, well
 //       under AA. That pair is every primary button label — including Login.
 //       Fixing it means dark text on the orange, which is a brand decision, so
-//       it is recorded rather than silently changed. A NEW theme has no such
+//       it is recorded rather than silently changed. (The suite header band
+//       is the exception in Ember Dark: it uses the optional
+//       `--master-font-color-accent-heading` primitive, see 1b.) A NEW theme has no such
 //       constraint: pick an on-accent colour that clears 4.5:1, which usually
 //       means dark text on a mid-tone accent.
 //     • --master-color-3 (ember) sits at ~2.2:1 on the light panel. It is the
