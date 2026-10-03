@@ -10,6 +10,7 @@ import InfoRoundIcon from '@rsuite/icons/InfoRound';
 import WarningRoundIcon from '@rsuite/icons/WarningRound';
 import CheckRoundIcon from '@rsuite/icons/CheckRound';
 import RemindRoundIcon from '@rsuite/icons/RemindRound';
+import AttachmentList from '../test-attachments/AttachmentList';
 
 const StepsTimeline = function (props) {
   const {
@@ -17,6 +18,7 @@ const StepsTimeline = function (props) {
     openModal,
     screenshots,
     showScreenshots = true,
+    attachments,
   } = props;
 
   const getScreenShot = (screenshotId) => {
@@ -135,6 +137,13 @@ const StepsTimeline = function (props) {
               <div className="step-row">
                 <div className="step-main">
                   {renderStepBody(step)}
+                  { attachments ? (
+                    <AttachmentList
+                      ids={step.attachments}
+                      byId={attachments.byId}
+                      status={attachments.status}
+                    />
+                  ) : null }
                 </div>
                 {renderScreenshot(step)}
               </div>

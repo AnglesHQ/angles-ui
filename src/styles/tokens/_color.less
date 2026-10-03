@@ -502,6 +502,13 @@
     --overlay-suggestion-color: #ff9800;
     --overlay-marker-font-color: #ffffff;
 
+    // ── HTML snapshot frame ─────────────────────────────────────────────────
+    // Behind a page snapshot an automated test attached. The snapshot brings its own
+    // colours and was rendered on the browser's default white, so a page that sets no
+    // background of its own must still get white rather than the theme's surface.
+    // Like the overlay markers above it does not change between themes.
+    --html-snapshot-background: #ffffff;
+
     // ── Semantic: brand / interaction ───────────────────────────────────────
     --color-primary: var(--master-color-3);
     --color-primary-hover: var(--master-color-3-relative);

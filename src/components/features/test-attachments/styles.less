@@ -1,0 +1,233 @@
+// Attachments uploaded by automated tests: a chip row on the execution (and on a step),
+// and a modal viewer per kind. The chips sit inside the execution's actions row and the
+// step timeline, so they take the sub-panel tones of those surfaces.
+
+// ── Chip row ─────────────────────────────────────────────────────────────────
+.test-attachment-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin: var(--space-1) 0 var(--space-2);
+}
+
+.test-attachment-list-label {
+  color: var(--sub-panel-secondary-font-color);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.test-attachment-list-note {
+  color: var(--sub-panel-secondary-font-color);
+  font-size: var(--font-size-sm);
+}
+
+.test-attachment-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  max-width: 100%;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background-color: var(--surface-raised);
+  color: var(--sub-panel-font-color);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
+
+  &:hover {
+    border-color: var(--color-primary);
+  }
+
+  &:focus-visible {
+    .focus-ring();
+  }
+}
+
+.test-attachment-kind-icon {
+  flex: 0 0 auto;
+  font-size: 1.15em;
+  color: var(--sub-panel-icon-color);
+}
+
+.test-attachment-chip-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.test-attachment-chip-size {
+  flex: 0 0 auto;
+  color: var(--sub-panel-secondary-font-color);
+  font-size: var(--font-size-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+// ── Viewer modal ─────────────────────────────────────────────────────────────
+.test-attachment-modal {
+  .test-attachment-modal-title {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .test-attachment-kind-icon {
+    color: var(--icon-action-color);
+  }
+
+  .test-attachment-modal-name {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .test-attachment-modal-meta {
+    color: var(--modal-secondary-font-color);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+  }
+
+  .test-attachment-modal-actions {
+    display: flex;
+    gap: var(--space-2);
+    justify-content: flex-end;
+
+    .rs-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+    }
+  }
+}
+
+.test-attachment-video,
+.test-attachment-image {
+  display: block;
+  max-width: 100%;
+  max-height: 70vh;
+  margin: 0 auto;
+  border-radius: var(--radius-md);
+  background-color: var(--surface-sunken);
+}
+
+.test-attachment-html {
+  display: block;
+  width: 100%;
+  height: 65vh;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: var(--html-snapshot-background);
+}
+
+// ── Text (log / JSON) ────────────────────────────────────────────────────────
+.test-attachment-text-filter {
+  margin-bottom: var(--space-2);
+}
+
+.test-attachment-text-lines {
+  max-height: 60vh;
+  margin: 0;
+  padding: var(--space-2) 0;
+  overflow: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background-color: var(--surface-sunken);
+  color: var(--modal-font-color);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-normal);
+}
+
+.test-attachment-text-line {
+  display: flex;
+  gap: var(--space-3);
+  padding: 0 var(--space-3);
+  white-space: pre;
+
+  code {
+    background: none;
+    padding: 0;
+    color: inherit;
+  }
+}
+
+.test-attachment-text-number {
+  flex: 0 0 3.5em;
+  color: var(--modal-secondary-font-color);
+  text-align: right;
+  user-select: none;
+}
+
+// ── HAR ──────────────────────────────────────────────────────────────────────
+.test-attachment-har-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+
+  .page-help-text {
+    margin: 0;
+  }
+}
+
+.test-attachment-har-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--modal-font-color);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+}
+
+.test-attachment-har-scroll {
+  max-height: 60vh;
+  overflow: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.test-attachment-har-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--modal-font-color);
+  font-size: var(--font-size-xs);
+
+  th {
+    position: sticky;
+    top: 0;
+    padding: var(--space-2);
+    background-color: var(--sub-table-header-background);
+    color: var(--sub-table-header-font-color);
+    font-weight: var(--font-weight-semibold);
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: var(--space-1) var(--space-2);
+    border-top: 1px solid var(--border-subtle);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.test-attachment-har-table .test-attachment-har-number {
+  text-align: right;
+}
+
+.test-attachment-har-url {
+  max-width: 32rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.test-attachment-har-failed td {
+  background-color: color-mix(in srgb, var(--fail-color) 8%, transparent);
+}

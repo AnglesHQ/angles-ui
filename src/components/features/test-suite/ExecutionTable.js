@@ -11,6 +11,8 @@ import Moment from 'react-moment';
 import ActionComponent from './ActionComponent';
 import ExecutionStateContext from '../../../context/ExecutionStateContext';
 import { getDuration } from '../../../utility/TimeUtilities';
+import AttachmentList from '../test-attachments/AttachmentList';
+import useExecutionAttachments from '../test-attachments/useExecutionAttachments';
 
 const ExecutionTable = function (props) {
   const { isExecutionExpanded, toggleExecution } = useContext(ExecutionStateContext);
@@ -40,6 +42,10 @@ const ExecutionTable = function (props) {
   const status = execution.status.toLowerCase();
   const expanded = isExecutionExpanded(execution._id);
   const actionCount = execution.actions ? execution.actions.length : 0;
+  const attachmentCount = (execution.attachments || []).length;
+  // Fetched the first time the execution is expanded; shared by the execution-level list
+  // below and the step-level lists inside its actions.
+  const attachments = useExecutionAttachments(execution, expanded);
 
   return (
     <div className="test-run-suite-body">
@@ -99,6 +105,14 @@ const ExecutionTable = function (props) {
                   />
                 </span>
               ) : null }
+              { attachmentCount > 0 ? (
+                <span className="execution-detail">
+                  <FormattedMessage
+                    id="common.component.suite-table.execution.attachment-count"
+                    values={{ count: attachmentCount }}
+                  />
+                </span>
+              ) : null }
             </div>
           </div>
           { showHistoryLink !== false ? (
@@ -119,6 +133,12 @@ const ExecutionTable = function (props) {
         </div>
         { expanded ? (
           <div key={`execution_actions_${index}`} className="actions-row">
+            <AttachmentList
+              ids={execution.attachments}
+              byId={attachments.byId}
+              status={attachments.status}
+              showLabel
+            />
             { execution.actions.map((action, actionIndex) => [
               <ActionComponent
                 key={index}
@@ -129,6 +149,7 @@ const ExecutionTable = function (props) {
                 actionIndex={actionIndex}
                 execution={execution}
                 showScreenshots={showScreenshots}
+                attachments={attachments}
               />,
             ])}
           </div>
