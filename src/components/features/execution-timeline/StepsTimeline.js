@@ -1,7 +1,5 @@
 /* eslint react/no-array-index-key: [0] */
 import React from 'react';
-import DomPurify from 'dompurify';
-import parse from 'html-react-parser';
 import Moment from 'react-moment';
 
 import {
@@ -50,12 +48,19 @@ const StepsTimeline = function (props) {
     }
   };
 
-  const convertTextToLinks = (content) => {
-    const reg = /(http:\/\/|https:\/\/)((\w|=|\?|\.|\/|#|&|%|\+|-)+)/g;
-    if (content) {
-      return content.replace(reg, "<a href='$1$2' target='_blank'>$1$2</a>");
-    }
-    return '';
+  // Step info comes from test results, i.e. from anyone with an API token for the team, so
+  // it is rendered as text: HTML in it is shown, never interpreted. (It used to be parsed
+  // as HTML after DOMPurify, which still let through forms, inline styles and off-site
+  // links - enough for a convincing fake "session expired" form.) Only http(s) URLs are
+  // turned into links, built as React elements rather than markup.
+  const URL_PATTERN = /(https?:\/\/[\w=?./#&%+:~@,;!*'()$-]+)/g;
+  const renderInfo = (content) => {
+    if (!content) return '';
+    return String(content).split(URL_PATTERN).map((part, index) => (
+      index % 2 === 1 ? (
+        <a key={`${index}-${part}`} href={part} target="_blank" rel="noopener noreferrer">{part}</a>
+      ) : part
+    ));
   };
 
   const renderScreenshot = (step) => {
@@ -111,7 +116,7 @@ const StepsTimeline = function (props) {
           <Moment utc format="HH:mm:ss">{step.timestamp}</Moment>
         </span>
         <span className="step-name step-name-info">
-          {parse(DomPurify.sanitize(convertTextToLinks(step.info)))}
+          {renderInfo(step.info)}
         </span>
       </div>
     );
