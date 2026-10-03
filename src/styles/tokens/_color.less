@@ -62,6 +62,11 @@
     // NOT set here. They derive from the polarity and accent primitives above
     // (see `_theme-contract.less` §2), so a theme never restates them.
 
+    // OPTIONAL primitive (see `_theme-contract.less` §1b). Cream on orange-400
+    // measures 1.8:1, so the suite header band carries the dark panel ink
+    // instead (8.7:1). Scoped to that band: buttons keep `--master-font-color-2`.
+    --master-font-color-accent-heading: var(--master-color-2);
+
     // Timeline dot inverts against the surface it sits on.
     --timeline-dot-background: var(--master-color-1);
 
@@ -543,6 +548,12 @@
     --sub-table-body-background: var(--master-color-1);
     --sub-table-body-font-color: var(--master-font-color-1);
     --sub-table-body-secondary-font-color: var(--master-font-color-3);
+
+    // Suite header — the accent band above each suite on the test-run page.
+    // Defaults to the table-header on-accent text; a theme where that is too
+    // faint on the accent supplies a stronger ink through the optional
+    // `--master-font-color-accent-heading` primitive.
+    --suite-header-font-color: var(--master-font-color-accent-heading, var(--main-table-header-font-color));
 
     // Tabs
     --tabs-overall-background: var(--master-color-2);
