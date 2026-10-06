@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
-import { Container, Content, Panel, Form, ButtonToolbar, Button, Message, useToaster, SelectPicker, TagInput, Tag, Divider } from 'rsuite';
+import { Container, Content, Panel, Form, ButtonToolbar, Button, IconButton, Whisper, Tooltip, Message, useToaster, SelectPicker, TagInput, Tag, Divider } from 'rsuite';
+import PeoplesPlusIcon from '@rsuite/icons/PeoplesPlus';
 import { useAuth } from '../../../context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { storeCurrentTeam, storeTeams } from '../../../redux/teamActions';
+import CreateTeamModal from './CreateTeamModal';
 
 function TeamSettingsPage(props) {
     const { user, isLoading } = useAuth();
@@ -25,8 +27,11 @@ function TeamSettingsPage(props) {
     const [loading, setLoading] = useState(false);
     const [savingName, setSavingName] = useState(false);
     const [savingComponents, setSavingComponents] = useState(false);
+    const [createModalOpen, setCreateModalOpen] = useState(false);
 
     const canManageTeams = user && (user.userType === 'admin' || user.userType === 'team_lead');
+    // Only admins can create teams; the API refuses anyone else.
+    const canCreateTeams = user && user.userType === 'admin';
 
     useEffect(() => {
         if (!isLoading && (!user || !canManageTeams)) {
@@ -82,7 +87,8 @@ function TeamSettingsPage(props) {
     const refreshTeams = async () => {
         try {
             const response = await axios.get('/team');
-            saveTeams(response.data);
+            // Same order as the header's team list (see Shell.js).
+            saveTeams([...response.data].sort((a, b) => a.name.localeCompare(b.name)));
         } catch (error) {
             // ignore, sidebar list will just be stale until next reload
         }
@@ -144,21 +150,62 @@ function TeamSettingsPage(props) {
         }
     };
 
+    // A new team opens in the form so its details and components can be filled in. Like
+    // the in-page picker, this does not switch the team the rest of the app is scoped to.
+    const handleTeamCreated = async (team) => {
+        setCreateModalOpen(false);
+        toaster.push(<Message type="success">{intl.formatMessage({ id: 'page.team-settings.toast.create-success' }, { name: team.name })}</Message>, { placement: 'topEnd' });
+        await refreshTeams();
+        setSelectedTeamId(team._id);
+    };
+
     if (isLoading || !user || !canManageTeams) {
         return null;
     }
+
+    const noTeams = !teams || teams.length === 0;
 
     return (
         <Container>
             <Content className="page">
                 <Panel
-                    header={<span className="page-panel-header"><FormattedMessage id="page.team-settings.header" /></span>}
+                    header={(
+                        <span className="page-panel-header">
+                            <FormattedMessage id="page.team-settings.header" />
+                            {canCreateTeams && (
+                                <Whisper
+                                    placement="left"
+                                    speaker={(
+                                        <Tooltip>
+                                            <FormattedMessage id="page.team-settings.button.new-team" />
+                                        </Tooltip>
+                                    )}
+                                >
+                                    <IconButton
+                                        appearance="subtle"
+                                        icon={<PeoplesPlusIcon />}
+                                        onClick={() => setCreateModalOpen(true)}
+                                        aria-label={intl.formatMessage({ id: 'page.team-settings.button.new-team' })}
+                                    />
+                                </Whisper>
+                            )}
+                        </span>
+                    )}
                     bordered
                     className="page-panel"
                 >
-                    {(!teams || teams.length === 0) ? (
+                    {noTeams && canCreateTeams && (
+                        <div className="page-section">
+                            <p className="page-help-text"><FormattedMessage id="page.team-settings.no-teams-admin" /></p>
+                            <Button className="btn-primary" onClick={() => setCreateModalOpen(true)}>
+                                <FormattedMessage id="page.team-settings.button.create-team" />
+                            </Button>
+                        </div>
+                    )}
+                    {noTeams && !canCreateTeams && (
                         <p><FormattedMessage id="page.team-settings.no-team-access" /></p>
-                    ) : (
+                    )}
+                    {!noTeams && (
                         <Form fluid>
                             <Form.Group>
                                 {/* "Team to configure", not "Team": this control no longer
@@ -241,6 +288,13 @@ function TeamSettingsPage(props) {
                     )}
                 </Panel>
             </Content>
+            {canCreateTeams && (
+                <CreateTeamModal
+                    open={createModalOpen}
+                    onClose={() => setCreateModalOpen(false)}
+                    onCreated={handleTeamCreated}
+                />
+            )}
         </Container>
     );
 }
