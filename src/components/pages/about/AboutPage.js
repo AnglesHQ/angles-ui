@@ -47,7 +47,6 @@ const AboutPage = function () {
             <FormattedMessage
               id="page.about.about-api"
               values={{
-                // TODO: fix link
                 apiLink: <a href={`${apiBaseUrl}/api-docs`} rel="noreferrer" target="_blank"> API </a>,
               }}
             />

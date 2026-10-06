@@ -1,5 +1,5 @@
 import { headers } from 'next/headers';
-import { getAnglesApiUrl, RUNTIME_CONFIG_GLOBAL } from '../utils/runtime-config';
+import { getBrowserRuntimeConfig, RUNTIME_CONFIG_GLOBAL } from '../utils/runtime-config';
 
 // Server component. Rendered before any client code runs so that
 // `window.__ANGLES_CONFIG__` is populated by the time modules that read it
@@ -8,7 +8,7 @@ import { getAnglesApiUrl, RUNTIME_CONFIG_GLOBAL } from '../utils/runtime-config'
 // Carries the request's CSP nonce (set by src/proxy.js); without it the policy blocks
 // this inline script like any other.
 export default async function RuntimeConfigScript() {
-    const config = { anglesApiUrl: getAnglesApiUrl() };
+    const config = getBrowserRuntimeConfig();
     const nonce = (await headers()).get('x-nonce') || undefined;
     return (
         <script
