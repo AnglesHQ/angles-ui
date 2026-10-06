@@ -13,7 +13,17 @@ const AuthContext = createContext({});
 // because it is the same value the IdP has registered. axios is configured with a
 // baseURL that already includes the version prefix, so a browser redirect has to be
 // built from the API *origin* instead to avoid doubling it up.
-export const buildProviderUrl = (loginUrl) => `${getAnglesApiBaseUrl()}${loginUrl}`;
+//
+// `returnTo` tells the API where to send the browser once the identity provider is
+// done: the UI and the API are usually on different origins, and the API only knows its
+// own. It is the UI's origin only, and the API accepts it only for the host it allows
+// cross-origin requests from (see the API's docs/authentication.md).
+export const buildProviderUrl = (loginUrl, returnTo) => {
+    const url = `${getAnglesApiBaseUrl()}${loginUrl}`;
+    if (!returnTo) return url;
+    const separator = url.includes('?') ? '&' : '?';
+    return `${url}${separator}returnTo=${encodeURIComponent(returnTo)}`;
+};
 
 // Normalises the user payload: the API reports `role`, the UI has always read
 // `userType`.
@@ -94,7 +104,7 @@ export const AuthProvider = ({ children }) => {
     // OIDC and SAML both start with a full-page redirect to the API, which hands off to
     // the identity provider and returns to the callback it has registered.
     const startProviderLogin = (provider) => {
-        window.location.href = buildProviderUrl(provider.loginUrl);
+        window.location.href = buildProviderUrl(provider.loginUrl, window.location.origin);
     };
 
     const logout = async () => {

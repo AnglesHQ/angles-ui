@@ -21,7 +21,7 @@ WORKDIR /app
 ENV NODE_ENV=production
 
 # Default location for the angles api. Read at container start (not build time),
-# so overriding it with `-e ANGLES_API_URL=...` needs no rebuild.
+# so overriding it with `-e ANGLES_API_BASE_URL=...` needs no rebuild.
 ENV ANGLES_API_BASE_URL=http://127.0.0.1:3000
 ENV ANGLES_API_BASE_PATH=/rest/api/v1.0
 
