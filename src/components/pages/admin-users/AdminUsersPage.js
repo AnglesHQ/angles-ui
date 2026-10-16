@@ -189,6 +189,15 @@ export default function AdminUsersPage() {
                             </Cell>
                         </Column>
 
+                        <Column flexGrow={1} minWidth={170}>
+                            <HeaderCell><FormattedMessage id="page.admin.users.table.last-login" /></HeaderCell>
+                            <Cell>
+                                {rowData => (rowData.lastLoginAt
+                                    ? intl.formatDate(rowData.lastLoginAt, { dateStyle: 'medium', timeStyle: 'short' })
+                                    : <FormattedMessage id="page.admin.users.table.last-login-never" />)}
+                            </Cell>
+                        </Column>
+
                         <Column width={160}>
                             <HeaderCell><FormattedMessage id="page.user-settings.table.action" /></HeaderCell>
                             <Cell>

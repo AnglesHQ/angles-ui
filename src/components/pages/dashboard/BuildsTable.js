@@ -171,6 +171,42 @@ const DateCell = function (props) {
   );
 };
 
+/*
+  Who started the run. Automated builds record the user (and the API token's
+  name when the run was reported with an API key); the tooltip names the token.
+  Builds from before this was recorded, and manual runs, have no value.
+*/
+const TriggeredByCell = function (props) {
+  const { rowData: build, intl, ...rest } = props;
+  const triggeredBy = build.triggeredBy && build.triggeredBy.username
+    ? build.triggeredBy
+    : undefined;
+  return (
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    <Cell {...rest}>
+      {
+        triggeredBy ? (
+          <span
+            className="builds-table-triggered-by"
+            title={triggeredBy.tokenName
+              ? intl.formatMessage(
+                { id: 'page.dashboard.builds-table.triggered-by.token' },
+                { token: triggeredBy.tokenName },
+              )
+              : triggeredBy.username}
+          >
+            {triggeredBy.username}
+          </span>
+        ) : (
+          <span className="builds-table-empty">
+            <FormattedMessage id="page.dashboard.builds-table.not-available" />
+          </span>
+        )
+      }
+    </Cell>
+  );
+};
+
 const ResultCell = function (props) {
   const { rowData: build } = props;
   return (
@@ -316,6 +352,14 @@ const BuildsTable = function (props) {
             />
           </HeaderCell>
           <DateCell />
+        </Column>
+        <Column flexGrow={2} minWidth={120}>
+          <HeaderCell>
+            <FormattedMessage
+              id="page.dashboard.builds-table.header.triggered-by"
+            />
+          </HeaderCell>
+          <TriggeredByCell intl={intl} />
         </Column>
         <Column flexGrow={3} minWidth={180}>
           <HeaderCell>

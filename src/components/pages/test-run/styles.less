@@ -139,10 +139,10 @@
   // ── Band 2: metadata strip ────────────────────────────────────────────────
   // Auto-fitting columns so the facts stay on one line on wide screens and
   // wrap into a tidy grid on narrow ones, without media queries.
-  // The strip always holds the same 7 facts, so the columns are stepped
+  // The strip always holds the same 8 facts, so the columns are stepped
   // explicitly rather than left to `auto-fit` — auto-fit maximises the column
-  // count and 7 items divided by 5 or 6 columns leaves a lone orphan on the
-  // second row. Each step divides 7 into balanced rows and keeps the track wide
+  // count and 8 items divided by 5 to 7 columns leaves orphans on the second
+  // row. Each step divides 8 into balanced rows and keeps the track wide
   // enough for a full timestamp.
   .test-run-facts {
     display: grid;
@@ -152,10 +152,10 @@
     border-top: 1px solid var(--border-subtle);
   }
 
-  // 7-across only once each track can hold a full "DD MMM - HH:mm:ss" value.
+  // 8-across only once each track can hold a full "DD MMM - HH:mm:ss" value.
   @media (min-width: 1800px) {
     .test-run-facts {
-      grid-template-columns: repeat(7, 1fr);
+      grid-template-columns: repeat(8, 1fr);
     }
   }
 
