@@ -5,7 +5,7 @@ import moment from 'moment/moment';
 import { connect } from 'react-redux';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { saveAs } from 'file-saver';
-import { AiOutlineTeam, AiOutlinePartition } from 'react-icons/ai';
+import { AiOutlineTeam, AiOutlinePartition, AiOutlineUser } from 'react-icons/ai';
 import { GiSandsOfTime, GiTrafficLightsGreen } from 'react-icons/gi';
 import { BiSolidFlagCheckered } from 'react-icons/bi';
 import { PiMapPinDuotone } from 'react-icons/pi';
@@ -171,6 +171,21 @@ const TestRunDetailsPage = function (props) {
       });
   };
 
+  // The user (and API token) that started the build; empty for builds created before
+  // this was recorded, and for manual runs, which show "not set".
+  const getTriggeredByLabel = (build) => {
+    const { triggeredBy } = build;
+    if (!triggeredBy || !triggeredBy.username) {
+      return null;
+    }
+    return triggeredBy.tokenName
+      ? intl.formatMessage(
+        { id: 'page.test-run.header.triggered-by.token' },
+        { username: triggeredBy.username, token: triggeredBy.tokenName },
+      )
+      : triggeredBy.username;
+  };
+
   const getComponentName = (build) => build.team.components
     .find((component) => component._id === build.component);
 
@@ -262,7 +277,7 @@ const TestRunDetailsPage = function (props) {
         <span className="test-run-fact-label">
           <FormattedMessage id={labelId} />
         </span>
-        <span className="test-run-fact-value">
+        <span className="test-run-fact-value" title={typeof value === 'string' ? value : undefined}>
           {value || <FormattedMessage id="page.test-run.header.fact.not-set" />}
         </span>
       </span>
@@ -438,6 +453,11 @@ const TestRunDetailsPage = function (props) {
                       'page.test-run.icons.phase.whisper',
                       <TbTimelineEventText />,
                       currentBuild.phase ? currentBuild.phase.name : null,
+                    )}
+                    {renderFact(
+                      'page.test-run.icons.triggered-by.whisper',
+                      <AiOutlineUser />,
+                      getTriggeredByLabel(currentBuild),
                     )}
                     {renderFact(
                       'page.test-run.steps-header.start',

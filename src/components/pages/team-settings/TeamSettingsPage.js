@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
-import { Container, Content, Panel, Form, ButtonToolbar, Button, IconButton, Whisper, Tooltip, Message, useToaster, SelectPicker, TagInput, Tag, Divider } from 'rsuite';
+import { Container, Content, Panel, Form, ButtonToolbar, Button, IconButton, Whisper, Tooltip, Message, useToaster, SelectPicker, TagInput, Tag, Divider, Table, Input } from 'rsuite';
 import PeoplesPlusIcon from '@rsuite/icons/PeoplesPlus';
 import { useAuth } from '../../../context/AuthContext';
 import { useRouter } from 'next/navigation';
@@ -9,6 +9,10 @@ import { FormattedMessage, useIntl } from 'react-intl';
 
 import { storeCurrentTeam, storeTeams } from '../../../redux/teamActions';
 import CreateTeamModal from './CreateTeamModal';
+import ConfirmModal from '../../common/ConfirmModal';
+import { getApiErrorMessage } from '../../../utility/ApiUtilities';
+
+const { Column, HeaderCell, Cell } = Table;
 
 function TeamSettingsPage(props) {
     const { user, isLoading } = useAuth();
@@ -28,10 +32,19 @@ function TeamSettingsPage(props) {
     const [savingName, setSavingName] = useState(false);
     const [savingComponents, setSavingComponents] = useState(false);
     const [createModalOpen, setCreateModalOpen] = useState(false);
+    const [members, setMembers] = useState([]);
+    const [membersLoading, setMembersLoading] = useState(false);
+    const [newMemberUsername, setNewMemberUsername] = useState('');
+    const [addingMember, setAddingMember] = useState(false);
+    const [removeConfirm, setRemoveConfirm] = useState({ open: false, member: null });
+    // The team whose members the page is showing, so a slow response for a team that has
+    // since been switched away from cannot overwrite the list for the current one.
+    const membersTeamRef = useRef(undefined);
 
     const canManageTeams = user && (user.userType === 'admin' || user.userType === 'team_lead');
     // Only admins can create teams; the API refuses anyone else.
     const canCreateTeams = user && user.userType === 'admin';
+    const isAdmin = user && user.userType === 'admin';
 
     useEffect(() => {
         if (!isLoading && (!user || !canManageTeams)) {
@@ -65,6 +78,7 @@ function TeamSettingsPage(props) {
     useEffect(() => {
         if (selectedTeamId) {
             fetchTeamDetails(selectedTeamId);
+            fetchMembers(selectedTeamId);
         }
     }, [selectedTeamId]);
 
@@ -81,6 +95,26 @@ function TeamSettingsPage(props) {
             toaster.push(<Message type="error">{intl.formatMessage({ id: 'page.team-settings.toast.fetch-error' })}</Message>, { placement: 'topEnd' });
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchMembers = async (teamId) => {
+        membersTeamRef.current = teamId;
+        setMembersLoading(true);
+        try {
+            const response = await axios.get(`/team/${teamId}/members`);
+            if (membersTeamRef.current === teamId) {
+                setMembers(response.data);
+            }
+        } catch (error) {
+            if (membersTeamRef.current === teamId) {
+                setMembers([]);
+                toaster.push(<Message type="error">{getApiErrorMessage(error, intl.formatMessage({ id: 'page.team-settings.toast.members-fetch-error' }))}</Message>, { placement: 'topEnd' });
+            }
+        } finally {
+            if (membersTeamRef.current === teamId) {
+                setMembersLoading(false);
+            }
         }
     };
 
@@ -148,6 +182,44 @@ function TeamSettingsPage(props) {
         } finally {
             setSavingComponents(false);
         }
+    };
+
+    const handleAddMember = async () => {
+        const username = newMemberUsername.trim();
+        if (!username) return;
+        setAddingMember(true);
+        try {
+            const response = await axios.post(`/team/${selectedTeamId}/members`, { username });
+            toaster.push(<Message type="success">{intl.formatMessage({ id: 'page.team-settings.toast.members-add-success' }, { username: response.data.username })}</Message>, { placement: 'topEnd' });
+            setNewMemberUsername('');
+            await fetchMembers(selectedTeamId);
+        } catch (error) {
+            toaster.push(<Message type="error">{getApiErrorMessage(error, intl.formatMessage({ id: 'page.team-settings.toast.members-add-error' }))}</Message>, { placement: 'topEnd' });
+        } finally {
+            setAddingMember(false);
+        }
+    };
+
+    const handleConfirmRemoveMember = async () => {
+        const { member } = removeConfirm;
+        setRemoveConfirm({ open: false, member: null });
+        try {
+            await axios.delete(`/team/${selectedTeamId}/members/${member._id}`);
+            toaster.push(<Message type="success">{intl.formatMessage({ id: 'page.team-settings.toast.members-remove-success' }, { username: member.username })}</Message>, { placement: 'topEnd' });
+        } catch (error) {
+            toaster.push(<Message type="error">{getApiErrorMessage(error, intl.formatMessage({ id: 'page.team-settings.toast.members-remove-error' }))}</Message>, { placement: 'topEnd' });
+        }
+        await fetchMembers(selectedTeamId);
+    };
+
+    // Why a member cannot be removed by the current user, or null when they can. Mirrors
+    // the API's rule (the API is what enforces it): team leads manage plain users only,
+    // and cannot remove themselves; admins can remove anyone.
+    const getLockedReason = (member) => {
+        if (isAdmin) return null;
+        if (member._id === user._id) return 'self';
+        if (member.role !== 'user') return 'privileged';
+        return null;
     };
 
     // A new team opens in the form so its details and components can be filled in. Like
@@ -286,8 +358,106 @@ function TeamSettingsPage(props) {
                             </Form.Group>
                         </Form>
                     )}
+                    {!noTeams && (
+                        <div className="page-section team-settings-members">
+                            <Divider />
+                            <h5 className="page-section-title"><FormattedMessage id="page.team-settings.section.members" /></h5>
+                            <p className="page-help-text"><FormattedMessage id="page.team-settings.members.help" /></p>
+                            <div className="team-settings-members-add">
+                                <label htmlFor="team-settings-member-username" className="team-settings-members-add-label">
+                                    <FormattedMessage id="page.team-settings.members.label.add" />
+                                </label>
+                                <div className="team-settings-members-add-row">
+                                    <Input
+                                        id="team-settings-member-username"
+                                        value={newMemberUsername}
+                                        onChange={(value) => setNewMemberUsername(value)}
+                                        onPressEnter={handleAddMember}
+                                        placeholder={intl.formatMessage({ id: 'page.team-settings.members.add-placeholder' })}
+                                        disabled={loading}
+                                    />
+                                    <Button
+                                        className="btn-primary"
+                                        onClick={handleAddMember}
+                                        loading={addingMember}
+                                        disabled={loading || !newMemberUsername.trim()}
+                                    >
+                                        <FormattedMessage id="page.team-settings.members.button.add" />
+                                    </Button>
+                                </div>
+                            </div>
+                            {!membersLoading && members.length === 0 ? (
+                                <p className="page-help-text"><FormattedMessage id="page.team-settings.members.empty" /></p>
+                            ) : (
+                                <Table
+                                    data={members}
+                                    loading={membersLoading}
+                                    autoHeight
+                                    rowKey="_id"
+                                >
+                                    <Column flexGrow={2}>
+                                        <HeaderCell><FormattedMessage id="page.admin.users.table.username" /></HeaderCell>
+                                        <Cell dataKey="username" />
+                                    </Column>
+                                    <Column flexGrow={1}>
+                                        <HeaderCell><FormattedMessage id="page.admin.users.table.role" /></HeaderCell>
+                                        <Cell>
+                                            {(rowData) => intl.formatMessage({ id: `page.admin.users.user-type.${rowData.role}` })}
+                                        </Cell>
+                                    </Column>
+                                    <Column width={140}>
+                                        <HeaderCell><FormattedMessage id="page.user-settings.table.action" /></HeaderCell>
+                                        <Cell>
+                                            {(rowData) => {
+                                                const lockedReason = getLockedReason(rowData);
+                                                if (lockedReason) {
+                                                    return (
+                                                        <Whisper
+                                                            placement="left"
+                                                            speaker={(
+                                                                <Tooltip>
+                                                                    <FormattedMessage id={`page.team-settings.members.locked.${lockedReason}`} />
+                                                                </Tooltip>
+                                                            )}
+                                                        >
+                                                            <span className="team-settings-member-locked" aria-disabled="true">
+                                                                <FormattedMessage id="page.team-settings.members.table.remove" />
+                                                            </span>
+                                                        </Whisper>
+                                                    );
+                                                }
+                                                return (
+                                                    <button
+                                                        type="button"
+                                                        className="link-danger"
+                                                        onClick={() => setRemoveConfirm({ open: true, member: rowData })}
+                                                    >
+                                                        <FormattedMessage id="page.team-settings.members.table.remove" />
+                                                    </button>
+                                                );
+                                            }}
+                                        </Cell>
+                                    </Column>
+                                </Table>
+                            )}
+                        </div>
+                    )}
                 </Panel>
             </Content>
+            <ConfirmModal
+                open={removeConfirm.open}
+                title={<FormattedMessage id="page.team-settings.members.confirm.remove.title" />}
+                message={removeConfirm.member ? (
+                    <FormattedMessage
+                        id="page.team-settings.members.confirm.remove.message"
+                        values={{ username: removeConfirm.member.username, team: teamDetails?.name }}
+                    />
+                ) : null}
+                confirmLabel={<FormattedMessage id="page.team-settings.members.table.remove" />}
+                cancelLabel={<FormattedMessage id="page.team-settings.button.cancel" />}
+                onConfirm={handleConfirmRemoveMember}
+                onCancel={() => setRemoveConfirm({ open: false, member: null })}
+            />
             {canCreateTeams && (
                 <CreateTeamModal
                     open={createModalOpen}
