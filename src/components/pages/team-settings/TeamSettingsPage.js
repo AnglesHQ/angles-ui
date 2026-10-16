@@ -276,12 +276,12 @@ function TeamSettingsPage(props) {
     }
 
     // Why a member cannot be removed by the current user, or null when they can. Mirrors
-    // the API's rule (the API is what enforces it): team leads manage plain users only,
-    // and cannot remove themselves; admins can remove anyone.
+    // the API's rule (the API is what enforces it): a team lead can remove anyone except
+    // themselves and the core admin account; admins can remove anyone.
     const getLockedReason = (member) => {
         if (isAdmin) return null;
         if (member._id === user._id) return 'self';
-        if (member.role !== 'user') return 'privileged';
+        if (member.isCoreAdmin) return 'core-admin';
         return null;
     };
 
