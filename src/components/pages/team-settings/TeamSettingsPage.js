@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
-import { Container, Content, Panel, Form, ButtonToolbar, Button, IconButton, Whisper, Tooltip, Message, useToaster, SelectPicker, TagInput, Tag, Divider, Table, Input } from 'rsuite';
+import { Container, Content, Panel, Form, ButtonToolbar, Button, IconButton, Whisper, Tooltip, Message, useToaster, SelectPicker, InputPicker, TagInput, Tag, Divider, Table } from 'rsuite';
 import PeoplesPlusIcon from '@rsuite/icons/PeoplesPlus';
 import { useAuth } from '../../../context/AuthContext';
 import { useRouter } from 'next/navigation';
@@ -13,6 +13,10 @@ import ConfirmModal from '../../common/ConfirmModal';
 import { getApiErrorMessage } from '../../../utility/ApiUtilities';
 
 const { Column, HeaderCell, Cell } = Table;
+
+// The API refuses shorter searches (it would otherwise list most of the user directory).
+const MEMBER_SEARCH_MIN_LENGTH = 3;
+const MEMBER_SEARCH_DEBOUNCE_MS = 250;
 
 function TeamSettingsPage(props) {
     const { user, isLoading } = useAuth();
@@ -34,7 +38,15 @@ function TeamSettingsPage(props) {
     const [createModalOpen, setCreateModalOpen] = useState(false);
     const [members, setMembers] = useState([]);
     const [membersLoading, setMembersLoading] = useState(false);
-    const [newMemberUsername, setNewMemberUsername] = useState('');
+    // Type-ahead for the add-member box: what has been typed, the matches the API returned
+    // for it, and the one the user picked.
+    const [memberSearchText, setMemberSearchText] = useState('');
+    const [memberCandidates, setMemberCandidates] = useState([]);
+    const [memberCandidatesLoading, setMemberCandidatesLoading] = useState(false);
+    const [selectedCandidate, setSelectedCandidate] = useState(null);
+    // Remounting the picker is how its internal search text is cleared after an add.
+    const [memberPickerKey, setMemberPickerKey] = useState(0);
+    const candidateRequestRef = useRef(0);
     const [addingMember, setAddingMember] = useState(false);
     const [removeConfirm, setRemoveConfirm] = useState({ open: false, member: null });
     // The team whose members the page is showing, so a slow response for a team that has
@@ -118,6 +130,46 @@ function TeamSettingsPage(props) {
         }
     };
 
+    // Wait for a pause in typing before asking the API, and ignore a response that has been
+    // overtaken by a newer keystroke or a team switch.
+    useEffect(() => {
+        const term = memberSearchText.trim();
+        candidateRequestRef.current += 1;
+        const requestId = candidateRequestRef.current;
+        if (!selectedTeamId || term.length < MEMBER_SEARCH_MIN_LENGTH) {
+            setMemberCandidates([]);
+            setMemberCandidatesLoading(false);
+            return undefined;
+        }
+        setMemberCandidatesLoading(true);
+        const timer = setTimeout(async () => {
+            try {
+                const response = await axios.get(`/team/${selectedTeamId}/members/candidates`, { params: { q: term } });
+                if (candidateRequestRef.current === requestId) {
+                    setMemberCandidates(response.data);
+                }
+            } catch (error) {
+                // A failed lookup just shows no suggestions; it is not worth a toast per keystroke.
+                if (candidateRequestRef.current === requestId) {
+                    setMemberCandidates([]);
+                }
+            } finally {
+                if (candidateRequestRef.current === requestId) {
+                    setMemberCandidatesLoading(false);
+                }
+            }
+        }, MEMBER_SEARCH_DEBOUNCE_MS);
+        return () => clearTimeout(timer);
+    }, [memberSearchText, selectedTeamId]);
+
+    // The team being edited changed: drop the previous team's search and selection.
+    useEffect(() => {
+        setMemberSearchText('');
+        setMemberCandidates([]);
+        setSelectedCandidate(null);
+        setMemberPickerKey((key) => key + 1);
+    }, [selectedTeamId]);
+
     const refreshTeams = async () => {
         try {
             const response = await axios.get('/team');
@@ -185,13 +237,15 @@ function TeamSettingsPage(props) {
     };
 
     const handleAddMember = async () => {
-        const username = newMemberUsername.trim();
-        if (!username) return;
+        if (!selectedCandidate) return;
         setAddingMember(true);
         try {
-            const response = await axios.post(`/team/${selectedTeamId}/members`, { username });
+            const response = await axios.post(`/team/${selectedTeamId}/members`, { username: selectedCandidate.username });
             toaster.push(<Message type="success">{intl.formatMessage({ id: 'page.team-settings.toast.members-add-success' }, { username: response.data.username })}</Message>, { placement: 'topEnd' });
-            setNewMemberUsername('');
+            setSelectedCandidate(null);
+            setMemberSearchText('');
+            setMemberCandidates([]);
+            setMemberPickerKey((key) => key + 1);
             await fetchMembers(selectedTeamId);
         } catch (error) {
             toaster.push(<Message type="error">{getApiErrorMessage(error, intl.formatMessage({ id: 'page.team-settings.toast.members-add-error' }))}</Message>, { placement: 'topEnd' });
@@ -211,6 +265,15 @@ function TeamSettingsPage(props) {
         }
         await fetchMembers(selectedTeamId);
     };
+
+    // The picker needs the picked user in its data to keep showing them once the search
+    // text (and so the suggestion list) has changed.
+    const memberPickerData = memberCandidates.map((candidate) => ({
+        ...candidate, label: candidate.username, value: candidate.username,
+    }));
+    if (selectedCandidate && !memberPickerData.some((item) => item._id === selectedCandidate._id)) {
+        memberPickerData.unshift(selectedCandidate);
+    }
 
     // Why a member cannot be removed by the current user, or null when they can. Mirrors
     // the API's rule (the API is what enforces it): team leads manage plain users only,
@@ -368,19 +431,46 @@ function TeamSettingsPage(props) {
                                     <FormattedMessage id="page.team-settings.members.label.add" />
                                 </label>
                                 <div className="team-settings-members-add-row">
-                                    <Input
+                                    <InputPicker
+                                        key={memberPickerKey}
                                         id="team-settings-member-username"
-                                        value={newMemberUsername}
-                                        onChange={(value) => setNewMemberUsername(value)}
-                                        onPressEnter={handleAddMember}
+                                        className="team-settings-members-picker"
+                                        data={memberPickerData}
+                                        value={selectedCandidate ? selectedCandidate.username : null}
+                                        onSearch={setMemberSearchText}
+                                        onSelect={(value, item) => setSelectedCandidate(item)}
+                                        onClean={() => setSelectedCandidate(null)}
+                                        // The API has already filtered by what was typed, so the picker
+                                        // must not filter the suggestions again by label.
+                                        searchBy={() => true}
+                                        renderMenuItem={(label, item) => (
+                                            <span className="team-settings-members-option">
+                                                <span>{label}</span>
+                                                {item.role !== 'user' && (
+                                                    <span className="team-settings-members-option-role">
+                                                        <FormattedMessage id={`page.admin.users.user-type.${item.role}`} />
+                                                    </span>
+                                                )}
+                                            </span>
+                                        )}
+                                        loading={memberCandidatesLoading}
                                         placeholder={intl.formatMessage({ id: 'page.team-settings.members.add-placeholder' })}
+                                        locale={{
+                                            searchPlaceholder: intl.formatMessage({ id: 'page.team-settings.members.search.hint' }, { count: MEMBER_SEARCH_MIN_LENGTH }),
+                                            noResultsText: intl.formatMessage({
+                                                id: memberSearchText.trim().length < MEMBER_SEARCH_MIN_LENGTH
+                                                    ? 'page.team-settings.members.search.hint'
+                                                    : 'page.team-settings.members.search.no-results',
+                                            }, { count: MEMBER_SEARCH_MIN_LENGTH }),
+                                        }}
                                         disabled={loading}
+                                        block
                                     />
                                     <Button
                                         className="btn-primary"
                                         onClick={handleAddMember}
                                         loading={addingMember}
-                                        disabled={loading || !newMemberUsername.trim()}
+                                        disabled={loading || !selectedCandidate}
                                     >
                                         <FormattedMessage id="page.team-settings.members.button.add" />
                                     </Button>
