@@ -9,6 +9,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 
 import { storeCurrentTeam, storeTeams } from '../../../redux/teamActions';
 import CreateTeamModal from './CreateTeamModal';
+import TeamTokensSection from './TeamTokensSection';
 import ConfirmModal from '../../common/ConfirmModal';
 import { getApiErrorMessage } from '../../../utility/ApiUtilities';
 
@@ -531,6 +532,9 @@ function TeamSettingsPage(props) {
                                 </Table>
                             )}
                         </div>
+                    )}
+                    {!noTeams && selectedTeamId && (
+                        <TeamTokensSection teamId={selectedTeamId} teamName={teamDetails?.name} />
                     )}
                 </Panel>
             </Content>

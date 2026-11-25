@@ -178,6 +178,13 @@ const TestRunDetailsPage = function (props) {
     if (!triggeredBy || !triggeredBy.username) {
       return null;
     }
+    // A team token has no user behind it: its name is all there is.
+    if (triggeredBy.teamToken) {
+      return intl.formatMessage(
+        { id: 'page.test-run.header.triggered-by.team-token' },
+        { token: triggeredBy.tokenName || triggeredBy.username },
+      );
+    }
     return triggeredBy.tokenName
       ? intl.formatMessage(
         { id: 'page.test-run.header.triggered-by.token' },
