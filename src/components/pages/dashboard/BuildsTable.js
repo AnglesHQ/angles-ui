@@ -174,6 +174,7 @@ const DateCell = function (props) {
 /*
   Who started the run. Automated builds record the user (and the API token's
   name when the run was reported with an API key); the tooltip names the token.
+  A build reported with a team token has no user: it shows the token's name.
   Builds from before this was recorded, and manual runs, have no value.
 */
 const TriggeredByCell = function (props) {
@@ -190,7 +191,11 @@ const TriggeredByCell = function (props) {
             className="builds-table-triggered-by"
             title={triggeredBy.tokenName
               ? intl.formatMessage(
-                { id: 'page.dashboard.builds-table.triggered-by.token' },
+                {
+                  id: triggeredBy.teamToken
+                    ? 'page.dashboard.builds-table.triggered-by.team-token'
+                    : 'page.dashboard.builds-table.triggered-by.token',
+                },
                 { token: triggeredBy.tokenName },
               )
               : triggeredBy.username}
